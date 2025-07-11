@@ -74,6 +74,28 @@ Route::middleware('auth')->group(function () {
         ]);
     })->name('estimates.financing');
 
+    Route::get('/estimates/financing/create', function (Request $request) {
+        $user = $request->user();
+        $profile = $user->profile;
+
+        return Inertia::render('Estimates/Financing/Create', [
+            'user' => $user,
+            'profile' => $profile,
+        ]);
+    })->name('estimates.financing.create');
+
+    Route::get('/estimates/financing/{sheet}/edit', function (Request $request, $sheet) {
+        $user = $request->user();
+        $profile = $user->profile;
+        $vehicleFinanceSheet = $user->vehicleFinanceSheets()->findOrFail($sheet);
+
+        return Inertia::render('Estimates/Financing/Edit', [
+            'user' => $user,
+            'profile' => $profile,
+            'sheet' => $vehicleFinanceSheet,
+        ]);
+    })->name('estimates.financing.edit');
+
     Route::get('/estimates/leasing', function (Request $request) {
         $user = $request->user();
         $profile = $user->profile;
@@ -83,6 +105,28 @@ Route::middleware('auth')->group(function () {
             'profile' => $profile,
         ]);
     })->name('estimates.leasing');
+
+    Route::get('/estimates/leasing/create', function (Request $request) {
+        $user = $request->user();
+        $profile = $user->profile;
+
+        return Inertia::render('Estimates/Leasing/Create', [
+            'user' => $user,
+            'profile' => $profile,
+        ]);
+    })->name('estimates.leasing.create');
+
+    Route::get('/estimates/leasing/{sheet}/edit', function (Request $request, $sheet) {
+        $user = $request->user();
+        $profile = $user->profile;
+        $vehicleLeaseSheet = $user->vehicleLeaseSheets()->findOrFail($sheet);
+
+        return Inertia::render('Estimates/Leasing/Edit', [
+            'user' => $user,
+            'profile' => $profile,
+            'sheet' => $vehicleLeaseSheet,
+        ]);
+    })->name('estimates.leasing.edit');
 
     // Coming soon route
     Route::get('/coming-soon', function (Request $request) {

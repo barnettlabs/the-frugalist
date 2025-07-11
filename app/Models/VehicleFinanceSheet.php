@@ -16,6 +16,10 @@ class VehicleFinanceSheet extends Model
         'dealership_name',
         'vehicle_type',
         'shareable_key',
+        'vehicle_year',
+        'vehicle_make',
+        'vehicle_model',
+        'vehicle_trim',
         'msrp',
         'fees',
         'discounts',
@@ -44,5 +48,22 @@ class VehicleFinanceSheet extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getDisplayTitleAttribute()
+    {
+        if ($this->sheet_name) {
+            return $this->sheet_name;
+        }
+
+        $vehicleDetails = collect([$this->vehicle_year, $this->vehicle_make, $this->vehicle_model, $this->vehicle_trim])
+            ->filter()
+            ->implode(' ');
+
+        if ($vehicleDetails && $this->dealership_name) {
+            return $vehicleDetails.' - '.$this->dealership_name;
+        }
+
+        return $vehicleDetails ?: $this->dealership_name ?: 'Untitled Sheet';
     }
 }

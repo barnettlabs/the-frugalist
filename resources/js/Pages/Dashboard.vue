@@ -13,7 +13,6 @@ import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 
 const props = defineProps({
     user: Object,
-    profile: Object,
     vehicleFinanceSheets: Array,
     vehicleLeaseSheets: Array,
 })
@@ -84,17 +83,14 @@ const actions = [
 ]
 
 const fullName = computed(() => {
-    if (props.profile?.first_name || props.profile?.last_name) {
-        return `${props.profile?.first_name ?? ''} ${props.profile?.last_name ?? ''}`.trim()
-    }
-    return props.user?.name ?? ''
+    return `${props.user?.first_name ?? ''} ${props.user?.last_name ?? ''}`.trim()
 })
 </script>
 
 <template>
     <Head title="Dashboard" />
 
-    <AuthenticatedLayout :user="user" :profile="profile">
+    <AuthenticatedLayout :user="user">
         <main class="-mt-24 pb-8 flex-1">
             <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
                 <h1 class="sr-only">Dashboard</h1>
@@ -118,7 +114,7 @@ const fullName = computed(() => {
                                             <div class="flex-shrink-0">
                                                 <img
                                                     class="mx-auto h-16 w-16 rounded-full"
-                                                    :src="profile?.avatar_url"
+                                                    :src="user?.avatar_url"
                                                     alt=""
                                                 />
                                             </div>

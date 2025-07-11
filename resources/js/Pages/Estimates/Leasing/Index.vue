@@ -62,7 +62,7 @@ onMounted(() => {
                                     href="/estimates/leasing/create"
                                     class="block"
                                 >
-                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-gray-400 transition-colors">
+                                    <div class="bg-white border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-gray-400 transition-colors shadow">
                                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                         </svg>
@@ -120,7 +120,7 @@ onMounted(() => {
 
                                     <!-- Add new sheet -->
                                     <Link href="/estimates/leasing/create" class="list-none">
-                                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-gray-400 transition-colors">
+                                        <div class="bg-white border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-gray-400 transition-colors shadow">
                                             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                             </svg>

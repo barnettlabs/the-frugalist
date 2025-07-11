@@ -2,13 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use App\Models\User;
+use App\Models\Announcement;
 use App\Models\Profile;
+use App\Models\User;
 use App\Models\VehicleFinanceSheet;
 use App\Models\VehicleLeaseSheet;
-use App\Models\Announcement;
+use Illuminate\Database\Seeder;
 
 class SampleDataSeeder extends Seeder
 {

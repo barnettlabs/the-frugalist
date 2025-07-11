@@ -7,17 +7,16 @@ import TextInput from '@/Components/TextInput.vue'
 
 const props = defineProps({
     user: Object,
-    profile: Object,
     mustVerifyEmail: Boolean,
     status: String,
 })
 
 const form = useForm({
-    username: props.profile?.username || '',
-    avatar_url: props.profile?.avatar_url || '',
-    website: props.profile?.website || '',
-    first_name: props.profile?.first_name || '',
-    last_name: props.profile?.last_name || '',
+    username: props.user?.username || '',
+    avatar_url: props.user?.avatar_url || '',
+    website: props.user?.website || '',
+    first_name: props.user?.first_name || '',
+    last_name: props.user?.last_name || '',
 })
 
 const submit = () => {

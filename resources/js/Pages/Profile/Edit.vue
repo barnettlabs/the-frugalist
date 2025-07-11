@@ -8,16 +8,12 @@ import DeleteUserForm from './Partials/DeleteUserForm.vue'
 
 const props = defineProps({
     user: Object,
-    profile: Object,
     mustVerifyEmail: Boolean,
     status: String,
 })
 
 const fullName = computed(() => {
-    if (props.profile?.first_name || props.profile?.last_name) {
-        return `${props.profile?.first_name ?? ''} ${props.profile?.last_name ?? ''}`.trim()
-    }
-    return props.user?.name ?? ''
+    return `${props.user?.first_name ?? ''} ${props.user?.last_name ?? ''}`.trim()
 })
 
 const memberSince = computed(() => {
@@ -36,7 +32,7 @@ const memberSince = computed(() => {
 <template>
     <Head title="Profile" />
 
-    <AuthenticatedLayout :user="user" :profile="profile">
+    <AuthenticatedLayout :user="user">
         <main class="-mt-24 pb-8 flex-1">
             <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
                 <h1 class="sr-only">Profile</h1>
@@ -61,7 +57,7 @@ const memberSince = computed(() => {
                                             <div class="flex-shrink-0">
                                                 <img
                                                     class="mx-auto h-16 w-16 rounded-full"
-                                                    :src="profile?.avatar_url"
+                                                    :src="user?.avatar_url"
                                                     alt=""
                                                 />
                                             </div>
@@ -82,7 +78,6 @@ const memberSince = computed(() => {
                                     <div class="mt-4">
                                         <UpdateProfileInformationForm
                                             :user="user"
-                                            :profile="profile"
                                             :must-verify-email="mustVerifyEmail"
                                             :status="status"
                                         />

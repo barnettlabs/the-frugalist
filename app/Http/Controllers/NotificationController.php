@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notification;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
         $notifications = $request->user()->notifications()->latest()->get();
+
         return response()->json($notifications);
     }
 

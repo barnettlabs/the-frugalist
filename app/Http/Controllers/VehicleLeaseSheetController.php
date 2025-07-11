@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\VehicleLeaseSheet;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class VehicleLeaseSheetController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
         $sheets = $request->user()->vehicleLeaseSheets()->latest()->get();
+
         return response()->json($sheets);
     }
 
@@ -39,7 +40,7 @@ class VehicleLeaseSheetController extends Controller
             'contact_phone' => 'nullable|string|max:255',
         ]);
 
-        $sheet = new VehicleLeaseSheet();
+        $sheet = new VehicleLeaseSheet;
         $sheet->user_id = $request->user()->id;
         $sheet->fill($request->all());
         $sheet->save();

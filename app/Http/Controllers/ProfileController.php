@@ -2,41 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Profile;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
     public function show(Request $request): JsonResponse
     {
-        $profile = $request->user()->profile;
+        $user = $request->user();
 
-        if (!$profile) {
-            return response()->json(['message' => 'Profile not found'], 404);
-        }
-
-        return response()->json($profile);
+        return response()->json([
+            'username' => $user->username,
+            'avatar_url' => $user->avatar_url,
+            'website' => $user->website,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+        ]);
     }
 
     public function update(Request $request): JsonResponse
     {
+        $user = $request->user();
+
         $request->validate([
-            'username' => 'nullable|string|max:255|unique:profiles,username,' . $request->user()->id . ',user_id',
+            'username' => 'nullable|string|max:255|unique:users,username,'.$user->id,
             'avatar_url' => 'nullable|url|max:255',
             'website' => 'nullable|url|max:255',
             'first_name' => 'nullable|string|max:255',
             'last_name' => 'nullable|string|max:255',
         ]);
 
-        $profile = $request->user()->profile;
-
-        if (!$profile) {
-            $profile = new Profile();
-            $profile->user_id = $request->user()->id;
-        }
-
-        $profile->fill($request->only([
+        $user->fill($request->only([
             'username',
             'avatar_url',
             'website',
@@ -44,8 +40,14 @@ class ProfileController extends Controller
             'last_name',
         ]));
 
-        $profile->save();
+        $user->save();
 
-        return response()->json($profile);
+        return response()->json([
+            'username' => $user->username,
+            'avatar_url' => $user->avatar_url,
+            'website' => $user->website,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+        ]);
     }
 }

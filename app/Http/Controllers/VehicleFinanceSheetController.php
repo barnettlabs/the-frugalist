@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\VehicleFinanceSheet;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class VehicleFinanceSheetController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
         $sheets = $request->user()->vehicleFinanceSheets()->latest()->get();
+
         return response()->json($sheets);
     }
 
@@ -36,7 +37,7 @@ class VehicleFinanceSheetController extends Controller
             'extra_payments_json' => 'nullable|string',
         ]);
 
-        $sheet = new VehicleFinanceSheet();
+        $sheet = new VehicleFinanceSheet;
         $sheet->user_id = $request->user()->id;
         $sheet->fill($request->all());
         $sheet->save();

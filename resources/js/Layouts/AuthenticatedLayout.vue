@@ -24,7 +24,6 @@ import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 
 const props = defineProps({
     user: Object,
-    profile: Object,
 })
 
 const navigation = computed(() => [
@@ -50,10 +49,7 @@ const userNavigation = ref([
 ])
 
 const fullName = computed(() => {
-    if (props.profile?.first_name || props.profile?.last_name) {
-        return `${props.profile?.first_name ?? ''} ${props.profile?.last_name ?? ''}`.trim()
-    }
-    return props.user?.name ?? ''
+    return `${props.user?.first_name ?? ''} ${props.user?.last_name ?? ''}`.trim()
 })
 </script>
 
@@ -119,7 +115,7 @@ const fullName = computed(() => {
                                     <span class="sr-only">Open user menu</span>
                                     <img
                                         class="h-8 w-8 rounded-full"
-                                        :src="profile?.avatar_url"
+                                        :src="user?.avatar_url"
                                         alt=""
                                     />
                                 </MenuButton>
@@ -272,7 +268,7 @@ const fullName = computed(() => {
                                         <div class="flex-shrink-0">
                                             <img
                                                 class="h-10 w-10 rounded-full"
-                                                :src="profile?.avatar_url"
+                                                :src="user?.avatar_url"
                                                 alt=""
                                             />
                                         </div>

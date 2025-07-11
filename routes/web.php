@@ -1,12 +1,11 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleFinanceSheetController;
 use App\Http\Controllers\VehicleLeaseSheetController;
-use App\Http\Controllers\AnnouncementController;
-use App\Http\Controllers\NotificationController;
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -34,7 +33,6 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function (Request $request) {
     $user = $request->user();
-    $profile = $user->profile;
 
     // Get vehicle sheets for stats
     $vehicleFinanceSheets = $user->vehicleFinanceSheets()->latest()->get();
@@ -42,7 +40,6 @@ Route::get('/dashboard', function (Request $request) {
 
     return Inertia::render('Dashboard', [
         'user' => $user,
-        'profile' => $profile,
         'vehicleFinanceSheets' => $vehicleFinanceSheets,
         'vehicleLeaseSheets' => $vehicleLeaseSheets,
     ]);
@@ -51,11 +48,9 @@ Route::get('/dashboard', function (Request $request) {
 Route::middleware('auth')->group(function () {
     Route::get('/profile', function (Request $request) {
         $user = $request->user();
-        $profile = $user->profile;
 
         return Inertia::render('Profile/Edit', [
             'user' => $user,
-            'profile' => $profile,
             'mustVerifyEmail' => false,
             'status' => session('status'),
         ]);
@@ -66,64 +61,52 @@ Route::middleware('auth')->group(function () {
     // Estimates routes
     Route::get('/estimates/financing', function (Request $request) {
         $user = $request->user();
-        $profile = $user->profile;
 
         return Inertia::render('Estimates/Financing/Index', [
             'user' => $user,
-            'profile' => $profile,
         ]);
     })->name('estimates.financing');
 
     Route::get('/estimates/financing/create', function (Request $request) {
         $user = $request->user();
-        $profile = $user->profile;
 
         return Inertia::render('Estimates/Financing/Create', [
             'user' => $user,
-            'profile' => $profile,
         ]);
     })->name('estimates.financing.create');
 
     Route::get('/estimates/financing/{sheet}/edit', function (Request $request, $sheet) {
         $user = $request->user();
-        $profile = $user->profile;
         $vehicleFinanceSheet = $user->vehicleFinanceSheets()->findOrFail($sheet);
 
         return Inertia::render('Estimates/Financing/Edit', [
             'user' => $user,
-            'profile' => $profile,
             'sheet' => $vehicleFinanceSheet,
         ]);
     })->name('estimates.financing.edit');
 
     Route::get('/estimates/leasing', function (Request $request) {
         $user = $request->user();
-        $profile = $user->profile;
 
         return Inertia::render('Estimates/Leasing/Index', [
             'user' => $user,
-            'profile' => $profile,
         ]);
     })->name('estimates.leasing');
 
     Route::get('/estimates/leasing/create', function (Request $request) {
         $user = $request->user();
-        $profile = $user->profile;
 
         return Inertia::render('Estimates/Leasing/Create', [
             'user' => $user,
-            'profile' => $profile,
         ]);
     })->name('estimates.leasing.create');
 
     Route::get('/estimates/leasing/{sheet}/edit', function (Request $request, $sheet) {
         $user = $request->user();
-        $profile = $user->profile;
         $vehicleLeaseSheet = $user->vehicleLeaseSheets()->findOrFail($sheet);
 
         return Inertia::render('Estimates/Leasing/Edit', [
             'user' => $user,
-            'profile' => $profile,
             'sheet' => $vehicleLeaseSheet,
         ]);
     })->name('estimates.leasing.edit');
@@ -131,11 +114,9 @@ Route::middleware('auth')->group(function () {
     // Coming soon route
     Route::get('/coming-soon', function (Request $request) {
         $user = $request->user();
-        $profile = $user->profile;
 
         return Inertia::render('ComingSoon', [
             'user' => $user,
-            'profile' => $profile,
         ]);
     })->name('coming-soon');
 });

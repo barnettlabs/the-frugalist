@@ -2,62 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Http\RedirectResponse;
+use App\Models\Profile;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\Http\JsonResponse;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
-    public function edit(Request $request): Response
+    public function show(Request $request): JsonResponse
     {
-        return Inertia::render('Profile/Edit', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-            'status' => session('status'),
-        ]);
-    }
+        $profile = $request->user()->profile;
 
-    /**
-     * Update the user's profile information.
-     */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if (!$profile) {
+            return response()->json(['message' => 'Profile not found'], 404);
         }
 
-        $request->user()->save();
-
-        return Redirect::route('profile.edit');
+        return response()->json($profile);
     }
 
-    /**
-     * Delete the user's account.
-     */
-    public function destroy(Request $request): RedirectResponse
+    public function update(Request $request): JsonResponse
     {
         $request->validate([
-            'password' => ['required', 'current_password'],
+            'username' => 'nullable|string|max:255|unique:profiles,username,' . $request->user()->id . ',user_id',
+            'avatar_url' => 'nullable|url|max:255',
+            'website' => 'nullable|url|max:255',
+            'first_name' => 'nullable|string|max:255',
+            'last_name' => 'nullable|string|max:255',
         ]);
 
-        $user = $request->user();
+        $profile = $request->user()->profile;
 
-        Auth::logout();
+        if (!$profile) {
+            $profile = new Profile();
+            $profile->user_id = $request->user()->id;
+        }
 
-        $user->delete();
+        $profile->fill($request->only([
+            'username',
+            'avatar_url',
+            'website',
+            'first_name',
+            'last_name',
+        ]));
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $profile->save();
 
-        return Redirect::to('/');
+        return response()->json($profile);
     }
 }

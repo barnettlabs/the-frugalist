@@ -76,11 +76,11 @@ const fullName = computed(() => {
                         >
                             <span class="sr-only">SneakySalesman by JayTech LLC</span>
 
-                            <img
+                            <!-- <img
                                 class="h-8 w-auto"
                                 src="https://tailwindui.com/img/logos/mark.svg?color=gray&shade=200"
                                 alt=""
-                            />
+                            /> -->
 
                             <div class="flex flex-col">
                                 <span
@@ -237,11 +237,11 @@ const fullName = computed(() => {
                                 <div class="pb-2 pt-3">
                                     <div class="flex items-center justify-between px-4">
                                         <div>
-                                            <img
+                                            <!-- <img
                                                 class="h-8 w-auto"
                                                 src="https://tailwindui.com/img/logos/mark.svg?color=cyan&shade=600"
                                                 alt="Your Company"
-                                            />
+                                            /> -->
                                         </div>
                                         <div class="-mr-2">
                                             <PopoverButton

@@ -178,224 +178,177 @@ const fullName = computed(() => {
                     </div>
                 </div>
 
-                <!-- Main Apps Grid -->
+                <!-- Main Dashboard Content -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- Left column - Apps -->
+                    <!-- Main Content Area -->
                     <div class="lg:col-span-2">
-                        <div class="mb-6">
-                            <h2 class="text-2xl font-bold text-gray-900 mb-2">
-                                Your Applications
-                            </h2>
-                            <p class="text-gray-600">
-                                Access your tools and manage your vehicle
-                                calculations
-                            </p>
-                        </div>
-
-                        <!-- Futuristic Apps Grid -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div
-                                v-for="(action, actionIdx) in actions"
-                                :key="action.name"
-                                class="group relative"
-                            >
-                                <Link :href="action.href">
-                                    <div
-                                        class="futuristic-card p-6 cursor-pointer transition-all duration-150 group-hover:neon-glow"
-                                    >
-                                        <!-- Icon Section -->
-                                        <div
-                                            class="flex items-center justify-between mb-4"
-                                        >
-                                            <div
-                                                class="p-3 rounded-xl"
-                                                :class="[action.iconBackground]"
-                                            >
-                                                <component
-                                                    :is="action.icon"
-                                                    class="h-8 w-8"
-                                                    :class="[
-                                                        action.iconForeground,
-                                                    ]"
-                                                    aria-hidden="true"
-                                                />
+                        <!-- Quick Actions -->
+                        <div class="mb-8">
+                            <div class="mb-6">
+                                <h2 class="text-2xl font-bold text-gray-900 mb-2">Quick Actions</h2>
+                                <p class="text-gray-600">Start your calculation or access frequently used tools</p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <Link href="/estimates/financing/create" class="block">
+                                    <div class="futuristic-card p-6 cursor-pointer transition-all duration-150 hover:neon-glow group">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="p-3 rounded-xl bg-gradient-to-br from-primary/10 to-primary/20">
+                                                <component :is="BanknotesIcon" class="h-8 w-8 text-primary" />
                                             </div>
-                                            <div
-                                                class="opacity-50 group-hover:opacity-100 transition-opacity"
-                                            >
-                                                <svg
-                                                    class="w-6 h-6 text-gray-400"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M13 7l5 5m0 0l-5 5m5-5H6"
-                                                    ></path>
+                                            <div class="opacity-50 group-hover:opacity-100 transition-opacity">
+                                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                                                 </svg>
                                             </div>
                                         </div>
-
-                                        <!-- Content -->
-                                        <h3
-                                            class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors"
-                                        >
-                                            {{ action.name }}
-                                        </h3>
-                                        <p
-                                            class="text-gray-600 text-sm leading-relaxed"
-                                        >
-                                            {{ action.description }}
-                                        </p>
-
-                                        <!-- Status indicator -->
-                                        <div
-                                            class="mt-4 flex items-center text-xs"
-                                        >
-                                            <div
-                                                class="w-2 h-2 bg-success rounded-full mr-2 animate-pulse"
-                                            ></div>
-                                            <span class="text-gray-500">{{
-                                                action.href.includes(
-                                                    "coming-soon",
-                                                )
-                                                    ? "Coming Soon"
-                                                    : "Available"
-                                            }}</span>
+                                        <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">New Finance Calculator</h3>
+                                        <p class="text-gray-600 text-sm">Start a new vehicle financing calculation</p>
+                                    </div>
+                                </Link>
+                                <Link href="/estimates/leasing/create" class="block">
+                                    <div class="futuristic-card p-6 cursor-pointer transition-all duration-150 hover:neon-glow group">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="p-3 rounded-xl bg-gradient-to-br from-secondary/10 to-secondary/20">
+                                                <component :is="CurrencyDollarIcon" class="h-8 w-8 text-secondary" />
+                                            </div>
+                                            <div class="opacity-50 group-hover:opacity-100 transition-opacity">
+                                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                                </svg>
+                                            </div>
                                         </div>
+                                        <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-secondary transition-colors">New Lease Calculator</h3>
+                                        <p class="text-gray-600 text-sm">Start a new vehicle leasing calculation</p>
                                     </div>
                                 </Link>
                             </div>
                         </div>
+
+                        <!-- Recent Calculations -->
+                        <div class="mb-8">
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-gray-900">Recent Calculations</h2>
+                                    <p class="text-gray-600">Your latest finance and lease estimates</p>
+                                </div>
+                                <Link href="/estimates/financing" class="text-primary hover:text-primary-shade-1 text-sm font-medium">
+                                    View All →
+                                </Link>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div v-if="vehicleFinanceSheets?.length > 0" v-for="sheet in vehicleFinanceSheets.slice(0, 2)" :key="sheet.id" class="futuristic-card p-6">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="p-2 rounded-lg bg-primary/10">
+                                            <component :is="BanknotesIcon" class="h-5 w-5 text-primary" />
+                                        </div>
+                                        <span class="text-xs text-gray-500">Finance</span>
+                                    </div>
+                                    <h3 class="font-bold text-gray-900 mb-2">{{ sheet.vehicle_year }} {{ sheet.vehicle_make }} {{ sheet.vehicle_model }}</h3>
+                                    <p class="text-gray-600 text-sm mb-3">${{ sheet.vehicle_price?.toLocaleString() }} • {{ sheet.loan_term_months }} months</p>
+                                    <Link :href="`/estimates/financing/${sheet.id}/edit`" class="text-primary hover:text-primary-shade-1 text-sm font-medium">
+                                        Edit Calculation →
+                                    </Link>
+                                </div>
+                                <div v-if="vehicleLeaseSheets?.length > 0" v-for="sheet in vehicleLeaseSheets.slice(0, 2)" :key="sheet.id" class="futuristic-card p-6">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="p-2 rounded-lg bg-secondary/10">
+                                            <component :is="CurrencyDollarIcon" class="h-5 w-5 text-secondary" />
+                                        </div>
+                                        <span class="text-xs text-gray-500">Lease</span>
+                                    </div>
+                                    <h3 class="font-bold text-gray-900 mb-2">{{ sheet.vehicle_year }} {{ sheet.vehicle_make }} {{ sheet.vehicle_model }}</h3>
+                                    <p class="text-gray-600 text-sm mb-3">${{ sheet.vehicle_price?.toLocaleString() }} • {{ sheet.lease_term_months }} months</p>
+                                    <Link :href="`/estimates/leasing/${sheet.id}/edit`" class="text-secondary hover:text-secondary-shade-1 text-sm font-medium">
+                                        Edit Calculation →
+                                    </Link>
+                                </div>
+                                <div v-if="(!vehicleFinanceSheets?.length && !vehicleLeaseSheets?.length)" class="col-span-2 futuristic-card p-8 text-center">
+                                    <div class="p-4 rounded-xl bg-gray-100 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-gray-900 mb-2">No calculations yet</h3>
+                                    <p class="text-gray-600 mb-4">Start your first vehicle calculation to see your estimates here</p>
+                                    <Link href="/estimates/financing/create" class="bg-primary hover:bg-primary-shade-1 text-white px-6 py-2 rounded-lg font-medium transition-all duration-150">
+                                        Create First Calculation
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Right column - Information Panels -->
+                    <!-- Right Sidebar -->
                     <div class="space-y-6">
-                        <!-- System Status -->
+                        <!-- Recent Activity -->
                         <div class="futuristic-card p-6">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-lg font-bold text-gray-900">
-                                    System Status
-                                </h3>
-                                <div
-                                    class="w-3 h-3 bg-success rounded-full animate-pulse"
-                                ></div>
-                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Activity</h3>
                             <div class="space-y-3">
-                                <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-600"
-                                        >API Services</span
-                                    >
-                                    <span
-                                        class="text-xs px-2 py-1 bg-success/10 text-success rounded-full"
-                                        >Operational</span
-                                    >
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-2 h-2 bg-primary rounded-full mt-2"></div>
+                                    <div>
+                                        <p class="text-sm text-gray-900 font-medium">Finance calculation</p>
+                                        <p class="text-xs text-gray-500">2 minutes ago</p>
+                                    </div>
                                 </div>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-600"
-                                        >Database</span
-                                    >
-                                    <span
-                                        class="text-xs px-2 py-1 bg-success/10 text-success rounded-full"
-                                        >Healthy</span
-                                    >
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-2 h-2 bg-secondary rounded-full mt-2"></div>
+                                    <div>
+                                        <p class="text-sm text-gray-900 font-medium">Lease estimate updated</p>
+                                        <p class="text-xs text-gray-500">1 hour ago</p>
+                                    </div>
                                 </div>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-600"
-                                        >Cache</span
-                                    >
-                                    <span
-                                        class="text-xs px-2 py-1 bg-success/10 text-success rounded-full"
-                                        >Active</span
-                                    >
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-2 h-2 bg-info rounded-full mt-2"></div>
+                                    <div>
+                                        <p class="text-sm text-gray-900 font-medium">Profile updated</p>
+                                        <p class="text-xs text-gray-500">3 hours ago</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Quick Actions -->
+                        <!-- Quick Stats -->
                         <div class="futuristic-card p-6">
-                            <h3 class="text-lg font-bold text-gray-900 mb-4">
-                                Quick Actions
-                            </h3>
-                            <div class="space-y-3">
-                                <Link
-                                    href="/estimates/financing/create"
-                                    class="block"
-                                >
-                                    <button
-                                        class="w-full text-left p-3 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors group"
-                                    >
-                                        <div class="flex items-center">
-                                            <div
-                                                class="w-2 h-2 bg-primary rounded-full mr-3"
-                                            ></div>
-                                            <span
-                                                class="text-sm font-medium group-hover:text-primary"
-                                                >New Finance Calculator</span
-                                            >
-                                        </div>
-                                    </button>
-                                </Link>
-                                <Link
-                                    href="/estimates/leasing/create"
-                                    class="block"
-                                >
-                                    <button
-                                        class="w-full text-left p-3 rounded-lg bg-secondary/5 hover:bg-secondary/10 transition-colors group"
-                                    >
-                                        <div class="flex items-center">
-                                            <div
-                                                class="w-2 h-2 bg-secondary rounded-full mr-3"
-                                            ></div>
-                                            <span
-                                                class="text-sm font-medium group-hover:text-secondary"
-                                                >New Lease Calculator</span
-                                            >
-                                        </div>
-                                    </button>
-                                </Link>
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">Overview</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Total Calculations</span>
+                                    <span class="font-bold text-gray-900">{{ (vehicleFinanceSheets?.length || 0) + (vehicleLeaseSheets?.length || 0) }}</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Finance Sheets</span>
+                                    <span class="font-bold text-primary">{{ vehicleFinanceSheets?.length || 0 }}</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Lease Sheets</span>
+                                    <span class="font-bold text-secondary">{{ vehicleLeaseSheets?.length || 0 }}</span>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Coming Soon Features -->
+                        <!-- Quick Links -->
                         <div class="futuristic-card p-6">
-                            <h3 class="text-lg font-bold text-gray-900 mb-4">
-                                Coming Soon
-                            </h3>
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">Quick Links</h3>
                             <div class="space-y-3">
-                                <div
-                                    class="flex items-center p-3 rounded-lg bg-gray-50"
-                                >
-                                    <div
-                                        class="w-2 h-2 bg-warning rounded-full mr-3 animate-pulse"
-                                    ></div>
-                                    <span class="text-sm text-gray-600"
-                                        >Dealer Reviews</span
-                                    >
-                                </div>
-                                <div
-                                    class="flex items-center p-3 rounded-lg bg-gray-50"
-                                >
-                                    <div
-                                        class="w-2 h-2 bg-warning rounded-full mr-3 animate-pulse"
-                                    ></div>
-                                    <span class="text-sm text-gray-600"
-                                        >Vehicle Finder</span
-                                    >
-                                </div>
-                                <div
-                                    class="flex items-center p-3 rounded-lg bg-gray-50"
-                                >
-                                    <div
-                                        class="w-2 h-2 bg-warning rounded-full mr-3 animate-pulse"
-                                    ></div>
-                                    <span class="text-sm text-gray-600"
-                                        >Mobile App</span
-                                    >
-                                </div>
+                                <Link href="/estimates/financing" class="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                                    <div class="flex items-center">
+                                        <component :is="BanknotesIcon" class="h-5 w-5 text-primary mr-3" />
+                                        <span class="text-sm font-medium">All Finance Estimates</span>
+                                    </div>
+                                </Link>
+                                <Link href="/estimates/leasing" class="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                                    <div class="flex items-center">
+                                        <component :is="CurrencyDollarIcon" class="h-5 w-5 text-secondary mr-3" />
+                                        <span class="text-sm font-medium">All Lease Estimates</span>
+                                    </div>
+                                </Link>
+                                <Link href="/profile" class="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                                    <div class="flex items-center">
+                                        <component :is="UserCircleIcon" class="h-5 w-5 text-info mr-3" />
+                                        <span class="text-sm font-medium">Profile Settings</span>
+                                    </div>
+                                </Link>
                             </div>
                         </div>
                     </div>

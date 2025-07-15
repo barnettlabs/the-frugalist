@@ -102,7 +102,7 @@ const fullName = computed(() => {
                                 <span
                                     class="text-white opacity-80 ml-4 hidden lg:inline-block text-xs font-medium"
                                 >
-                                    Find your best offer
+                                    Your personal sales renegade
                                 </span>
 
                                 <span

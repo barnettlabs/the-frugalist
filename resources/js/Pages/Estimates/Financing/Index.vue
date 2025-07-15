@@ -43,7 +43,7 @@ onMounted(() => {
     <Head title="Finance Estimates" />
 
     <AuthenticatedLayout :user="user" :profile="profile">
-        <main class="-mt-24 pb-8 flex-1">
+        <main class="-mt-16 pb-8 flex-1">
             <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
                 <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
                     <div class="grid grid-cols-1 gap-2 lg:col-span-2">

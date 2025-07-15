@@ -20,33 +20,46 @@
 
 @layer base {
 	:root {
-		--color-primary: #0d6efd;
+		/* Futuristic color palette inspired by modern design */
+		--color-primary: #6366f1;
 
-		/* primary colors generated  at https://coolors.co/0d6efd  */
+		--color-primary-shade-1: #5b5df1;
+		--color-primary-shade-2: #5348e8;
+		--color-primary-shade-3: #4b38df;
+		--color-primary-shade-4: #4338ca;
+		--color-primary-shade-5: #3730a3;
+		--color-primary-shade-6: #312e81;
 
-		--color-primary-shade-1: #0263f4;
-		--color-primary-shade-2: #025be1;
-		--color-primary-shade-3: #0254ce;
-		--color-primary-shade-4: #024cbc;
-		--color-primary-shade-5: #0245a9;
-		--color-primary-shade-6: #023d96;
+		--color-primary-tint-1: #7477f2;
+		--color-primary-tint-2: #8587f3;
+		--color-primary-tint-3: #9698f4;
+		--color-primary-tint-4: #a7a9f5;
+		--color-primary-tint-5: #b8baf6;
+		--color-primary-tint-6: #c9cbf7;
 
-		--color-primary-tint-1: #1e77fd;
-		--color-primary-tint-2: #2f82fd;
-		--color-primary-tint-3: #418cfd;
-		--color-primary-tint-4: #5296fd;
-		--color-primary-tint-5: #63a1fd;
-		--color-primary-tint-6: #75abfe;
-
-		--color-secondary: #0dfc6d;
-		--color-success: #45bd62;
-		--color-info: #216fdb;
-		--color-warning: #f7b928;
-		--color-danger: #e41e3f;
+		--color-secondary: #8b5cf6;
+		--color-success: #10b981;
+		--color-info: #06b6d4;
+		--color-warning: #f59e0b;
+		--color-danger: #ef4444;
 		--color-light: #ffffff;
-		--color-dark: #050505;
+		--color-dark: #0f172a;
+
+		/* Gradient variables for futuristic effects */
+		--gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		--gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+		--gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+		--gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
 
 		--screen-height: 100vh;
+	}
+
+	/* Dark theme support */
+	@media (prefers-color-scheme: dark) {
+		:root {
+			--color-light: #0f172a;
+			--color-dark: #ffffff;
+		}
 	}
 }
 
@@ -63,6 +76,59 @@
 
 	.loading-spinner__path {
 		fill: white;
+	}
+
+	/* Futuristic glass morphism effects */
+	.glass {
+		background: rgba(255, 255, 255, 0.1);
+		backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+	}
+
+	.glass-dark {
+		background: rgba(15, 23, 42, 0.8);
+		backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	/* Gradient backgrounds */
+	.bg-gradient-primary {
+		background: var(--gradient-primary);
+	}
+
+	.bg-gradient-secondary {
+		background: var(--gradient-secondary);
+	}
+
+	.bg-gradient-dark {
+		background: var(--gradient-dark);
+	}
+
+	/* Animated gradient background */
+	.bg-animated-gradient {
+		background: linear-gradient(-45deg, #6366f1, #8b5cf6, #06b6d4, #10b981);
+		background-size: 400% 400%;
+		animation: gradientShift 30s ease infinite;
+	}
+
+	@keyframes gradientShift {
+		0% { background-position: 0% 50%; }
+		50% { background-position: 100% 50%; }
+		100% { background-position: 0% 50%; }
+	}
+
+	/* Neon glow effects */
+	.neon-glow {
+		box-shadow: 0 0 8px rgba(99, 102, 241, 0.5), 0 0 16px rgba(99, 102, 241, 0.3);
+	}
+
+	/* Card styles */
+	.futuristic-card {
+		background: rgba(255, 255, 255, 0.05);
+		backdrop-filter: blur(20px);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 16px;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 	}
 
 	.btn {
@@ -201,3 +267,7 @@ div#__nuxt {
 	@apply focus:ring-0 border-0 pl-0 bg-transparent !important;
 }
 /* END DATE PICKER OVERRIDES */
+
+#app {
+    @apply min-h-screen flex flex-col;
+}

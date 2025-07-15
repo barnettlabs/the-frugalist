@@ -1,6 +1,6 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { Link, router } from '@inertiajs/vue3'
+import { ref, computed } from "vue";
+import { Link, router } from "@inertiajs/vue3";
 import {
     Menu,
     MenuButton,
@@ -12,54 +12,67 @@ import {
     PopoverPanel,
     TransitionChild,
     TransitionRoot,
-} from '@headlessui/vue'
+} from "@headlessui/vue";
 import {
     Bars3Icon,
     XMarkIcon,
     PhoneIcon,
     EnvelopeIcon,
     UserIcon,
-} from '@heroicons/vue/24/outline'
-import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
+} from "@heroicons/vue/24/outline";
+import { MagnifyingGlassIcon } from "@heroicons/vue/20/solid";
 
 const props = defineProps({
     user: Object,
-})
+});
 
 const navigation = computed(() => [
-    { name: 'Dashboard', href: '/dashboard', current: route().current('dashboard') },
     {
-        name: 'Financing',
-        href: '/estimates/financing',
-        current: route().current('estimates.financing'),
+        name: "Dashboard",
+        href: "/dashboard",
+        current: route().current("dashboard"),
     },
     {
-        name: 'Leasing',
-        href: '/estimates/leasing',
-        current: route().current('estimates.leasing'),
+        name: "Financing",
+        href: "/estimates/financing",
+        current: route().current("estimates.financing"),
     },
-])
+    {
+        name: "Leasing",
+        href: "/estimates/leasing",
+        current: route().current("estimates.leasing"),
+    },
+]);
 
 const userNavigation = ref([
-    { name: 'Profile', href: '/profile' },
+    { name: "Profile", href: "/profile" },
     {
-        name: 'Sign out',
-        onClick: () => router.post('/logout'),
+        name: "Sign out",
+        onClick: () => router.post("/logout"),
     },
-])
+]);
 
 const fullName = computed(() => {
-    return `${props.user?.first_name ?? ''} ${props.user?.last_name ?? ''}`.trim()
-})
+    return `${props.user?.first_name ?? ""} ${props.user?.last_name ?? ""}`.trim();
+});
 </script>
 
 <template>
-    <div class="min-h-full flex flex-col">
+    <div class="flex-1 flex flex-col">
         <Popover
             as="header"
-            class="bg-gradient-to-br from-primary-shade-5 to-primary-tint-1 pb-24"
+            class="bg-animated-gradient pb-24 relative overflow-hidden"
             v-slot="{ open }"
         >
+            <!-- Floating geometric shapes for visual interest -->
+            <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                <div
+                    class="absolute -top-4 -right-4 w-72 h-72 bg-white opacity-5 rounded-full"
+                ></div>
+                <div
+                    class="absolute top-20 -left-10 w-48 h-48 bg-white opacity-10 rounded-full"
+                ></div>
+            </div>
             <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
                 <div
                     class="relative flex items-center justify-center py-5 lg:justify-between"
@@ -70,7 +83,9 @@ const fullName = computed(() => {
                             href="/dashboard"
                             class="flex flex-row items-center"
                         >
-                            <span class="sr-only">SneakySalesman by JayTech LLC</span>
+                            <span class="sr-only"
+                                >SneakySalesman by JayTech LLC</span
+                            >
 
                             <!-- <img
                                 class="h-8 w-auto"
@@ -80,18 +95,19 @@ const fullName = computed(() => {
 
                             <div class="flex flex-col">
                                 <span
-                                    class="text-gray-200 ml-4 hidden lg:inline-block"
-                                    style="wordspacing: -2px"
+                                    class="text-white font-bold ml-4 hidden lg:inline-block"
                                 >
                                     Sneaky Salesman
                                 </span>
                                 <span
-                                    class="text-white opacity-50 ml-4 hidden lg:inline-block text-xs"
+                                    class="text-white opacity-80 ml-4 hidden lg:inline-block text-xs font-medium"
                                 >
                                     Find your best offer
                                 </span>
 
-                                <span class="text-gray-200 ml-3 text-sm lg:hidden text-wrap">
+                                <span
+                                    class="text-white font-bold ml-3 text-sm lg:hidden text-wrap"
+                                >
                                     Sneaky
                                     <br />
                                     Salesman
@@ -101,23 +117,35 @@ const fullName = computed(() => {
                     </div>
 
                     <!-- Right section on desktop -->
-                    <div class="hidden lg:ml-4 lg:flex lg:items-center lg:pr-0.5">
+                    <div
+                        class="hidden lg:ml-4 lg:flex lg:items-center lg:pr-0.5"
+                    >
                         <!-- Profile dropdown -->
-                        <Menu
-                            as="div"
-                            class="relative ml-4 flex-shrink-0"
-                        >
+                        <Menu as="div" class="relative ml-4 flex-shrink-0">
                             <div>
                                 <MenuButton
                                     class="relative flex rounded-full text-sm ring-2 ring-white ring-opacity-50 focus:outline-none hover:ring-opacity-100"
                                 >
                                     <span class="absolute -inset-1.5" />
                                     <span class="sr-only">Open user menu</span>
-                                    <img
-                                        class="h-8 w-8 rounded-full"
-                                        :src="user?.avatar_url"
-                                        alt=""
-                                    />
+                                    <div
+                                        class="h-8 w-8 rounded-full overflow-hidden bg-white/20 flex items-center justify-center"
+                                    >
+                                        <img
+                                            v-if="user?.avatar_url"
+                                            class="h-full w-full object-cover"
+                                            :src="user?.avatar_url"
+                                            :alt="fullName"
+                                            @error="
+                                                $event.target.style.display =
+                                                    'none'
+                                            "
+                                        />
+                                        <UserIcon
+                                            v-else
+                                            class="h-5 w-5 text-white"
+                                        />
+                                    </div>
                                 </MenuButton>
                             </div>
 
@@ -186,7 +214,7 @@ const fullName = computed(() => {
                                         item.current
                                             ? 'bg-white bg-opacity-20 text-white'
                                             : 'text-white hover:bg-white hover:bg-opacity-10',
-                                        'rounded-md px-3 py-2 text-sm font-medium'
+                                        'rounded-md px-3 py-2 text-sm font-medium',
                                     ]"
                                 >
                                     {{ item.name }}
@@ -197,10 +225,7 @@ const fullName = computed(() => {
                 </div>
             </div>
 
-            <TransitionRoot
-                as="template"
-                :show="open"
-            >
+            <TransitionRoot as="template" :show="open">
                 <div class="lg:hidden">
                     <TransitionChild
                         as="template"
@@ -211,7 +236,9 @@ const fullName = computed(() => {
                         leave-from="opacity-100"
                         leave-to="opacity-0"
                     >
-                        <PopoverOverlay class="fixed inset-0 z-20 bg-black bg-opacity-25" />
+                        <PopoverOverlay
+                            class="fixed inset-0 z-20 bg-black bg-opacity-25"
+                        />
                     </TransitionChild>
 
                     <TransitionChild
@@ -231,7 +258,9 @@ const fullName = computed(() => {
                                 class="divide-y divide-gray-200 rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5"
                             >
                                 <div class="pb-2 pt-3">
-                                    <div class="flex items-center justify-between px-4">
+                                    <div
+                                        class="flex items-center justify-between px-4"
+                                    >
                                         <div>
                                             <!-- <img
                                                 class="h-8 w-auto"
@@ -243,8 +272,12 @@ const fullName = computed(() => {
                                             <PopoverButton
                                                 class="relative inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
                                             >
-                                                <span class="absolute -inset-0.5" />
-                                                <span class="sr-only">Close menu</span>
+                                                <span
+                                                    class="absolute -inset-0.5"
+                                                />
+                                                <span class="sr-only"
+                                                    >Close menu</span
+                                                >
                                                 <XMarkIcon
                                                     class="h-6 w-6"
                                                     aria-hidden="true"
@@ -266,18 +299,35 @@ const fullName = computed(() => {
                                 <div class="pb-2 pt-4">
                                     <div class="flex items-center px-5">
                                         <div class="flex-shrink-0">
-                                            <img
-                                                class="h-10 w-10 rounded-full"
-                                                :src="user?.avatar_url"
-                                                alt=""
-                                            />
+                                            <div
+                                                class="h-10 w-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center"
+                                            >
+                                                <img
+                                                    v-if="user?.avatar_url"
+                                                    class="h-full w-full object-cover"
+                                                    :src="user?.avatar_url"
+                                                    :alt="fullName"
+                                                    @error="
+                                                        $event.target.style.display =
+                                                            'none'
+                                                    "
+                                                />
+                                                <UserIcon
+                                                    v-else
+                                                    class="h-6 w-6 text-gray-500"
+                                                />
+                                            </div>
                                         </div>
                                         <div class="ml-3 min-w-0 flex-1">
-                                            <div class="truncate text-base font-medium text-gray-800">
-                                                {{ fullName ?? '-' }}
+                                            <div
+                                                class="truncate text-base font-medium text-gray-800"
+                                            >
+                                                {{ fullName ?? "-" }}
                                             </div>
-                                            <div class="truncate text-sm font-medium text-gray-500">
-                                                {{ user?.email ?? '-' }}
+                                            <div
+                                                class="truncate text-sm font-medium text-gray-500"
+                                            >
+                                                {{ user?.email ?? "-" }}
                                             </div>
                                         </div>
                                     </div>
@@ -301,7 +351,9 @@ const fullName = computed(() => {
             </TransitionRoot>
         </Popover>
 
-        <slot></slot>
+        <div class="z-10 flex-1">
+            <slot />
+        </div>
 
         <footer>
             <div
@@ -321,10 +373,7 @@ const fullName = computed(() => {
                         class="flex text-gray-400 hover:text-gray-500"
                     >
                         <span class="">jason.barnett@jaytech.io</span>
-                        <EnvelopeIcon
-                            class="h-6 w-6 ml-3"
-                            aria-hidden="true"
-                        />
+                        <EnvelopeIcon class="h-6 w-6 ml-3" aria-hidden="true" />
                     </Link>
                 </div>
             </div>

@@ -53,6 +53,20 @@ export default {
             variants: ["hover", "focus", "active"],
         },
         {
+            pattern: /text-(primary|secondary|success|info|warning|danger|light|dark)/,
+            variants: ["hover", "focus", "active"],
+        },
+        {
+            pattern: /border-(primary|secondary|success|info|warning|danger|light|dark)/,
+            variants: ["hover", "focus", "active"],
+        },
+        {
+            pattern: /from-(primary|secondary|success|info|warning|danger)\/\d+/,
+        },
+        {
+            pattern: /to-(primary|secondary|success|info|warning|danger)\/\d+/,
+        },
+        {
             pattern: /rounded-(.*)/,
         },
     ],

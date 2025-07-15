@@ -12,7 +12,7 @@ const props = defineProps({
     <Head title="Coming Soon" />
 
     <AuthenticatedLayout :user="user" :profile="profile">
-        <main class="-mt-24 pb-8 flex-1">
+        <main class="-mt-16 pb-8 flex-1">
             <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
                 <div class="flex items-center justify-center min-h-[60vh]">
                     <div class="text-center">

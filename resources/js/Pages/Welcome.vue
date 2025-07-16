@@ -67,9 +67,9 @@ const pipelineApps: ActionItem[] = [
 <template>
     <Head title="Welcome to Sneaky Salesman" />
 
-    <div class="min-h-screen bg-gray-100">
+    <div class="min-h-screen bg-gray-100 dotted-background-dark">
         <!-- Header -->
-        <header class="bg-animated-gradient relative overflow-hidden">
+        <header class="bg-animated-gradient dotted-background-light relative overflow-hidden">
             <!-- Floating geometric shapes -->
             <div class="absolute inset-0 overflow-hidden pointer-events-none">
                 <div class="absolute -top-4 -right-4 w-72 h-72 bg-white opacity-5 rounded-full"></div>
@@ -259,7 +259,7 @@ const pipelineApps: ActionItem[] = [
         </main>
 
         <!-- Footer -->
-        <footer class="bg-gray-900 text-white py-12">
+        <footer class="bg-gray-900 text-white py-12 relative dotted-background-light">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div>

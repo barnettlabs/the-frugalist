@@ -131,6 +131,42 @@
 		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 	}
 
+	/* Dotted background pattern - uses pseudo-element to overlay dots */
+	.dotted-background-light::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+		background-size: 20px 20px;
+		background-position: 0 0, 10px 10px;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	.dotted-background-dark::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-image: radial-gradient(circle, rgba(99, 102, 241, 0.12) 1px, transparent 1px);
+		background-size: 20px 20px;
+		background-position: 0 0, 10px 10px;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	/* Ensure content appears above dotted backgrounds */
+	.dotted-background-light > *,
+	.dotted-background-dark > * {
+		position: relative;
+		z-index: 1;
+	}
+
 	.btn {
 		/* @apply flex items-center justify-center rounded-full font-medium text-white shadow-sm relative;
 		@apply bg-primary hover:opacity-90;

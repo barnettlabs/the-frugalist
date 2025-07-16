@@ -4,7 +4,7 @@ import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <div class="min-h-screen bg-animated-gradient relative overflow-hidden flex items-center justify-center">
+    <div class="min-h-screen bg-animated-gradient dotted-background-light relative overflow-hidden flex items-center justify-center">
         <!-- Floating geometric shapes -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div class="absolute -top-4 -right-4 w-72 h-72 bg-white opacity-5 rounded-full"></div>

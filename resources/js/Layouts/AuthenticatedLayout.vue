@@ -69,7 +69,7 @@ const fullName = computed((): string => {
     <div class="flex-1 flex flex-col">
         <Popover
             as="header"
-            class="bg-animated-gradient pb-24 relative overflow-hidden"
+            class="bg-animated-gradient dotted-background-light pb-24 relative overflow-hidden"
             v-slot="{ open }"
         >
             <!-- Floating geometric shapes for visual interest -->
@@ -359,11 +359,11 @@ const fullName = computed((): string => {
             </TransitionRoot>
         </Popover>
 
-        <div class="z-10 flex-1">
+        <div class="z-10 flex-1 dotted-background-dark">
             <slot />
         </div>
 
-        <footer>
+        <footer class="relative dotted-background-dark">
             <div
                 class="py-8 border-t border-gray-200 mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8 sm:flex sm:items-center sm:justify-between"
             >

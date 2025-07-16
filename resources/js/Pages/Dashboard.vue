@@ -150,7 +150,7 @@ const fullName = computed((): string => {
                             <div class="absolute -top-4 -right-4 w-32 h-32 bg-primary/5 rounded-full"></div>
                             <div class="absolute bottom-0 -left-4 w-24 h-24 bg-secondary/5 rounded-full"></div>
                         </div>
-                        
+
                         <div class="relative">
                             <!-- Header Text -->
                             <div class="mb-6 text-center lg:text-left">
@@ -204,23 +204,6 @@ const fullName = computed((): string => {
                             </div>
                         </div>
 
-                        <!-- Stats Row -->
-                        <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
-                            <div
-                                v-for="stat in stats"
-                                :key="stat.label"
-                                class="bg-white/60 backdrop-blur-sm rounded-xl p-4 text-center border border-gray-200"
-                            >
-                                <div class="text-2xl font-bold text-gray-900">
-                                    {{ stat.value }}
-                                </div>
-                                <div
-                                    class="text-sm text-gray-600 uppercase tracking-wide"
-                                >
-                                    {{ stat.label }}
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -307,7 +290,7 @@ const fullName = computed((): string => {
 
                                             <!-- Status indicator -->
                                             <div class="flex items-center text-xs">
-                                                <div 
+                                                <div
                                                     class="w-2 h-2 rounded-full mr-2 animate-pulse"
                                                     :class="app.status === 'Available' ? 'bg-success' : 'bg-warning'"
                                                 ></div>

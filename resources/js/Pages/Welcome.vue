@@ -133,7 +133,7 @@ const pipelineApps: ActionItem[] = [
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
                         <Link
-                            :href="$page.props.auth.user ? '/dashboard' : route('register')"
+                            :href="$page.props.auth.user ? '/dashboard' : route('login')"
                             class="bg-white text-gray-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all duration-150 hover:neon-glow"
                         >
                             Explore Renegades
@@ -192,7 +192,7 @@ const pipelineApps: ActionItem[] = [
 
                                     <!-- Status indicator -->
                                     <div class="flex items-center text-xs">
-                                        <div 
+                                        <div
                                             class="w-2 h-2 rounded-full mr-2 animate-pulse"
                                             :class="action.status === 'Available' ? 'bg-success' : 'bg-warning'"
                                         ></div>
@@ -244,7 +244,7 @@ const pipelineApps: ActionItem[] = [
 
                                     <!-- Status indicator -->
                                     <div class="flex items-center text-xs">
-                                        <div 
+                                        <div
                                             class="w-2 h-2 rounded-full mr-2 animate-pulse"
                                             :class="app.status === 'Available' ? 'bg-success' : 'bg-warning'"
                                         ></div>

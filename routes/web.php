@@ -22,13 +22,28 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+Route::get('/', function (Request $request) {
+    $user = $request->user();
+    
+    if ($user) {
+        // User is authenticated, show dashboard
+        $vehicleFinanceSheets = $user->vehicleFinanceSheets()->latest()->get();
+        $vehicleLeaseSheets = $user->vehicleLeaseSheets()->latest()->get();
+
+        return Inertia::render('Dashboard', [
+            'user' => $user,
+            'vehicleFinanceSheets' => $vehicleFinanceSheets,
+            'vehicleLeaseSheets' => $vehicleLeaseSheets,
+        ]);
+    } else {
+        // User is not authenticated, show welcome page
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'laravelVersion' => Application::VERSION,
+            'phpVersion' => PHP_VERSION,
+        ]);
+    }
 });
 
 Route::get('/system-status', function (Request $request) {

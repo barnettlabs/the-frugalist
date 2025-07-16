@@ -49,21 +49,7 @@ interface UserNavigationItem {
 }
 
 const navigation = computed((): NavigationItem[] => [
-    {
-        name: "Dashboard",
-        href: "/dashboard",
-        current: route().current("dashboard"),
-    },
-    {
-        name: "Financing",
-        href: "/estimates/financing",
-        current: route().current("estimates.financing"),
-    },
-    {
-        name: "Leasing",
-        href: "/estimates/leasing",
-        current: route().current("estimates.leasing"),
-    },
+    // Navigation items removed - users access via dashboard/home page
 ]);
 
 const userNavigation = ref<UserNavigationItem[]>([
@@ -97,12 +83,12 @@ const fullName = computed((): string => {
             </div>
             <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
                 <div
-                    class="relative flex items-center justify-center py-5 lg:justify-between"
+                    class="relative flex items-center justify-center py-3 lg:justify-between"
                 >
                     <!-- Logo -->
                     <div class="absolute left-0 flex-shrink-0 lg:static">
                         <Link
-                            href="/dashboard"
+                            href="/"
                             class="flex flex-row items-center"
                         >
                             <span class="sr-only"
@@ -177,7 +163,7 @@ const fullName = computed((): string => {
                                 leave-to-class="transform opacity-0 scale-95"
                             >
                                 <MenuItems
-                                    class="absolute -right-2 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                    class="absolute -right-2 z-50 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                                 >
                                     <MenuItem
                                         v-for="item in userNavigation"
@@ -223,7 +209,7 @@ const fullName = computed((): string => {
                     </div>
                 </div>
                 <div
-                    class="hidden border-t border-white border-opacity-20 py-5 lg:block"
+                    class="hidden border- border-white border-opacity-20 py-5 lg:block"
                 >
                     <div class="grid grid-cols-3 items-center gap-8">
                         <div class="col-span-2">

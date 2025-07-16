@@ -105,7 +105,7 @@ const submit = () => {
 
             <div>
                 <PrimaryButton
-                    class="w-full bg-primary hover:bg-primary-shade-1 text-white py-3 rounded-lg font-medium transition-all duration-150 hover:neon-glow"
+                    class="w-full bg-primary hover:bg-primary-shade-1 text-white flex flex-row justify-center py-3 rounded-lg font-medium transition-all duration-150 hover:neon-glow"
                     :class="{ 'opacity-50 cursor-not-allowed': form.processing }"
                     :disabled="form.processing"
                 >

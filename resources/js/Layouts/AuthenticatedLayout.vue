@@ -82,7 +82,7 @@ const fullName = computed((): string => {
                     class="absolute top-20 -left-10 w-48 h-48 bg-white opacity-10 rounded-full"
                 ></div>
             </div>
-            <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+            <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8 z-10">
                 <div
                     class="relative flex items-center justify-center py-3 lg:justify-between"
                 >
@@ -356,7 +356,7 @@ const fullName = computed((): string => {
             </TransitionRoot>
         </Popover>
 
-        <div class="z-10 flex-1 dotted-background-dark">
+        <div class="flex-1 dotted-background-dark">
             <slot />
         </div>
 

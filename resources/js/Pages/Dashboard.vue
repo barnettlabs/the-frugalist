@@ -87,46 +87,6 @@ const renegadeApps: RenegadeApp[] = [
         iconBackground: "bg-gradient-to-br from-secondary/10 to-secondary/20",
         status: "Available"
     },
-    {
-        icon: MagnifyingGlassIcon,
-        name: "Finder Renegade",
-        description:
-            "AI-powered rebellion against overpriced vehicles. Get recommendations based on real market data.",
-        href: "/coming-soon",
-        iconForeground: "text-info",
-        iconBackground: "bg-gradient-to-br from-info/10 to-info/20",
-        status: "Coming Soon"
-    },
-    {
-        icon: BuildingStorefrontIcon,
-        name: "Dealer Intel Renegade",
-        description:
-            "Expose dealer tactics before they expose you. Real-time ratings and negotiation insights.",
-        href: "/coming-soon",
-        iconForeground: "text-warning",
-        iconBackground: "bg-gradient-to-br from-warning/10 to-warning/20",
-        status: "Coming Soon"
-    },
-    {
-        icon: UserCircleIcon,
-        name: "Sales Review Renegade",
-        description:
-            "Community-powered truth about sales professionals. Find trustworthy dealers and avoid sharks.",
-        href: "/coming-soon",
-        iconForeground: "text-danger",
-        iconBackground: "bg-gradient-to-br from-danger/10 to-danger/20",
-        status: "Coming Soon"
-    },
-    {
-        icon: PhoneIcon,
-        name: "Expert Support Renegade",
-        description:
-            "24/7 support from automotive finance rebels who fight for consumers.",
-        href: "/coming-soon",
-        iconForeground: "text-success",
-        iconBackground: "bg-gradient-to-br from-success/10 to-success/20",
-        status: "Coming Soon"
-    },
 ];
 
 const fullName = computed((): string => {

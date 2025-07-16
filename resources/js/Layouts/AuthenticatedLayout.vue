@@ -13,6 +13,7 @@ import {
     TransitionChild,
     TransitionRoot,
 } from "@headlessui/vue";
+import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import {
     Bars3Icon,
     XMarkIcon,
@@ -95,26 +96,22 @@ const fullName = computed((): string => {
                                 >SneakySalesman by JayTech LLC</span
                             >
 
-                            <!-- <img
-                                class="h-8 w-auto"
-                                src="https://tailwindui.com/img/logos/mark.svg?color=gray&shade=200"
-                                alt=""
-                            /> -->
+                            <ApplicationLogo variant="white" class="h-8 w-auto mr-2" />
 
                             <div class="flex flex-col">
                                 <span
-                                    class="text-white font-bold ml-4 hidden lg:inline-block"
+                                    class="text-white font-bold hidden lg:inline-block"
                                 >
                                     Sneaky Salesman
                                 </span>
                                 <span
-                                    class="text-white opacity-80 ml-4 hidden lg:inline-block text-xs font-medium"
+                                    class="text-white opacity-80 hidden lg:inline-block text-xs font-medium"
                                 >
                                     Your personal sales renegade
                                 </span>
 
                                 <span
-                                    class="text-white font-bold ml-3 text-sm lg:hidden text-wrap"
+                                    class="text-white font-bold text-sm lg:hidden text-wrap"
                                 >
                                     Sneaky
                                     <br />
@@ -126,10 +123,10 @@ const fullName = computed((): string => {
 
                     <!-- Right section on desktop -->
                     <div
-                        class="hidden lg:ml-4 lg:flex lg:items-center lg:pr-0.5"
+                        class="hidden lg:ml-4 lg:flex lg:items-center lg:pr-0.5 relative z-50"
                     >
                         <!-- Profile dropdown -->
-                        <Menu as="div" class="relative ml-4 flex-shrink-0">
+                        <Menu as="div" class="relative ml-4 flex-shrink-0 z-50">
                             <div>
                                 <MenuButton
                                     class="relative flex rounded-full text-sm ring-2 ring-white ring-opacity-50 focus:outline-none hover:ring-opacity-100"
@@ -163,7 +160,7 @@ const fullName = computed((): string => {
                                 leave-to-class="transform opacity-0 scale-95"
                             >
                                 <MenuItems
-                                    class="absolute -right-2 z-50 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                    class="absolute -right-2 z-[100] mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none profile-dropdown"
                                 >
                                     <MenuItem
                                         v-for="item in userNavigation"
@@ -363,26 +360,39 @@ const fullName = computed((): string => {
             <slot />
         </div>
 
-        <footer class="relative dotted-background-dark">
-            <div
-                class="py-8 border-t border-gray-200 mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8 sm:flex sm:items-center sm:justify-between"
-            >
-                <div class="text-center text-sm text-gray-500 sm:text-left">
-                    <span class="block sm:inline"
-                        >&copy; {{ new Date().getFullYear() }} JayTech LLC.
-                    </span>
-                    &nbsp;
-                    <span class="block sm:inline">All rights reserved.</span>
-                </div>
-
-                <div class="flex justify-center space-x-6 mt-4 sm:mt-0">
-                    <Link
-                        href="mailto:jason.barnett@jaytech.io"
-                        class="flex text-gray-400 hover:text-gray-500"
-                    >
-                        <span class="">jason.barnett@jaytech.io</span>
-                        <EnvelopeIcon class="h-6 w-6 ml-3" aria-hidden="true" />
-                    </Link>
+        <footer class="bg-gray-100 relative dotted-background py-12 border-t border-gray-200">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <ApplicationLogo variant="black" class="h-8 w-auto" />
+                            <h3 class="text-xl font-bold text-gray-900">Sneaky Salesman</h3>
+                        </div>
+                        <p class="text-gray-600">
+                            Empowering consumers with transparent financing tools and expert insights.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4 text-gray-900">Quick Links</h4>
+                        <ul class="space-y-2 text-gray-600">
+                            <li><Link href="/estimates/financing" class="hover:text-primary transition-colors">Finance Renegade</Link></li>
+                            <li><Link href="/estimates/leasing" class="hover:text-primary transition-colors">Lease Renegade</Link></li>
+                            <li><Link href="/renegade/price-drop" class="hover:text-primary transition-colors">Price Drop Renegade</Link></li>
+                            <li><Link href="/system-status" class="hover:text-primary transition-colors">System Status</Link></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4 text-gray-900">Contact</h4>
+                        <p class="text-gray-600">
+                            <Link href="mailto:jason.barnett@jaytech.io" class="hover:text-primary transition-colors flex items-center">
+                                <span class="">jason.barnett@jaytech.io</span>
+                                <EnvelopeIcon class="h-4 w-4 ml-2" aria-hidden="true" />
+                            </Link>
+                        </p>
+                        <p class="text-gray-500 mt-4 text-sm">
+                            &copy; {{ new Date().getFullYear() }} JayTech LLC. All rights reserved.
+                        </p>
+                    </div>
                 </div>
             </div>
         </footer>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import {
     BanknotesIcon,
     CurrencyDollarIcon,
@@ -79,13 +80,16 @@ const pipelineApps: ActionItem[] = [
             <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <!-- Navigation -->
                 <nav class="flex items-center justify-between py-6">
-                    <div class="flex flex-col items-start">
-                        <span class="text-2xl font-bold text-white neon-text">
-                            Sneaky Salesman
-                        </span>
-                        <span class="text-white/80 text-sm font-medium">
-                            Your personal sales renegade
-                        </span>
+                    <div class="flex items-center space-x-3">
+                        <ApplicationLogo variant="white" class="h-10 w-auto" />
+                        <div class="flex flex-col">
+                            <span class="text-2xl font-bold text-white neon-text">
+                                Sneaky Salesman
+                            </span>
+                            <span class="text-white/80 text-sm font-medium">
+                                Your personal sales renegade
+                            </span>
+                        </div>
                     </div>
 
                     <div v-if="canLogin" class="flex items-center space-x-4">
@@ -259,11 +263,14 @@ const pipelineApps: ActionItem[] = [
         </main>
 
         <!-- Footer -->
-        <footer class="bg-gray-900 text-white py-12 relative dotted-background-light">
+        <footer class="bg-gray-900 text-white py-12 relative dotted-background-dark">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div>
-                        <h3 class="text-xl font-bold mb-4 neon-text">Sneaky Salesman</h3>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <ApplicationLogo variant="white" class="h-8 w-auto" />
+                            <h3 class="text-xl font-bold neon-text">Sneaky Salesman</h3>
+                        </div>
                         <p class="text-gray-400">
                             Empowering consumers with transparent financing tools and expert insights.
                         </p>
@@ -273,8 +280,8 @@ const pipelineApps: ActionItem[] = [
                         <ul class="space-y-2 text-gray-400">
                             <li><Link href="/estimates/financing" class="hover:text-white transition-colors">Finance Renegade</Link></li>
                             <li><Link href="/estimates/leasing" class="hover:text-white transition-colors">Lease Renegade</Link></li>
+                            <li><Link href="/renegade/price-drop" class="hover:text-white transition-colors">Price Drop Renegade</Link></li>
                             <li><Link href="/system-status" class="hover:text-white transition-colors">System Status</Link></li>
-                            <li><Link href="/coming-soon" class="hover:text-white transition-colors">Expert Support</Link></li>
                         </ul>
                     </div>
                     <div>

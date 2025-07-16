@@ -18,7 +18,7 @@ import { Link } from '@inertiajs/vue3';
                 <Link href="/" class="inline-block">
                     <div class="flex flex-col items-center">
                         <div class="mb-4">
-                            <ApplicationLogo class="h-16 w-16 fill-current text-white" />
+                            <ApplicationLogo variant="white" class="h-16 w-auto" />
                         </div>
                         <h1 class="text-3xl font-bold text-white mb-2 neon-text">
                             Sneaky Salesman

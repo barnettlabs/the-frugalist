@@ -31,6 +31,18 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/system-status', function (Request $request) {
+    return Inertia::render('SystemStatus', [
+        'user' => $request->user(),
+    ]);
+})->name('system-status');
+
+Route::get('/renegade/price-drop', function (Request $request) {
+    return Inertia::render('Renegade/PriceDrop', [
+        'user' => $request->user(),
+    ]);
+})->name('renegade.price-drop');
+
 Route::get('/dashboard', function (Request $request) {
     $user = $request->user();
 

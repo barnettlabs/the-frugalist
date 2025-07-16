@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
 import {
     BanknotesIcon,
@@ -8,70 +8,58 @@ import {
     BuildingStorefrontIcon,
 } from '@heroicons/vue/24/outline';
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid';
+import type { Component } from 'vue';
 
-defineProps({
-    canLogin: {
-        type: Boolean,
-    },
-    canRegister: {
-        type: Boolean,
-    },
-});
+interface Props {
+    canLogin: boolean;
+    canRegister: boolean;
+}
 
-const actions = [
+defineProps<Props>();
+
+interface ActionItem {
+    icon: Component;
+    name: string;
+    description: string;
+    href: string;
+    iconForeground: string;
+    iconBackground: string;
+    status: string;
+}
+
+const actions: ActionItem[] = [
     {
         icon: BanknotesIcon,
-        name: "Purchase Calculator",
+        name: "Finance Renegade",
         description:
-            "Advanced financing calculations with real-time rates and comprehensive payment analysis.",
+            "Break traditional financing rules. Advanced calculations with real-time rates and comprehensive payment analysis to outsmart salespeople.",
         href: "/estimates/financing",
         iconForeground: "text-primary",
         iconBackground: "bg-gradient-to-br from-primary/10 to-primary/20",
+        status: "Available"
     },
     {
         icon: CurrencyDollarIcon,
-        name: "Lease Calculator",
+        name: "Lease Renegade",
         description:
-            "Smart leasing calculations with tax benefits and residual value optimization.",
+            "Master the lease game. Smart calculations with tax benefits and residual value optimization to maximize your advantage.",
         href: "/estimates/leasing",
         iconForeground: "text-secondary",
         iconBackground: "bg-gradient-to-br from-secondary/10 to-secondary/20",
+        status: "Available"
     },
+];
+
+const pipelineApps: ActionItem[] = [
     {
         icon: MagnifyingGlassIcon,
-        name: "Vehicle Finder AI",
+        name: "Price Drop Renegade",
         description:
-            "AI-powered vehicle recommendations based on your budget, preferences, and driving patterns.",
-        href: "/coming-soon",
-        iconForeground: "text-info",
-        iconBackground: "bg-gradient-to-br from-info/10 to-info/20",
-    },
-    {
-        icon: PhoneIcon,
-        name: "Expert Support",
-        description:
-            "24/7 support from automotive finance experts and certified advisors.",
-        href: "/coming-soon",
-        iconForeground: "text-success",
-        iconBackground: "bg-gradient-to-br from-success/10 to-success/20",
-    },
-    {
-        icon: BuildingStorefrontIcon,
-        name: "Dealer Intelligence",
-        description:
-            "Real-time dealer ratings, inventory tracking, and negotiation insights.",
-        href: "/coming-soon",
+            "Monitor product SKUs and get alerted when prices drop below your threshold. Set up intelligent price tracking to catch the best deals automatically.",
+        href: "/renegade/price-drop",
         iconForeground: "text-warning",
         iconBackground: "bg-gradient-to-br from-warning/10 to-warning/20",
-    },
-    {
-        icon: UserCircleIcon,
-        name: "Salesperson Reviews",
-        description:
-            "Community-driven reviews and ratings to find trustworthy sales professionals.",
-        href: "/coming-soon",
-        iconForeground: "text-danger",
-        iconBackground: "bg-gradient-to-br from-danger/10 to-danger/20",
+        status: "Coming Soon"
     },
 ];
 </script>
@@ -129,20 +117,26 @@ const actions = [
                 <!-- Hero Section -->
                 <div class="py-20 text-center">
                     <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">
-                        Smart Vehicle Finance
+                        Welcome to the
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300">
-                            Made Simple
+                            Renegade Suite
                         </span>
                     </h1>
+                    <div class="mb-6 p-6 bg-white/10 backdrop-blur-sm rounded-xl max-w-2xl mx-auto border border-white/20">
+                        <p class="text-lg text-white/90 mb-2 font-semibold">Renegade</p>
+                        <p class="text-sm text-white/80 italic">
+                            /ˈrenəˌɡād/ - Someone or something that goes against conventional beliefs or practices
+                        </p>
+                    </div>
                     <p class="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
-                        Get the best deals on vehicle financing and leasing with our advanced calculators and expert insights.
+                        Break free from traditional sales tactics. Our suite of renegade applications puts the power back in your hands, helping you exploit the sales game for your benefit.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
                         <Link
-                            :href="$page.props.auth.user ? '/estimates/financing/create' : route('register')"
+                            :href="$page.props.auth.user ? '/dashboard' : route('register')"
                             class="bg-white text-gray-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all duration-150 hover:neon-glow"
                         >
-                            Start Calculating
+                            Explore Renegades
                         </Link>
                         <Link
                             href="#applications"
@@ -161,13 +155,13 @@ const actions = [
                 <!-- Applications Section -->
                 <section id="applications" class="mb-16">
                     <div class="text-center mb-12">
-                        <h2 class="text-4xl font-bold text-gray-900 mb-4">Your Applications</h2>
+                        <h2 class="text-4xl font-bold text-gray-900 mb-4">The Renegade Arsenal</h2>
                         <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                            Access powerful tools and manage your vehicle calculations with our comprehensive suite of applications
+                            Powerful applications designed to flip the script on traditional sales tactics. Each renegade tool gives you the edge to negotiate like a pro.
                         </p>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                         <div v-for="action in actions" :key="action.name" class="group relative">
                             <Link :href="action.href">
                                 <div class="futuristic-card p-8 cursor-pointer transition-all duration-150 hover:neon-glow">
@@ -198,8 +192,11 @@ const actions = [
 
                                     <!-- Status indicator -->
                                     <div class="flex items-center text-xs">
-                                        <div class="w-2 h-2 bg-success rounded-full mr-2 animate-pulse"></div>
-                                        <span class="text-gray-500">{{ action.href.includes('coming-soon') ? 'Coming Soon' : 'Available' }}</span>
+                                        <div 
+                                            class="w-2 h-2 rounded-full mr-2 animate-pulse"
+                                            :class="action.status === 'Available' ? 'bg-success' : 'bg-warning'"
+                                        ></div>
+                                        <span class="text-gray-500">{{ action.status }}</span>
                                     </div>
                                 </div>
                             </Link>
@@ -207,69 +204,57 @@ const actions = [
                     </div>
                 </section>
 
-                <!-- Info Grid -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- System Status -->
-                    <div class="futuristic-card p-8">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-2xl font-bold text-gray-900">System Status</h3>
-                            <div class="w-4 h-4 bg-success rounded-full animate-pulse"></div>
-                        </div>
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-center">
-                                <span class="text-gray-600 font-medium">API Services</span>
-                                <span class="text-sm px-3 py-1 bg-success/10 text-success rounded-full font-medium">Operational</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-gray-600 font-medium">Database</span>
-                                <span class="text-sm px-3 py-1 bg-success/10 text-success rounded-full font-medium">Healthy</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-gray-600 font-medium">Cache System</span>
-                                <span class="text-sm px-3 py-1 bg-success/10 text-success rounded-full font-medium">Active</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-gray-600 font-medium">Security</span>
-                                <span class="text-sm px-3 py-1 bg-success/10 text-success rounded-full font-medium">Protected</span>
-                            </div>
-                        </div>
+                <!-- Renegade Pipeline -->
+                <section class="mb-16">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-bold text-gray-900 mb-4">Renegade Pipeline</h2>
+                        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                            Revolutionary tools currently in development to expand your arsenal
+                        </p>
                     </div>
 
-                    <!-- Coming Soon Features -->
-                    <div class="futuristic-card p-8">
-                        <h3 class="text-2xl font-bold text-gray-900 mb-6">Coming Soon</h3>
-                        <div class="space-y-4">
-                            <div class="flex items-center p-4 rounded-lg bg-gray-50">
-                                <div class="w-3 h-3 bg-warning rounded-full mr-4 animate-pulse"></div>
-                                <div>
-                                    <p class="font-medium text-gray-900">Dealer Reviews & Ratings</p>
-                                    <p class="text-sm text-gray-600">Community-driven dealer insights</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                        <div v-for="app in pipelineApps" :key="app.name" class="group relative">
+                            <Link :href="app.href">
+                                <div class="futuristic-card p-8 cursor-pointer transition-all duration-150 hover:neon-glow">
+                                    <!-- Icon Section -->
+                                    <div class="flex items-center justify-between mb-6">
+                                        <div class="p-4 rounded-xl" :class="[app.iconBackground]">
+                                            <component
+                                                :is="app.icon"
+                                                class="h-8 w-8"
+                                                :class="[app.iconForeground]"
+                                                aria-hidden="true"
+                                            />
+                                        </div>
+                                        <div class="opacity-50 group-hover:opacity-100 transition-opacity">
+                                            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <!-- Content -->
+                                    <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors">
+                                        {{ app.name }}
+                                    </h3>
+                                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                                        {{ app.description }}
+                                    </p>
+
+                                    <!-- Status indicator -->
+                                    <div class="flex items-center text-xs">
+                                        <div 
+                                            class="w-2 h-2 rounded-full mr-2 animate-pulse"
+                                            :class="app.status === 'Available' ? 'bg-success' : 'bg-warning'"
+                                        ></div>
+                                        <span class="text-gray-500">{{ app.status }}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="flex items-center p-4 rounded-lg bg-gray-50">
-                                <div class="w-3 h-3 bg-info rounded-full mr-4 animate-pulse"></div>
-                                <div>
-                                    <p class="font-medium text-gray-900">AI Vehicle Finder</p>
-                                    <p class="text-sm text-gray-600">Smart vehicle recommendations</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center p-4 rounded-lg bg-gray-50">
-                                <div class="w-3 h-3 bg-secondary rounded-full mr-4 animate-pulse"></div>
-                                <div>
-                                    <p class="font-medium text-gray-900">Mobile Application</p>
-                                    <p class="text-sm text-gray-600">Calculate on the go</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center p-4 rounded-lg bg-gray-50">
-                                <div class="w-3 h-3 bg-primary rounded-full mr-4 animate-pulse"></div>
-                                <div>
-                                    <p class="font-medium text-gray-900">Market Analytics</p>
-                                    <p class="text-sm text-gray-600">Real-time pricing insights</p>
-                                </div>
-                            </div>
+                            </Link>
                         </div>
                     </div>
-                </div>
+                </section>
             </div>
         </main>
 
@@ -280,14 +265,15 @@ const actions = [
                     <div>
                         <h3 class="text-xl font-bold mb-4 neon-text">Sneaky Salesman</h3>
                         <p class="text-gray-400">
-                            Empowering consumers with transparent vehicle financing tools and expert insights.
+                            Empowering consumers with transparent financing tools and expert insights.
                         </p>
                     </div>
                     <div>
                         <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
                         <ul class="space-y-2 text-gray-400">
-                            <li><Link href="/estimates/financing" class="hover:text-white transition-colors">Finance Calculator</Link></li>
-                            <li><Link href="/estimates/leasing" class="hover:text-white transition-colors">Lease Calculator</Link></li>
+                            <li><Link href="/estimates/financing" class="hover:text-white transition-colors">Finance Renegade</Link></li>
+                            <li><Link href="/estimates/leasing" class="hover:text-white transition-colors">Lease Renegade</Link></li>
+                            <li><Link href="/system-status" class="hover:text-white transition-colors">System Status</Link></li>
                             <li><Link href="/coming-soon" class="hover:text-white transition-colors">Expert Support</Link></li>
                         </ul>
                     </div>

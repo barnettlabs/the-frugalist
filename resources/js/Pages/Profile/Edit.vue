@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { Head, Link } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
@@ -6,17 +6,28 @@ import UpdateProfileInformationForm from './Partials/UpdateProfileInformationFor
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue'
 import DeleteUserForm from './Partials/DeleteUserForm.vue'
 
-const props = defineProps({
-    user: Object,
-    mustVerifyEmail: Boolean,
-    status: String,
-})
+interface User {
+    id: number;
+    email: string;
+    first_name?: string;
+    last_name?: string;
+    avatar_url?: string;
+    created_at?: string;
+}
 
-const fullName = computed(() => {
+interface Props {
+    user: User;
+    mustVerifyEmail: boolean;
+    status?: string;
+}
+
+const props = defineProps<Props>();
+
+const fullName = computed((): string => {
     return `${props.user?.first_name ?? ''} ${props.user?.last_name ?? ''}`.trim()
 })
 
-const memberSince = computed(() => {
+const memberSince = computed((): string => {
     if (props.user?.created_at) {
         const date = new Date(props.user.created_at)
         return date.toLocaleDateString('en-US', {

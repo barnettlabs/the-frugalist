@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { Head, Link } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
@@ -7,17 +7,54 @@ import {
     CurrencyDollarIcon,
     PhoneIcon,
     UserCircleIcon,
+    UserIcon,
     BuildingStorefrontIcon,
 } from "@heroicons/vue/24/outline";
 import { MagnifyingGlassIcon } from "@heroicons/vue/20/solid";
+import type { Component } from 'vue';
 
-const props = defineProps({
-    user: Object,
-    vehicleFinanceSheets: Array,
-    vehicleLeaseSheets: Array,
-});
+interface User {
+    id: number;
+    email: string;
+    first_name?: string;
+    last_name?: string;
+    avatar_url?: string;
+}
 
-const stats = computed(() => [
+interface VehicleSheet {
+    id: number;
+    vehicle_year: number;
+    vehicle_make: string;
+    vehicle_model: string;
+    vehicle_price: number;
+    loan_term_months?: number;
+    lease_term_months?: number;
+}
+
+interface Props {
+    user: User;
+    vehicleFinanceSheets: VehicleSheet[];
+    vehicleLeaseSheets: VehicleSheet[];
+}
+
+const props = defineProps<Props>();
+
+interface Stat {
+    label: string;
+    value: string | number;
+}
+
+interface RenegadeApp {
+    icon: Component;
+    name: string;
+    description: string;
+    href: string;
+    iconForeground: string;
+    iconBackground: string;
+    status: string;
+}
+
+const stats = computed((): Stat[] => [
     {
         label: "total loan sheets",
         value: props.vehicleFinanceSheets?.length ?? "-",
@@ -29,64 +66,70 @@ const stats = computed(() => [
     { label: "dealers nearby (coming soon)", value: "??" },
 ]);
 
-const actions = [
+const renegadeApps: RenegadeApp[] = [
     {
         icon: BanknotesIcon,
-        name: "Purchase Calculator",
+        name: "Finance Renegade",
         description:
-            "Advanced financing calculations with real-time rates and comprehensive payment analysis.",
+            "Break traditional financing rules. Advanced calculations with real-time rates to outsmart dealers.",
         href: "/estimates/financing",
         iconForeground: "text-primary",
         iconBackground: "bg-gradient-to-br from-primary/10 to-primary/20",
+        status: "Available"
     },
     {
         icon: CurrencyDollarIcon,
-        name: "Lease Calculator",
+        name: "Lease Renegade",
         description:
-            "Smart leasing calculations with tax benefits and residual value optimization.",
+            "Master the lease game. Smart calculations with tax benefits to maximize your advantage.",
         href: "/estimates/leasing",
         iconForeground: "text-secondary",
         iconBackground: "bg-gradient-to-br from-secondary/10 to-secondary/20",
+        status: "Available"
     },
     {
         icon: MagnifyingGlassIcon,
-        name: "Vehicle Finder AI",
+        name: "Finder Renegade",
         description:
-            "AI-powered vehicle recommendations based on your budget, preferences, and driving patterns.",
+            "AI-powered rebellion against overpriced vehicles. Get recommendations based on real market data.",
         href: "/coming-soon",
         iconForeground: "text-info",
         iconBackground: "bg-gradient-to-br from-info/10 to-info/20",
-    },
-    {
-        icon: PhoneIcon,
-        name: "Expert Support",
-        description:
-            "24/7 support from automotive finance experts and certified advisors.",
-        href: "/coming-soon",
-        iconForeground: "text-success",
-        iconBackground: "bg-gradient-to-br from-success/10 to-success/20",
+        status: "Coming Soon"
     },
     {
         icon: BuildingStorefrontIcon,
-        name: "Dealer Intelligence",
+        name: "Dealer Intel Renegade",
         description:
-            "Real-time dealer ratings, inventory tracking, and negotiation insights.",
+            "Expose dealer tactics before they expose you. Real-time ratings and negotiation insights.",
         href: "/coming-soon",
         iconForeground: "text-warning",
         iconBackground: "bg-gradient-to-br from-warning/10 to-warning/20",
+        status: "Coming Soon"
     },
     {
         icon: UserCircleIcon,
-        name: "Salesperson Reviews",
+        name: "Sales Review Renegade",
         description:
-            "Community-driven reviews and ratings to find trustworthy sales professionals.",
+            "Community-powered truth about sales professionals. Find trustworthy dealers and avoid sharks.",
         href: "/coming-soon",
         iconForeground: "text-danger",
         iconBackground: "bg-gradient-to-br from-danger/10 to-danger/20",
+        status: "Coming Soon"
+    },
+    {
+        icon: PhoneIcon,
+        name: "Expert Support Renegade",
+        description:
+            "24/7 support from automotive finance rebels who fight for consumers.",
+        href: "/coming-soon",
+        iconForeground: "text-success",
+        iconBackground: "bg-gradient-to-br from-success/10 to-success/20",
+        status: "Coming Soon"
     },
 ];
 
-const fullName = computed(() => {
+const fullName = computed((): string => {
     return `${props.user?.first_name ?? ""} ${props.user?.last_name ?? ""}`.trim();
 });
 </script>
@@ -99,62 +142,65 @@ const fullName = computed(() => {
             <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
                 <h1 class="sr-only">Dashboard</h1>
 
-                <!-- Futuristic Dashboard Header -->
+                <!-- Renegade Dashboard Header -->
                 <div class="mb-8">
-                    <div
-                        class="glass rounded-2xl p-8 text-gray-900 bg-white/80"
-                    >
-                        <div
-                            class="flex flex-col lg:flex-row lg:items-center lg:justify-between"
-                        >
-                            <div class="flex items-center space-x-6">
-                                <div class="relative">
-                                    <div
-                                        class="h-20 w-20 rounded-full ring-4 ring-gray-200 overflow-hidden bg-gradient-to-br from-primary to-secondary flex items-center justify-center"
-                                    >
-                                        <img
-                                            v-if="user?.avatar_url"
-                                            class="h-full w-full object-cover"
-                                            :src="user?.avatar_url"
-                                            :alt="fullName"
-                                            @error="
-                                                $event.target.style.display =
-                                                    'none'
-                                            "
-                                        />
-                                        <UserIcon
-                                            v-else
-                                            class="h-12 w-12 text-white"
-                                        />
-                                    </div>
-                                    <div
-                                        class="absolute -bottom-1 -right-1 h-6 w-6 bg-success rounded-full border-2 border-white"
-                                    ></div>
-                                </div>
-                                <div>
-                                    <p
-                                        class="text-sm font-medium text-gray-600"
-                                    >
-                                        Welcome back,
-                                    </p>
-                                    <h1
-                                        class="text-3xl font-bold text-gray-900"
-                                    >
-                                        {{ fullName }}
-                                    </h1>
-                                    <p class="text-sm text-gray-500">
-                                        {{ user?.email }}
-                                    </p>
-                                </div>
+                    <div class="glass rounded-2xl p-8 text-gray-900 bg-white/80 relative overflow-hidden">
+                        <!-- Background decoration -->
+                        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                            <div class="absolute -top-4 -right-4 w-32 h-32 bg-primary/5 rounded-full"></div>
+                            <div class="absolute bottom-0 -left-4 w-24 h-24 bg-secondary/5 rounded-full"></div>
+                        </div>
+                        
+                        <div class="relative">
+                            <!-- Header Text -->
+                            <div class="mb-6 text-center lg:text-left">
+                                <h1 class="text-4xl font-bold text-gray-900 mb-2">
+                                    Renegade Command Center
+                                </h1>
+                                <p class="text-lg text-gray-600">
+                                    Your arsenal for automotive dominance. Break the rules, outsmart dealers, win the game.
+                                </p>
                             </div>
-                            <div class="mt-6 lg:mt-0">
-                                <Link href="/profile">
-                                    <button
-                                        class="bg-primary hover:bg-primary-shade-1 px-6 py-3 rounded-xl font-medium text-white transition-all duration-100 hover:neon-glow"
-                                    >
-                                        Manage Profile
-                                    </button>
-                                </Link>
+
+                            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                                <div class="flex items-center space-x-6">
+                                    <div class="relative">
+                                        <div class="h-20 w-20 rounded-full ring-4 ring-primary/20 overflow-hidden bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                                            <img
+                                                v-if="user?.avatar_url"
+                                                class="h-full w-full object-cover"
+                                                :src="user?.avatar_url"
+                                                :alt="fullName"
+                                                @error="($event.target as HTMLImageElement).style.display = 'none'"
+                                            />
+                                            <UserIcon
+                                                v-else
+                                                class="h-12 w-12 text-white"
+                                            />
+                                        </div>
+                                        <div class="absolute -bottom-1 -right-1 h-6 w-6 bg-success rounded-full border-2 border-white flex items-center justify-center">
+                                            <span class="text-xs text-white font-bold">R</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-600">
+                                            Welcome back, Renegade
+                                        </p>
+                                        <h2 class="text-3xl font-bold text-gray-900">
+                                            {{ fullName }}
+                                        </h2>
+                                        <p class="text-sm text-gray-500">
+                                            {{ user?.email }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="mt-6 lg:mt-0">
+                                    <Link href="/profile">
+                                        <button class="bg-primary hover:bg-primary-shade-1 px-6 py-3 rounded-xl font-medium text-white transition-all duration-100 hover:neon-glow">
+                                            Manage Profile
+                                        </button>
+                                    </Link>
+                                </div>
                             </div>
                         </div>
 
@@ -221,6 +267,55 @@ const fullName = computed(() => {
                                         <p class="text-gray-600 text-sm">Start a new vehicle leasing calculation</p>
                                     </div>
                                 </Link>
+                            </div>
+                        </div>
+
+                        <!-- Renegade Applications Section -->
+                        <div class="mb-8">
+                            <div class="mb-6">
+                                <h2 class="text-2xl font-bold text-gray-900 mb-2">Renegade Arsenal</h2>
+                                <p class="text-gray-600">Access all available renegade applications to dominate the automotive market</p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div v-for="app in renegadeApps" :key="app.name" class="group relative">
+                                    <Link :href="app.href">
+                                        <div class="futuristic-card p-6 cursor-pointer transition-all duration-150 hover:neon-glow">
+                                            <!-- Icon Section -->
+                                            <div class="flex items-center justify-between mb-4">
+                                                <div class="p-3 rounded-xl" :class="[app.iconBackground]">
+                                                    <component
+                                                        :is="app.icon"
+                                                        class="h-6 w-6"
+                                                        :class="[app.iconForeground]"
+                                                        aria-hidden="true"
+                                                    />
+                                                </div>
+                                                <div class="opacity-50 group-hover:opacity-100 transition-opacity">
+                                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                                    </svg>
+                                                </div>
+                                            </div>
+
+                                            <!-- Content -->
+                                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+                                                {{ app.name }}
+                                            </h3>
+                                            <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                                                {{ app.description }}
+                                            </p>
+
+                                            <!-- Status indicator -->
+                                            <div class="flex items-center text-xs">
+                                                <div 
+                                                    class="w-2 h-2 rounded-full mr-2 animate-pulse"
+                                                    :class="app.status === 'Available' ? 'bg-success' : 'bg-warning'"
+                                                ></div>
+                                                <span class="text-gray-500">{{ app.status }}</span>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                </div>
                             </div>
                         </div>
 

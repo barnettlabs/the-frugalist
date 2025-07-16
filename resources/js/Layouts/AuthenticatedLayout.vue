@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import {
@@ -22,11 +22,33 @@ import {
 } from "@heroicons/vue/24/outline";
 import { MagnifyingGlassIcon } from "@heroicons/vue/20/solid";
 
-const props = defineProps({
-    user: Object,
-});
+interface User {
+    id: number;
+    email: string;
+    first_name?: string;
+    last_name?: string;
+    avatar_url?: string;
+}
 
-const navigation = computed(() => [
+interface Props {
+    user: User;
+}
+
+const props = defineProps<Props>();
+
+interface NavigationItem {
+    name: string;
+    href: string;
+    current: boolean;
+}
+
+interface UserNavigationItem {
+    name: string;
+    href?: string;
+    onClick?: () => void;
+}
+
+const navigation = computed((): NavigationItem[] => [
     {
         name: "Dashboard",
         href: "/dashboard",
@@ -44,7 +66,7 @@ const navigation = computed(() => [
     },
 ]);
 
-const userNavigation = ref([
+const userNavigation = ref<UserNavigationItem[]>([
     { name: "Profile", href: "/profile" },
     {
         name: "Sign out",
@@ -52,7 +74,7 @@ const userNavigation = ref([
     },
 ]);
 
-const fullName = computed(() => {
+const fullName = computed((): string => {
     return `${props.user?.first_name ?? ""} ${props.user?.last_name ?? ""}`.trim();
 });
 </script>
@@ -137,7 +159,7 @@ const fullName = computed(() => {
                                             :src="user?.avatar_url"
                                             :alt="fullName"
                                             @error="
-                                                $event.target.style.display =
+                                                ($event.target as HTMLImageElement).style.display =
                                                     'none'
                                             "
                                         />
@@ -308,7 +330,7 @@ const fullName = computed(() => {
                                                     :src="user?.avatar_url"
                                                     :alt="fullName"
                                                     @error="
-                                                        $event.target.style.display =
+                                                        ($event.target as HTMLImageElement).style.display =
                                                             'none'
                                                     "
                                                 />

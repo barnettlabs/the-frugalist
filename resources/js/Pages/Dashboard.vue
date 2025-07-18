@@ -171,84 +171,42 @@ const fullName = computed((): string => {
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Main Content Area -->
                     <div class="lg:col-span-2">
-                        <!-- Quick Actions -->
-                        <div class="mb-8">
-                            <div class="mb-6">
-                                <h2 class="text-2xl font-bold text-gray-900 mb-2">Quick Actions</h2>
-                                <p class="text-gray-600">Start your calculation or access frequently used tools</p>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <Link href="/estimates/financing/create" class="block">
-                                    <div class="futuristic-card p-6 cursor-pointer transition-all duration-150 hover:neon-glow group">
-                                        <div class="flex items-center justify-between mb-4">
-                                            <div class="p-3 rounded-xl bg-gradient-to-br from-primary/10 to-primary/20">
-                                                <component :is="BanknotesIcon" class="h-8 w-8 text-primary" />
-                                            </div>
-                                            <div class="opacity-50 group-hover:opacity-100 transition-opacity">
-                                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">New Finance Calculator</h3>
-                                        <p class="text-gray-600 text-sm">Start a new vehicle financing calculation</p>
-                                    </div>
-                                </Link>
-                                <Link href="/estimates/leasing/create" class="block">
-                                    <div class="futuristic-card p-6 cursor-pointer transition-all duration-150 hover:neon-glow group">
-                                        <div class="flex items-center justify-between mb-4">
-                                            <div class="p-3 rounded-xl bg-gradient-to-br from-secondary/10 to-secondary/20">
-                                                <component :is="CurrencyDollarIcon" class="h-8 w-8 text-secondary" />
-                                            </div>
-                                            <div class="opacity-50 group-hover:opacity-100 transition-opacity">
-                                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-secondary transition-colors">New Lease Calculator</h3>
-                                        <p class="text-gray-600 text-sm">Start a new vehicle leasing calculation</p>
-                                    </div>
-                                </Link>
-                            </div>
-                        </div>
-
                         <!-- Renegade Applications Section -->
                         <div class="mb-8">
                             <div class="mb-6">
                                 <h2 class="text-2xl font-bold text-gray-900 mb-2">Renegade Arsenal</h2>
                                 <p class="text-gray-600">Access all available renegade applications to dominate the automotive market</p>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div v-for="app in renegadeApps" :key="app.name" class="group relative">
-                                    <Link :href="app.href">
-                                        <div class="futuristic-card p-6 cursor-pointer transition-all duration-150 hover:neon-glow">
-                                            <!-- Icon Section -->
-                                            <div class="flex items-center justify-between mb-4">
-                                                <div class="p-3 rounded-xl" :class="[app.iconBackground]">
-                                                    <component
-                                                        :is="app.icon"
-                                                        class="h-6 w-6"
-                                                        :class="[app.iconForeground]"
-                                                        aria-hidden="true"
-                                                    />
-                                                </div>
-                                                <div class="opacity-50 group-hover:opacity-100 transition-opacity">
-                                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                                                    </svg>
-                                                </div>
+                                    <div class="futuristic-card p-6 transition-all duration-150 hover:neon-glow cursor-pointer" @click="$inertia.visit(app.href)">
+                                        <!-- Icon Section -->
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="p-3 rounded-xl" :class="[app.iconBackground]">
+                                                <component
+                                                    :is="app.icon"
+                                                    class="h-8 w-8"
+                                                    :class="[app.iconForeground]"
+                                                    aria-hidden="true"
+                                                />
                                             </div>
+                                            <div class="opacity-50 group-hover:opacity-100 transition-opacity">
+                                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
 
-                                            <!-- Content -->
-                                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
-                                                {{ app.name }}
-                                            </h3>
-                                            <p class="text-gray-600 text-sm leading-relaxed mb-4">
-                                                {{ app.description }}
-                                            </p>
+                                        <!-- Content -->
+                                        <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors">
+                                            {{ app.name }}
+                                        </h3>
+                                        <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                                            {{ app.description }}
+                                        </p>
 
-                                            <!-- Status indicator -->
+                                        <!-- Status and Actions -->
+                                        <div class="flex items-center justify-between">
                                             <div class="flex items-center text-xs">
                                                 <div
                                                     class="w-2 h-2 rounded-full mr-2 animate-pulse"
@@ -256,8 +214,18 @@ const fullName = computed((): string => {
                                                 ></div>
                                                 <span class="text-gray-500">{{ app.status }}</span>
                                             </div>
+                                            <div class="flex space-x-3">
+                                                <Link 
+                                                    v-if="app.status === 'Available'" 
+                                                    :href="app.href + '/create'" 
+                                                    class="bg-primary hover:bg-primary-shade-1 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150"
+                                                    @click.stop
+                                                >
+                                                    Create
+                                                </Link>
+                                            </div>
                                         </div>
-                                    </Link>
+                                    </div>
                                 </div>
                             </div>
                         </div>

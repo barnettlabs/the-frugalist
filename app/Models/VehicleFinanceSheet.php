@@ -32,6 +32,7 @@ class VehicleFinanceSheet extends Model
         'contact_email',
         'contact_phone',
         'extra_payments_json',
+        'notes',
     ];
 
     protected $casts = [

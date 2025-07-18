@@ -35,6 +35,7 @@ class VehicleLeaseSheet extends Model
         'start_date',
         'contact_email',
         'contact_phone',
+        'notes',
     ];
 
     protected $casts = [

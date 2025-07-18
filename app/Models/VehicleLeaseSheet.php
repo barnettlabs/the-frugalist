@@ -39,17 +39,17 @@ class VehicleLeaseSheet extends Model
     ];
 
     protected $casts = [
-        'msrp' => 'decimal:2',
-        'dealer_contribution' => 'decimal:2',
-        'trade_in' => 'decimal:2',
-        'doc_fee' => 'decimal:2',
-        'acquisition_fee' => 'decimal:2',
-        'misc_fees' => 'decimal:2',
-        'lease_cash' => 'decimal:2',
-        'down_payment' => 'decimal:2',
-        'money_factor' => 'decimal:6',
-        'sales_tax_percent' => 'decimal:2',
-        'residual_percent' => 'decimal:2',
+        'msrp' => 'float',
+        'dealer_contribution' => 'float',
+        'trade_in' => 'float',
+        'doc_fee' => 'float',
+        'acquisition_fee' => 'float',
+        'misc_fees' => 'float',
+        'lease_cash' => 'float',
+        'down_payment' => 'float',
+        'money_factor' => 'float',
+        'sales_tax_percent' => 'float',
+        'residual_percent' => 'float',
         'start_date' => 'datetime',
     ];
 

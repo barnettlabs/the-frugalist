@@ -175,10 +175,5 @@ const extraPaymentPercentage = computed(() => {
     return (paymentBreakdown.value.extraPayments / totalAmount.value) * 100;
 });
 
-const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    }).format(amount || 0);
-};
+import { formatCurrency } from '@/utils/formatters.js';
 </script>

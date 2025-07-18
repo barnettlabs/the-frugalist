@@ -239,10 +239,5 @@ const depreciationRate = computed(() => {
     return (100 - residualPercent).toFixed(1);
 });
 
-const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    }).format(amount || 0);
-};
+import { formatCurrency } from '@/utils/formatters.js';
 </script>

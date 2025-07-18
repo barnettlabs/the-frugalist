@@ -19,7 +19,7 @@ export class FinanceCalculator {
         const msrp = this.parseOrZero(this.data.msrp);
         const discounts = this.parseOrZero(this.data.discounts);
         const rebates = this.parseOrZero(this.data.rebates);
-        
+
         return msrp - discounts - rebates;
     }
 
@@ -27,7 +27,7 @@ export class FinanceCalculator {
     calculateSalesTaxAmount() {
         const purchasePrice = this.calculatePurchasePrice();
         const salesTaxPercent = this.parseOrZero(this.data.sales_tax_percent);
-        
+
         return purchasePrice * (salesTaxPercent / 100);
     }
 
@@ -37,7 +37,7 @@ export class FinanceCalculator {
         const fees = this.parseOrZero(this.data.fees);
         const salesTaxAmount = this.calculateSalesTaxAmount();
         const downPayment = this.parseOrZero(this.data.down_payment);
-        
+
         return purchasePrice + fees + salesTaxAmount - downPayment;
     }
 
@@ -46,18 +46,18 @@ export class FinanceCalculator {
         const loanAmount = this.calculateLoanAmount();
         const interestRate = this.parseOrZero(this.data.interest_rate);
         const financeTerm = this.parseOrZero(this.data.finance_term);
-        
+
         if (loanAmount <= 0 || interestRate <= 0 || financeTerm <= 0) {
             return 0;
         }
-        
+
         const monthlyRate = interestRate / 100 / 12;
         const numPayments = financeTerm;
-        
+
         // PMT formula: P * [r(1+r)^n] / [(1+r)^n - 1]
-        const payment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / 
+        const payment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
                        (Math.pow(1 + monthlyRate, numPayments) - 1);
-        
+
         return payment;
     }
 
@@ -66,7 +66,7 @@ export class FinanceCalculator {
         const monthlyPayment = this.calculateMonthlyPayment();
         const financeTerm = this.parseOrZero(this.data.finance_term);
         const loanAmount = this.calculateLoanAmount();
-        
+
         return (monthlyPayment * financeTerm) - loanAmount;
     }
 
@@ -74,7 +74,7 @@ export class FinanceCalculator {
     calculatePaymentsTotal() {
         const monthlyPayment = this.calculateMonthlyPayment();
         const financeTerm = this.parseOrZero(this.data.finance_term);
-        
+
         return monthlyPayment * financeTerm;
     }
 
@@ -84,41 +84,41 @@ export class FinanceCalculator {
         const interestRate = this.parseOrZero(this.data.interest_rate);
         const financeTerm = this.parseOrZero(this.data.finance_term);
         const monthlyPayment = this.calculateMonthlyPayment();
-        
+
         if (loanAmount <= 0 || interestRate <= 0 || financeTerm <= 0) {
             return [];
         }
-        
+
         const monthlyRate = interestRate / 100 / 12;
         const schedule = [];
         let remainingBalance = loanAmount;
         let totalInterest = 0;
         let totalPrincipal = 0;
-        
+
         // Parse extra payments if provided
         const extraPayments = this.parseExtraPayments();
-        
+
         for (let month = 1; month <= financeTerm && remainingBalance > 0; month++) {
             const interestPayment = remainingBalance * monthlyRate;
             let principalPayment = monthlyPayment - interestPayment;
-            
+
             // Add extra payment if applicable
             let extraPayment = 0;
             if (withExtraPayments && extraPayments.length > 0) {
                 extraPayment = this.getExtraPaymentForMonth(month, extraPayments);
             }
-            
+
             // Ensure we don't pay more than remaining balance
             if (principalPayment + extraPayment > remainingBalance) {
                 principalPayment = remainingBalance;
                 extraPayment = 0;
             }
-            
+
             const totalPayment = monthlyPayment + extraPayment;
             remainingBalance -= (principalPayment + extraPayment);
             totalInterest += interestPayment;
             totalPrincipal += principalPayment + extraPayment;
-            
+
             schedule.push({
                 month,
                 payment: monthlyPayment,
@@ -128,10 +128,10 @@ export class FinanceCalculator {
                 interestPayment,
                 remainingBalance: Math.max(0, remainingBalance)
             });
-            
+
             if (remainingBalance <= 0) break;
         }
-        
+
         return {
             schedule,
             totalInterest,
@@ -146,10 +146,10 @@ export class FinanceCalculator {
         try {
             const extraPaymentsJson = this.data.extra_payments_json;
             if (!extraPaymentsJson) return [];
-            
-            const parsed = typeof extraPaymentsJson === 'string' ? 
+
+            const parsed = typeof extraPaymentsJson === 'string' ?
                           JSON.parse(extraPaymentsJson) : extraPaymentsJson;
-            
+
             return Array.isArray(parsed) ? parsed : [];
         } catch (error) {
             console.error('Error parsing extra payments:', error);
@@ -160,17 +160,17 @@ export class FinanceCalculator {
     // Get extra payment amount for a specific month
     getExtraPaymentForMonth(month, extraPayments) {
         let totalExtra = 0;
-        
+
         for (const payment of extraPayments) {
             const startMonth = parseInt(payment.startMonth) || 1;
             const endMonth = parseInt(payment.endMonth) || startMonth;
             const amount = this.parseOrZero(payment.paymentAmount);
-            
+
             if (month >= startMonth && month <= endMonth) {
                 totalExtra += amount;
             }
         }
-        
+
         return totalExtra;
     }
 
@@ -178,15 +178,15 @@ export class FinanceCalculator {
     getPaymentBreakdown() {
         const amortization = this.calculateAmortization(true);
         const schedule = amortization.schedule;
-        
-        if (schedule.length === 0) return null;
-        
+
+        if (!schedule || schedule.length === 0) return null;
+
         const breakdown = {
             principal: amortization.totalPrincipal,
             interest: amortization.totalInterest,
             extraPayments: schedule.reduce((sum, payment) => sum + payment.extraPayment, 0)
         };
-        
+
         return breakdown;
     }
 
@@ -194,9 +194,9 @@ export class FinanceCalculator {
     getChartData() {
         const amortization = this.calculateAmortization(true);
         const schedule = amortization.schedule;
-        
+
         if (schedule.length === 0) return null;
-        
+
         return {
             labels: schedule.map(payment => `Month ${payment.month}`),
             datasets: [
@@ -234,7 +234,7 @@ export class FinanceCalculator {
         const interestAmount = this.calculateInterestAmount();
         const paymentsTotal = this.calculatePaymentsTotal();
         const amortization = this.calculateAmortization(true);
-        
+
         return {
             purchasePrice,
             salesTaxAmount,

@@ -20,7 +20,7 @@
             </div>
         </div>
 
-        <div v-if="amortization && amortization.schedule.length > 0">
+        <div v-if="amortization && amortization?.schedule?.length > 0">
             <!-- Summary Stats -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div class="bg-blue-50 p-4 rounded-lg">
@@ -108,15 +108,10 @@ const amortization = computed(() => {
 
 const displayedPayments = computed(() => {
     if (!amortization.value || !amortization.value.schedule) return [];
-    
+
     const schedule = amortization.value.schedule;
     return showAllPayments.value ? schedule : schedule.slice(0, 12);
 });
 
-const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    }).format(amount || 0);
-};
+import { formatCurrency } from '@/utils/formatters.js';
 </script>

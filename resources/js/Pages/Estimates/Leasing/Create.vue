@@ -1,7 +1,11 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
+import LeaseForm from '@/Components/LeaseForm.vue'
+import EstimateSummary from '@/Components/EstimateSummary.vue'
+import { calculateCapitalizedCost } from '@/utils/vehicleCalculations.js'
+import { parseOrZero } from '@/utils/formatters.js'
 import axios from 'axios'
 
 const props = defineProps({
@@ -11,39 +15,54 @@ const props = defineProps({
 
 const form = ref({
     sheet_name: '',
+    sales_consultant: '',
     dealership_name: '',
+    vehicle_type: 'CAR',
     vehicle_year: '',
     vehicle_make: '',
     vehicle_model: '',
     vehicle_trim: '',
     msrp: '',
-    selling_price: '',
-    down_payment: '',
-    trade_in_value: '',
-    trade_in_payoff: '',
-    cash_rebate: '',
-    dealer_rebate: '',
-    other_incentives: '',
-    sales_tax_rate: '',
+    dealer_contribution: '',
+    trade_in: '',
     doc_fee: '',
-    title_fee: '',
-    license_fee: '',
-    other_fees: '',
+    acquisition_fee: '',
+    misc_fees: '',
+    lease_cash: '',
+    down_payment: '',
     money_factor: '',
-    lease_term_months: '',
-    monthly_payment: '',
-    residual_value: '',
+    sales_tax_percent: '',
+    residual_percent: '',
+    lease_term: '',
+    start_date: '',
+    contact_email: '',
+    contact_phone: '',
     notes: ''
 })
 
 const loading = ref(false)
 const errors = ref({})
 
+const calculatedCapitalizedCost = computed(() => {
+    const msrp = parseOrZero(form.value.msrp)
+    const sellingPrice = parseOrZero(form.value.selling_price) || msrp
+    
+    return calculateCapitalizedCost({
+        sellingPrice,
+        tradeInValue: form.value.trade_in_value,
+        tradeInPayoff: form.value.trade_in_payoff,
+        cashRebate: form.value.cash_rebate,
+        dealerRebate: form.value.dealer_rebate,
+        otherIncentives: form.value.other_incentives
+    })
+})
+
 const submitForm = async () => {
     loading.value = true
     errors.value = {}
 
     try {
+        form.value.capitalized_cost = calculatedCapitalizedCost.value
         const response = await axios.post('/api/vehicle-lease-sheets', form.value)
         router.visit('/estimates/leasing')
     } catch (error) {
@@ -58,21 +77,7 @@ const submitForm = async () => {
 }
 
 const calculateTotals = () => {
-    // Basic calculations for lease
-    const msrp = parseFloat(form.value.msrp) || 0
-    const sellingPrice = parseFloat(form.value.selling_price) || msrp
-    const downPayment = parseFloat(form.value.down_payment) || 0
-    const tradeInValue = parseFloat(form.value.trade_in_value) || 0
-    const tradeInPayoff = parseFloat(form.value.trade_in_payoff) || 0
-    const cashRebate = parseFloat(form.value.cash_rebate) || 0
-    const dealerRebate = parseFloat(form.value.dealer_rebate) || 0
-    const otherIncentives = parseFloat(form.value.other_incentives) || 0
-
-    const netTradeIn = tradeInValue - tradeInPayoff
-    const totalRebates = cashRebate + dealerRebate + otherIncentives
-    const capitalizedCost = sellingPrice - netTradeIn - totalRebates
-
-    form.value.capitalized_cost = capitalizedCost.toFixed(2)
+    form.value.capitalized_cost = calculatedCapitalizedCost.value
 }
 </script>
 
@@ -85,294 +90,24 @@ const calculateTotals = () => {
                 <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
                     <div class="grid grid-cols-1 gap-4 lg:col-span-2">
                         <section aria-labelledby="create-lease-estimate-title">
-                            <div class="overflow-hidden rounded-lg bg-white shadow">
-                                <div class="px-4 py-5 sm:p-6">
-                                    <div class="flex items-center justify-between mb-6">
-                                        <h2 class="text-lg font-medium text-gray-900">Create Lease Estimate</h2>
-                                        <Link
-                                            href="/estimates/leasing"
-                                            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                        >
-                                            Back to Estimates
-                                        </Link>
-                                    </div>
-
-                                    <form @submit.prevent="submitForm" class="space-y-6">
-                                        <!-- Basic Information -->
-                                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                                            <div>
-                                                <label for="sheet_name" class="block text-sm font-medium text-gray-700">Estimate Name</label>
-                                                <input
-                                                    id="sheet_name"
-                                                    v-model="form.sheet_name"
-                                                    type="text"
-                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                    :class="{ 'border-red-500': errors.sheet_name }"
-                                                />
-                                                <p v-if="errors.sheet_name" class="mt-1 text-sm text-red-600">{{ errors.sheet_name[0] }}</p>
-                                            </div>
-
-                                            <div>
-                                                <label for="dealership_name" class="block text-sm font-medium text-gray-700">Dealership</label>
-                                                <input
-                                                    id="dealership_name"
-                                                    v-model="form.dealership_name"
-                                                    type="text"
-                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                    :class="{ 'border-red-500': errors.dealership_name }"
-                                                />
-                                                <p v-if="errors.dealership_name" class="mt-1 text-sm text-red-600">{{ errors.dealership_name[0] }}</p>
-                                            </div>
-                                        </div>
-
-                                        <!-- Vehicle Information -->
-                                        <div class="border-t border-gray-200 pt-6">
-                                            <h3 class="text-lg font-medium text-gray-900 mb-4">Vehicle Information</h3>
-                                            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                                                <div>
-                                                    <label for="vehicle_year" class="block text-sm font-medium text-gray-700">Year</label>
-                                                    <input
-                                                        id="vehicle_year"
-                                                        v-model="form.vehicle_year"
-                                                        type="number"
-                                                        min="1900"
-                                                        max="2030"
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                        :class="{ 'border-red-500': errors.vehicle_year }"
-                                                    />
-                                                    <p v-if="errors.vehicle_year" class="mt-1 text-sm text-red-600">{{ errors.vehicle_year[0] }}</p>
-                                                </div>
-
-                                                <div>
-                                                    <label for="vehicle_make" class="block text-sm font-medium text-gray-700">Make</label>
-                                                    <input
-                                                        id="vehicle_make"
-                                                        v-model="form.vehicle_make"
-                                                        type="text"
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                        :class="{ 'border-red-500': errors.vehicle_make }"
-                                                    />
-                                                    <p v-if="errors.vehicle_make" class="mt-1 text-sm text-red-600">{{ errors.vehicle_make[0] }}</p>
-                                                </div>
-
-                                                <div>
-                                                    <label for="vehicle_model" class="block text-sm font-medium text-gray-700">Model</label>
-                                                    <input
-                                                        id="vehicle_model"
-                                                        v-model="form.vehicle_model"
-                                                        type="text"
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                        :class="{ 'border-red-500': errors.vehicle_model }"
-                                                    />
-                                                    <p v-if="errors.vehicle_model" class="mt-1 text-sm text-red-600">{{ errors.vehicle_model[0] }}</p>
-                                                </div>
-
-                                                <div>
-                                                    <label for="vehicle_trim" class="block text-sm font-medium text-gray-700">Trim</label>
-                                                    <input
-                                                        id="vehicle_trim"
-                                                        v-model="form.vehicle_trim"
-                                                        type="text"
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                        :class="{ 'border-red-500': errors.vehicle_trim }"
-                                                    />
-                                                    <p v-if="errors.vehicle_trim" class="mt-1 text-sm text-red-600">{{ errors.vehicle_trim[0] }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Pricing Information -->
-                                        <div class="border-t border-gray-200 pt-6">
-                                            <h3 class="text-lg font-medium text-gray-900 mb-4">Pricing Information</h3>
-                                            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                                                <div>
-                                                    <label for="msrp" class="block text-sm font-medium text-gray-700">MSRP</label>
-                                                    <input
-                                                        id="msrp"
-                                                        v-model="form.msrp"
-                                                        type="number"
-                                                        step="0.01"
-                                                        @input="calculateTotals"
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                        :class="{ 'border-red-500': errors.msrp }"
-                                                    />
-                                                    <p v-if="errors.msrp" class="mt-1 text-sm text-red-600">{{ errors.msrp[0] }}</p>
-                                                </div>
-
-                                                <div>
-                                                    <label for="selling_price" class="block text-sm font-medium text-gray-700">Selling Price</label>
-                                                    <input
-                                                        id="selling_price"
-                                                        v-model="form.selling_price"
-                                                        type="number"
-                                                        step="0.01"
-                                                        @input="calculateTotals"
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                        :class="{ 'border-red-500': errors.selling_price }"
-                                                    />
-                                                    <p v-if="errors.selling_price" class="mt-1 text-sm text-red-600">{{ errors.selling_price[0] }}</p>
-                                                </div>
-
-                                                <div>
-                                                    <label for="down_payment" class="block text-sm font-medium text-gray-700">Down Payment</label>
-                                                    <input
-                                                        id="down_payment"
-                                                        v-model="form.down_payment"
-                                                        type="number"
-                                                        step="0.01"
-                                                        @input="calculateTotals"
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                        :class="{ 'border-red-500': errors.down_payment }"
-                                                    />
-                                                    <p v-if="errors.down_payment" class="mt-1 text-sm text-red-600">{{ errors.down_payment[0] }}</p>
-                                                </div>
-
-                                                <div>
-                                                    <label for="trade_in_value" class="block text-sm font-medium text-gray-700">Trade-in Value</label>
-                                                    <input
-                                                        id="trade_in_value"
-                                                        v-model="form.trade_in_value"
-                                                        type="number"
-                                                        step="0.01"
-                                                        @input="calculateTotals"
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                        :class="{ 'border-red-500': errors.trade_in_value }"
-                                                    />
-                                                    <p v-if="errors.trade_in_value" class="mt-1 text-sm text-red-600">{{ errors.trade_in_value[0] }}</p>
-                                                </div>
-
-                                                <div>
-                                                    <label for="trade_in_payoff" class="block text-sm font-medium text-gray-700">Trade-in Payoff</label>
-                                                    <input
-                                                        id="trade_in_payoff"
-                                                        v-model="form.trade_in_payoff"
-                                                        type="number"
-                                                        step="0.01"
-                                                        @input="calculateTotals"
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                        :class="{ 'border-red-500': errors.trade_in_payoff }"
-                                                    />
-                                                    <p v-if="errors.trade_in_payoff" class="mt-1 text-sm text-red-600">{{ errors.trade_in_payoff[0] }}</p>
-                                                </div>
-
-                                                <div>
-                                                    <label for="cash_rebate" class="block text-sm font-medium text-gray-700">Cash Rebate</label>
-                                                    <input
-                                                        id="cash_rebate"
-                                                        v-model="form.cash_rebate"
-                                                        type="number"
-                                                        step="0.01"
-                                                        @input="calculateTotals"
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                        :class="{ 'border-red-500': errors.cash_rebate }"
-                                                    />
-                                                    <p v-if="errors.cash_rebate" class="mt-1 text-sm text-red-600">{{ errors.cash_rebate[0] }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Lease Terms -->
-                                        <div class="border-t border-gray-200 pt-6">
-                                            <h3 class="text-lg font-medium text-gray-900 mb-4">Lease Terms</h3>
-                                            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                                                <div>
-                                                    <label for="money_factor" class="block text-sm font-medium text-gray-700">Money Factor</label>
-                                                    <input
-                                                        id="money_factor"
-                                                        v-model="form.money_factor"
-                                                        type="number"
-                                                        step="0.0001"
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                        :class="{ 'border-red-500': errors.money_factor }"
-                                                    />
-                                                    <p v-if="errors.money_factor" class="mt-1 text-sm text-red-600">{{ errors.money_factor[0] }}</p>
-                                                </div>
-
-                                                <div>
-                                                    <label for="lease_term_months" class="block text-sm font-medium text-gray-700">Lease Term (Months)</label>
-                                                    <input
-                                                        id="lease_term_months"
-                                                        v-model="form.lease_term_months"
-                                                        type="number"
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                        :class="{ 'border-red-500': errors.lease_term_months }"
-                                                    />
-                                                    <p v-if="errors.lease_term_months" class="mt-1 text-sm text-red-600">{{ errors.lease_term_months[0] }}</p>
-                                                </div>
-
-                                                <div>
-                                                    <label for="residual_value" class="block text-sm font-medium text-gray-700">Residual Value</label>
-                                                    <input
-                                                        id="residual_value"
-                                                        v-model="form.residual_value"
-                                                        type="number"
-                                                        step="0.01"
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                        :class="{ 'border-red-500': errors.residual_value }"
-                                                    />
-                                                    <p v-if="errors.residual_value" class="mt-1 text-sm text-red-600">{{ errors.residual_value[0] }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Notes -->
-                                        <div class="border-t border-gray-200 pt-6">
-                                            <div>
-                                                <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
-                                                <textarea
-                                                    id="notes"
-                                                    v-model="form.notes"
-                                                    rows="4"
-                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                                    :class="{ 'border-red-500': errors.notes }"
-                                                ></textarea>
-                                                <p v-if="errors.notes" class="mt-1 text-sm text-red-600">{{ errors.notes[0] }}</p>
-                                            </div>
-                                        </div>
-
-                                        <!-- Submit Button -->
-                                        <div class="flex justify-end space-x-3">
-                                            <Link
-                                                href="/estimates/leasing"
-                                                class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                            >
-                                                Cancel
-                                            </Link>
-                                            <button
-                                                type="submit"
-                                                :disabled="loading"
-                                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-                                            >
-                                                <svg v-if="loading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                </svg>
-                                                {{ loading ? 'Creating...' : 'Create Estimate' }}
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+                            <LeaseForm
+                                :form="form"
+                                :errors="errors"
+                                :loading="loading"
+                                title="Create Lease Estimate"
+                                back-url="/estimates/leasing"
+                                @submit="submitForm"
+                                @calculate="calculateTotals"
+                            />
                         </section>
                     </div>
 
                     <div class="grid grid-cols-1 gap-4">
-                        <!-- Summary Card -->
-                        <div class="overflow-hidden rounded-lg bg-white shadow">
-                            <div class="px-4 py-5 sm:p-6">
-                                <h3 class="text-lg font-medium text-gray-900 mb-4">Summary</h3>
-                                <div class="space-y-3">
-                                    <div class="flex justify-between">
-                                        <span class="text-sm text-gray-500">Capitalized Cost:</span>
-                                        <span class="text-sm font-medium">${{ form.capitalized_cost || '0.00' }}</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-sm text-gray-500">Monthly Payment:</span>
-                                        <span class="text-sm font-medium">${{ form.monthly_payment || '0.00' }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <EstimateSummary
+                            estimate-type="lease"
+                            :calculated-value="calculatedCapitalizedCost"
+                            :monthly-payment="form.monthly_payment"
+                        />
                     </div>
                 </div>
             </div>

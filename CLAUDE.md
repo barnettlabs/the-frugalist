@@ -54,6 +54,7 @@ This is a Laravel 12 application with Vue.js 3 frontend using Inertia.js for sea
 - **Pages**: Organized by feature (Auth, Profile, Estimates)
 - **Components**: Reusable Vue components with consistent styling
 - **Styling**: Custom Tailwind config with CSS variables for theming
+- **Vue**: Vue component structure should place the script at the top, then template, then styles (if needed)
 
 ### Key Features
 - User authentication and profiles

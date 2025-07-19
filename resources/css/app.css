@@ -134,7 +134,7 @@
 	/* Dotted background pattern - uses pseudo-element to overlay dots */
 	.dotted-background-light::before {
 		content: '';
-		position: absolute;
+		position: fixed;
 		top: 0;
 		left: 0;
 		right: 0;
@@ -148,7 +148,7 @@
 
 	.dotted-background-dark::before {
 		content: '';
-		position: absolute;
+		position: fixed;
 		top: 0;
 		left: 0;
 		right: 0;

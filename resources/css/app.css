@@ -21,29 +21,29 @@
 @layer base {
 	:root {
 		/* Futuristic color palette inspired by modern design */
-		--color-primary: #6366f1;
+		--color-primary: 99 102 241;
 
-		--color-primary-shade-1: #5b5df1;
-		--color-primary-shade-2: #5348e8;
-		--color-primary-shade-3: #4b38df;
-		--color-primary-shade-4: #4338ca;
-		--color-primary-shade-5: #3730a3;
-		--color-primary-shade-6: #312e81;
+		--color-primary-shade-1: 91 93 241;
+		--color-primary-shade-2: 83 72 232;
+		--color-primary-shade-3: 75 56 223;
+		--color-primary-shade-4: 67 56 202;
+		--color-primary-shade-5: 55 48 163;
+		--color-primary-shade-6: 49 46 129;
 
-		--color-primary-tint-1: #7477f2;
-		--color-primary-tint-2: #8587f3;
-		--color-primary-tint-3: #9698f4;
-		--color-primary-tint-4: #a7a9f5;
-		--color-primary-tint-5: #b8baf6;
-		--color-primary-tint-6: #c9cbf7;
+		--color-primary-tint-1: 116 119 242;
+		--color-primary-tint-2: 133 135 243;
+		--color-primary-tint-3: 150 152 244;
+		--color-primary-tint-4: 167 169 245;
+		--color-primary-tint-5: 184 186 246;
+		--color-primary-tint-6: 201 203 247;
 
-		--color-secondary: #8b5cf6;
-		--color-success: #10b981;
-		--color-info: #06b6d4;
-		--color-warning: #f59e0b;
-		--color-danger: #ef4444;
-		--color-light: #ffffff;
-		--color-dark: #0f172a;
+		--color-secondary: 139 92 246;
+		--color-success: 16 185 129;
+		--color-info: 6 182 212;
+		--color-warning: 245 158 11;
+		--color-danger: 239 68 68;
+		--color-light: 255 255 255;
+		--color-dark: 15 23 42;
 
 		/* Gradient variables for futuristic effects */
 		--gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -129,6 +129,42 @@
 		border: 1px solid rgba(255, 255, 255, 0.1);
 		border-radius: 16px;
 		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+	}
+
+	/* Dotted background pattern - uses pseudo-element to overlay dots */
+	.dotted-background-light::before {
+		content: '';
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+		background-size: 20px 20px;
+		background-position: 0 0, 10px 10px;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	.dotted-background-dark::before {
+		content: '';
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-image: radial-gradient(circle, rgba(99, 102, 241, 0.12) 1px, transparent 1px);
+		background-size: 20px 20px;
+		background-position: 0 0, 10px 10px;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	/* Ensure content appears above dotted backgrounds */
+	.dotted-background-light > *,
+	.dotted-background-dark > * {
+		position: relative;
+		z-index: 1;
 	}
 
 	.btn {

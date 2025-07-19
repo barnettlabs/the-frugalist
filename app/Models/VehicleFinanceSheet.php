@@ -32,16 +32,17 @@ class VehicleFinanceSheet extends Model
         'contact_email',
         'contact_phone',
         'extra_payments_json',
+        'notes',
     ];
 
     protected $casts = [
-        'msrp' => 'decimal:2',
-        'fees' => 'decimal:2',
-        'discounts' => 'decimal:2',
-        'rebates' => 'decimal:2',
-        'down_payment' => 'decimal:2',
-        'sales_tax_percent' => 'decimal:2',
-        'interest_rate' => 'decimal:2',
+        'msrp' => 'float',
+        'fees' => 'float',
+        'discounts' => 'float',
+        'rebates' => 'float',
+        'down_payment' => 'float',
+        'sales_tax_percent' => 'float',
+        'interest_rate' => 'float',
         'start_date' => 'datetime',
     ];
 

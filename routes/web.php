@@ -22,13 +22,28 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+Route::get('/', function (Request $request) {
+    $user = $request->user();
+
+    if ($user) {
+        // User is authenticated, show dashboard
+        $vehicleFinanceSheets = $user->vehicleFinanceSheets()->latest()->get();
+        $vehicleLeaseSheets = $user->vehicleLeaseSheets()->latest()->get();
+
+        return Inertia::render('Dashboard', [
+            'user' => $user,
+            'vehicleFinanceSheets' => $vehicleFinanceSheets,
+            'vehicleLeaseSheets' => $vehicleLeaseSheets,
+        ]);
+    } else {
+        // User is not authenticated, show welcome page
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'laravelVersion' => Application::VERSION,
+            'phpVersion' => PHP_VERSION,
+        ]);
+    }
 });
 
 Route::get('/system-status', function (Request $request) {
@@ -82,7 +97,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/estimates/financing/create', function (Request $request) {
         $user = $request->user();
 
-        return Inertia::render('Estimates/Financing/Create', [
+        return Inertia::render('Estimates/Financing/Details', [
             'user' => $user,
         ]);
     })->name('estimates.financing.create');
@@ -91,7 +106,7 @@ Route::middleware('auth')->group(function () {
         $user = $request->user();
         $vehicleFinanceSheet = $user->vehicleFinanceSheets()->findOrFail($sheet);
 
-        return Inertia::render('Estimates/Financing/Edit', [
+        return Inertia::render('Estimates/Financing/Details', [
             'user' => $user,
             'sheet' => $vehicleFinanceSheet,
         ]);
@@ -108,7 +123,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/estimates/leasing/create', function (Request $request) {
         $user = $request->user();
 
-        return Inertia::render('Estimates/Leasing/Create', [
+        return Inertia::render('Estimates/Leasing/Details', [
             'user' => $user,
         ]);
     })->name('estimates.leasing.create');
@@ -117,11 +132,32 @@ Route::middleware('auth')->group(function () {
         $user = $request->user();
         $vehicleLeaseSheet = $user->vehicleLeaseSheets()->findOrFail($sheet);
 
-        return Inertia::render('Estimates/Leasing/Edit', [
+        return Inertia::render('Estimates/Leasing/Details', [
             'user' => $user,
             'sheet' => $vehicleLeaseSheet,
         ]);
     })->name('estimates.leasing.edit');
+
+    // Comparison routes
+    Route::get('/estimates/financing/compare', function (Request $request) {
+        $user = $request->user();
+        $sheetIds = $request->query('sheets', '');
+
+        return Inertia::render('Estimates/Financing/Compare', [
+            'user' => $user,
+            'sheetIds' => $sheetIds,
+        ]);
+    })->name('estimates.financing.compare');
+
+    Route::get('/estimates/leasing/compare', function (Request $request) {
+        $user = $request->user();
+        $sheetIds = $request->query('sheets', '');
+
+        return Inertia::render('Estimates/Leasing/Compare', [
+            'user' => $user,
+            'sheetIds' => $sheetIds,
+        ]);
+    })->name('estimates.leasing.compare');
 
     // Coming soon route
     Route::get('/coming-soon', function (Request $request) {

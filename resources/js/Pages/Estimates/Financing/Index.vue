@@ -5,8 +5,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { BanknotesIcon, PlusIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
 import { FinanceCalculator } from '@/utils/financeCalculator'
 import { formatCurrency } from '@/utils/formatters'
+import { formatRelativeTime } from '@/utils/time'
 import axios from 'axios'
-import type { Component } from 'vue'
 
 interface User {
   id: number
@@ -207,7 +207,7 @@ onMounted(() => {
                       class="futuristic-card bg-white p-6 group hover:neon-glow transition-all duration-150 border border-gray-200 shadow-sm"
                     >
                       <!-- Header -->
-                      <div class="flex items-center justify-between mb-4">
+                      <div class="flex items-start justify-between mb-4">
                         <div class="flex items-center space-x-3">
                           <div class="p-2 rounded-lg bg-primary/10">
                             <BanknotesIcon class="h-5 w-5 text-primary" />
@@ -221,9 +221,13 @@ onMounted(() => {
                             <p class="text-sm text-gray-500">
                               {{ sheet.dealership_name || 'No dealership specified' }}
                             </p>
+                            <span v-if="sheet.updated_at" class="text-xs text-gray-400">
+                              {{ formatRelativeTime(sheet.updated_at) }}
+                            </span>
                           </div>
                         </div>
-                        <div class="flex space-x-2">
+
+                        <div class="flex flex-col items-end space-y-2">
                           <Link :href="`/estimates/financing/${sheet.id}/edit`">
                             <button
                               class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-colors"
@@ -241,7 +245,7 @@ onMounted(() => {
                       </div>
 
                       <!-- Monthly Payment (Always Visible) -->
-                      <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                      <div class="bg-gray-50 rounded-lg p-4 mb-4 flex-1">
                         <div class="text-center">
                           <span class="text-gray-500 text-sm uppercase tracking-wide block mb-1"
                             >Monthly Payment</span

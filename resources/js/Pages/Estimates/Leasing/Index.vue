@@ -5,6 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { CurrencyDollarIcon, PlusIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
 import { LeaseCalculator } from '@/utils/leaseCalculator'
 import { formatCurrency } from '@/utils/formatters'
+import { formatRelativeTime } from '@/utils/time'
 import axios from 'axios'
 
 interface User {
@@ -214,9 +215,12 @@ onMounted(() => {
                             <p class="text-sm text-gray-500">
                               {{ sheet.dealership_name || 'No dealership specified' }}
                             </p>
+                            <span v-if="sheet.updated_at" class="text-xs text-gray-400">
+                              {{ formatRelativeTime(sheet.updated_at) }}
+                            </span>
                           </div>
                         </div>
-                        <div class="flex space-x-2">
+                        <div class="flex flex-col items-end space-y-2">
                           <Link :href="`/estimates/leasing/${sheet.id}/edit`">
                             <button
                               class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-colors"

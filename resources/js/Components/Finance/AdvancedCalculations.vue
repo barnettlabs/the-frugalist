@@ -42,7 +42,7 @@ const costVsMsrpRatio = computed(() => {
 })
 
 const timeSaved = computed(() => {
-  if (!hasExtraPayments.value || !summary.value) return 0
+  if (!hasExtraPayments.value || !summary.value || !summary.value.amortization) return 0
   return summary.value.amortization.monthsSaved || 0
 })
 
@@ -92,16 +92,28 @@ import { formatCurrency } from '@/utils/formatters.js'
     <div v-if="summary">
       <!-- Basic Summary (Always Visible) -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div class="bg-blue-50 p-4 rounded-lg">
-          <div class="text-sm text-blue-600 font-medium">Monthly Payment</div>
-          <div class="text-2xl font-bold text-blue-900">
+        <div class="bg-primary/10 p-4 rounded-lg">
+          <div class="text-sm text-primary font-medium">Monthly Payment</div>
+          <div class="text-xl font-bold text-primary-shade-4">
             ${{ formatCurrency(summary.monthlyPayment) }}
           </div>
         </div>
-        <div class="bg-green-50 p-4 rounded-lg">
-          <div class="text-sm text-green-600 font-medium">Total Interest</div>
-          <div class="text-2xl font-bold text-green-900">
+        <div class="bg-purple-50 p-4 rounded-lg">
+          <div class="text-sm text-purple-600 font-medium">Due at Signing</div>
+          <div class="text-xl font-bold text-purple-900">
+            ${{ formatCurrency(parseFloat(data.down_payment || 0)) }}
+          </div>
+        </div>
+        <div class="bg-red-50 p-4 rounded-lg">
+          <div class="text-sm text-red-600 font-medium">Total Interest</div>
+          <div class="text-xl font-bold text-red-900">
             ${{ formatCurrency(summary.interestAmount) }}
+          </div>
+        </div>
+        <div class="bg-blue-50 p-4 rounded-lg">
+          <div class="text-sm text-blue-600 font-medium">Total Paid</div>
+          <div class="text-xl font-bold text-blue-900">
+            ${{ formatCurrency(summary.paymentsTotal + parseFloat(data.down_payment || 0)) }}
           </div>
         </div>
       </div>

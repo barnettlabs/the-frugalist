@@ -63,15 +63,15 @@ import { formatCurrency } from '@/utils/formatters.js'
     <div v-if="summary">
       <!-- Basic Summary (Always Visible) -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div class="bg-secondary/10 p-4 rounded-lg">
-          <div class="text-sm text-secondary font-medium">Monthly Lease Payment</div>
-          <div class="text-2xl font-bold text-secondary-shade-1">
+        <div class="bg-primary/10 p-4 rounded-lg">
+          <div class="text-sm text-primary font-medium">Monthly Payment</div>
+          <div class="text-xl font-bold text-primary-shade-4">
             ${{ formatCurrency(summary.leasePayment) }}
           </div>
         </div>
         <div class="bg-purple-50 p-4 rounded-lg">
-          <div class="text-sm text-purple-600 font-medium">Cash Due at Signing</div>
-          <div class="text-2xl font-bold text-purple-900">
+          <div class="text-sm text-purple-600 font-medium">Due at Signing</div>
+          <div class="text-xl font-bold text-purple-900">
             ${{ formatCurrency(summary.cashDueAtSigning) }}
           </div>
         </div>

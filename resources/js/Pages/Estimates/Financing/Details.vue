@@ -134,11 +134,6 @@ const calculateTotals = () => {
         <!-- Hero Header -->
         <div class="mb-8">
           <div class="glass rounded-2xl p-8 text-gray-900 bg-white/80 relative overflow-hidden">
-            <div class="absolute inset-0 overflow-hidden pointer-events-none">
-              <div class="absolute -top-4 -right-4 w-32 h-32 bg-primary/5 rounded-full"></div>
-              <div class="absolute bottom-0 -left-4 w-24 h-24 bg-primary/10 rounded-full"></div>
-            </div>
-
             <div class="relative text-center lg:text-left">
               <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div class="flex items-center space-x-6 mb-6 lg:mb-0">

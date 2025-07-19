@@ -1,3 +1,69 @@
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { FinanceCalculator } from '../../utils/financeCalculator.js'
+
+const props = defineProps({
+  data: {
+    type: Object,
+    required: true,
+  },
+})
+
+const expanded = ref(false)
+
+const summary = computed(() => {
+  const calculator = new FinanceCalculator(props.data)
+  return calculator.getSummary()
+})
+
+const hasExtraPayments = computed(() => {
+  return props.data.extra_payments_json && props.data.extra_payments_json !== ''
+})
+
+const interestRatio = computed(() => {
+  if (!summary.value || summary.value.paymentsTotal === 0) return 0
+  return ((summary.value.interestAmount / summary.value.paymentsTotal) * 100).toFixed(1)
+})
+
+const principalRatio = computed(() => {
+  if (!summary.value || summary.value.paymentsTotal === 0) return 0
+  return ((summary.value.loanAmount / summary.value.paymentsTotal) * 100).toFixed(1)
+})
+
+const totalCost = computed(() => {
+  if (!summary.value) return 0
+  return summary.value.paymentsTotal + parseFloat(props.data.down_payment || 0)
+})
+
+const costVsMsrpRatio = computed(() => {
+  const msrp = parseFloat(props.data.msrp || 0)
+  if (msrp === 0) return 0
+  return ((totalCost.value / msrp) * 100).toFixed(1)
+})
+
+const timeSaved = computed(() => {
+  if (!hasExtraPayments.value || !summary.value) return 0
+  return summary.value.amortization.monthsSaved || 0
+})
+
+const interestSaved = computed(() => {
+  if (!hasExtraPayments.value) return 0
+
+  const dataWithoutExtra = { ...props.data, extra_payments_json: '' }
+  const calculatorWithoutExtra = new FinanceCalculator(dataWithoutExtra)
+  const interestWithoutExtra = calculatorWithoutExtra.calculateInterestAmount()
+
+  return Math.max(0, interestWithoutExtra - summary.value.interestAmount)
+})
+
+const totalExtraPayments = computed(() => {
+  if (!hasExtraPayments.value || !summary.value.paymentBreakdown) return 0
+  return summary.value.paymentBreakdown.extraPayments || 0
+})
+
+import { formatCurrency } from '@/utils/formatters.js'
+</script>
+
 <template>
   <div class="futuristic-card bg-white p-6">
     <div class="flex items-center justify-between mb-6">
@@ -192,69 +258,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref, computed } from 'vue'
-import { FinanceCalculator } from '../../utils/financeCalculator.js'
-
-const props = defineProps({
-  data: {
-    type: Object,
-    required: true,
-  },
-})
-
-const expanded = ref(false)
-
-const summary = computed(() => {
-  const calculator = new FinanceCalculator(props.data)
-  return calculator.getSummary()
-})
-
-const hasExtraPayments = computed(() => {
-  return props.data.extra_payments_json && props.data.extra_payments_json !== ''
-})
-
-const interestRatio = computed(() => {
-  if (!summary.value || summary.value.paymentsTotal === 0) return 0
-  return ((summary.value.interestAmount / summary.value.paymentsTotal) * 100).toFixed(1)
-})
-
-const principalRatio = computed(() => {
-  if (!summary.value || summary.value.paymentsTotal === 0) return 0
-  return ((summary.value.loanAmount / summary.value.paymentsTotal) * 100).toFixed(1)
-})
-
-const totalCost = computed(() => {
-  if (!summary.value) return 0
-  return summary.value.paymentsTotal + parseFloat(props.data.down_payment || 0)
-})
-
-const costVsMsrpRatio = computed(() => {
-  const msrp = parseFloat(props.data.msrp || 0)
-  if (msrp === 0) return 0
-  return ((totalCost.value / msrp) * 100).toFixed(1)
-})
-
-const timeSaved = computed(() => {
-  if (!hasExtraPayments.value || !summary.value) return 0
-  return summary.value.amortization.monthsSaved || 0
-})
-
-const interestSaved = computed(() => {
-  if (!hasExtraPayments.value) return 0
-
-  const dataWithoutExtra = { ...props.data, extra_payments_json: '' }
-  const calculatorWithoutExtra = new FinanceCalculator(dataWithoutExtra)
-  const interestWithoutExtra = calculatorWithoutExtra.calculateInterestAmount()
-
-  return Math.max(0, interestWithoutExtra - summary.value.interestAmount)
-})
-
-const totalExtraPayments = computed(() => {
-  if (!hasExtraPayments.value || !summary.value.paymentBreakdown) return 0
-  return summary.value.paymentBreakdown.extraPayments || 0
-})
-
-import { formatCurrency } from '@/utils/formatters.js'
-</script>

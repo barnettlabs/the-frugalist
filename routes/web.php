@@ -115,7 +115,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/estimates/leasing', function (Request $request) {
         $user = $request->user();
 
-        return Inertia::render('Estimates/Leasing/Details', [
+        return Inertia::render('Estimates/Leasing/Index', [
             'user' => $user,
         ]);
     })->name('estimates.leasing');

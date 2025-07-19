@@ -25,18 +25,6 @@ defineEmits<{
 
 <template>
   <div class="futuristic-card p-6 bg-white">
-    <div v-if="!isEdit" class="flex items-center justify-between mb-6">
-      <h2 class="text-lg font-medium text-gray-900">
-        {{ title }}
-      </h2>
-      <Link
-        :href="backUrl"
-        class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
-        Back to Estimates
-      </Link>
-    </div>
-
     <form @submit.prevent="$emit('submit')" class="space-y-6">
       <!-- Basic Information -->
       <div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { Head, Link } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {
@@ -8,6 +8,8 @@ import {
     PencilIcon,
     TrashIcon,
 } from "@heroicons/vue/24/outline";
+import { LeaseCalculator } from '@/utils/leaseCalculator';
+import { formatCurrency } from '@/utils/formatters';
 import axios from "axios";
 
 interface User {
@@ -27,6 +29,12 @@ interface VehicleLeaseSheet {
     vehicle_year?: number;
     vehicle_make?: string;
     vehicle_model?: string;
+    vehicle_trim?: string;
+    money_factor?: number;
+    residual_percent?: number;
+    down_payment?: string;
+    dealer_contribution?: string;
+    trade_in?: string;
     created_at?: string;
     updated_at?: string;
 }
@@ -40,6 +48,7 @@ const props = defineProps<Props>();
 
 const vehicleLeaseSheets = ref<VehicleLeaseSheet[]>([]);
 const loading = ref(true);
+const expandedCards = ref<Set<number>>(new Set());
 
 const fetchSheets = async () => {
     try {
@@ -61,6 +70,41 @@ const deleteSheet = async (sheetId: number) => {
             console.error("Error deleting sheet:", error);
         }
     }
+};
+
+const getSheetCalculations = (sheet: VehicleLeaseSheet) => {
+  try {
+    const calculator = new LeaseCalculator(sheet);
+    const netCapCost = calculator.calculateNetCapCost();
+    // For lease, we'd need monthly payment calculation from the calculator
+    return {
+      monthlyPayment: 0, // Would need to implement this in LeaseCalculator
+      netCapCost: netCapCost || 0
+    };
+  } catch (error) {
+    return {
+      monthlyPayment: 0,
+      netCapCost: 0
+    };
+  }
+};
+
+const getVehicleTitle = (sheet: VehicleLeaseSheet) => {
+  const parts = [sheet.vehicle_year, sheet.vehicle_make, sheet.vehicle_model, sheet.vehicle_trim]
+    .filter(part => part && part.toString().trim());
+  return parts.length > 0 ? parts.join(' ') : 'Vehicle';
+};
+
+const toggleCardDetails = (sheetId: number) => {
+  if (expandedCards.value.has(sheetId)) {
+    expandedCards.value.delete(sheetId);
+  } else {
+    expandedCards.value.add(sheetId);
+  }
+};
+
+const isCardExpanded = (sheetId: number) => {
+  return expandedCards.value.has(sheetId);
 };
 
 onMounted(() => {
@@ -169,7 +213,7 @@ onMounted(() => {
                                     class="col-span-full"
                                 >
                                     <div
-                                        class="futuristic-card p-12 text-center"
+                                        class="futuristic-card bg-white p-12 text-center border border-gray-200 shadow-sm"
                                     >
                                         <div
                                             class="p-4 rounded-xl bg-secondary/10 w-16 h-16 mx-auto mb-4 flex items-center justify-center"
@@ -211,7 +255,7 @@ onMounted(() => {
                                         class="list-none"
                                     >
                                         <div
-                                            class="futuristic-card p-6 group hover:neon-glow transition-all duration-150"
+                                            class="futuristic-card bg-white p-6 group hover:neon-glow transition-all duration-150 border border-gray-200 shadow-sm"
                                         >
                                             <div
                                                 class="flex items-center justify-between mb-4"
@@ -230,10 +274,7 @@ onMounted(() => {
                                                         <h3
                                                             class="text-lg font-bold text-gray-900 group-hover:text-secondary transition-colors"
                                                         >
-                                                            {{
-                                                                sheet.sheet_name ||
-                                                                `Lease Estimate ${sheetIndex + 1}`
-                                                            }}
+                                                            {{ getVehicleTitle(sheet) }}
                                                         </h3>
                                                         <p
                                                             class="text-sm text-gray-500"
@@ -241,24 +282,6 @@ onMounted(() => {
                                                             {{
                                                                 sheet.dealership_name ||
                                                                 "No dealership specified"
-                                                            }}
-                                                        </p>
-                                                        <p
-                                                            v-if="
-                                                                sheet.vehicle_year &&
-                                                                sheet.vehicle_make &&
-                                                                sheet.vehicle_model
-                                                            "
-                                                            class="text-xs text-gray-400"
-                                                        >
-                                                            {{
-                                                                sheet.vehicle_year
-                                                            }}
-                                                            {{
-                                                                sheet.vehicle_make
-                                                            }}
-                                                            {{
-                                                                sheet.vehicle_model
                                                             }}
                                                         </p>
                                                     </div>
@@ -289,36 +312,64 @@ onMounted(() => {
                                                     </button>
                                                 </div>
                                             </div>
-                                            <div
-                                                class="grid grid-cols-2 gap-4 text-sm bg-gray-50 rounded-lg p-3"
-                                            >
-                                                <div>
-                                                    <span
-                                                        class="text-gray-500 text-xs uppercase tracking-wide"
-                                                        >MSRP</span
-                                                    >
-                                                    <div
-                                                        class="font-bold text-gray-900"
-                                                    >
-                                                        ${{
-                                                            sheet.msrp?.toLocaleString() ||
-                                                            "0"
-                                                        }}
+                                            
+                                            <!-- Monthly Payment (Always Visible) -->
+                                            <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                                                <div class="text-center">
+                                                    <span class="text-gray-500 text-sm uppercase tracking-wide block mb-1">Monthly Payment</span>
+                                                    <div class="font-bold text-green-600 text-2xl">
+                                                        ${{ formatCurrency(getSheetCalculations(sheet).monthlyPayment) }}
                                                     </div>
                                                 </div>
+                                            </div>
+                                            
+                                            <!-- Show More/Less Button -->
+                                            <div class="mb-4">
+                                                <button @click="toggleCardDetails(sheet.id)" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2">
+                                                    <span>{{ isCardExpanded(sheet.id) ? 'Show Less' : 'Show More Details' }}</span>
+                                                    <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': isCardExpanded(sheet.id) }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            
+                                            <!-- Expanded Details -->
+                                            <div v-if="isCardExpanded(sheet.id)" class="space-y-4">
+                                                <!-- Vehicle Info -->
                                                 <div>
-                                                    <span
-                                                        class="text-gray-500 text-xs uppercase tracking-wide"
-                                                        >Lease Term</span
-                                                    >
-                                                    <div
-                                                        class="font-bold text-gray-900"
-                                                    >
-                                                        {{
-                                                            sheet.lease_term ||
-                                                            "0"
-                                                        }}
-                                                        months
+                                                    <h4 class="font-semibold text-gray-900 text-sm mb-2">Vehicle Information</h4>
+                                                    <div class="text-sm text-gray-600 space-y-1">
+                                                        <div class="flex justify-between">
+                                                            <span>MSRP:</span>
+                                                            <span class="font-medium">${{ formatCurrency(sheet.msrp || 0) }}</span>
+                                                        </div>
+                                                        <div class="flex justify-between">
+                                                            <span>Net Cap Cost:</span>
+                                                            <span class="font-medium">${{ formatCurrency(getSheetCalculations(sheet).netCapCost) }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Lease Terms -->
+                                                <div class="bg-gray-50 rounded-lg p-3">
+                                                    <h4 class="font-semibold text-gray-900 text-sm mb-2">Lease Terms</h4>
+                                                    <div class="grid grid-cols-2 gap-3 text-sm">
+                                                        <div>
+                                                            <span class="text-gray-500 text-xs uppercase tracking-wide block">Money Factor</span>
+                                                            <div class="font-bold text-gray-900">{{ sheet.money_factor || '0.00' }}</div>
+                                                        </div>
+                                                        <div>
+                                                            <span class="text-gray-500 text-xs uppercase tracking-wide block">Residual %</span>
+                                                            <div class="font-bold text-gray-900">{{ sheet.residual_percent || 0 }}%</div>
+                                                        </div>
+                                                        <div>
+                                                            <span class="text-gray-500 text-xs uppercase tracking-wide block">Down Payment</span>
+                                                            <div class="font-bold text-gray-900">${{ formatCurrency(sheet.down_payment || 0) }}</div>
+                                                        </div>
+                                                        <div>
+                                                            <span class="text-gray-500 text-xs uppercase tracking-wide block">Lease Term</span>
+                                                            <div class="font-bold text-gray-900">{{ sheet.lease_term || 0 }} mo</div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -359,7 +410,7 @@ onMounted(() => {
 
                     <div class="grid grid-cols-1 gap-6">
                         <!-- Quick Stats -->
-                        <div class="futuristic-card p-6">
+                        <div class="futuristic-card bg-white p-6 border border-gray-200 shadow-sm">
                             <h3 class="text-lg font-bold text-gray-900 mb-4">
                                 Quick Stats
                             </h3>
@@ -386,7 +437,7 @@ onMounted(() => {
                         </div>
 
                         <!-- Pro Tips -->
-                        <div class="futuristic-card p-6">
+                        <div class="futuristic-card bg-white p-6 border border-gray-200 shadow-sm">
                             <h3 class="text-lg font-bold text-gray-900 mb-4">
                                 Renegade Tips
                             </h3>

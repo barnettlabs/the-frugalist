@@ -3,7 +3,6 @@ import { ref, computed, onMounted } from 'vue'
 import { Head, router, Link } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import FinanceForm from '@/Components/FinanceForm.vue'
-import EstimateSummary from '@/Components/EstimateSummary.vue'
 import AmortizationTable from '@/Components/Finance/AmortizationTable.vue'
 import PaymentCharts from '@/Components/Finance/PaymentCharts.vue'
 import ExtraPayments from '@/Components/Finance/ExtraPayments.vue'
@@ -231,7 +230,7 @@ const calculateTotals = () => {
           </div>
 
           <!-- Right Sidebar -->
-          <div class="grid grid-cols-1 gap-4">
+          <div>
             <AdvancedCalculations :data="form" />
           </div>
         </div>

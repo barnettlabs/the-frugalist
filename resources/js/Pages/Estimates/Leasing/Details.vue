@@ -3,10 +3,12 @@ import { ref, computed } from 'vue'
 import { Head, router, Link } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import LeaseForm from '@/Components/LeaseForm.vue'
+import PaymentAnalysis from '@/Components/Lease/PaymentAnalysis.vue'
+import BuyoutAnalysis from '@/Components/Lease/BuyoutAnalysis.vue'
+import AdvancedCalculations from '@/Components/Lease/AdvancedCalculations.vue'
 import { LeaseFormData, FormErrors, VehicleType, User, Profile, VehicleLeaseSheet } from '@/types'
 import { LeaseCalculator } from '@/utils/leaseCalculator'
 import axios from 'axios'
-import AdvancedCalculations from '@/Components/Lease/AdvancedCalculations.vue'
 
 interface Props {
   user: User
@@ -200,6 +202,12 @@ const vehicleTitle = computed(() => {
                 @calculate="calculateTotals"
               />
             </section>
+            
+            <!-- Payment Analysis -->
+            <PaymentAnalysis :data="form" />
+            
+            <!-- Buyout Analysis -->
+            <BuyoutAnalysis :data="form" />
           </div>
 
           <!-- Right Sidebar -->

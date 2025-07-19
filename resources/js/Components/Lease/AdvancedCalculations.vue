@@ -222,34 +222,29 @@ import { formatCurrency } from '@/utils/formatters.js'
         <!-- Advanced Metrics -->
         <div class="bg-gray-50 p-4 rounded-lg">
           <h4 class="font-semibold text-gray-900 mb-3">Advanced Metrics</h4>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <div class="flex justify-between">
-                <span class="text-sm text-gray-600">Money Factor</span>
-                <span class="text-sm font-medium"
-                  >{{ data.money_factor }} ({{ summary.interestRate.toFixed(2) }}%)</span
-                >
-              </div>
-              <div class="flex justify-between">
-                <span class="text-sm text-gray-600">Lease Term</span>
-                <span class="text-sm font-medium">{{ data.lease_term }} months</span>
-              </div>
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-600">Money Factor</span>
+              <span class="text-sm font-medium"
+                >{{ data.money_factor }} ({{ summary.interestRate.toFixed(2) }}%)</span
+              >
             </div>
-            <div class="space-y-2">
-              <div class="flex justify-between">
-                <span class="text-sm text-gray-600">Total Lease Cost</span>
-                <span class="text-sm font-medium"
-                  >${{ formatCurrency(summary.totalLeaseCost) }}</span
-                >
-              </div>
-              <div class="flex justify-between">
-                <span class="text-sm text-gray-600">Cost per Mile</span>
-                <span class="text-sm font-medium">${{ costPerMile }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-sm text-gray-600">Depreciation Rate</span>
-                <span class="text-sm font-medium">{{ depreciationRate }}%</span>
-              </div>
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-600">Lease Term</span>
+              <span class="text-sm font-medium">{{ data.lease_term }} months</span>
+            </div>
+
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-600">Total Lease Cost</span>
+              <span class="text-sm font-medium">${{ formatCurrency(summary.totalLeaseCost) }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-600">Cost per Mile</span>
+              <span class="text-sm font-medium">${{ costPerMile }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-600">Depreciation Rate</span>
+              <span class="text-sm font-medium">{{ depreciationRate }}%</span>
             </div>
           </div>
         </div>

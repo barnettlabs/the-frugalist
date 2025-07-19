@@ -5,7 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import LeaseForm from '@/Components/LeaseForm.vue'
 import EstimateSummary from '@/Components/EstimateSummary.vue'
 import { LeaseFormData, FormErrors, VehicleType, User, Profile } from '@/types'
-import { parseOrZero } from '@/utils/formatters'
+import { LeaseCalculator } from '@/utils/leaseCalculator'
 import axios from 'axios'
 
 interface Props {
@@ -32,8 +32,8 @@ const form = ref<LeaseFormData>({
     misc_fees: '',
     lease_cash: '',
     down_payment: '',
-    money_factor: '',
     sales_tax_percent: '',
+    money_factor: '',
     residual_percent: '',
     lease_term: '',
     start_date: '',
@@ -46,15 +46,8 @@ const loading = ref(false)
 const errors = ref<FormErrors>({})
 
 const calculatedCapitalizedCost = computed(() => {
-    const msrp = parseOrZero(form.value.msrp)
-    const dealerContribution = parseOrZero(form.value.dealer_contribution)
-    const tradeIn = parseOrZero(form.value.trade_in)
-    const leaseCash = parseOrZero(form.value.lease_cash)
-    const downPayment = parseOrZero(form.value.down_payment)
-    
-    // Calculate capitalized cost based on new schema
-    const adjustedCapCost = msrp + dealerContribution - tradeIn - leaseCash - downPayment
-    return Math.max(0, adjustedCapCost)
+    const calculator = new LeaseCalculator(form.value)
+    return calculator.calculateNetCapCost()
 })
 
 const submitForm = async () => {
@@ -76,7 +69,6 @@ const submitForm = async () => {
 }
 
 const calculateTotals = () => {
-    // This function can be used if needed later
     return calculatedCapitalizedCost.value
 }
 </script>
@@ -106,7 +98,6 @@ const calculateTotals = () => {
                         <EstimateSummary
                             estimate-type="lease"
                             :calculated-value="calculatedCapitalizedCost"
-                            :monthly-payment="form.monthly_payment"
                         />
                     </div>
                 </div>

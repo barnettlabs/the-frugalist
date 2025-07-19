@@ -43,19 +43,12 @@ defineEmits<{
                 <h3 class="text-lg font-medium text-gray-900 mb-4">
                     Basic Information
                 </h3>
-                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
                     <FormField
                         v-model="form.sheet_name"
                         name="sheet_name"
                         label="Estimate Name"
                         :error="errors.sheet_name"
-                    />
-
-                    <FormField
-                        v-model="form.sales_consultant"
-                        name="sales_consultant"
-                        label="Sales Consultant"
-                        :error="errors.sales_consultant"
                     />
 
                     <FormField
@@ -72,6 +65,37 @@ defineEmits<{
                         type="select"
                         :options="vehicleTypeOptions"
                         :error="errors.vehicle_type"
+                    />
+                </div>
+            </div>
+
+            <!-- Contact Information (Edit mode only) -->
+            <div class="border-t border-gray-200 pt-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">
+                    Contact Information
+                </h3>
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+                    <FormField
+                        v-model="form.sales_consultant"
+                        name="sales_consultant"
+                        label="Sales Consultant"
+                        :error="errors.sales_consultant"
+                    />
+
+                    <FormField
+                        v-model="form.contact_email"
+                        name="contact_email"
+                        label="Contact Email"
+                        type="email"
+                        :error="errors.contact_email"
+                    />
+
+                    <FormField
+                        v-model="form.contact_phone"
+                        name="contact_phone"
+                        label="Contact Phone"
+                        type="tel"
+                        :error="errors.contact_phone"
                     />
                 </div>
             </div>
@@ -204,30 +228,6 @@ defineEmits<{
                         label="Start Date"
                         type="date"
                         :error="errors.start_date"
-                    />
-                </div>
-            </div>
-
-            <!-- Contact Information (Edit mode only) -->
-            <div v-if="isEdit" class="border-t border-gray-200 pt-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">
-                    Contact Information
-                </h3>
-                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                    <FormField
-                        v-model="form.contact_email"
-                        name="contact_email"
-                        label="Contact Email"
-                        type="email"
-                        :error="errors.contact_email"
-                    />
-
-                    <FormField
-                        v-model="form.contact_phone"
-                        name="contact_phone"
-                        label="Contact Phone"
-                        type="tel"
-                        :error="errors.contact_phone"
                     />
                 </div>
             </div>

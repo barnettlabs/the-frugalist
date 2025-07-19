@@ -5,7 +5,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import FinanceForm from "@/Components/FinanceForm.vue";
 import EstimateSummary from "@/Components/EstimateSummary.vue";
 import { FinanceFormData, FormErrors, VehicleType, User, Profile } from "@/types";
-import { parseOrZero } from "@/utils/formatters";
+import { FinanceCalculator } from "@/utils/financeCalculator";
 import axios from "axios";
 
 interface Props {
@@ -43,15 +43,8 @@ const loading = ref(false);
 const errors = ref<FormErrors>({});
 
 const calculatedAmountFinanced = computed(() => {
-    const msrp = parseOrZero(form.value.msrp);
-    const fees = parseOrZero(form.value.fees);
-    const discounts = parseOrZero(form.value.discounts);
-    const rebates = parseOrZero(form.value.rebates);
-    const downPayment = parseOrZero(form.value.down_payment);
-
-    // Calculate amount financed based on new schema
-    const totalCost = msrp + fees - discounts - rebates;
-    return Math.max(0, totalCost - downPayment);
+    const calculator = new FinanceCalculator(form.value);
+    return calculator.calculateLoanAmount();
 });
 
 const submitForm = async () => {
@@ -76,7 +69,6 @@ const submitForm = async () => {
 };
 
 const calculateTotals = () => {
-    // This function can be used if needed later
     return calculatedAmountFinanced.value;
 };
 </script>
@@ -154,7 +146,6 @@ const calculateTotals = () => {
                         <EstimateSummary
                             estimate-type="finance"
                             :calculated-value="calculatedAmountFinanced"
-                            :monthly-payment="form.monthly_payment"
                         />
                     </div>
                 </div>

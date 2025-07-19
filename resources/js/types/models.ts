@@ -94,17 +94,15 @@ export interface VehicleLeaseSheet {
 }
 
 // Form Data Models (for frontend forms)
-export interface FinanceFormData
-    extends Exclude<
-        VehicleFinanceSheet,
-        "id" | "user_id" | "shareable_key" | "created_at" | "updated_at"
-    > {}
+export type FinanceFormData = Omit<
+    VehicleFinanceSheet,
+    "id" | "user_id" | "shareable_key" | "created_at" | "updated_at"
+>;
 
-export interface LeaseFormData
-    extends Exclude<
-        VehicleLeaseSheet,
-        "id" | "user_id" | "shareable_key" | "created_at" | "updated_at"
-    > {}
+export type LeaseFormData = Omit<
+    VehicleLeaseSheet,
+    "id" | "user_id" | "shareable_key" | "created_at" | "updated_at"
+>;
 
 // API Response Models
 export interface ApiResponse<T> {

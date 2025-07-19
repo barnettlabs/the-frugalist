@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import { Head, router, Link } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
@@ -7,17 +7,19 @@ import AmortizationTable from "@/Components/Finance/AmortizationTable.vue";
 import PaymentCharts from "@/Components/Finance/PaymentCharts.vue";
 import ExtraPayments from "@/Components/Finance/ExtraPayments.vue";
 import AdvancedCalculations from "@/Components/Finance/AdvancedCalculations.vue";
-import { VehicleFinanceSheet, FinanceFormData, FormErrors } from "@/types";
+import { VehicleFinanceSheet, FinanceFormData, FormErrors, User, Profile } from "@/types";
 import axios from "axios";
 
-const props = defineProps({
-    user: Object,
-    profile: Object,
-    sheet: Object,
-});
+interface Props {
+    user: User;
+    profile: Profile;
+    sheet: VehicleFinanceSheet;
+}
+
+const props = defineProps<Props>();
 
 // Form matches the database schema
-const form = ref({
+const form = ref<FinanceFormData>({
     sheet_name: "",
     sales_consultant: "",
     dealership_name: "",
@@ -42,7 +44,7 @@ const form = ref({
 });
 
 const loading = ref(false);
-const errors = ref({});
+const errors = ref<FormErrors>({});
 
 onMounted(() => {
     if (props.sheet) {

@@ -1,20 +1,23 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import LeaseForm from '@/Components/LeaseForm.vue'
 import EstimateSummary from '@/Components/EstimateSummary.vue'
-import { calculateCapitalizedCost } from '@/utils/vehicleCalculations.js'
-import { parseOrZero } from '@/utils/formatters.js'
+import { VehicleLeaseSheet, LeaseFormData, FormErrors, User, Profile } from '@/types'
+import { parseOrZero } from '@/utils/formatters'
 import axios from 'axios'
+import { calculateCapitalizedCost } from '@/utils/vehicleCalculations'
 
-const props = defineProps({
-    user: Object,
-    profile: Object,
-    sheet: Object,
-})
+interface Props {
+    user: User;
+    profile: Profile;
+    sheet: VehicleLeaseSheet;
+}
 
-const form = ref({
+const props = defineProps<Props>();
+
+const form = ref<LeaseFormData>({
     sheet_name: '',
     dealership_name: '',
     vehicle_year: '',
@@ -22,13 +25,8 @@ const form = ref({
     vehicle_model: '',
     vehicle_trim: '',
     msrp: '',
-    selling_price: '',
     down_payment: '',
-    trade_in_value: '',
-    trade_in_payoff: '',
-    cash_rebate: '',
-    dealer_rebate: '',
-    other_incentives: '',
+    trade_in: '',
     sales_tax_rate: '',
     doc_fee: '',
     title_fee: '',
@@ -43,7 +41,7 @@ const form = ref({
 })
 
 const loading = ref(false)
-const errors = ref({})
+const errors = ref<FormErrors>({})
 
 onMounted(() => {
     if (props.sheet) {
@@ -77,10 +75,8 @@ const submitForm = async () => {
 
 const calculatedCapitalizedCost = computed(() => {
     const msrp = parseOrZero(form.value.msrp)
-    const sellingPrice = parseOrZero(form.value.selling_price) || msrp
-    
+
     return calculateCapitalizedCost({
-        sellingPrice,
         tradeInValue: form.value.trade_in_value,
         tradeInPayoff: form.value.trade_in_payoff,
         cashRebate: form.value.cash_rebate,

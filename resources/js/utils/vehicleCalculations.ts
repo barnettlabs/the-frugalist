@@ -33,7 +33,7 @@ export const calculateTotalRebates = (cashRebate, dealerRebate, otherIncentives)
 /**
  * Calculate amount financed for a loan
  * @param {object} params - Calculation parameters
- * @param {number|string} params.sellingPrice - Vehicle selling price
+ * @param {number|string} params.msrp - Vehicle selling price
  * @param {number|string} params.downPayment - Down payment amount
  * @param {number|string} params.tradeInValue - Trade-in value
  * @param {number|string} params.tradeInPayoff - Trade-in payoff
@@ -55,7 +55,7 @@ export const calculateAmountFinanced = ({
     const down = parseOrZero(downPayment);
     const netTradeIn = calculateNetTradeIn(tradeInValue, tradeInPayoff);
     const totalRebates = calculateTotalRebates(cashRebate, dealerRebate, otherIncentives);
-    
+
     const amountFinanced = price - down - netTradeIn - totalRebates;
     return formatNumber(amountFinanced, 2);
 };
@@ -72,17 +72,17 @@ export const calculateAmountFinanced = ({
  * @returns {string} - Formatted capitalized cost
  */
 export const calculateCapitalizedCost = ({
-    sellingPrice,
+    msrp,
     tradeInValue,
     tradeInPayoff,
     cashRebate,
     dealerRebate,
     otherIncentives
 }) => {
-    const price = parseOrZero(sellingPrice);
+    const price = parseOrZero(msrp);
     const netTradeIn = calculateNetTradeIn(tradeInValue, tradeInPayoff);
     const totalRebates = calculateTotalRebates(cashRebate, dealerRebate, otherIncentives);
-    
+
     const capitalizedCost = price - netTradeIn - totalRebates;
     return formatNumber(capitalizedCost, 2);
 };

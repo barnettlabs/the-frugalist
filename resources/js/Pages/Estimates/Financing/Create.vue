@@ -4,15 +4,16 @@ import { Head, Link, router } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import FinanceForm from "@/Components/FinanceForm.vue";
 import EstimateSummary from "@/Components/EstimateSummary.vue";
-import { FinanceFormData, FormErrors, VehicleType } from "@/types";
+import { FinanceFormData, FormErrors, VehicleType, User, Profile } from "@/types";
 import { parseOrZero } from "@/utils/formatters";
 import axios from "axios";
-import { calculateAmountFinanced } from "@/utils/vehicleCalculations";
 
-const props = defineProps({
-    user: Object,
-    profile: Object,
-});
+interface Props {
+    user: User;
+    profile: Profile;
+}
+
+const props = defineProps<Props>();
 
 const form = ref<FinanceFormData>({
     sheet_name: "",
@@ -43,17 +44,14 @@ const errors = ref<FormErrors>({});
 
 const calculatedAmountFinanced = computed(() => {
     const msrp = parseOrZero(form.value.msrp);
-    const sellingPrice = parseOrZero(form.value.selling_price) || msrp;
+    const fees = parseOrZero(form.value.fees);
+    const discounts = parseOrZero(form.value.discounts);
+    const rebates = parseOrZero(form.value.rebates);
+    const downPayment = parseOrZero(form.value.down_payment);
 
-    return calculateAmountFinanced({
-        sellingPrice,
-        downPayment: form.value.down_payment,
-        tradeInValue: form.value.trade_in_value,
-        tradeInPayoff: form.value.trade_in_payoff,
-        cashRebate: form.value.cash_rebate,
-        dealerRebate: form.value.dealer_rebate,
-        otherIncentives: form.value.other_incentives,
-    });
+    // Calculate amount financed based on new schema
+    const totalCost = msrp + fees - discounts - rebates;
+    return Math.max(0, totalCost - downPayment);
 });
 
 const submitForm = async () => {
@@ -61,8 +59,7 @@ const submitForm = async () => {
     errors.value = {};
 
     try {
-        form.value.amount_financed = calculatedAmountFinanced.value;
-        const response = await axios.post(
+        await axios.post(
             "/api/vehicle-finance-sheets",
             form.value,
         );
@@ -79,14 +76,15 @@ const submitForm = async () => {
 };
 
 const calculateTotals = () => {
-    form.value.amount_financed = calculatedAmountFinanced.value;
+    // This function can be used if needed later
+    return calculatedAmountFinanced.value;
 };
 </script>
 
 <template>
     <Head title="Create Finance Estimate" />
 
-    <AuthenticatedLayout :user="user" :profile="profile">
+    <AuthenticatedLayout :user="props.user" :profile="props.profile">
         <main class="-mt-24 pb-8 flex-1">
             <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
                 <!-- Hero Header -->

@@ -1,3 +1,28 @@
+<script setup lang="ts">
+import { Link } from '@inertiajs/vue3'
+import FormField from './FormField.vue'
+import BaseButton from './BaseButton.vue'
+import { LeaseFormData, FormErrors, vehicleTypeOptions } from '@/types'
+
+interface Props {
+    form: LeaseFormData;
+    errors: FormErrors;
+    loading: boolean;
+    title: string;
+    backUrl: string;
+    isEdit?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+    isEdit: false,
+});
+
+defineEmits<{
+    submit: [];
+    calculate: [];
+}>();
+</script>
+
 <template>
     <div class="overflow-hidden rounded-lg bg-white shadow">
         <div class="px-4 py-5 sm:p-6">
@@ -15,20 +40,39 @@
 
             <form @submit.prevent="$emit('submit')" class="space-y-6">
                 <!-- Basic Information -->
-                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                    <FormField
-                        v-model="form.sheet_name"
-                        name="sheet_name"
-                        label="Estimate Name"
-                        :error="errors.sheet_name"
-                    />
-                    
-                    <FormField
-                        v-model="form.dealership_name"
-                        name="dealership_name"
-                        label="Dealership"
-                        :error="errors.dealership_name"
-                    />
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <FormField
+                            v-model="form.sheet_name"
+                            name="sheet_name"
+                            label="Estimate Name"
+                            :error="errors.sheet_name"
+                        />
+
+                        <FormField
+                            v-model="form.sales_consultant"
+                            name="sales_consultant"
+                            label="Sales Consultant"
+                            :error="errors.sales_consultant"
+                        />
+                        
+                        <FormField
+                            v-model="form.dealership_name"
+                            name="dealership_name"
+                            label="Dealership"
+                            :error="errors.dealership_name"
+                        />
+
+                        <FormField
+                            v-model="form.vehicle_type"
+                            name="vehicle_type"
+                            label="Vehicle Type"
+                            type="select"
+                            :options="vehicleTypeOptions"
+                            :error="errors.vehicle_type"
+                        />
+                    </div>
                 </div>
 
                 <!-- Vehicle Information -->
@@ -82,11 +126,53 @@
                         />
                         
                         <FormField
-                            v-model="form.selling_price"
-                            name="selling_price"
-                            label="Selling Price"
+                            v-model="form.dealer_contribution"
+                            name="dealer_contribution"
+                            label="Dealer Contribution"
                             type="currency"
-                            :error="errors.selling_price"
+                            :error="errors.dealer_contribution"
+                            @input="$emit('calculate')"
+                        />
+                        
+                        <FormField
+                            v-model="form.trade_in"
+                            name="trade_in"
+                            label="Trade-in Value"
+                            type="currency"
+                            :error="errors.trade_in"
+                            @input="$emit('calculate')"
+                        />
+                        
+                        <FormField
+                            v-model="form.doc_fee"
+                            name="doc_fee"
+                            label="Documentation Fee"
+                            type="currency"
+                            :error="errors.doc_fee"
+                        />
+                        
+                        <FormField
+                            v-model="form.acquisition_fee"
+                            name="acquisition_fee"
+                            label="Acquisition Fee"
+                            type="currency"
+                            :error="errors.acquisition_fee"
+                        />
+                        
+                        <FormField
+                            v-model="form.misc_fees"
+                            name="misc_fees"
+                            label="Miscellaneous Fees"
+                            type="currency"
+                            :error="errors.misc_fees"
+                        />
+                        
+                        <FormField
+                            v-model="form.lease_cash"
+                            name="lease_cash"
+                            label="Lease Cash"
+                            type="currency"
+                            :error="errors.lease_cash"
                             @input="$emit('calculate')"
                         />
                         
@@ -100,88 +186,11 @@
                         />
                         
                         <FormField
-                            v-model="form.trade_in_value"
-                            name="trade_in_value"
-                            label="Trade-in Value"
-                            type="currency"
-                            :error="errors.trade_in_value"
-                            @input="$emit('calculate')"
-                        />
-                        
-                        <FormField
-                            v-model="form.trade_in_payoff"
-                            name="trade_in_payoff"
-                            label="Trade-in Payoff"
-                            type="currency"
-                            :error="errors.trade_in_payoff"
-                            @input="$emit('calculate')"
-                        />
-                        
-                        <FormField
-                            v-model="form.cash_rebate"
-                            name="cash_rebate"
-                            label="Cash Rebate"
-                            type="currency"
-                            :error="errors.cash_rebate"
-                            @input="$emit('calculate')"
-                        />
-                        
-                        <FormField
-                            v-model="form.dealer_rebate"
-                            name="dealer_rebate"
-                            label="Dealer Rebate"
-                            type="currency"
-                            :error="errors.dealer_rebate"
-                            @input="$emit('calculate')"
-                        />
-                        
-                        <FormField
-                            v-model="form.other_incentives"
-                            name="other_incentives"
-                            label="Other Incentives"
-                            type="currency"
-                            :error="errors.other_incentives"
-                            @input="$emit('calculate')"
-                        />
-                        
-                        <FormField
-                            v-model="form.sales_tax_rate"
-                            name="sales_tax_rate"
-                            label="Sales Tax Rate"
+                            v-model="form.sales_tax_percent"
+                            name="sales_tax_percent"
+                            label="Sales Tax Percent"
                             type="percentage"
-                            :error="errors.sales_tax_rate"
-                        />
-                        
-                        <FormField
-                            v-model="form.doc_fee"
-                            name="doc_fee"
-                            label="Documentation Fee"
-                            type="currency"
-                            :error="errors.doc_fee"
-                        />
-                        
-                        <FormField
-                            v-model="form.title_fee"
-                            name="title_fee"
-                            label="Title Fee"
-                            type="currency"
-                            :error="errors.title_fee"
-                        />
-                        
-                        <FormField
-                            v-model="form.license_fee"
-                            name="license_fee"
-                            label="License Fee"
-                            type="currency"
-                            :error="errors.license_fee"
-                        />
-                        
-                        <FormField
-                            v-model="form.other_fees"
-                            name="other_fees"
-                            label="Other Fees"
-                            type="currency"
-                            :error="errors.other_fees"
+                            :error="errors.sales_tax_percent"
                         />
                     </div>
                 </div>
@@ -202,29 +211,52 @@
                         />
                         
                         <FormField
-                            v-model="form.lease_term_months"
-                            name="lease_term_months"
+                            v-model="form.residual_percent"
+                            name="residual_percent"
+                            label="Residual Percent"
+                            type="percentage"
+                            :error="errors.residual_percent"
+                        />
+                        
+                        <FormField
+                            v-model="form.lease_term"
+                            name="lease_term"
                             label="Lease Term (Months)"
                             type="number"
                             :min="1"
                             :max="60"
-                            :error="errors.lease_term_months"
+                            :error="errors.lease_term"
                         />
                         
                         <FormField
-                            v-model="form.monthly_payment"
-                            name="monthly_payment"
-                            label="Monthly Payment"
-                            type="currency"
-                            :error="errors.monthly_payment"
+                            v-if="isEdit"
+                            v-model="form.start_date"
+                            name="start_date"
+                            label="Start Date"
+                            type="date"
+                            :error="errors.start_date"
                         />
-                        
+                    </div>
+                </div>
+
+                <!-- Contact Information (Edit mode only) -->
+                <div v-if="isEdit" class="border-t border-gray-200 pt-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Contact Information</h3>
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         <FormField
-                            v-model="form.residual_value"
-                            name="residual_value"
-                            label="Residual Value"
-                            type="currency"
-                            :error="errors.residual_value"
+                            v-model="form.contact_email"
+                            name="contact_email"
+                            label="Contact Email"
+                            type="email"
+                            :error="errors.contact_email"
+                        />
+
+                        <FormField
+                            v-model="form.contact_phone"
+                            name="contact_phone"
+                            label="Contact Phone"
+                            type="tel"
+                            :error="errors.contact_phone"
                         />
                     </div>
                 </div>
@@ -264,38 +296,3 @@
         </div>
     </div>
 </template>
-
-<script setup>
-import { Link } from '@inertiajs/vue3'
-import FormField from './FormField.vue'
-import BaseButton from './BaseButton.vue'
-
-defineEmits(['submit', 'calculate'])
-
-defineProps({
-    form: {
-        type: Object,
-        required: true
-    },
-    errors: {
-        type: Object,
-        default: () => ({})
-    },
-    loading: {
-        type: Boolean,
-        default: false
-    },
-    title: {
-        type: String,
-        required: true
-    },
-    backUrl: {
-        type: String,
-        required: true
-    },
-    isEdit: {
-        type: Boolean,
-        default: false
-    }
-})
-</script>

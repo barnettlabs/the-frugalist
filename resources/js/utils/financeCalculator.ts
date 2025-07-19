@@ -3,40 +3,46 @@
  * Based on the old calculator implementation with enhanced features
  */
 
-export class FinanceCalculator {
-    constructor(data) {
-        this.data = data;
-    }
+import { FinanceFormData } from "@/types";
+import { parseOrZero } from "./formatters";
 
-    // Parse value or return zero
-    parseOrZero(value) {
-        const parsed = parseFloat(value) || 0;
-        return isNaN(parsed) ? 0 : parsed;
+export class FinanceCalculator {
+    data: FinanceFormData;
+
+    constructor(data: FinanceFormData) {
+        this.data = data;
     }
 
     // Calculate purchase price (MSRP - discounts - rebates)
     calculatePurchasePrice() {
-        const msrp = this.parseOrZero(this.data.msrp);
-        const discounts = this.parseOrZero(this.data.discounts);
-        const rebates = this.parseOrZero(this.data.rebates);
+        const msrp = parseOrZero(this.data.msrp);
+        const discounts = parseOrZero(this.data.discounts);
+        const rebates = parseOrZero(this.data.rebates);
 
         return msrp - discounts - rebates;
     }
 
+    calculateTaxableAmount() {
+        const msrp = parseOrZero(this.data.msrp);
+        const discounts = parseOrZero(this.data.discounts);
+
+        return msrp - discounts;
+    }
+
     // Calculate sales tax amount
     calculateSalesTaxAmount() {
-        const purchasePrice = this.calculatePurchasePrice();
-        const salesTaxPercent = this.parseOrZero(this.data.sales_tax_percent);
+        const taxableAmount = this.calculateTaxableAmount();
+        const salesTaxPercent = parseOrZero(this.data.sales_tax_percent);
 
-        return purchasePrice * (salesTaxPercent / 100);
+        return taxableAmount * (salesTaxPercent / 100);
     }
 
     // Calculate loan amount
     calculateLoanAmount() {
         const purchasePrice = this.calculatePurchasePrice();
-        const fees = this.parseOrZero(this.data.fees);
+        const fees = parseOrZero(this.data.fees);
         const salesTaxAmount = this.calculateSalesTaxAmount();
-        const downPayment = this.parseOrZero(this.data.down_payment);
+        const downPayment = parseOrZero(this.data.down_payment);
 
         return purchasePrice + fees + salesTaxAmount - downPayment;
     }
@@ -44,49 +50,74 @@ export class FinanceCalculator {
     // Calculate monthly payment using standard loan formula
     calculateMonthlyPayment() {
         const loanAmount = this.calculateLoanAmount();
-        const interestRate = this.parseOrZero(this.data.interest_rate);
-        const financeTerm = this.parseOrZero(this.data.finance_term);
+        const interestRate = parseOrZero(this.data.interest_rate);
+        const financeTerm = parseOrZero(this.data.finance_term);
 
-        if (loanAmount <= 0 || interestRate <= 0 || financeTerm <= 0) {
+        if (loanAmount <= 0 || financeTerm <= 0) {
             return 0;
         }
 
-        const monthlyRate = interestRate / 100 / 12;
-        const numPayments = financeTerm;
+        const R = interestRate / 100 / 12;
+        const n = financeTerm;
+        const pv = loanAmount;
 
-        // PMT formula: P * [r(1+r)^n] / [(1+r)^n - 1]
-        const payment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
-                       (Math.pow(1 + monthlyRate, numPayments) - 1);
+        if (!interestRate) {
+            return pv / n;
+        }
+
+        const payment = (pv * R) / (1 - Math.pow(1 + R, n * -1));
 
         return payment;
     }
 
     // Calculate total interest amount
     calculateInterestAmount() {
-        const monthlyPayment = this.calculateMonthlyPayment();
-        const financeTerm = this.parseOrZero(this.data.finance_term);
+        const paymentsTotal = this.calculatePaymentsTotal();
         const loanAmount = this.calculateLoanAmount();
 
-        return (monthlyPayment * financeTerm) - loanAmount;
+        return paymentsTotal - loanAmount;
     }
 
     // Calculate total of all payments
     calculatePaymentsTotal() {
         const monthlyPayment = this.calculateMonthlyPayment();
-        const financeTerm = this.parseOrZero(this.data.finance_term);
+        const financeTerm = parseOrZero(this.data.finance_term);
 
         return monthlyPayment * financeTerm;
+    }
+
+    calculateGrandTotal() {
+        const paymentsTotal = this.calculatePaymentsTotal();
+        const downPayment = parseOrZero(this.data.down_payment);
+
+        return paymentsTotal + downPayment;
+    }
+
+    calculateMonthlyInterestAmount(currentBalance: number) {
+        const interestRate = parseOrZero(this.data.interest_rate);
+        const interestAmount = (currentBalance * interestRate) / 100 / 12;
+
+        return interestAmount;
+    }
+
+    calculateMonthlyPrincipalAmount(
+        monthlyInterestAmount: number,
+        totalPaidForMonth: number,
+    ) {
+        const principalAmount = totalPaidForMonth - monthlyInterestAmount;
+
+        return principalAmount;
     }
 
     // Generate amortization schedule
     calculateAmortization(withExtraPayments = false) {
         const loanAmount = this.calculateLoanAmount();
-        const interestRate = this.parseOrZero(this.data.interest_rate);
-        const financeTerm = this.parseOrZero(this.data.finance_term);
+        const interestRate = parseOrZero(this.data.interest_rate);
+        const financeTerm = parseOrZero(this.data.finance_term);
         const monthlyPayment = this.calculateMonthlyPayment();
 
         if (loanAmount <= 0 || interestRate <= 0 || financeTerm <= 0) {
-            return [];
+            return null;
         }
 
         const monthlyRate = interestRate / 100 / 12;
@@ -98,14 +129,25 @@ export class FinanceCalculator {
         // Parse extra payments if provided
         const extraPayments = this.parseExtraPayments();
 
-        for (let month = 1; month <= financeTerm && remainingBalance > 0; month++) {
-            const interestPayment = remainingBalance * monthlyRate;
-            let principalPayment = monthlyPayment - interestPayment;
+        for (
+            let month = 1;
+            month <= financeTerm && remainingBalance > 0;
+            month++
+        ) {
+            const interestPayment =
+                this.calculateMonthlyInterestAmount(remainingBalance);
+            let principalPayment = this.calculateMonthlyPrincipalAmount(
+                interestPayment,
+                monthlyPayment,
+            );
 
             // Add extra payment if applicable
             let extraPayment = 0;
             if (withExtraPayments && extraPayments.length > 0) {
-                extraPayment = this.getExtraPaymentForMonth(month, extraPayments);
+                extraPayment = this.getExtraPaymentForMonth(
+                    month,
+                    extraPayments,
+                );
             }
 
             // Ensure we don't pay more than remaining balance
@@ -115,7 +157,7 @@ export class FinanceCalculator {
             }
 
             const totalPayment = monthlyPayment + extraPayment;
-            remainingBalance -= (principalPayment + extraPayment);
+            remainingBalance -= principalPayment + extraPayment;
             totalInterest += interestPayment;
             totalPrincipal += principalPayment + extraPayment;
 
@@ -126,7 +168,7 @@ export class FinanceCalculator {
                 totalPayment,
                 principalPayment: principalPayment + extraPayment,
                 interestPayment,
-                remainingBalance: Math.max(0, remainingBalance)
+                remainingBalance: Math.max(0, remainingBalance),
             });
 
             if (remainingBalance <= 0) break;
@@ -137,7 +179,7 @@ export class FinanceCalculator {
             totalInterest,
             totalPrincipal,
             monthsPaid: schedule.length,
-            monthsSaved: Math.max(0, financeTerm - schedule.length)
+            monthsSaved: Math.max(0, financeTerm - schedule.length),
         };
     }
 
@@ -147,24 +189,26 @@ export class FinanceCalculator {
             const extraPaymentsJson = this.data.extra_payments_json;
             if (!extraPaymentsJson) return [];
 
-            const parsed = typeof extraPaymentsJson === 'string' ?
-                          JSON.parse(extraPaymentsJson) : extraPaymentsJson;
+            const parsed =
+                typeof extraPaymentsJson === "string"
+                    ? JSON.parse(extraPaymentsJson)
+                    : extraPaymentsJson;
 
             return Array.isArray(parsed) ? parsed : [];
         } catch (error) {
-            console.error('Error parsing extra payments:', error);
+            console.error("Error parsing extra payments:", error);
             return [];
         }
     }
 
     // Get extra payment amount for a specific month
-    getExtraPaymentForMonth(month, extraPayments) {
+    getExtraPaymentForMonth(month: number, extraPayments: any[]) {
         let totalExtra = 0;
 
         for (const payment of extraPayments) {
             const startMonth = parseInt(payment.startMonth) || 1;
             const endMonth = parseInt(payment.endMonth) || startMonth;
-            const amount = this.parseOrZero(payment.paymentAmount);
+            const amount = parseOrZero(payment.paymentAmount);
 
             if (month >= startMonth && month <= endMonth) {
                 totalExtra += amount;
@@ -177,14 +221,17 @@ export class FinanceCalculator {
     // Get payment breakdown for charts
     getPaymentBreakdown() {
         const amortization = this.calculateAmortization(true);
-        const schedule = amortization.schedule;
+        const schedule = amortization?.schedule;
 
         if (!schedule || schedule.length === 0) return null;
 
         const breakdown = {
             principal: amortization.totalPrincipal,
             interest: amortization.totalInterest,
-            extraPayments: schedule.reduce((sum, payment) => sum + payment.extraPayment, 0)
+            extraPayments: schedule.reduce(
+                (sum, payment) => sum + payment.extraPayment,
+                0,
+            ),
         };
 
         return breakdown;
@@ -193,35 +240,38 @@ export class FinanceCalculator {
     // Get chart data for line chart
     getChartData() {
         const amortization = this.calculateAmortization(true);
-        const schedule = amortization.schedule;
+        const schedule = amortization?.schedule;
 
-        if (schedule.length === 0) return null;
+        if (!schedule || schedule.length === 0) return null;
 
         return {
-            labels: schedule.map(payment => `Month ${payment.month}`),
+            labels: schedule.map((payment) => `Month ${payment.month}`),
             datasets: [
                 {
-                    label: 'Principal',
-                    data: schedule.map(payment => payment.principalPayment - payment.extraPayment),
-                    borderColor: 'rgb(59, 130, 246)',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    fill: true
+                    label: "Principal",
+                    data: schedule.map(
+                        (payment) =>
+                            payment.principalPayment - payment.extraPayment,
+                    ),
+                    borderColor: "rgb(59, 130, 246)",
+                    backgroundColor: "rgba(59, 130, 246, 0.1)",
+                    fill: true,
                 },
                 {
-                    label: 'Interest',
-                    data: schedule.map(payment => payment.interestPayment),
-                    borderColor: 'rgb(239, 68, 68)',
-                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                    fill: true
+                    label: "Interest",
+                    data: schedule.map((payment) => payment.interestPayment),
+                    borderColor: "rgb(239, 68, 68)",
+                    backgroundColor: "rgba(239, 68, 68, 0.1)",
+                    fill: true,
                 },
                 {
-                    label: 'Extra Payments',
-                    data: schedule.map(payment => payment.extraPayment),
-                    borderColor: 'rgb(34, 197, 94)',
-                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                    fill: true
-                }
-            ]
+                    label: "Extra Payments",
+                    data: schedule.map((payment) => payment.extraPayment),
+                    borderColor: "rgb(34, 197, 94)",
+                    backgroundColor: "rgba(34, 197, 94, 0.1)",
+                    fill: true,
+                },
+            ],
         };
     }
 
@@ -234,6 +284,7 @@ export class FinanceCalculator {
         const interestAmount = this.calculateInterestAmount();
         const paymentsTotal = this.calculatePaymentsTotal();
         const amortization = this.calculateAmortization(true);
+        const paymentBreakdown = this.getPaymentBreakdown();
 
         return {
             purchasePrice,
@@ -243,7 +294,7 @@ export class FinanceCalculator {
             interestAmount,
             paymentsTotal,
             amortization,
-            paymentBreakdown: this.getPaymentBreakdown()
+            paymentBreakdown,
         };
     }
 }

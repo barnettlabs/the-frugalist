@@ -1,3 +1,28 @@
+<script setup lang="ts">
+import { Link } from "@inertiajs/vue3";
+import FormField from "./FormField.vue";
+import BaseButton from "./BaseButton.vue";
+import { FinanceFormData, FormErrors, vehicleTypeOptions } from "@/types";
+
+interface Props {
+    form: FinanceFormData;
+    errors: FormErrors;
+    loading: boolean;
+    title: string;
+    backUrl: string;
+    isEdit?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+    isEdit: false,
+});
+
+defineEmits<{
+    submit: [];
+    calculate: [];
+}>();
+</script>
+
 <template>
     <div class="futuristic-card p-6 bg-white">
         <div v-if="!isEdit" class="flex items-center justify-between mb-6">
@@ -106,15 +131,6 @@
                     />
 
                     <FormField
-                        v-model="form.selling_price"
-                        name="selling_price"
-                        label="Selling Price"
-                        type="currency"
-                        :error="errors.selling_price"
-                        @input="$emit('calculate')"
-                    />
-
-                    <FormField
                         v-model="form.fees"
                         name="fees"
                         label="Fees"
@@ -148,92 +164,11 @@
                     />
 
                     <FormField
-                        v-model="form.trade_in_value"
-                        name="trade_in_value"
-                        label="Trade-in Value"
-                        type="currency"
-                        :error="errors.trade_in_value"
-                        @input="$emit('calculate')"
-                    />
-
-                    <FormField
-                        v-model="form.trade_in_payoff"
-                        name="trade_in_payoff"
-                        label="Trade-in Payoff"
-                        type="currency"
-                        :error="errors.trade_in_payoff"
-                        @input="$emit('calculate')"
-                    />
-
-                    <FormField
-                        v-model="form.cash_rebate"
-                        name="cash_rebate"
-                        label="Cash Rebate"
-                        type="currency"
-                        :error="errors.cash_rebate"
-                        @input="$emit('calculate')"
-                    />
-
-                    <FormField
-                        v-model="form.dealer_rebate"
-                        name="dealer_rebate"
-                        label="Dealer Rebate"
-                        type="currency"
-                        :error="errors.dealer_rebate"
-                        @input="$emit('calculate')"
-                    />
-
-                    <FormField
-                        v-model="form.other_incentives"
-                        name="other_incentives"
-                        label="Other Incentives"
-                        type="currency"
-                        :error="errors.other_incentives"
-                        @input="$emit('calculate')"
-                    />
-
-                    <FormField
                         v-model="form.sales_tax_percent"
                         name="sales_tax_percent"
                         label="Sales Tax Percent"
                         type="percentage"
                         :error="errors.sales_tax_percent"
-                    />
-
-                    <FormField
-                        v-if="!isEdit"
-                        v-model="form.doc_fee"
-                        name="doc_fee"
-                        label="Documentation Fee"
-                        type="currency"
-                        :error="errors.doc_fee"
-                    />
-
-                    <FormField
-                        v-if="!isEdit"
-                        v-model="form.title_fee"
-                        name="title_fee"
-                        label="Title Fee"
-                        type="currency"
-                        :error="errors.title_fee"
-                    />
-
-                    <FormField
-                        v-if="!isEdit"
-                        v-model="form.license_fee"
-                        name="license_fee"
-                        label="License Fee"
-                        type="currency"
-                        :error="errors.license_fee"
-                    />
-
-                    <FormField
-                        v-if="!isEdit"
-                        v-model="form.other_fees"
-                        name="other_fees"
-                        label="Other Fees"
-                        type="currency"
-                        :error="errors.other_fees"
                     />
                 </div>
             </div>
@@ -259,7 +194,7 @@
                         type="number"
                         :min="1"
                         :max="120"
-                        :error="errors.finance_term || errors.loan_term_months"
+                        :error="errors.finance_term"
                     />
 
                     <FormField
@@ -269,33 +204,6 @@
                         label="Start Date"
                         type="date"
                         :error="errors.start_date"
-                    />
-
-                    <FormField
-                        v-if="!isEdit"
-                        v-model="form.monthly_payment"
-                        name="monthly_payment"
-                        label="Monthly Payment"
-                        type="currency"
-                        :error="errors.monthly_payment"
-                    />
-
-                    <FormField
-                        v-if="!isEdit"
-                        v-model="form.total_interest"
-                        name="total_interest"
-                        label="Total Interest"
-                        type="currency"
-                        :error="errors.total_interest"
-                    />
-
-                    <FormField
-                        v-if="!isEdit"
-                        v-model="form.total_cost"
-                        name="total_cost"
-                        label="Total Cost"
-                        type="currency"
-                        :error="errors.total_cost"
                     />
                 </div>
             </div>
@@ -371,44 +279,3 @@
         </form>
     </div>
 </template>
-
-<script setup lang="ts">
-import { Link } from "@inertiajs/vue3";
-import FormField from "./FormField.vue";
-import BaseButton from "./BaseButton.vue";
-
-defineEmits(["submit", "calculate"]);
-
-defineProps({
-    form: {
-        type: Object,
-        required: true,
-    },
-    errors: {
-        type: Object,
-        default: () => ({}),
-    },
-    loading: {
-        type: Boolean,
-        default: false,
-    },
-    title: {
-        type: String,
-        required: true,
-    },
-    backUrl: {
-        type: String,
-        required: true,
-    },
-    isEdit: {
-        type: Boolean,
-        default: false,
-    },
-});
-
-const vehicleTypeOptions = [
-    { value: "CAR", label: "Car" },
-    { value: "TRUCK", label: "Truck" },
-    { value: "SUV", label: "SUV" },
-];
-</script>

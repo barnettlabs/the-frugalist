@@ -7,11 +7,11 @@
  * @param {number|string} amount - The amount to format
  * @returns {string} - Formatted currency string
  */
-export const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
+export const formatCurrency = (amount: number | string) => {
+    return new Intl.NumberFormat("en-US", {
         minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    }).format(amount || 0);
+        maximumFractionDigits: 2,
+    }).format(parseOrZero(amount));
 };
 
 /**
@@ -20,9 +20,12 @@ export const formatCurrency = (amount) => {
  * @param {number} decimals - Number of decimal places (default: 1)
  * @returns {string} - Formatted percentage string
  */
-export const formatPercentage = (value, decimals = 1) => {
-    const num = parseFloat(value) || 0;
-    return num.toFixed(decimals) + '%';
+export const formatPercentage = (
+    value: number | string,
+    decimals: number = 1,
+) => {
+    const num = parseOrZero(value);
+    return num.toFixed(decimals) + "%";
 };
 
 /**
@@ -30,8 +33,8 @@ export const formatPercentage = (value, decimals = 1) => {
  * @param {string|number} value - The value to parse
  * @returns {number} - Parsed number or 0
  */
-export const parseOrZero = (value) => {
-    const parsed = parseFloat(value) || 0;
+export const parseOrZero = (value: number | string) => {
+    const parsed = parseFloat(value.toString()) || 0;
     return isNaN(parsed) ? 0 : parsed;
 };
 
@@ -41,7 +44,7 @@ export const parseOrZero = (value) => {
  * @param {number} decimals - Number of decimal places (default: 2)
  * @returns {string} - Formatted number string
  */
-export const formatNumber = (value, decimals = 2) => {
+export const formatNumber = (value: number | string, decimals: number = 2) => {
     const num = parseOrZero(value);
     return num.toFixed(decimals);
 };

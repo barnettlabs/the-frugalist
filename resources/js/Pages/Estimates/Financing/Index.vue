@@ -8,6 +8,7 @@ import {
   PencilIcon,
   TrashIcon,
   ScaleIcon,
+  EyeIcon,
 } from '@heroicons/vue/24/outline'
 import { FinanceCalculator } from '@/utils/financeCalculator'
 import { formatCurrency } from '@/utils/formatters'
@@ -298,6 +299,27 @@ onMounted(() => {
                           <div class="font-bold text-green-600 text-2xl">
                             ${{ formatCurrency(getSheetCalculations(sheet).monthlyPayment) }}
                           </div>
+                        </div>
+                      </div>
+
+                      <!-- Action Buttons -->
+                      <div class="mb-4">
+                        <div class="grid grid-cols-2 gap-3">
+                          <Link :href="`/estimates/financing/${sheet.id}/edit`">
+                            <button
+                              class="w-full bg-primary hover:bg-primary-shade-1 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 flex items-center justify-center space-x-2"
+                            >
+                              <EyeIcon class="h-4 w-4" />
+                              <span>View</span>
+                            </button>
+                          </Link>
+                          <button
+                            @click="deleteSheet(sheet.id)"
+                            class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 flex items-center justify-center space-x-2"
+                          >
+                            <TrashIcon class="h-4 w-4" />
+                            <span>Delete</span>
+                          </button>
                         </div>
                       </div>
 

@@ -133,7 +133,7 @@ onMounted(() => {
                 <div>
                   <button
                     @click="router.visit('/estimates/financing')"
-                    class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2"
+                    class="bg-primary hover:bg-primary-shade-1 text-white px-4 py-2 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2"
                   >
                     <XMarkIcon class="h-4 w-4" />
                     <span>Back</span>

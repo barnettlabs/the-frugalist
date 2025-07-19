@@ -211,15 +211,17 @@ defineEmits<{
             :error="errors.finance_term"
           />
 
-          {{ form.start_date?.substring(0, 10) }}
-
           <FormField
             name="start_date"
             label="Start Date"
             type="date"
             :error="errors.start_date"
             :model-value="form.start_date ? form.start_date.substring(0, 10) : ''"
-            @input="form.start_date = $event"
+            @input="
+              (event: any) => {
+                form.start_date = event.target.value
+              }
+            "
           />
         </div>
       </div>

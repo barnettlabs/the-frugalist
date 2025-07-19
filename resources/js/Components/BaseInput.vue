@@ -126,20 +126,6 @@ defineExpose({
   focus: () => input.value?.focus(),
   blur: () => input.value?.blur(),
 })
-
-props.name === 'start_date' &&
-  console.log({
-    name: props.name,
-    modelValue: props.modelValue,
-    value: props.value,
-  })
-
-watch(
-  () => props.value,
-  (newVal) => {
-    console.log('value changed', newVal)
-  }
-)
 </script>
 
 <template>

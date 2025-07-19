@@ -111,6 +111,13 @@ const isCardExpanded = (sheetId: number) => {
   return expandedCards.value.has(sheetId)
 }
 
+const breadcrumbs = computed(() => [
+  {
+    name: 'Finance Renegade',
+    current: true,
+  },
+])
+
 onMounted(() => {
   fetchSheets()
 })
@@ -119,7 +126,7 @@ onMounted(() => {
 <template>
   <Head title="Finance Renegade" />
 
-  <AuthenticatedLayout :user="user">
+  <AuthenticatedLayout :user="user" :breadcrumbs="breadcrumbs">
     <main class="-mt-24 pb-8 flex-1">
       <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <!-- Hero Header -->

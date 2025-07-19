@@ -84,6 +84,17 @@ const formTitle = computed(() => {
   return isEdit.value ? 'Edit Lease Estimate' : 'Create Lease Estimate'
 })
 
+const breadcrumbs = computed(() => [
+  {
+    name: 'Lease Renegade',
+    href: '/estimates/leasing'
+  },
+  {
+    name: isEdit.value ? 'Edit Estimate' : 'New Estimate',
+    current: true
+  }
+])
+
 const vehicleTitle = computed(() => {
   const parts = [
     form.value.vehicle_year,
@@ -98,7 +109,7 @@ const vehicleTitle = computed(() => {
 <template>
   <Head :title="pageTitle" />
 
-  <AuthenticatedLayout :user="props.user" :profile="props.profile">
+  <AuthenticatedLayout :user="props.user" :profile="props.profile" :breadcrumbs="breadcrumbs">
     <main class="-mt-24 pb-8 flex-1">
       <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <!-- Hero Header -->

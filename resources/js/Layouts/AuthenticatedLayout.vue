@@ -21,7 +21,7 @@ import {
     EnvelopeIcon,
     UserIcon,
 } from "@heroicons/vue/24/outline";
-import { MagnifyingGlassIcon } from "@heroicons/vue/20/solid";
+import { MagnifyingGlassIcon, ChevronRightIcon, HomeIcon } from "@heroicons/vue/20/solid";
 
 interface User {
     id: number;
@@ -31,8 +31,15 @@ interface User {
     avatar_url?: string;
 }
 
+interface BreadcrumbItem {
+    name: string;
+    href?: string;
+    current?: boolean;
+}
+
 interface Props {
     user: User;
+    breadcrumbs?: BreadcrumbItem[];
 }
 
 const props = defineProps<Props>();
@@ -86,39 +93,69 @@ const fullName = computed((): string => {
                 <div
                     class="relative flex items-center justify-center py-3 lg:justify-between"
                 >
-                    <!-- Logo -->
+                    <!-- Logo and Breadcrumbs -->
                     <div class="absolute left-0 flex-shrink-0 lg:static">
-                        <Link
-                            href="/"
-                            class="flex flex-row items-center"
-                        >
-                            <span class="sr-only"
-                                >SneakySalesman by JayTech LLC</span
+                        <div class="flex items-center space-x-6">
+                            <Link
+                                href="/"
+                                class="flex flex-row items-center"
                             >
-
-                            <ApplicationLogo variant="white" class="h-8 w-auto mr-2" />
-
-                            <div class="flex flex-col">
-                                <span
-                                    class="text-white font-bold hidden lg:inline-block"
+                                <span class="sr-only"
+                                    >SneakySalesman by JayTech LLC</span
                                 >
-                                    Sneaky Salesman
-                                </span>
-                                <span
-                                    class="text-white opacity-80 hidden lg:inline-block text-xs font-medium"
-                                >
-                                    Your personal sales renegade
-                                </span>
 
-                                <span
-                                    class="text-white font-bold text-sm lg:hidden text-wrap"
-                                >
-                                    Sneaky
-                                    <br />
-                                    Salesman
-                                </span>
-                            </div>
-                        </Link>
+                                <ApplicationLogo variant="white" class="h-8 w-auto mr-2" />
+
+                                <div class="flex flex-col">
+                                    <span
+                                        class="text-white font-bold hidden lg:inline-block"
+                                    >
+                                        Sneaky Salesman
+                                    </span>
+                                    <span
+                                        class="text-white opacity-80 hidden lg:inline-block text-xs font-medium"
+                                    >
+                                        Your personal sales renegade
+                                    </span>
+
+                                    <span
+                                        class="text-white font-bold text-sm lg:hidden text-wrap"
+                                    >
+                                        Sneaky
+                                        <br />
+                                        Salesman
+                                    </span>
+                                </div>
+                            </Link>
+
+                            <!-- Breadcrumbs -->
+                            <nav v-if="breadcrumbs && breadcrumbs.length > 0" class="hidden lg:flex" aria-label="Breadcrumb">
+                                <ol class="flex items-center space-x-2">
+                                    <li>
+                                        <Link href="/dashboard" class="flex items-center text-white/70 hover:text-white transition-colors text-sm">
+                                            <HomeIcon class="h-4 w-4 mr-1" />
+                                            Dashboard
+                                        </Link>
+                                    </li>
+                                    <li v-for="(breadcrumb, index) in breadcrumbs" :key="index" class="flex items-center">
+                                        <ChevronRightIcon class="h-4 w-4 text-white/50 mx-2" />
+                                        <Link
+                                            v-if="breadcrumb.href && !breadcrumb.current"
+                                            :href="breadcrumb.href"
+                                            class="text-white/70 hover:text-white transition-colors text-sm"
+                                        >
+                                            {{ breadcrumb.name }}
+                                        </Link>
+                                        <span
+                                            v-else
+                                            class="text-white font-medium text-sm"
+                                        >
+                                            {{ breadcrumb.name }}
+                                        </span>
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
                     </div>
 
                     <!-- Right section on desktop -->

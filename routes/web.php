@@ -138,6 +138,27 @@ Route::middleware('auth')->group(function () {
         ]);
     })->name('estimates.leasing.edit');
 
+    // Comparison routes
+    Route::get('/estimates/financing/compare', function (Request $request) {
+        $user = $request->user();
+        $sheetIds = $request->query('sheets', '');
+
+        return Inertia::render('Estimates/Financing/Compare', [
+            'user' => $user,
+            'sheetIds' => $sheetIds,
+        ]);
+    })->name('estimates.financing.compare');
+
+    Route::get('/estimates/leasing/compare', function (Request $request) {
+        $user = $request->user();
+        $sheetIds = $request->query('sheets', '');
+
+        return Inertia::render('Estimates/Leasing/Compare', [
+            'user' => $user,
+            'sheetIds' => $sheetIds,
+        ]);
+    })->name('estimates.leasing.compare');
+
     // Coming soon route
     Route::get('/coming-soon', function (Request $request) {
         $user = $request->user();

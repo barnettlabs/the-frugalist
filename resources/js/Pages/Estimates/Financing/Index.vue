@@ -2,7 +2,13 @@
 import { ref, onMounted, computed } from 'vue'
 import { Head, Link } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { BanknotesIcon, PlusIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import {
+  BanknotesIcon,
+  PlusIcon,
+  PencilIcon,
+  TrashIcon,
+  ScaleIcon,
+} from '@heroicons/vue/24/outline'
 import { FinanceCalculator } from '@/utils/financeCalculator'
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime } from '@/utils/time'
@@ -46,6 +52,7 @@ const props = defineProps<Props>()
 const vehicleFinanceSheets = ref<VehicleFinanceSheet[]>([])
 const loading = ref(true)
 const expandedCards = ref<Set<number>>(new Set())
+const selectedSheets = ref<Set<number>>(new Set())
 
 const fetchSheets = async () => {
   try {
@@ -111,6 +118,25 @@ const isCardExpanded = (sheetId: number) => {
   return expandedCards.value.has(sheetId)
 }
 
+const toggleSelection = (sheetId: number) => {
+  if (selectedSheets.value.has(sheetId)) {
+    selectedSheets.value.delete(sheetId)
+  } else {
+    selectedSheets.value.add(sheetId)
+  }
+}
+
+const isSelected = (sheetId: number) => {
+  return selectedSheets.value.has(sheetId)
+}
+
+const startComparison = () => {
+  if (selectedSheets.value.size >= 2) {
+    const sheetIds = Array.from(selectedSheets.value).join(',')
+    window.location.href = `/estimates/financing/compare?sheets=${sheetIds}`
+  }
+}
+
 const breadcrumbs = computed(() => [
   {
     name: 'Finance Renegade',
@@ -146,10 +172,19 @@ onMounted(() => {
                     </p>
                   </div>
                 </div>
-                <div>
+                <div class="flex items-center space-x-3">
+                  <button
+                    v-if="selectedSheets.size >= 2"
+                    @click="startComparison"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2"
+                  >
+                    <ScaleIcon class="h-4 w-4" />
+                    <span>Compare</span>
+                  </button>
+
                   <Link href="/estimates/financing/create">
                     <button
-                      class="bg-primary hover:bg-primary-shade-1 px-6 py-3 rounded-xl font-medium text-white transition-all duration-150 hover:neon-glow flex items-center space-x-2"
+                      class="bg-primary hover:bg-primary-shade-1 px-4 py-2 rounded-lg font-medium text-white transition-all duration-150 hover:neon-glow flex items-center space-x-2"
                     >
                       <PlusIcon class="h-5 w-5" />
                       <span>New Estimate</span>
@@ -215,10 +250,13 @@ onMounted(() => {
                     >
                       <!-- Header -->
                       <div class="flex items-start justify-between mb-4">
-                        <div class="flex items-center space-x-3">
-                          <div class="p-2 rounded-lg bg-primary/10">
-                            <BanknotesIcon class="h-5 w-5 text-primary" />
-                          </div>
+                        <div class="flex items-start space-x-3">
+                          <input
+                            type="checkbox"
+                            :checked="isSelected(sheet.id)"
+                            @change="toggleSelection(sheet.id)"
+                            class="w-4 h-4 text-primary border border-gray-300 rounded focus:ring-0 focus:outline-none mt-1.5"
+                          />
                           <div>
                             <h3
                               class="text-lg font-bold text-gray-900 group-hover:text-primary transition-colors"

@@ -1,80 +1,117 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { Head, Link, router } from "@inertiajs/vue3";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import FinanceForm from "@/Components/FinanceForm.vue";
-import EstimateSummary from "@/Components/EstimateSummary.vue";
-import { FinanceFormData, FormErrors, VehicleType, User, Profile } from "@/types";
-import { FinanceCalculator } from "@/utils/financeCalculator";
-import axios from "axios";
+import { ref, computed, onMounted } from 'vue'
+import { Head, router, Link } from '@inertiajs/vue3'
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
+import FinanceForm from '@/Components/FinanceForm.vue'
+import EstimateSummary from '@/Components/EstimateSummary.vue'
+import AmortizationTable from '@/Components/Finance/AmortizationTable.vue'
+import PaymentCharts from '@/Components/Finance/PaymentCharts.vue'
+import ExtraPayments from '@/Components/Finance/ExtraPayments.vue'
+import AdvancedCalculations from '@/Components/Finance/AdvancedCalculations.vue'
+import { FinanceFormData, FormErrors, VehicleType, User, Profile, VehicleFinanceSheet } from '@/types'
+import { FinanceCalculator } from '@/utils/financeCalculator'
+import axios from 'axios'
 
 interface Props {
-    user: User;
-    profile: Profile;
+    user: User
+    profile: Profile
+    sheet?: VehicleFinanceSheet
 }
 
-const props = defineProps<Props>();
+const props = defineProps<Props>()
+
+const isEdit = computed(() => !!props.sheet)
 
 const form = ref<FinanceFormData>({
-    sheet_name: "",
-    sales_consultant: "",
-    dealership_name: "",
+    sheet_name: '',
+    sales_consultant: '',
+    dealership_name: '',
     vehicle_type: VehicleType.CAR,
-    vehicle_year: "",
-    vehicle_make: "",
-    vehicle_model: "",
-    vehicle_trim: "",
-    msrp: "",
-    fees: "",
-    discounts: "",
-    rebates: "",
-    down_payment: "",
-    sales_tax_percent: "",
-    interest_rate: "",
-    finance_term: "",
-    start_date: "",
-    contact_email: "",
-    contact_phone: "",
-    extra_payments_json: "",
-    notes: "",
-});
+    vehicle_year: '',
+    vehicle_make: '',
+    vehicle_model: '',
+    vehicle_trim: '',
+    msrp: '',
+    fees: '',
+    discounts: '',
+    rebates: '',
+    down_payment: '',
+    sales_tax_percent: '',
+    interest_rate: '',
+    finance_term: '',
+    start_date: '',
+    contact_email: '',
+    contact_phone: '',
+    extra_payments_json: '',
+    notes: ''
+})
 
-const loading = ref(false);
-const errors = ref<FormErrors>({});
+const loading = ref(false)
+const errors = ref<FormErrors>({})
+
+// Initialize form with existing data if editing
+onMounted(() => {
+    if (props.sheet) {
+        Object.keys(form.value).forEach((key) => {
+            if (props.sheet[key] !== undefined && props.sheet[key] !== null) {
+                form.value[key] = props.sheet[key]
+            }
+        })
+    }
+})
 
 const calculatedAmountFinanced = computed(() => {
-    const calculator = new FinanceCalculator(form.value);
-    return calculator.calculateLoanAmount();
-});
+    const calculator = new FinanceCalculator(form.value)
+    return calculator.calculateLoanAmount()
+})
+
+const vehicleTitle = computed(() => {
+    const parts = [
+        form.value.vehicle_year,
+        form.value.vehicle_make,
+        form.value.vehicle_model,
+        form.value.vehicle_trim,
+    ].filter((part) => part && part.trim())
+    return parts.length > 0 ? parts.join(' ') : 'Finance Estimate'
+})
+
+const pageTitle = computed(() => {
+    return isEdit.value ? `Edit ${vehicleTitle.value}` : 'Create Finance Estimate'
+})
+
+const formTitle = computed(() => {
+    return isEdit.value ? 'Edit Finance Estimate' : 'Create Finance Estimate'
+})
 
 const submitForm = async () => {
-    loading.value = true;
-    errors.value = {};
+    loading.value = true
+    errors.value = {}
 
     try {
-        await axios.post(
-            "/api/vehicle-finance-sheets",
-            form.value,
-        );
-        router.visit("/estimates/financing");
+        if (isEdit.value) {
+            await axios.put(`/api/vehicle-finance-sheets/${props.sheet.id}`, form.value)
+        } else {
+            await axios.post('/api/vehicle-finance-sheets', form.value)
+        }
+        router.visit('/estimates/financing')
     } catch (error: any) {
         if (error.response?.data?.errors) {
-            errors.value = error.response.data.errors;
+            errors.value = error.response.data.errors
         } else {
-            console.error("Error creating finance sheet:", error);
+            console.error(`Error ${isEdit.value ? 'updating' : 'creating'} finance sheet:`, error)
         }
     } finally {
-        loading.value = false;
+        loading.value = false
     }
-};
+}
 
 const calculateTotals = () => {
-    return calculatedAmountFinanced.value;
-};
+    return calculatedAmountFinanced.value
+}
 </script>
 
 <template>
-    <Head title="Create Finance Estimate" />
+    <Head :title="pageTitle" />
 
     <AuthenticatedLayout :user="props.user" :profile="props.profile">
         <main class="-mt-24 pb-8 flex-1">
@@ -97,9 +134,12 @@ const calculateTotals = () => {
                                     </div>
                                     <div>
                                         <h1 class="text-4xl font-bold text-gray-900 mb-2">
-                                            Create Finance Estimate
+                                            {{ formTitle }}
                                         </h1>
-                                        <p class="text-lg text-gray-600">
+                                        <p v-if="isEdit" class="text-lg text-gray-600">
+                                            {{ vehicleTitle }}
+                                        </p>
+                                        <p v-else class="text-lg text-gray-600">
                                             Calculate vehicle financing options
                                         </p>
                                     </div>
@@ -118,7 +158,8 @@ const calculateTotals = () => {
                                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
-                                        <span>{{ loading ? 'Creating...' : 'Create Estimate' }}</span>
+                                        <span v-if="isEdit">{{ loading ? 'Saving...' : 'Save Changes' }}</span>
+                                        <span v-else>{{ loading ? 'Creating...' : 'Create Estimate' }}</span>
                                     </button>
                                 </div>
                             </div>
@@ -129,23 +170,40 @@ const calculateTotals = () => {
                 <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
                     <!-- Main Form -->
                     <div class="grid grid-cols-1 gap-4 lg:col-span-2">
-                        <section aria-labelledby="create-finance-estimate-title">
+                        <section :aria-labelledby="`${isEdit ? 'edit' : 'create'}-finance-estimate-title`">
                             <FinanceForm
                                 :form="form"
                                 :errors="errors"
                                 :loading="loading"
-                                title="Create Finance Estimate"
+                                :title="formTitle"
                                 back-url="/estimates/financing"
+                                :is-edit="isEdit"
                                 @submit="submitForm"
                                 @calculate="calculateTotals"
                             />
                         </section>
+
+                        <!-- Edit-only components -->
+                        <template v-if="isEdit">
+                            <ExtraPayments
+                                v-model="form.extra_payments_json"
+                                :data="form"
+                            />
+                            <AmortizationTable :data="form" />
+                            <PaymentCharts :data="form" />
+                        </template>
                     </div>
 
+                    <!-- Right Sidebar -->
                     <div class="grid grid-cols-1 gap-4">
                         <EstimateSummary
+                            v-if="!isEdit"
                             estimate-type="finance"
                             :calculated-value="calculatedAmountFinanced"
+                        />
+                        <AdvancedCalculations
+                            v-else
+                            :data="form"
                         />
                     </div>
                 </div>

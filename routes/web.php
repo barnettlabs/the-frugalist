@@ -24,7 +24,7 @@ use Inertia\Inertia;
 
 Route::get('/', function (Request $request) {
     $user = $request->user();
-    
+
     if ($user) {
         // User is authenticated, show dashboard
         $vehicleFinanceSheets = $user->vehicleFinanceSheets()->latest()->get();
@@ -97,7 +97,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/estimates/financing/create', function (Request $request) {
         $user = $request->user();
 
-        return Inertia::render('Estimates/Financing/Create', [
+        return Inertia::render('Estimates/Financing/Details', [
             'user' => $user,
         ]);
     })->name('estimates.financing.create');
@@ -106,7 +106,7 @@ Route::middleware('auth')->group(function () {
         $user = $request->user();
         $vehicleFinanceSheet = $user->vehicleFinanceSheets()->findOrFail($sheet);
 
-        return Inertia::render('Estimates/Financing/Edit', [
+        return Inertia::render('Estimates/Financing/Details', [
             'user' => $user,
             'sheet' => $vehicleFinanceSheet,
         ]);
@@ -115,7 +115,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/estimates/leasing', function (Request $request) {
         $user = $request->user();
 
-        return Inertia::render('Estimates/Leasing/Index', [
+        return Inertia::render('Estimates/Leasing/Details', [
             'user' => $user,
         ]);
     })->name('estimates.leasing');
@@ -123,7 +123,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/estimates/leasing/create', function (Request $request) {
         $user = $request->user();
 
-        return Inertia::render('Estimates/Leasing/Create', [
+        return Inertia::render('Estimates/Leasing/Details', [
             'user' => $user,
         ]);
     })->name('estimates.leasing.create');
@@ -132,7 +132,7 @@ Route::middleware('auth')->group(function () {
         $user = $request->user();
         $vehicleLeaseSheet = $user->vehicleLeaseSheets()->findOrFail($sheet);
 
-        return Inertia::render('Estimates/Leasing/Edit', [
+        return Inertia::render('Estimates/Leasing/Details', [
             'user' => $user,
             'sheet' => $vehicleLeaseSheet,
         ]);

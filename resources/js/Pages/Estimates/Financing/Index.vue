@@ -77,21 +77,25 @@ const getSheetCalculations = (sheet: VehicleFinanceSheet) => {
       monthlyPayment: summary?.monthlyPayment || 0,
       totalInterest: summary?.interestAmount || 0,
       loanAmount: summary?.loanAmount || 0,
-      purchasePrice: summary?.purchasePrice || 0
+      purchasePrice: summary?.purchasePrice || 0,
     }
   } catch (error) {
     return {
       monthlyPayment: 0,
       totalInterest: 0,
       loanAmount: 0,
-      purchasePrice: 0
+      purchasePrice: 0,
     }
   }
 }
 
 const getVehicleTitle = (sheet: VehicleFinanceSheet) => {
-  const parts = [sheet.vehicle_year, sheet.vehicle_make, sheet.vehicle_model, sheet.vehicle_trim]
-    .filter(part => part && part.toString().trim())
+  const parts = [
+    sheet.vehicle_year,
+    sheet.vehicle_make,
+    sheet.vehicle_model,
+    sheet.vehicle_trim,
+  ].filter((part) => part && part.toString().trim())
   return parts.length > 0 ? parts.join(' ') : 'Vehicle'
 }
 
@@ -121,12 +125,6 @@ onMounted(() => {
         <!-- Hero Header -->
         <div class="mb-8">
           <div class="glass rounded-2xl p-8 text-gray-900 bg-white/80 relative overflow-hidden">
-            <!-- Background decoration -->
-            <div class="absolute inset-0 overflow-hidden pointer-events-none">
-              <div class="absolute -top-4 -right-4 w-32 h-32 bg-primary/5 rounded-full"></div>
-              <div class="absolute bottom-0 -left-4 w-24 h-24 bg-primary/10 rounded-full"></div>
-            </div>
-
             <div class="relative text-center lg:text-left">
               <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div class="flex items-center space-x-6 mb-6 lg:mb-0">
@@ -175,7 +173,9 @@ onMounted(() => {
 
                 <!-- Empty state -->
                 <div v-else-if="!vehicleFinanceSheets.length" class="col-span-full">
-                  <div class="futuristic-card bg-white p-12 text-center border border-gray-200 shadow-sm">
+                  <div
+                    class="futuristic-card bg-white p-12 text-center border border-gray-200 shadow-sm"
+                  >
                     <div
                       class="p-4 rounded-xl bg-primary/10 w-16 h-16 mx-auto mb-4 flex items-center justify-center"
                     >
@@ -239,71 +239,102 @@ onMounted(() => {
                           </button>
                         </div>
                       </div>
-                      
+
                       <!-- Monthly Payment (Always Visible) -->
                       <div class="bg-gray-50 rounded-lg p-4 mb-4">
                         <div class="text-center">
-                          <span class="text-gray-500 text-sm uppercase tracking-wide block mb-1">Monthly Payment</span>
+                          <span class="text-gray-500 text-sm uppercase tracking-wide block mb-1"
+                            >Monthly Payment</span
+                          >
                           <div class="font-bold text-green-600 text-2xl">
                             ${{ formatCurrency(getSheetCalculations(sheet).monthlyPayment) }}
                           </div>
                         </div>
                       </div>
-                      
+
                       <!-- Show More/Less Button -->
                       <div class="mb-4">
                         <button
                           @click="toggleCardDetails(sheet.id)"
                           class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2"
                         >
-                          <span>{{ isCardExpanded(sheet.id) ? 'Show Less' : 'Show More Details' }}</span>
-                          <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': isCardExpanded(sheet.id) }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                          <span>{{
+                            isCardExpanded(sheet.id) ? 'Show Less' : 'Show More Details'
+                          }}</span>
+                          <svg
+                            class="w-4 h-4 transition-transform"
+                            :class="{ 'rotate-180': isCardExpanded(sheet.id) }"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M19 9l-7 7-7-7"
+                            ></path>
                           </svg>
                         </button>
                       </div>
-                      
+
                       <!-- Expanded Details -->
                       <div v-if="isCardExpanded(sheet.id)" class="space-y-4">
                         <!-- Vehicle Info -->
                         <div>
-                          <h4 class="font-semibold text-gray-900 text-sm mb-2">Vehicle Information</h4>
+                          <h4 class="font-semibold text-gray-900 text-sm mb-2">
+                            Vehicle Information
+                          </h4>
                           <div class="text-sm text-gray-600 space-y-1">
                             <div class="flex justify-between">
                               <span>MSRP:</span>
-                              <span class="font-medium">${{ formatCurrency(sheet.msrp || 0) }}</span>
+                              <span class="font-medium"
+                                >${{ formatCurrency(sheet.msrp || 0) }}</span
+                              >
                             </div>
                             <div class="flex justify-between">
                               <span>Purchase Price:</span>
-                              <span class="font-medium">${{ formatCurrency(getSheetCalculations(sheet).purchasePrice) }}</span>
+                              <span class="font-medium"
+                                >${{
+                                  formatCurrency(getSheetCalculations(sheet).purchasePrice)
+                                }}</span
+                              >
                             </div>
                           </div>
                         </div>
-                        
+
                         <!-- Financing Details -->
                         <div class="bg-gray-50 rounded-lg p-3">
                           <h4 class="font-semibold text-gray-900 text-sm mb-2">Financing Terms</h4>
                           <div class="grid grid-cols-2 gap-3 text-sm">
                             <div>
-                              <span class="text-gray-500 text-xs uppercase tracking-wide block">Interest Rate</span>
+                              <span class="text-gray-500 text-xs uppercase tracking-wide block"
+                                >Interest Rate</span
+                              >
                               <div class="font-bold text-gray-900">
                                 {{ sheet.interest_rate || 0 }}%
                               </div>
                             </div>
                             <div>
-                              <span class="text-gray-500 text-xs uppercase tracking-wide block">Loan Term</span>
+                              <span class="text-gray-500 text-xs uppercase tracking-wide block"
+                                >Loan Term</span
+                              >
                               <div class="font-bold text-gray-900">
                                 {{ sheet.finance_term || 0 }} mo
                               </div>
                             </div>
                             <div>
-                              <span class="text-gray-500 text-xs uppercase tracking-wide block">Down Payment</span>
+                              <span class="text-gray-500 text-xs uppercase tracking-wide block"
+                                >Down Payment</span
+                              >
                               <div class="font-bold text-gray-900">
                                 ${{ formatCurrency(sheet.down_payment || 0) }}
                               </div>
                             </div>
                             <div>
-                              <span class="text-gray-500 text-xs uppercase tracking-wide block">Amount Financed</span>
+                              <span class="text-gray-500 text-xs uppercase tracking-wide block"
+                                >Amount Financed</span
+                              >
                               <div class="font-bold text-gray-900">
                                 ${{ formatCurrency(getSheetCalculations(sheet).loanAmount) }}
                               </div>

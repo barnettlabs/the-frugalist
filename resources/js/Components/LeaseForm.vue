@@ -19,7 +19,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits<{
   submit: []
-  calculate: []
 }>()
 </script>
 
@@ -131,7 +130,6 @@ defineEmits<{
             label="MSRP"
             type="currency"
             :error="errors.msrp"
-            @input="$emit('calculate')"
           />
 
           <FormField
@@ -140,7 +138,6 @@ defineEmits<{
             label="Dealer Contribution"
             type="currency"
             :error="errors.dealer_contribution"
-            @input="$emit('calculate')"
           />
 
           <FormField
@@ -149,7 +146,6 @@ defineEmits<{
             label="Trade-in Value"
             type="currency"
             :error="errors.trade_in"
-            @input="$emit('calculate')"
           />
 
           <FormField
@@ -182,7 +178,6 @@ defineEmits<{
             label="Lease Cash"
             type="currency"
             :error="errors.lease_cash"
-            @input="$emit('calculate')"
           />
 
           <FormField
@@ -191,7 +186,6 @@ defineEmits<{
             label="Down Payment"
             type="currency"
             :error="errors.down_payment"
-            @input="$emit('calculate')"
           />
 
           <FormField

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { Head, router, Link } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import FinanceForm from '@/Components/FinanceForm.vue'
@@ -15,9 +15,7 @@ import {
   Profile,
   VehicleFinanceSheet,
 } from '@/types'
-import { FinanceCalculator } from '@/utils/financeCalculator'
 import axios from 'axios'
-import { watch } from 'vue'
 
 interface Props {
   user: User
@@ -29,56 +27,38 @@ const props = defineProps<Props>()
 
 const isEdit = computed(() => !!props.sheet)
 
-const form = ref<FinanceFormData>({
-  sheet_name: '',
-  sales_consultant: '',
-  dealership_name: '',
-  vehicle_type: VehicleType.CAR,
-  vehicle_year: '',
-  vehicle_make: '',
-  vehicle_model: '',
-  vehicle_trim: '',
-  msrp: '',
-  fees: '',
-  discounts: '',
-  rebates: '',
-  down_payment: '',
-  sales_tax_percent: '',
-  interest_rate: '',
-  finance_term: '',
-  start_date: '',
-  contact_email: '',
-  contact_phone: '',
-  extra_payments_json: '',
-  notes: '',
-})
-
-watch(
-  form,
-  (newVal, oldVal) => {
-    calculateTotals
-  },
-  { deep: true }
+const form = ref<FinanceFormData>(
+  Object.assign(
+    {},
+    {
+      sheet_name: '',
+      sales_consultant: '',
+      dealership_name: '',
+      vehicle_type: VehicleType.CAR,
+      vehicle_year: '',
+      vehicle_make: '',
+      vehicle_model: '',
+      vehicle_trim: '',
+      msrp: '',
+      fees: '',
+      discounts: '',
+      rebates: '',
+      down_payment: '',
+      sales_tax_percent: '',
+      interest_rate: '',
+      finance_term: '',
+      start_date: '',
+      contact_email: '',
+      contact_phone: '',
+      extra_payments_json: '',
+      notes: '',
+    },
+    props.sheet
+  )
 )
 
 const loading = ref(false)
 const errors = ref<FormErrors>({})
-
-// Initialize form with existing data if editing
-onMounted(() => {
-  if (props.sheet) {
-    Object.keys(form.value).forEach((key) => {
-      if (props.sheet[key] !== undefined && props.sheet[key] !== null) {
-        form.value[key] = props.sheet[key]
-      }
-    })
-  }
-})
-
-const calculatedAmountFinanced = computed(() => {
-  const calculator = new FinanceCalculator(form.value)
-  return calculator.calculateLoanAmount()
-})
 
 const vehicleTitle = computed(() => {
   const parts = [
@@ -118,10 +98,6 @@ const submitForm = async () => {
   } finally {
     loading.value = false
   }
-}
-
-const calculateTotals = () => {
-  return calculatedAmountFinanced.value
 }
 </script>
 
@@ -215,7 +191,6 @@ const calculateTotals = () => {
                 back-url="/estimates/financing"
                 :is-edit="isEdit"
                 @submit="submitForm"
-                @calculate="calculateTotals"
               />
             </section>
 

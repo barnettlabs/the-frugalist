@@ -7,7 +7,6 @@ import PaymentAnalysis from '@/Components/Lease/PaymentAnalysis.vue'
 import BuyoutAnalysis from '@/Components/Lease/BuyoutAnalysis.vue'
 import AdvancedCalculations from '@/Components/Lease/AdvancedCalculations.vue'
 import { LeaseFormData, FormErrors, VehicleType, User, Profile, VehicleLeaseSheet } from '@/types'
-import { LeaseCalculator } from '@/utils/leaseCalculator'
 import axios from 'axios'
 
 interface Props {
@@ -55,11 +54,6 @@ const form = ref<LeaseFormData>(
 const loading = ref(false)
 const errors = ref<FormErrors>({})
 
-const calculatedCapitalizedCost = computed(() => {
-  const calculator = new LeaseCalculator(form.value)
-  return calculator.calculateNetCapCost()
-})
-
 const submitForm = async () => {
   loading.value = true
   errors.value = {}
@@ -80,10 +74,6 @@ const submitForm = async () => {
   } finally {
     loading.value = false
   }
-}
-
-const calculateTotals = () => {
-  return calculatedCapitalizedCost.value
 }
 
 const pageTitle = computed(() => {
@@ -194,7 +184,6 @@ const vehicleTitle = computed(() => {
                 back-url="/estimates/leasing"
                 :is-edit="isEdit"
                 @submit="submitForm"
-                @calculate="calculateTotals"
               />
             </section>
 

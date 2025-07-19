@@ -19,7 +19,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits<{
   submit: []
-  calculate: []
 }>()
 </script>
 
@@ -131,7 +130,6 @@ defineEmits<{
             label="MSRP"
             type="currency"
             :error="errors.msrp"
-            @input="$emit('calculate')"
           />
 
           <FormField
@@ -164,7 +162,6 @@ defineEmits<{
             label="Down Payment"
             type="currency"
             :error="errors.down_payment"
-            @input="$emit('calculate')"
           />
 
           <FormField

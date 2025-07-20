@@ -1,46 +1,308 @@
 <script setup lang="ts">
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import { Link } from '@inertiajs/vue3';
+import { computed } from 'vue'
+import { Link } from '@inertiajs/vue3'
+import {
+  Popover,
+  PopoverButton,
+  PopoverOverlay,
+  PopoverPanel,
+  TransitionChild,
+  TransitionRoot,
+} from '@headlessui/vue'
+import ApplicationLogo from '@/Components/ApplicationLogo.vue'
+import { Bars3Icon, XMarkIcon, EnvelopeIcon } from '@heroicons/vue/24/outline'
+import { ChevronRightIcon, HomeIcon } from '@heroicons/vue/20/solid'
+
+interface BreadcrumbItem {
+  name: string
+  href?: string
+  current?: boolean
+}
+
+interface Props {
+  breadcrumbs?: BreadcrumbItem[]
+}
+
+defineProps<Props>()
+
+interface NavigationItem {
+  name: string
+  href: string
+  current?: boolean
+}
+
+const navigation = computed((): NavigationItem[] => [
+  // Navigation items can be added here if needed for guest users
+])
 </script>
 
 <template>
-    <div class="min-h-screen bg-animated-gradient dotted-background-light relative overflow-hidden flex items-center justify-center">
-        <!-- Floating geometric shapes -->
-        <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div class="absolute -top-4 -right-4 w-72 h-72 bg-white opacity-5 rounded-full"></div>
-            <div class="absolute top-20 -left-10 w-48 h-48 bg-white opacity-10 rounded-full"></div>
-            <div class="absolute bottom-10 right-20 w-32 h-32 bg-white opacity-5 rounded-full"></div>
-        </div>
+  <div class="flex-1 flex flex-col">
+    <Popover
+      as="header"
+      class="bg-animated-gradient dotted-background-light pb-24 relative overflow-hidden"
+      v-slot="{ open }"
+    >
+      <!-- Floating geometric shapes for visual interest -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-4 -right-4 w-72 h-72 bg-white opacity-5 rounded-full"></div>
+        <div class="absolute top-20 -left-10 w-48 h-48 bg-white opacity-10 rounded-full"></div>
+      </div>
 
-        <div class="relative w-full max-w-md px-6">
-            <!-- Logo/Brand Section -->
-            <div class="text-center mb-8">
-                <Link href="/" class="inline-block">
-                    <div class="flex flex-col items-center">
-                        <div class="mb-4">
-                            <ApplicationLogo variant="white" class="h-16 w-auto" />
-                        </div>
-                        <h1 class="text-3xl font-bold text-white mb-2 neon-text">
-                            Sneaky Salesman
-                        </h1>
-                        <p class="text-white/80 text-sm font-medium">
-                            Your personal sales renegade
-                        </p>
+      <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8 z-10">
+        <div class="relative flex items-center justify-center py-3 lg:justify-between">
+          <!-- Logo and Breadcrumbs -->
+          <div class="absolute left-0 flex-shrink-0 lg:static">
+            <div class="flex items-center space-x-6">
+              <Link href="/" class="flex flex-row items-center">
+                <span class="sr-only">SneakySalesman by JayTech LLC</span>
+
+                <ApplicationLogo variant="white" class="h-8 w-auto mr-2" />
+
+                <div class="flex flex-col">
+                  <span class="text-white font-bold hidden lg:inline-block"> Sneaky Salesman </span>
+                  <span class="text-white opacity-80 hidden lg:inline-block text-xs font-medium">
+                    Your personal sales renegade
+                  </span>
+
+                  <span class="text-white font-bold text-sm lg:hidden text-wrap">
+                    Sneaky
+                    <br />
+                    Salesman
+                  </span>
+                </div>
+              </Link>
+            </div>
+          </div>
+
+          <!-- Right section on desktop - Login/Register buttons -->
+          <div class="hidden lg:ml-4 lg:flex lg:items-center lg:pr-0.5 relative z-50">
+            <div class="flex space-x-4">
+              <Link 
+                href="/login" 
+                class="text-white/80 hover:text-white px-3 py-2 text-sm font-medium transition-colors"
+              >
+                Login
+              </Link>
+              <Link 
+                href="/register" 
+                class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Register
+              </Link>
+            </div>
+          </div>
+
+          <!-- Menu button -->
+          <div class="absolute right-0 flex-shrink-0 lg:hidden">
+            <!-- Mobile menu button -->
+            <PopoverButton
+              class="relative inline-flex items-center justify-center rounded-md bg-transparent p-2 text-indigo-200 hover:bg-white hover:bg-opacity-10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+            >
+              <span class="absolute -inset-0.5" />
+              <span class="sr-only">Open main menu</span>
+              <Bars3Icon v-if="!open" class="block h-6 w-6" aria-hidden="true" />
+              <XMarkIcon v-else class="block h-6 w-6" aria-hidden="true" />
+            </PopoverButton>
+          </div>
+        </div>
+        <div class="hidden border- border-white border-opacity-20 pt-2 pb-5 lg:block">
+          <!-- Breadcrumbs -->
+          <nav
+            v-if="breadcrumbs && breadcrumbs.length > 0"
+            class="hidden lg:flex flex-row !justify-start"
+            aria-label="Breadcrumb"
+          >
+            <ol class="flex items-center space-x-2">
+              <li>
+                <Link
+                  href="/"
+                  class="flex items-center text-white/70 hover:text-white transition-colors text-sm"
+                >
+                  <HomeIcon class="h-4 w-4 mr-1" />
+                  Home
+                </Link>
+              </li>
+              <li v-for="(breadcrumb, index) in breadcrumbs" :key="index" class="flex items-center">
+                <ChevronRightIcon class="h-4 w-4 text-white/50 mx-2" />
+                <Link
+                  v-if="breadcrumb.href && !breadcrumb.current"
+                  :href="breadcrumb.href"
+                  class="text-white/70 hover:text-white transition-colors text-sm"
+                >
+                  {{ breadcrumb.name }}
+                </Link>
+                <span v-else class="text-white font-medium text-sm">
+                  {{ breadcrumb.name }}
+                </span>
+              </li>
+            </ol>
+          </nav>
+
+          <div class="grid grid-cols-3 items-center gap-8">
+            <div class="col-span-2">
+              <nav class="flex !justify-start space-x-4">
+                <Link
+                  v-for="item in navigation"
+                  :key="item.name"
+                  :href="item.href"
+                  :class="[
+                    item.current
+                      ? 'bg-white bg-opacity-20 text-white'
+                      : 'text-white hover:bg-white hover:bg-opacity-10',
+                    'rounded-md px-3 py-2 text-sm font-medium',
+                  ]"
+                >
+                  {{ item.name }}
+                </Link>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <TransitionRoot as="template" :show="open">
+        <div class="lg:hidden">
+          <TransitionChild
+            as="template"
+            enter="duration-150 ease-out"
+            enter-from="opacity-0"
+            enter-to="opacity-100"
+            leave="duration-150 ease-in"
+            leave-from="opacity-100"
+            leave-to="opacity-0"
+          >
+            <PopoverOverlay class="fixed inset-0 z-20 bg-black bg-opacity-25" />
+          </TransitionChild>
+
+          <TransitionChild
+            as="template"
+            enter="duration-150 ease-out"
+            enter-from="opacity-0 scale-95"
+            enter-to="opacity-100 scale-100"
+            leave="duration-150 ease-in"
+            leave-from="opacity-100 scale-100"
+            leave-to="opacity-0 scale-95"
+          >
+            <PopoverPanel
+              focus
+              class="absolute inset-x-0 top-0 z-30 mx-auto w-full max-w-3xl origin-top transform p-2 transition"
+            >
+              <div
+                class="divide-y divide-gray-200 rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5"
+              >
+                <div class="pb-2 pt-3">
+                  <div class="flex items-center justify-between px-4">
+                    <div></div>
+                    <div class="-mr-2">
+                      <PopoverButton
+                        class="relative inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                      >
+                        <span class="absolute -inset-0.5" />
+                        <span class="sr-only">Close menu</span>
+                        <XMarkIcon class="h-6 w-6" aria-hidden="true" />
+                      </PopoverButton>
                     </div>
-                </Link>
-            </div>
-
-            <!-- Auth Form Card -->
-            <div class="glass rounded-2xl p-8 bg-white/90 backdrop-blur-sm border border-white/20">
-                <slot />
-            </div>
-
-            <!-- Back to Home Link -->
-            <div class="text-center mt-6">
-                <Link href="/" class="text-white/80 hover:text-white text-sm font-medium transition-colors">
-                    ← Back to Home
-                </Link>
-            </div>
+                  </div>
+                  <div class="mt-3 space-y-1 px-2">
+                    <Link
+                      v-for="item in navigation"
+                      :key="item.name"
+                      :href="item.href"
+                      class="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-100 hover:text-gray-800"
+                    >
+                      {{ item.name }}
+                    </Link>
+                  </div>
+                </div>
+                <div class="pb-2 pt-4">
+                  <div class="mt-3 space-y-1 px-2">
+                    <Link
+                      href="/login"
+                      class="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-100 hover:text-gray-800"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/register"
+                      class="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-100 hover:text-gray-800"
+                    >
+                      Register
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </PopoverPanel>
+          </TransitionChild>
         </div>
+      </TransitionRoot>
+    </Popover>
+
+    <div class="flex-1 dotted-background-dark">
+      <slot />
     </div>
+
+    <footer class="bg-gray-100 relative dotted-background py-12 border-t border-gray-200">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <div class="flex items-center space-x-3 mb-4">
+              <ApplicationLogo variant="black" class="h-8 w-auto" />
+              <h3 class="text-xl font-bold text-gray-900">Sneaky Salesman</h3>
+            </div>
+            <p class="text-gray-600">
+              Empowering consumers with transparent financing tools and expert insights.
+            </p>
+          </div>
+          <div>
+            <h4 class="text-lg font-semibold mb-4 text-gray-900">Quick Links</h4>
+            <ul class="space-y-2 text-gray-600">
+              <li>
+                <Link href="/estimates/financing" class="hover:text-primary transition-colors"
+                  >Finance Renegade</Link
+                >
+              </li>
+              <li>
+                <Link href="/estimates/leasing" class="hover:text-primary transition-colors"
+                  >Lease Renegade</Link
+                >
+              </li>
+              <li>
+                <Link href="/renegade/price-drop" class="hover:text-primary transition-colors"
+                  >Price Drop Renegade</Link
+                >
+              </li>
+              <li>
+                <Link href="/system-status" class="hover:text-primary transition-colors"
+                  >System Status</Link
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-lg font-semibold mb-4 text-gray-900">Contact</h4>
+            <p class="text-gray-600">
+              <Link
+                href="mailto:jason.barnett@jaytech.io"
+                class="hover:text-primary transition-colors flex items-center"
+              >
+                <span class="">jason.barnett@jaytech.io</span>
+                <EnvelopeIcon class="h-4 w-4 ml-2" aria-hidden="true" />
+              </Link>
+            </p>
+            <p class="text-gray-500 mt-4 text-sm">
+              &copy; {{ new Date().getFullYear() }} JayTech LLC. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
 </template>
+
+<style scoped>
+nav {
+  display: flex;
+  justify-content: flex-end;
+}
+</style>

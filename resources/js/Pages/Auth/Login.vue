@@ -1,6 +1,6 @@
 <script setup>
 import Checkbox from "@/Components/Checkbox.vue";
-import GuestLayout from "@/Layouts/GuestLayout.vue";
+import AuthLayout from "@/Layouts/AuthLayout.vue";
 import FormInput from "@/Components/FormInput.vue";
 import BaseButton from "@/Components/BaseButton.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
@@ -28,7 +28,7 @@ const submit = () => {
 </script>
 
 <template>
-    <GuestLayout>
+    <AuthLayout>
         <Head title="Log in" />
 
         <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
@@ -93,5 +93,5 @@ const submit = () => {
                 </p>
             </div>
         </form>
-    </GuestLayout>
+    </AuthLayout>
 </template>

@@ -99,7 +99,7 @@ const supportedStores = [
   <Head title="Price Drop Renegade - Coming Soon" />
 
   <component :is="user ? AuthenticatedLayout : GuestLayout" :user="user">
-    <main class="py-12" :class="{ '-mt-24': user }">
+    <main class="py-12 -mt-24">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <!-- Hero Section -->
         <div class="mb-16">

@@ -87,12 +87,12 @@ const formTitle = computed(() => {
 const breadcrumbs = computed(() => [
   {
     name: 'Lease Renegade',
-    href: '/estimates/leasing'
+    href: '/estimates/leasing',
   },
   {
     name: isEdit.value ? 'Edit Estimate' : 'New Estimate',
-    current: true
-  }
+    current: true,
+  },
 ])
 
 const vehicleTitle = computed(() => {

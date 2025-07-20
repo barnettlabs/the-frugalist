@@ -44,19 +44,20 @@ const earlyBuyoutScenarios = computed((): BuyoutScenario[] => {
   const scenarios: BuyoutScenario[] = []
 
   // Calculate for 6 months, 12 months, 18 months, and 24 months into lease
-  const timePoints = [6, 12, 18, 24].filter(months => months < leaseTerm)
+  const timePoints = [6, 12, 18, 24].filter((months) => months < leaseTerm)
 
-  timePoints.forEach(monthsElapsed => {
+  timePoints.forEach((monthsElapsed) => {
     const remainingPayments = leaseTerm - monthsElapsed
     const remainingPaymentValue = remainingPayments * monthlyPayment
 
     // Typical early buyout calculation: Residual + remaining payments (often with some discount)
-    const earlyBuyoutPrice = residualAmount + (remainingPaymentValue * 0.5) // 50% of remaining payments
+    const earlyBuyoutPrice = residualAmount + remainingPaymentValue * 0.5 // 50% of remaining payments
 
     // Calculate depreciation rate for market value estimation
     const depreciationRate = (100 - parseFloat(props.data.residual_percent || 0)) / 100
     const additionalDepreciation = (monthsElapsed / leaseTerm) * depreciationRate * 0.1 // Additional 10% depreciation
-    const estimatedMarketValue = msrp * (1 - depreciationRate * (monthsElapsed / leaseTerm) - additionalDepreciation)
+    const estimatedMarketValue =
+      msrp * (1 - depreciationRate * (monthsElapsed / leaseTerm) - additionalDepreciation)
 
     scenarios.push({
       monthsElapsed,
@@ -64,13 +65,12 @@ const earlyBuyoutScenarios = computed((): BuyoutScenario[] => {
       buyoutPrice: earlyBuyoutPrice,
       estimatedMarketValue,
       equity: Math.max(0, estimatedMarketValue - earlyBuyoutPrice),
-      totalPaidSoFar: monthsElapsed * monthlyPayment + parseFloat(props.data.down_payment || 0)
+      totalPaidSoFar: monthsElapsed * monthlyPayment + parseFloat(props.data.down_payment || 0),
     })
   })
 
   return scenarios
 })
-
 </script>
 
 <template>
@@ -106,18 +106,14 @@ const earlyBuyoutScenarios = computed((): BuyoutScenario[] => {
           <div class="text-2xl font-bold text-green-900">
             ${{ formatCurrency(endOfLeaseBuyout) }}
           </div>
-          <div class="text-xs text-green-700 mt-1">
-            {{ props.data.residual_percent }}% of MSRP
-          </div>
+          <div class="text-xs text-green-700 mt-1">{{ props.data.residual_percent }}% of MSRP</div>
         </div>
         <div class="bg-blue-50 p-4 rounded-lg">
           <div class="text-sm text-blue-600 font-medium">Residual Percentage</div>
           <div class="text-2xl font-bold text-blue-900">
             {{ props.data.residual_percent || 0 }}%
           </div>
-          <div class="text-xs text-blue-700 mt-1">
-            of Original MSRP
-          </div>
+          <div class="text-xs text-blue-700 mt-1">of Original MSRP</div>
         </div>
       </div>
 
@@ -129,11 +125,15 @@ const earlyBuyoutScenarios = computed((): BuyoutScenario[] => {
           <div class="space-y-3">
             <div class="flex justify-between items-center">
               <span class="text-sm text-gray-600">Return Vehicle</span>
-              <span class="text-sm font-medium text-gray-900">$0 (subject to excess wear/mileage)</span>
+              <span class="text-sm font-medium text-gray-900"
+                >$0 (subject to excess wear/mileage)</span
+              >
             </div>
             <div class="flex justify-between items-center">
               <span class="text-sm text-gray-600">Purchase Vehicle</span>
-              <span class="text-sm font-medium text-gray-900">${{ formatCurrency(endOfLeaseBuyout) }}</span>
+              <span class="text-sm font-medium text-gray-900"
+                >${{ formatCurrency(endOfLeaseBuyout) }}</span
+              >
             </div>
             <div class="border-t pt-2">
               <div class="text-xs text-gray-500">
@@ -158,7 +158,11 @@ const earlyBuyoutScenarios = computed((): BuyoutScenario[] => {
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="scenario in earlyBuyoutScenarios" :key="scenario.monthsElapsed" class="border-b border-gray-100">
+                <tr
+                  v-for="scenario in earlyBuyoutScenarios"
+                  :key="scenario.monthsElapsed"
+                  class="border-b border-gray-100"
+                >
                   <td class="py-2 font-medium">{{ scenario.monthsElapsed }}</td>
                   <td class="py-2">${{ formatCurrency(scenario.buyoutPrice) }}</td>
                   <td class="py-2">${{ formatCurrency(scenario.estimatedMarketValue) }}</td>
@@ -171,7 +175,8 @@ const earlyBuyoutScenarios = computed((): BuyoutScenario[] => {
             </table>
           </div>
           <div class="mt-3 text-xs text-gray-500">
-            * Early buyout prices are estimates and may vary by leasing company. Market values are approximations and based on a linear depreciation rate which is not always accurate.
+            * Early buyout prices are estimates and may vary by leasing company. Market values are
+            approximations and based on a linear depreciation rate which is not always accurate.
           </div>
         </div>
 

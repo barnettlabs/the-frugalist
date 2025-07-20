@@ -19,7 +19,7 @@ const summary = computed(() => {
 
 const paymentBreakdown = computed(() => {
   if (!summary.value) return null
-  
+
   return {
     principal: summary.value.monthlyPrincipalPayment * parseInt(props.data.lease_term || 0),
     interest: summary.value.residualMonthlyInterestPayment * parseInt(props.data.lease_term || 0),
@@ -29,7 +29,11 @@ const paymentBreakdown = computed(() => {
 
 const totalAmount = computed(() => {
   if (!paymentBreakdown.value) return 0
-  return paymentBreakdown.value.principal + paymentBreakdown.value.interest + paymentBreakdown.value.salesTax
+  return (
+    paymentBreakdown.value.principal +
+    paymentBreakdown.value.interest +
+    paymentBreakdown.value.salesTax
+  )
 })
 
 const principalPercentage = computed(() => {
@@ -138,7 +142,7 @@ const salesTaxPercentage = computed(() => {
                 </svg>
               </div>
             </div>
-            
+
             <!-- Legend -->
             <div class="space-y-2">
               <div class="flex items-center justify-between">
@@ -147,7 +151,9 @@ const salesTaxPercentage = computed(() => {
                   <span class="text-sm text-gray-700">Principal (Depreciation)</span>
                 </div>
                 <div class="text-sm font-medium">
-                  ${{ formatCurrency(paymentBreakdown.principal) }} ({{ principalPercentage.toFixed(1) }}%)
+                  ${{ formatCurrency(paymentBreakdown.principal) }} ({{
+                    principalPercentage.toFixed(1)
+                  }}%)
                 </div>
               </div>
               <div class="flex items-center justify-between">
@@ -156,7 +162,9 @@ const salesTaxPercentage = computed(() => {
                   <span class="text-sm text-gray-700">Interest</span>
                 </div>
                 <div class="text-sm font-medium">
-                  ${{ formatCurrency(paymentBreakdown.interest) }} ({{ interestPercentage.toFixed(1) }}%)
+                  ${{ formatCurrency(paymentBreakdown.interest) }} ({{
+                    interestPercentage.toFixed(1)
+                  }}%)
                 </div>
               </div>
               <div class="flex items-center justify-between">
@@ -165,7 +173,9 @@ const salesTaxPercentage = computed(() => {
                   <span class="text-sm text-gray-700">Sales Tax</span>
                 </div>
                 <div class="text-sm font-medium">
-                  ${{ formatCurrency(paymentBreakdown.salesTax) }} ({{ salesTaxPercentage.toFixed(1) }}%)
+                  ${{ formatCurrency(paymentBreakdown.salesTax) }} ({{
+                    salesTaxPercentage.toFixed(1)
+                  }}%)
                 </div>
               </div>
             </div>

@@ -1,21 +1,17 @@
 <script setup>
-import { ref } from 'vue';
-import BaseInput from './BaseInput.vue';
+import { ref } from 'vue'
+import BaseInput from './BaseInput.vue'
 
 const model = defineModel({
-    type: String,
-    required: true,
-});
+  type: String,
+  required: true,
+})
 
-const input = ref(null);
+const input = ref(null)
 
-defineExpose({ focus: () => input.value?.focus() });
+defineExpose({ focus: () => input.value?.focus() })
 </script>
 
 <template>
-    <BaseInput
-        v-model="model"
-        v-bind="$attrs"
-        ref="input"
-    />
+  <BaseInput v-model="model" v-bind="$attrs" ref="input" />
 </template>

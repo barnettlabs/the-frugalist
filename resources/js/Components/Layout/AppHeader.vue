@@ -54,7 +54,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   navigation: () => [],
   userNavigation: () => [],
-  isAuthenticated: false
+  isAuthenticated: false,
 })
 
 const fullName = computed((): string => {
@@ -105,14 +105,14 @@ const fullName = computed((): string => {
         <div class="hidden lg:ml-4 lg:flex lg:items-center lg:pr-0.5 relative z-50">
           <!-- Auth buttons for guests -->
           <div v-if="!isAuthenticated" class="flex space-x-4">
-            <Link 
-              href="/login" 
+            <Link
+              href="/login"
               class="text-white/80 hover:text-white px-3 py-2 text-sm font-medium transition-colors"
             >
               Login
             </Link>
-            <Link 
-              href="/register" 
+            <Link
+              href="/register"
               class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
             >
               Register
@@ -180,7 +180,7 @@ const fullName = computed((): string => {
           </PopoverButton>
         </div>
       </div>
-      
+
       <div class="hidden border- border-white border-opacity-20 pt-2 pb-5 lg:block">
         <!-- Breadcrumbs -->
         <nav
@@ -291,7 +291,7 @@ const fullName = computed((): string => {
                   </Link>
                 </div>
               </div>
-              
+
               <!-- Mobile auth section -->
               <div class="pb-2 pt-4">
                 <div v-if="isAuthenticated && user" class="flex items-center px-5">
@@ -318,7 +318,7 @@ const fullName = computed((): string => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div class="mt-3 space-y-1 px-2">
                   <template v-if="isAuthenticated">
                     <component

@@ -78,14 +78,14 @@ const navigation = computed((): NavigationItem[] => [
           <!-- Right section on desktop - Login/Register buttons -->
           <div class="hidden lg:ml-4 lg:flex lg:items-center lg:pr-0.5 relative z-50">
             <div class="flex space-x-4">
-              <Link 
-                href="/login" 
+              <Link
+                href="/login"
                 class="text-white/80 hover:text-white px-3 py-2 text-sm font-medium transition-colors"
               >
                 Login
               </Link>
-              <Link 
-                href="/register" 
+              <Link
+                href="/register"
                 class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
               >
                 Register

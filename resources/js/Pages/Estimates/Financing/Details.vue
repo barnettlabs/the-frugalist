@@ -81,12 +81,12 @@ const formTitle = computed(() => {
 const breadcrumbs = computed(() => [
   {
     name: 'Finance Renegade',
-    href: '/estimates/financing'
+    href: '/estimates/financing',
   },
   {
     name: isEdit.value ? 'Edit Estimate' : 'New Estimate',
-    current: true
-  }
+    current: true,
+  },
 ])
 
 const submitForm = async () => {

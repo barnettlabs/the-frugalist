@@ -22,20 +22,20 @@ const loading = ref(true)
 const breadcrumbs = computed(() => [
   {
     name: 'Finance Renegade',
-    href: '/estimates/financing'
+    href: '/estimates/financing',
   },
   {
     name: 'Compare Estimates',
-    current: true
-  }
+    current: true,
+  },
 ])
 
 const fetchSheets = async () => {
   try {
-    const ids = props.sheetIds.split(',').map(id => parseInt(id.trim()))
-    const promises = ids.map(id => axios.get(`/api/vehicle-finance-sheets/${id}`))
+    const ids = props.sheetIds.split(',').map((id) => parseInt(id.trim()))
+    const promises = ids.map((id) => axios.get(`/api/vehicle-finance-sheets/${id}`))
     const responses = await Promise.all(promises)
-    sheets.value = responses.map(response => response.data)
+    sheets.value = responses.map((response) => response.data)
   } catch (error) {
     console.error('Error fetching sheets for comparison:', error)
   } finally {
@@ -51,7 +51,7 @@ const getSheetCalculations = (sheet: VehicleFinanceSheet) => {
     const financeTerm = Number(sheet.finance_term) || 0
     const downPayment = Number(sheet.down_payment) || 0
     const fees = Number(sheet.fees) || 0
-    
+
     return {
       monthlyPayment: monthlyPayment,
       totalInterest: summary?.interestAmount || 0,
@@ -86,13 +86,19 @@ const getVehicleTitle = (sheet: VehicleFinanceSheet) => {
 // Find the best value for each metric
 const getBestMetric = (metric: string) => {
   if (!sheets.value.length) return null
-  const values = sheets.value.map(sheet => {
+  const values = sheets.value.map((sheet) => {
     const calc = getSheetCalculations(sheet)
     return calc[metric as keyof typeof calc] as number
   })
-  
+
   // For most metrics, lower is better
-  const isLowerBetter = ['monthlyPayment', 'totalInterest', 'totalPaid', 'totalDueAtSigning', 'purchasePrice'].includes(metric)
+  const isLowerBetter = [
+    'monthlyPayment',
+    'totalInterest',
+    'totalPaid',
+    'totalDueAtSigning',
+    'purchasePrice',
+  ].includes(metric)
   return isLowerBetter ? Math.min(...values) : Math.max(...values)
 }
 
@@ -150,16 +156,21 @@ onMounted(() => {
         </div>
 
         <!-- Comparison Table -->
-        <div v-else-if="sheets.length" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div
+          v-else-if="sheets.length"
+          class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden"
+        >
           <div class="overflow-x-auto">
             <table class="min-w-full">
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-6 py-4 text-left text-sm font-medium text-gray-900 sticky left-0 bg-gray-50">
+                  <th
+                    class="px-6 py-4 text-left text-sm font-medium text-gray-900 sticky left-0 bg-gray-50"
+                  >
                     Metric
                   </th>
-                  <th 
-                    v-for="sheet in sheets" 
+                  <th
+                    v-for="sheet in sheets"
                     :key="sheet.id"
                     class="px-6 py-4 text-center text-sm font-medium text-gray-900 min-w-[200px]"
                   >
@@ -178,12 +189,14 @@ onMounted(() => {
                   <td class="px-6 py-4 text-sm font-bold text-gray-900 sticky left-0 bg-yellow-50">
                     Monthly Payment
                   </td>
-                  <td 
-                    v-for="sheet in sheets" 
+                  <td
+                    v-for="sheet in sheets"
                     :key="`monthly-${sheet.id}`"
                     :class="[
                       'px-6 py-4 text-center text-sm font-bold',
-                      isBestValue(sheet, 'monthlyPayment') ? 'text-green-600 bg-green-50' : 'text-gray-900'
+                      isBestValue(sheet, 'monthlyPayment')
+                        ? 'text-green-600 bg-green-50'
+                        : 'text-gray-900',
                     ]"
                   >
                     ${{ formatCurrency(getSheetCalculations(sheet).monthlyPayment) }}
@@ -194,12 +207,14 @@ onMounted(() => {
                   <td class="px-6 py-4 text-sm font-bold text-gray-900 sticky left-0 bg-yellow-50">
                     Total Paid (All Payments)
                   </td>
-                  <td 
-                    v-for="sheet in sheets" 
+                  <td
+                    v-for="sheet in sheets"
                     :key="`total-${sheet.id}`"
                     :class="[
                       'px-6 py-4 text-center text-sm font-bold',
-                      isBestValue(sheet, 'totalPaid') ? 'text-green-600 bg-green-50' : 'text-gray-900'
+                      isBestValue(sheet, 'totalPaid')
+                        ? 'text-green-600 bg-green-50'
+                        : 'text-gray-900',
                     ]"
                   >
                     ${{ formatCurrency(getSheetCalculations(sheet).totalPaid) }}
@@ -210,12 +225,14 @@ onMounted(() => {
                   <td class="px-6 py-4 text-sm font-bold text-gray-900 sticky left-0 bg-yellow-50">
                     Total Interest
                   </td>
-                  <td 
-                    v-for="sheet in sheets" 
+                  <td
+                    v-for="sheet in sheets"
                     :key="`interest-${sheet.id}`"
                     :class="[
                       'px-6 py-4 text-center text-sm font-bold',
-                      isBestValue(sheet, 'totalInterest') ? 'text-green-600 bg-green-50' : 'text-gray-900'
+                      isBestValue(sheet, 'totalInterest')
+                        ? 'text-green-600 bg-green-50'
+                        : 'text-gray-900',
                     ]"
                   >
                     ${{ formatCurrency(getSheetCalculations(sheet).totalInterest) }}
@@ -226,12 +243,14 @@ onMounted(() => {
                   <td class="px-6 py-4 text-sm font-bold text-gray-900 sticky left-0 bg-yellow-50">
                     Total Due at Signing
                   </td>
-                  <td 
-                    v-for="sheet in sheets" 
+                  <td
+                    v-for="sheet in sheets"
                     :key="`signing-${sheet.id}`"
                     :class="[
                       'px-6 py-4 text-center text-sm font-bold',
-                      isBestValue(sheet, 'totalDueAtSigning') ? 'text-green-600 bg-green-50' : 'text-gray-900'
+                      isBestValue(sheet, 'totalDueAtSigning')
+                        ? 'text-green-600 bg-green-50'
+                        : 'text-gray-900',
                     ]"
                   >
                     ${{ formatCurrency(getSheetCalculations(sheet).totalDueAtSigning) }}
@@ -240,20 +259,30 @@ onMounted(() => {
 
                 <!-- Vehicle Details -->
                 <tr>
-                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-white">MSRP</td>
-                  <td v-for="sheet in sheets" :key="`msrp-${sheet.id}`" class="px-6 py-3 text-center text-sm text-gray-900">
+                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-white">
+                    MSRP
+                  </td>
+                  <td
+                    v-for="sheet in sheets"
+                    :key="`msrp-${sheet.id}`"
+                    class="px-6 py-3 text-center text-sm text-gray-900"
+                  >
                     ${{ formatCurrency(Number(sheet.msrp) || 0) }}
                   </td>
                 </tr>
 
                 <tr class="bg-gray-50">
-                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-gray-50">Purchase Price</td>
-                  <td 
-                    v-for="sheet in sheets" 
-                    :key="`purchase-${sheet.id}`" 
+                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-gray-50">
+                    Purchase Price
+                  </td>
+                  <td
+                    v-for="sheet in sheets"
+                    :key="`purchase-${sheet.id}`"
                     :class="[
                       'px-6 py-3 text-center text-sm',
-                      isBestValue(sheet, 'purchasePrice') ? 'text-green-600 font-semibold' : 'text-gray-900'
+                      isBestValue(sheet, 'purchasePrice')
+                        ? 'text-green-600 font-semibold'
+                        : 'text-gray-900',
                     ]"
                   >
                     ${{ formatCurrency(getSheetCalculations(sheet).purchasePrice) }}
@@ -262,58 +291,106 @@ onMounted(() => {
 
                 <!-- Financing Terms -->
                 <tr>
-                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-white">Interest Rate</td>
-                  <td v-for="sheet in sheets" :key="`rate-${sheet.id}`" class="px-6 py-3 text-center text-sm text-gray-900">
+                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-white">
+                    Interest Rate
+                  </td>
+                  <td
+                    v-for="sheet in sheets"
+                    :key="`rate-${sheet.id}`"
+                    class="px-6 py-3 text-center text-sm text-gray-900"
+                  >
                     {{ Number(sheet.interest_rate) || 0 }}%
                   </td>
                 </tr>
 
                 <tr class="bg-gray-50">
-                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-gray-50">Finance Term</td>
-                  <td v-for="sheet in sheets" :key="`term-${sheet.id}`" class="px-6 py-3 text-center text-sm text-gray-900">
+                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-gray-50">
+                    Finance Term
+                  </td>
+                  <td
+                    v-for="sheet in sheets"
+                    :key="`term-${sheet.id}`"
+                    class="px-6 py-3 text-center text-sm text-gray-900"
+                  >
                     {{ Number(sheet.finance_term) || 0 }} months
                   </td>
                 </tr>
 
                 <tr>
-                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-white">Down Payment</td>
-                  <td v-for="sheet in sheets" :key="`down-${sheet.id}`" class="px-6 py-3 text-center text-sm text-gray-900">
+                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-white">
+                    Down Payment
+                  </td>
+                  <td
+                    v-for="sheet in sheets"
+                    :key="`down-${sheet.id}`"
+                    class="px-6 py-3 text-center text-sm text-gray-900"
+                  >
                     ${{ formatCurrency(Number(sheet.down_payment) || 0) }}
                   </td>
                 </tr>
 
                 <tr class="bg-gray-50">
-                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-gray-50">Amount Financed</td>
-                  <td v-for="sheet in sheets" :key="`financed-${sheet.id}`" class="px-6 py-3 text-center text-sm text-gray-900">
+                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-gray-50">
+                    Amount Financed
+                  </td>
+                  <td
+                    v-for="sheet in sheets"
+                    :key="`financed-${sheet.id}`"
+                    class="px-6 py-3 text-center text-sm text-gray-900"
+                  >
                     ${{ formatCurrency(getSheetCalculations(sheet).loanAmount) }}
                   </td>
                 </tr>
 
                 <!-- Fees and Discounts -->
                 <tr>
-                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-white">Fees</td>
-                  <td v-for="sheet in sheets" :key="`fees-${sheet.id}`" class="px-6 py-3 text-center text-sm text-gray-900">
+                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-white">
+                    Fees
+                  </td>
+                  <td
+                    v-for="sheet in sheets"
+                    :key="`fees-${sheet.id}`"
+                    class="px-6 py-3 text-center text-sm text-gray-900"
+                  >
                     ${{ formatCurrency(Number(sheet.fees) || 0) }}
                   </td>
                 </tr>
 
                 <tr class="bg-gray-50">
-                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-gray-50">Discounts</td>
-                  <td v-for="sheet in sheets" :key="`discounts-${sheet.id}`" class="px-6 py-3 text-center text-sm text-gray-900">
+                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-gray-50">
+                    Discounts
+                  </td>
+                  <td
+                    v-for="sheet in sheets"
+                    :key="`discounts-${sheet.id}`"
+                    class="px-6 py-3 text-center text-sm text-gray-900"
+                  >
                     ${{ formatCurrency(Number(sheet.discounts) || 0) }}
                   </td>
                 </tr>
 
                 <tr>
-                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-white">Rebates</td>
-                  <td v-for="sheet in sheets" :key="`rebates-${sheet.id}`" class="px-6 py-3 text-center text-sm text-gray-900">
+                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-white">
+                    Rebates
+                  </td>
+                  <td
+                    v-for="sheet in sheets"
+                    :key="`rebates-${sheet.id}`"
+                    class="px-6 py-3 text-center text-sm text-gray-900"
+                  >
                     ${{ formatCurrency(Number(sheet.rebates) || 0) }}
                   </td>
                 </tr>
 
                 <tr class="bg-gray-50">
-                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-gray-50">Sales Tax Rate</td>
-                  <td v-for="sheet in sheets" :key="`tax-${sheet.id}`" class="px-6 py-3 text-center text-sm text-gray-900">
+                  <td class="px-6 py-3 text-sm font-medium text-gray-900 sticky left-0 bg-gray-50">
+                    Sales Tax Rate
+                  </td>
+                  <td
+                    v-for="sheet in sheets"
+                    :key="`tax-${sheet.id}`"
+                    class="px-6 py-3 text-center text-sm text-gray-900"
+                  >
                     {{ Number(sheet.sales_tax_percent) || 0 }}%
                   </td>
                 </tr>

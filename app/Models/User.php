@@ -49,6 +49,14 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Get the user's full name by combining first and last name.
+     */
+    public function getNameAttribute(): string
+    {
+        return trim($this->first_name . ' ' . $this->last_name);
+    }
+
     public function notifications()
     {
         return $this->hasMany(Notification::class);

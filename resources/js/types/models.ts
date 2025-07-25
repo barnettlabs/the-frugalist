@@ -3,8 +3,8 @@ import { VehicleType } from "./enums";
 // Vehicle Finance Sheet Model
 export interface VehicleFinanceSheet {
     // Keys
-    id: string;
-    user_id: string;
+    id: number;
+    user_id: number;
 
     // Basic Information
     sheet_name: string;
@@ -19,16 +19,16 @@ export interface VehicleFinanceSheet {
     vehicle_trim: string;
 
     // Pricing Information
-    msrp: string;
-    fees: string;
-    discounts: string;
-    rebates: string;
-    down_payment: string;
-    sales_tax_percent: string;
+    msrp: number;
+    fees: number;
+    discounts: number;
+    rebates: number;
+    down_payment: number;
+    sales_tax_percent: number;
 
     // Finance Terms
-    interest_rate: string;
-    finance_term: string;
+    interest_rate: number;
+    finance_term: number;
     start_date: string;
 
     // Contact Information
@@ -48,8 +48,8 @@ export interface VehicleFinanceSheet {
 // Vehicle Lease Sheet Model
 export interface VehicleLeaseSheet {
     // Keys
-    id: string;
-    user_id: string;
+    id: number;
+    user_id: number;
 
     // Basic Information
     sheet_name: string;
@@ -57,27 +57,27 @@ export interface VehicleLeaseSheet {
     dealership_name: string;
 
     // Vehicle Information
-    vehicle_type: VehicleType;
+    vehicle_type?: VehicleType;
     vehicle_year: string;
     vehicle_make: string;
     vehicle_model: string;
     vehicle_trim: string;
 
     // Pricing Information
-    msrp: string;
-    dealer_contribution: string;
-    trade_in: string;
-    doc_fee: string;
-    acquisition_fee: string;
-    misc_fees: string;
-    lease_cash: string;
-    down_payment: string;
-    sales_tax_percent: string;
+    msrp: number;
+    dealer_contribution: number;
+    trade_in: number;
+    doc_fee: number;
+    acquisition_fee: number;
+    misc_fees: number;
+    lease_cash: number;
+    down_payment: number;
+    sales_tax_percent: number;
 
     // Lease Terms
-    money_factor: string;
-    residual_percent: string;
-    lease_term: string;
+    money_factor: number;
+    residual_percent: number;
+    lease_term: number;
     start_date: string;
 
     // Contact Information

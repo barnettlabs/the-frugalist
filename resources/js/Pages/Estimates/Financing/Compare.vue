@@ -21,7 +21,7 @@ const loading = ref(true)
 
 const breadcrumbs = computed(() => [
   {
-    name: 'Finance Renegade',
+    name: 'Smart Finance Calculator',
     href: '/estimates/financing',
   },
   {

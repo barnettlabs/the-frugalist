@@ -23,7 +23,7 @@ import { Link } from '@inertiajs/vue3'
               <ApplicationLogo variant="white" class="h-16 w-auto" />
             </div>
             <h1 class="text-3xl font-bold text-white mb-2 neon-text">Sneaky Salesman</h1>
-            <p class="text-white/80 text-sm font-medium">Your personal sales renegade</p>
+            <p class="text-white/80 text-sm font-medium">Your smart shopping companion</p>
           </div>
         </Link>
       </div>

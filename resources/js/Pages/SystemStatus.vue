@@ -198,7 +198,7 @@ const overallStatus = computed((): { status: string; color: string } => {
                   <div>
                     <h1 class="text-4xl font-bold text-gray-900 mb-2">System Status</h1>
                     <p class="text-lg text-gray-600">
-                      Real-time monitoring of all renegade systems
+                      Real-time monitoring of all smart shopping systems
                     </p>
                   </div>
                   <div class="text-right">

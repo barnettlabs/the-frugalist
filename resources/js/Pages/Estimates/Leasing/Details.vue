@@ -86,7 +86,7 @@ const formTitle = computed(() => {
 
 const breadcrumbs = computed(() => [
   {
-    name: 'Lease Renegade',
+    name: 'Smart Lease Calculator',
     href: '/estimates/leasing',
   },
   {

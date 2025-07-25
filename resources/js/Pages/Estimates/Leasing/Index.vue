@@ -136,7 +136,7 @@ const startComparison = () => {
 
 const breadcrumbs = computed(() => [
   {
-    name: 'Lease Renegade',
+    name: 'Smart Lease Calculator',
     current: true,
   },
 ])
@@ -147,7 +147,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Head title="Lease Renegade" />
+  <Head title="Smart Lease Calculator" />
 
   <AuthenticatedLayout :user="user" :breadcrumbs="breadcrumbs">
     <main class="-mt-24 pb-8 flex-1">
@@ -162,7 +162,7 @@ onMounted(() => {
                     <CurrencyDollarIcon class="h-12 w-12 text-secondary" />
                   </div>
                   <div>
-                    <h1 class="text-4xl font-bold text-gray-900 mb-2">Lease Renegade</h1>
+                    <h1 class="text-4xl font-bold text-gray-900 mb-2">Smart Lease Calculator</h1>
                     <p class="text-lg text-gray-600">
                       Master the lease game with smart calculations and tax benefit optimization
                     </p>
@@ -453,7 +453,7 @@ onMounted(() => {
 
             <!-- Pro Tips -->
             <div class="futuristic-card bg-white p-6 border border-gray-200 shadow-sm">
-              <h3 class="text-lg font-bold text-gray-900 mb-4">Renegade Tips</h3>
+              <h3 class="text-lg font-bold text-gray-900 mb-4">Smart Shopping Tips</h3>
               <div class="space-y-3">
                 <div class="flex items-start space-x-3">
                   <div class="w-2 h-2 bg-secondary rounded-full mt-2 flex-shrink-0"></div>

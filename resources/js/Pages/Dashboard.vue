@@ -44,7 +44,7 @@ interface Stat {
   value: string | number
 }
 
-interface RenegadeApp {
+interface SmartApp {
   icon: Component
   name: string
   description: string
@@ -66,12 +66,12 @@ const stats = computed((): Stat[] => [
   { label: 'dealers nearby (coming soon)', value: '??' },
 ])
 
-const renegadeApps: RenegadeApp[] = [
+const smartApps: SmartApp[] = [
   {
     icon: BanknotesIcon,
-    name: 'Finance Renegade',
+    name: 'Smart Finance Calculator',
     description:
-      'Break traditional financing rules. Advanced calculations with real-time rates to outsmart dealers.',
+      'Save money with intelligent financing calculations. Real-time rates and advanced analysis help you get the best deals.',
     href: '/estimates/financing',
     iconForeground: 'text-primary',
     iconBackground: 'bg-gradient-to-br from-primary/10 to-primary/20',
@@ -79,9 +79,9 @@ const renegadeApps: RenegadeApp[] = [
   },
   {
     icon: CurrencyDollarIcon,
-    name: 'Lease Renegade',
+    name: 'Smart Lease Calculator',
     description:
-      'Master the lease game. Smart calculations with tax benefits to maximize your advantage.',
+      'Maximize savings with intelligent lease calculations. Tax benefits and advanced analysis for the best deals.',
     href: '/estimates/leasing',
     iconForeground: 'text-secondary',
     iconBackground: 'bg-gradient-to-br from-secondary/10 to-secondary/20',
@@ -108,10 +108,9 @@ const fullName = computed((): string => {
             <div class="relative">
               <!-- Header Text -->
               <div class="mb-6 text-center lg:text-left">
-                <h1 class="text-4xl font-bold text-gray-900 mb-2">Renegade Command Center</h1>
+                <h1 class="text-4xl font-bold text-gray-900 mb-2">Smart Shopping Dashboard</h1>
                 <p class="text-lg text-gray-600">
-                  Your arsenal for automotive dominance. Break the rules, outsmart dealers, win the
-                  game.
+                  Your intelligent companion for automotive shopping. Save time and money with smart calculations and insights.
                 </p>
               </div>
 
@@ -133,11 +132,11 @@ const fullName = computed((): string => {
                     <div
                       class="absolute -bottom-1 -right-1 h-6 w-6 bg-success rounded-full border-2 border-white flex items-center justify-center"
                     >
-                      <span class="text-xs text-white font-bold">R</span>
+                      <span class="text-xs text-white font-bold">🦊</span>
                     </div>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-gray-600">Welcome back, Renegade</p>
+                    <p class="text-sm font-medium text-gray-600">Welcome back, Smart Shopper</p>
                     <h2 class="text-3xl font-bold text-gray-900">
                       {{ fullName }}
                     </h2>
@@ -167,13 +166,13 @@ const fullName = computed((): string => {
             <!-- Renegade Applications Section -->
             <div class="mb-8">
               <div class="mb-6">
-                <h2 class="text-2xl font-bold text-gray-900 mb-2">Renegade Arsenal</h2>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Smart Tools</h2>
                 <p class="text-gray-600">
-                  Access all available renegade applications to dominate the automotive market
+                  Access intelligent applications designed to save you time and money on your next vehicle purchase
                 </p>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div v-for="app in renegadeApps" :key="app.name" class="group relative">
+                <div v-for="app in smartApps" :key="app.name" class="group relative">
                   <div
                     class="futuristic-card p-6 transition-all duration-150 hover:neon-glow cursor-pointer"
                     @click="$inertia.visit(app.href)"

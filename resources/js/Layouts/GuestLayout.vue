@@ -62,7 +62,7 @@ const navigation = computed((): NavigationItem[] => [
                 <div class="flex flex-col">
                   <span class="text-white font-bold hidden lg:inline-block"> Sneaky Salesman </span>
                   <span class="text-white opacity-80 hidden lg:inline-block text-xs font-medium">
-                    Your personal sales renegade
+                    Your smart shopping companion
                   </span>
 
                   <span class="text-white font-bold text-sm lg:hidden text-wrap">
@@ -259,17 +259,17 @@ const navigation = computed((): NavigationItem[] => [
             <ul class="space-y-2 text-gray-600">
               <li>
                 <Link href="/estimates/financing" class="hover:text-primary transition-colors"
-                  >Finance Renegade</Link
+                  >Smart Finance Calculator</Link
                 >
               </li>
               <li>
                 <Link href="/estimates/leasing" class="hover:text-primary transition-colors"
-                  >Lease Renegade</Link
+                  >Smart Lease Calculator</Link
                 >
               </li>
               <li>
                 <Link href="/renegade/price-drop" class="hover:text-primary transition-colors"
-                  >Price Drop Renegade</Link
+                  >Smart Price Tracker</Link
                 >
               </li>
               <li>

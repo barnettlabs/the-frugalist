@@ -31,9 +31,9 @@ interface ActionItem {
 const actions: ActionItem[] = [
   {
     icon: BanknotesIcon,
-    name: 'Finance Renegade',
+    name: 'Smart Finance Calculator',
     description:
-      'Break traditional financing rules. Advanced calculations with real-time rates and comprehensive payment analysis to outsmart salespeople.',
+      'Save time and money with advanced financing calculations. Real-time rates and comprehensive payment analysis to help you get the best deal.',
     href: '/estimates/financing',
     iconForeground: 'text-primary',
     iconBackground: 'bg-gradient-to-br from-primary/10 to-primary/20',
@@ -41,9 +41,9 @@ const actions: ActionItem[] = [
   },
   {
     icon: CurrencyDollarIcon,
-    name: 'Lease Renegade',
+    name: 'Smart Lease Calculator',
     description:
-      'Master the lease game. Smart calculations with tax benefits and residual value optimization to maximize your advantage.',
+      'Maximize your savings with intelligent lease calculations. Tax benefits and residual value optimization to find the best lease deals.',
     href: '/estimates/leasing',
     iconForeground: 'text-secondary',
     iconBackground: 'bg-gradient-to-br from-secondary/10 to-secondary/20',
@@ -54,9 +54,9 @@ const actions: ActionItem[] = [
 const pipelineApps: ActionItem[] = [
   {
     icon: MagnifyingGlassIcon,
-    name: 'Price Drop Renegade',
+    name: 'Smart Price Tracker',
     description:
-      'Monitor product SKUs and get alerted when prices drop below your threshold. Set up intelligent price tracking to catch the best deals automatically.',
+      'Never miss a deal again. Monitor prices and get alerted when they drop below your threshold. Intelligent tracking saves you time and money.',
     href: '/renegade/price-drop',
     iconForeground: 'text-warning',
     iconBackground: 'bg-gradient-to-br from-warning/10 to-warning/20',
@@ -84,7 +84,7 @@ const pipelineApps: ActionItem[] = [
             <ApplicationLogo variant="white" class="h-10 w-auto" />
             <div class="flex flex-col">
               <span class="text-2xl font-bold text-white neon-text"> Sneaky Salesman </span>
-              <span class="text-white/80 text-sm font-medium"> Your personal sales renegade </span>
+              <span class="text-white/80 text-sm font-medium"> Your smart shopping companion </span>
             </div>
           </div>
 
@@ -119,27 +119,26 @@ const pipelineApps: ActionItem[] = [
           <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">
             Welcome to the
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300">
-              Renegade Suite
+              Smart Shopping Suite
             </span>
           </h1>
           <div
             class="mb-6 p-6 bg-white/10 backdrop-blur-sm rounded-xl max-w-2xl mx-auto border border-white/20"
           >
-            <p class="text-lg text-white/90 mb-2 font-semibold">Renegade</p>
+            <p class="text-lg text-white/90 mb-2 font-semibold">Smart & Sneaky</p>
             <p class="text-sm text-white/80 italic">
-              /ˈrenəˌɡād/ - Someone or something that goes against conventional beliefs or practices
+              Like a clever fox - intelligent, strategic, and always finding the best path forward
             </p>
           </div>
           <p class="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
-            Break free from traditional sales tactics. Our suite of renegade applications puts the
-            power back in your hands, helping you exploit the sales game for your benefit.
+            Navigate the automotive market with intelligence and cunning. Our smart tools help you save time and money by finding the best deals and avoiding common pitfalls.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               :href="$page.props.auth.user ? '/dashboard' : route('login')"
               class="bg-white text-gray-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all duration-150 hover:neon-glow"
             >
-              Explore Renegades
+              Start Saving
             </Link>
             <Link
               href="#applications"
@@ -158,10 +157,9 @@ const pipelineApps: ActionItem[] = [
         <!-- Applications Section -->
         <section id="applications" class="mb-16">
           <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">The Renegade Arsenal</h2>
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Smart Shopping Tools</h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-              Powerful applications designed to flip the script on traditional sales tactics. Each
-              renegade tool gives you the edge to negotiate like a pro.
+              Intelligent applications designed to save you time and money. Each tool gives you the insights and calculations needed to make smart purchasing decisions.
             </p>
           </div>
 
@@ -225,9 +223,9 @@ const pipelineApps: ActionItem[] = [
         <!-- Renegade Pipeline -->
         <section class="mb-16">
           <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">Renegade Pipeline</h2>
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Coming Soon</h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-              Revolutionary tools currently in development to expand your arsenal
+              More smart tools in development to help you save even more time and money
             </p>
           </div>
 
@@ -308,17 +306,17 @@ const pipelineApps: ActionItem[] = [
             <ul class="space-y-2 text-gray-400">
               <li>
                 <Link href="/estimates/financing" class="hover:text-white transition-colors"
-                  >Finance Renegade</Link
+                  >Smart Finance Calculator</Link
                 >
               </li>
               <li>
                 <Link href="/estimates/leasing" class="hover:text-white transition-colors"
-                  >Lease Renegade</Link
+                  >Smart Lease Calculator</Link
                 >
               </li>
               <li>
                 <Link href="/renegade/price-drop" class="hover:text-white transition-colors"
-                  >Price Drop Renegade</Link
+                  >Smart Price Tracker</Link
                 >
               </li>
               <li>

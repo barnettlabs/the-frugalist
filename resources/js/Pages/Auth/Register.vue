@@ -23,11 +23,11 @@ const submit = () => {
 
 <template>
   <AuthLayout>
-    <Head title="Join the Renegades" />
+    <Head title="Start Smart Shopping" />
 
     <div class="text-center mb-6">
-      <h2 class="text-2xl font-bold text-gray-900 mb-2">Join the Renegades</h2>
-      <p class="text-gray-600">Create your account and start outsmarting the sales game</p>
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">Start Smart Shopping</h2>
+      <p class="text-gray-600">Create your account and start saving time and money on vehicle purchases</p>
     </div>
 
     <form @submit.prevent="submit" class="space-y-5">
@@ -114,7 +114,7 @@ const submit = () => {
           :disabled="form.processing"
         >
           <span v-if="form.processing">Creating Account...</span>
-          <span v-else>Join the Renegades</span>
+          <span v-else>Start Smart Shopping</span>
         </PrimaryButton>
       </div>
 

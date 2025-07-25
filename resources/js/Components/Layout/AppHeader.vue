@@ -88,7 +88,7 @@ const fullName = computed((): string => {
               <div class="flex flex-col">
                 <span class="text-white font-bold hidden lg:inline-block"> Sneaky Salesman </span>
                 <span class="text-white opacity-80 hidden lg:inline-block text-xs font-medium">
-                  Your personal sales renegade
+                  Your smart shopping companion
                 </span>
 
                 <span class="text-white font-bold text-sm lg:hidden text-wrap">

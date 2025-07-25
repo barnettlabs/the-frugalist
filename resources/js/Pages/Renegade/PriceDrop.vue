@@ -96,7 +96,7 @@ const supportedStores = [
 </script>
 
 <template>
-  <Head title="Price Drop Renegade - Coming Soon" />
+  <Head title="Smart Price Tracker - Coming Soon" />
 
   <component :is="user ? AuthenticatedLayout : GuestLayout" :user="user">
     <main class="py-12 -mt-24">
@@ -110,7 +110,7 @@ const supportedStores = [
               >
                 <MagnifyingGlassIcon class="h-10 w-10 text-warning" />
               </div>
-              <h1 class="text-5xl font-bold text-gray-900 mb-4">Price Drop Renegade</h1>
+              <h1 class="text-5xl font-bold text-gray-900 mb-4">Smart Price Tracker</h1>
               <div
                 class="inline-flex items-center px-4 py-2 rounded-full bg-warning/10 text-warning font-medium text-sm mb-6"
               >
@@ -256,7 +256,7 @@ const supportedStores = [
           <div class="futuristic-card p-8 max-w-2xl mx-auto">
             <h2 class="text-2xl font-bold text-gray-900 mb-4">Be the First to Know</h2>
             <p class="text-gray-600 mb-6">
-              Price Drop Renegade is currently in development. Join our waitlist to be notified when
+              Smart Price Tracker is currently in development. Join our waitlist to be notified when
               it launches and get early access to beta features.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">

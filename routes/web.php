@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PriceTrackerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleFinanceSheetController;
 use App\Http\Controllers\VehicleLeaseSheetController;
@@ -52,11 +53,7 @@ Route::get('/system-status', function (Request $request) {
     ]);
 })->name('system-status');
 
-Route::get('/renegade/price-drop', function (Request $request) {
-    return Inertia::render('Renegade/PriceDrop', [
-        'user' => $request->user(),
-    ]);
-})->name('renegade.price-drop');
+Route::get('/renegade/price-drop', [PriceTrackerController::class, 'index'])->middleware('auth')->name('renegade.price-drop');
 
 Route::get('/dashboard', function (Request $request) {
     $user = $request->user();
@@ -158,6 +155,18 @@ Route::middleware('auth')->group(function () {
             'sheetIds' => $sheetIds,
         ]);
     })->name('estimates.leasing.compare');
+
+    // Price Tracker routes
+    Route::prefix('price-tracker')->name('price-tracker.')->group(function () {
+        Route::get('/', [PriceTrackerController::class, 'index'])->name('index');
+        Route::get('/create', [PriceTrackerController::class, 'create'])->name('create');
+        Route::post('/validate-product', [PriceTrackerController::class, 'validateProduct'])->name('validate-product');
+        Route::post('/', [PriceTrackerController::class, 'store'])->name('store');
+        Route::get('/{trackedProduct}', [PriceTrackerController::class, 'show'])->name('show');
+        Route::patch('/{trackedProduct}', [PriceTrackerController::class, 'update'])->name('update');
+        Route::delete('/{trackedProduct}', [PriceTrackerController::class, 'destroy'])->name('destroy');
+        Route::post('/{trackedProduct}/refresh', [PriceTrackerController::class, 'refresh'])->name('refresh');
+    });
 
     // Coming soon route
     Route::get('/coming-soon', function (Request $request) {

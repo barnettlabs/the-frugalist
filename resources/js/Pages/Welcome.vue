@@ -31,7 +31,7 @@ interface ActionItem {
 const actions: ActionItem[] = [
   {
     icon: BanknotesIcon,
-    name: 'Smart Finance Calculator',
+    name: 'Vehicle Finance Calculator',
     description:
       'Save time and money with advanced financing calculations. Real-time rates and comprehensive payment analysis to help you get the best deal.',
     href: '/estimates/financing',
@@ -41,7 +41,7 @@ const actions: ActionItem[] = [
   },
   {
     icon: CurrencyDollarIcon,
-    name: 'Smart Lease Calculator',
+    name: 'Vehicle Lease Calculator',
     description:
       'Maximize your savings with intelligent lease calculations. Tax benefits and residual value optimization to find the best lease deals.',
     href: '/estimates/leasing',
@@ -131,7 +131,8 @@ const pipelineApps: ActionItem[] = [
             </p>
           </div>
           <p class="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
-            Navigate the automotive market with intelligence and cunning. Our smart tools help you save time and money by finding the best deals and avoiding common pitfalls.
+            Navigate the market with intelligence and cunning. Our smart tools help you save time
+            and money by finding the best deals and avoiding common pitfalls.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -159,7 +160,8 @@ const pipelineApps: ActionItem[] = [
           <div class="text-center mb-12">
             <h2 class="text-4xl font-bold text-gray-900 mb-4">Smart Shopping Tools</h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-              Intelligent applications designed to save you time and money. Each tool gives you the insights and calculations needed to make smart purchasing decisions.
+              Intelligent applications designed to save you time and money. Each tool gives you the
+              insights and calculations needed to make smart purchasing decisions.
             </p>
           </div>
 
@@ -306,12 +308,12 @@ const pipelineApps: ActionItem[] = [
             <ul class="space-y-2 text-gray-400">
               <li>
                 <Link href="/estimates/financing" class="hover:text-white transition-colors"
-                  >Smart Finance Calculator</Link
+                  >Vehicle Finance Calculator</Link
                 >
               </li>
               <li>
                 <Link href="/estimates/leasing" class="hover:text-white transition-colors"
-                  >Smart Lease Calculator</Link
+                  >Vehicle Lease Calculator</Link
                 >
               </li>
               <li>

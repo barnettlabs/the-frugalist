@@ -140,7 +140,7 @@ const startComparison = () => {
 
 const breadcrumbs = computed(() => [
   {
-    name: 'Smart Finance Calculator',
+    name: 'Vehicle Finance Calculator',
     current: true,
   },
 ])
@@ -151,7 +151,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Head title="Smart Finance Calculator" />
+  <Head title="Vehicle Finance Calculator" />
 
   <AuthenticatedLayout :user="user" :breadcrumbs="breadcrumbs">
     <main class="-mt-24 pb-8 flex-1">
@@ -166,7 +166,7 @@ onMounted(() => {
                     <BanknotesIcon class="h-12 w-12 text-primary" />
                   </div>
                   <div>
-                    <h1 class="text-4xl font-bold text-gray-900 mb-2">Smart Finance Calculator</h1>
+                    <h1 class="text-4xl font-bold text-gray-900 mb-2">Vehicle Finance Calculator</h1>
                     <p class="text-lg text-gray-600">
                       Break traditional financing rules with advanced calculations and real-time
                       rates

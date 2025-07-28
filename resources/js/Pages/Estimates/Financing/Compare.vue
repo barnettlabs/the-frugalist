@@ -21,7 +21,7 @@ const loading = ref(true)
 
 const breadcrumbs = computed(() => [
   {
-    name: 'Smart Finance Calculator',
+    name: 'Vehicle Finance Calculator',
     href: '/estimates/financing',
   },
   {

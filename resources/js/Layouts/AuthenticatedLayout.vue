@@ -364,12 +364,12 @@ const fullName = computed((): string => {
             <ul class="space-y-2 text-gray-600">
               <li>
                 <Link href="/estimates/financing" class="hover:text-primary transition-colors"
-                  >Smart Finance Calculator</Link
+                  >Vehicle Finance Calculator</Link
                 >
               </li>
               <li>
                 <Link href="/estimates/leasing" class="hover:text-primary transition-colors"
-                  >Smart Lease Calculator</Link
+                  >Vehicle Lease Calculator</Link
                 >
               </li>
               <li>

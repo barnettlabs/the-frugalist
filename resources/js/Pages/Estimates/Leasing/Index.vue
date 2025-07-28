@@ -136,7 +136,7 @@ const startComparison = () => {
 
 const breadcrumbs = computed(() => [
   {
-    name: 'Smart Lease Calculator',
+    name: 'Vehicle Lease Calculator',
     current: true,
   },
 ])
@@ -147,7 +147,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Head title="Smart Lease Calculator" />
+  <Head title="Vehicle Lease Calculator" />
 
   <AuthenticatedLayout :user="user" :breadcrumbs="breadcrumbs">
     <main class="-mt-24 pb-8 flex-1">
@@ -162,7 +162,7 @@ onMounted(() => {
                     <CurrencyDollarIcon class="h-12 w-12 text-secondary" />
                   </div>
                   <div>
-                    <h1 class="text-4xl font-bold text-gray-900 mb-2">Smart Lease Calculator</h1>
+                    <h1 class="text-4xl font-bold text-gray-900 mb-2">Vehicle Lease Calculator</h1>
                     <p class="text-lg text-gray-600">
                       Master the lease game with smart calculations and tax benefit optimization
                     </p>

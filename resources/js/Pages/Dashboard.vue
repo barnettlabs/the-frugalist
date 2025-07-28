@@ -69,7 +69,7 @@ const stats = computed((): Stat[] => [
 const smartApps: SmartApp[] = [
   {
     icon: BanknotesIcon,
-    name: 'Smart Finance Calculator',
+    name: 'Vehicle Finance Calculator',
     description:
       'Save money with intelligent financing calculations. Real-time rates and advanced analysis help you get the best deals.',
     href: '/estimates/financing',
@@ -79,7 +79,7 @@ const smartApps: SmartApp[] = [
   },
   {
     icon: CurrencyDollarIcon,
-    name: 'Smart Lease Calculator',
+    name: 'Vehicle Lease Calculator',
     description:
       'Maximize savings with intelligent lease calculations. Tax benefits and advanced analysis for the best deals.',
     href: '/estimates/leasing',
@@ -110,7 +110,7 @@ const fullName = computed((): string => {
               <div class="mb-6 text-center lg:text-left">
                 <h1 class="text-4xl font-bold text-gray-900 mb-2">Smart Shopping Dashboard</h1>
                 <p class="text-lg text-gray-600">
-                  Your intelligent companion for automotive shopping. Save time and money with smart calculations and insights.
+                  Save time and money with smart calculations and insights.
                 </p>
               </div>
 
@@ -168,7 +168,8 @@ const fullName = computed((): string => {
               <div class="mb-6">
                 <h2 class="text-2xl font-bold text-gray-900 mb-2">Smart Tools</h2>
                 <p class="text-gray-600">
-                  Access intelligent applications designed to save you time and money on your next vehicle purchase
+                  Access intelligent applications designed to save you time and money on your next
+                  vehicle purchase
                 </p>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

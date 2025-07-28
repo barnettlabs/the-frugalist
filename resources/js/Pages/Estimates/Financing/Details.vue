@@ -80,7 +80,7 @@ const formTitle = computed(() => {
 
 const breadcrumbs = computed(() => [
   {
-    name: 'Smart Finance Calculator',
+    name: 'Vehicle Finance Calculator',
     href: '/estimates/financing',
   },
   {

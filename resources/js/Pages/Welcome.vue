@@ -70,7 +70,7 @@ const pipelineApps: ActionItem[] = [
 
   <div class="min-h-screen bg-gray-100 dotted-background-dark">
     <!-- Header -->
-    <header class="bg-animated-gradient dotted-background-light relative overflow-hidden">
+    <header class="z-10 bg-animated-gradient dotted-background-light relative overflow-hidden">
       <!-- Floating geometric shapes -->
       <div class="absolute inset-0 overflow-hidden pointer-events-none">
         <div class="absolute -top-4 -right-4 w-72 h-72 bg-white opacity-5 rounded-full"></div>
@@ -152,7 +152,7 @@ const pipelineApps: ActionItem[] = [
     </header>
 
     <!-- Main Content -->
-    <main class="py-16">
+    <main class="py-16 z-10">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <!-- Applications Section -->
         <section id="applications" class="mb-16">

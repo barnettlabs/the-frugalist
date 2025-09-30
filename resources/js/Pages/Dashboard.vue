@@ -9,6 +9,7 @@ import {
   UserCircleIcon,
   UserIcon,
   BuildingStorefrontIcon,
+  TagIcon,
 } from '@heroicons/vue/24/outline'
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 import type { Component } from 'vue'
@@ -87,6 +88,16 @@ const smartApps: SmartApp[] = [
     iconBackground: 'bg-gradient-to-br from-secondary/10 to-secondary/20',
     status: 'Available',
   },
+  {
+    icon: TagIcon,
+    name: 'Smart Price Tracker',
+    description:
+      'Track product prices and get alerts when they drop. Never miss a deal on the products you want.',
+    href: '/price-tracker',
+    iconForeground: 'text-warning',
+    iconBackground: 'bg-gradient-to-br from-warning/10 to-warning/20',
+    status: 'Available',
+  },
 ]
 
 const fullName = computed((): string => {
@@ -160,9 +171,8 @@ const fullName = computed((): string => {
         </div>
 
         <!-- Main Dashboard Content -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="space-y-8">
           <!-- Main Content Area -->
-          <div class="lg:col-span-2">
             <!-- Renegade Applications Section -->
             <div class="mb-8">
               <div class="mb-6">
@@ -172,7 +182,7 @@ const fullName = computed((): string => {
                   vehicle purchase
                 </p>
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div v-for="app in smartApps" :key="app.name" class="group relative">
                   <div
                     class="futuristic-card p-6 transition-all duration-150 hover:neon-glow cursor-pointer"
@@ -254,7 +264,7 @@ const fullName = computed((): string => {
                   View All →
                 </Link>
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div
                   v-if="vehicleFinanceSheets?.length > 0"
                   v-for="sheet in vehicleFinanceSheets.slice(0, 2)"
@@ -309,7 +319,7 @@ const fullName = computed((): string => {
                 </div>
                 <div
                   v-if="!vehicleFinanceSheets?.length && !vehicleLeaseSheets?.length"
-                  class="col-span-2 futuristic-card p-8 text-center"
+                  class="col-span-full futuristic-card p-8 text-center"
                 >
                   <div
                     class="p-4 rounded-xl bg-gray-100 w-16 h-16 mx-auto mb-4 flex items-center justify-center"
@@ -341,97 +351,6 @@ const fullName = computed((): string => {
                 </div>
               </div>
             </div>
-          </div>
-
-          <!-- Right Sidebar -->
-          <div class="space-y-6">
-            <!-- Recent Activity -->
-            <div class="futuristic-card p-6">
-              <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Activity</h3>
-              <div class="space-y-3">
-                <div class="flex items-start space-x-3">
-                  <div class="w-2 h-2 bg-primary rounded-full mt-2"></div>
-                  <div>
-                    <p class="text-sm text-gray-900 font-medium">Finance calculation</p>
-                    <p class="text-xs text-gray-500">2 minutes ago</p>
-                  </div>
-                </div>
-                <div class="flex items-start space-x-3">
-                  <div class="w-2 h-2 bg-secondary rounded-full mt-2"></div>
-                  <div>
-                    <p class="text-sm text-gray-900 font-medium">Lease estimate updated</p>
-                    <p class="text-xs text-gray-500">1 hour ago</p>
-                  </div>
-                </div>
-                <div class="flex items-start space-x-3">
-                  <div class="w-2 h-2 bg-info rounded-full mt-2"></div>
-                  <div>
-                    <p class="text-sm text-gray-900 font-medium">Profile updated</p>
-                    <p class="text-xs text-gray-500">3 hours ago</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Quick Stats -->
-            <div class="futuristic-card p-6">
-              <h3 class="text-lg font-bold text-gray-900 mb-4">Overview</h3>
-              <div class="space-y-4">
-                <div class="flex justify-between items-center">
-                  <span class="text-sm text-gray-600">Total Calculations</span>
-                  <span class="font-bold text-gray-900">{{
-                    (vehicleFinanceSheets?.length || 0) + (vehicleLeaseSheets?.length || 0)
-                  }}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-sm text-gray-600">Finance Sheets</span>
-                  <span class="font-bold text-primary">{{
-                    vehicleFinanceSheets?.length || 0
-                  }}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-sm text-gray-600">Lease Sheets</span>
-                  <span class="font-bold text-secondary">{{
-                    vehicleLeaseSheets?.length || 0
-                  }}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Quick Links -->
-            <div class="futuristic-card p-6">
-              <h3 class="text-lg font-bold text-gray-900 mb-4">Quick Links</h3>
-              <div class="space-y-3">
-                <Link
-                  href="/estimates/financing"
-                  class="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
-                >
-                  <div class="flex items-center">
-                    <component :is="BanknotesIcon" class="h-5 w-5 text-primary mr-3" />
-                    <span class="text-sm font-medium">All Finance Estimates</span>
-                  </div>
-                </Link>
-                <Link
-                  href="/estimates/leasing"
-                  class="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
-                >
-                  <div class="flex items-center">
-                    <component :is="CurrencyDollarIcon" class="h-5 w-5 text-secondary mr-3" />
-                    <span class="text-sm font-medium">All Lease Estimates</span>
-                  </div>
-                </Link>
-                <Link
-                  href="/profile"
-                  class="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
-                >
-                  <div class="flex items-center">
-                    <component :is="UserCircleIcon" class="h-5 w-5 text-info mr-3" />
-                    <span class="text-sm font-medium">Profile Settings</span>
-                  </div>
-                </Link>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </main>

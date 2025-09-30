@@ -7,6 +7,7 @@ use App\Models\TrackedProduct;
 use App\Services\Retailers\RetailerServiceFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
@@ -15,7 +16,7 @@ class PriceTrackerController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         $trackedProducts = TrackedProduct::with(['retailer', 'priceHistory', 'priceAlerts'])
             ->where('user_id', $user->id)
             ->active()
@@ -33,7 +34,7 @@ class PriceTrackerController extends Controller
     public function create()
     {
         $retailers = Retailer::active()->get();
-        
+
         return Inertia::render('PriceTracker/Create', [
             'retailers' => $retailers,
         ]);
@@ -49,9 +50,9 @@ class PriceTrackerController extends Controller
         try {
             $retailer = Retailer::findOrFail($request->retailer_id);
             $service = RetailerServiceFactory::create($retailer);
-            
+
             $productData = $service->getProductDetails($request->sku_upc);
-            
+
             if (!$productData) {
                 return response()->json([
                     'valid' => false,
@@ -102,7 +103,7 @@ class PriceTrackerController extends Controller
             // Validate and fetch product details
             $service = RetailerServiceFactory::create($retailer);
             $productData = $service->getProductDetails($request->sku_upc);
-            
+
             if (!$productData) {
                 throw ValidationException::withMessages([
                     'sku_upc' => 'Product not found or invalid SKU/UPC'
@@ -222,7 +223,7 @@ class PriceTrackerController extends Controller
         try {
             $service = RetailerServiceFactory::create($trackedProduct->retailer);
             $productData = $service->getProductDetails($trackedProduct->sku_upc);
-            
+
             if (!$productData) {
                 return back()->with('error', 'Unable to fetch current product data');
             }
@@ -247,7 +248,7 @@ class PriceTrackerController extends Controller
             // Check for price alerts
             if ($newPrice < $oldPrice) {
                 $alertType = $newPrice <= $trackedProduct->target_price ? 'target_reached' : 'price_drop';
-                
+
                 $trackedProduct->priceAlerts()->create([
                     'old_price' => $oldPrice,
                     'new_price' => $newPrice,

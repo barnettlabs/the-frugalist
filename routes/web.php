@@ -156,18 +156,6 @@ Route::middleware('auth')->group(function () {
         ]);
     })->name('estimates.leasing.compare');
 
-    // Price Tracker routes
-    Route::prefix('price-tracker')->name('price-tracker.')->group(function () {
-        Route::get('/', [PriceTrackerController::class, 'index'])->name('index');
-        Route::get('/create', [PriceTrackerController::class, 'create'])->name('create');
-        Route::post('/validate-product', [PriceTrackerController::class, 'validateProduct'])->name('validate-product');
-        Route::post('/', [PriceTrackerController::class, 'store'])->name('store');
-        Route::get('/{trackedProduct}', [PriceTrackerController::class, 'show'])->name('show');
-        Route::patch('/{trackedProduct}', [PriceTrackerController::class, 'update'])->name('update');
-        Route::delete('/{trackedProduct}', [PriceTrackerController::class, 'destroy'])->name('destroy');
-        Route::post('/{trackedProduct}/refresh', [PriceTrackerController::class, 'refresh'])->name('refresh');
-    });
-
     // Coming soon route
     Route::get('/coming-soon', function (Request $request) {
         $user = $request->user();
@@ -193,10 +181,22 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Notifications
     Route::get('/api/notifications', [NotificationController::class, 'index']);
     Route::get('/api/notifications/{notification}', [NotificationController::class, 'show']);
+
+    // Price Tracker routes
+    Route::prefix('price-tracker')->name('price-tracker.')->group(function () {
+        Route::get('/', [PriceTrackerController::class, 'index'])->name('index');
+        Route::get('/create', [PriceTrackerController::class, 'create'])->name('create');
+        Route::post('/validate-product', [PriceTrackerController::class, 'validateProduct'])->name('validate-product');
+        Route::post('/', [PriceTrackerController::class, 'store'])->name('store');
+        Route::get('/{trackedProduct}', [PriceTrackerController::class, 'show'])->name('show');
+        Route::patch('/{trackedProduct}', [PriceTrackerController::class, 'update'])->name('update');
+        Route::delete('/{trackedProduct}', [PriceTrackerController::class, 'destroy'])->name('destroy');
+        Route::post('/{trackedProduct}/refresh', [PriceTrackerController::class, 'refresh'])->name('refresh');
+    });
 });
 
 // Public routes
 Route::get('/api/announcements', [AnnouncementController::class, 'index']);
 Route::get('/api/announcements/{announcement}', [AnnouncementController::class, 'show']);
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

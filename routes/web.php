@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\BugReportController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PriceTrackerController;
 use App\Http\Controllers\ProfileController;
@@ -207,5 +208,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 // Public routes
 Route::get('/api/announcements', [AnnouncementController::class, 'index']);
 Route::get('/api/announcements/{announcement}', [AnnouncementController::class, 'show']);
+
+// Bug report route
+Route::post('/bug-reports', [BugReportController::class, 'store'])->name('bug-reports.store');
 
 require __DIR__ . '/auth.php';

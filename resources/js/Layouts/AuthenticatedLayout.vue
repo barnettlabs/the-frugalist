@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { Link, router } from '@inertiajs/vue3'
+import { Link, router, useForm } from '@inertiajs/vue3'
 import {
   Menu,
   MenuButton,
@@ -12,9 +12,12 @@ import {
   PopoverPanel,
   TransitionChild,
   TransitionRoot,
+  Dialog,
+  DialogPanel,
+  DialogTitle,
 } from '@headlessui/vue'
 import ApplicationLogo from '@/Components/ApplicationLogo.vue'
-import { Bars3Icon, XMarkIcon, PhoneIcon, EnvelopeIcon, UserIcon } from '@heroicons/vue/24/outline'
+import { Bars3Icon, XMarkIcon, PhoneIcon, EnvelopeIcon, UserIcon, BugAntIcon, XCircleIcon } from '@heroicons/vue/24/outline'
 import { MagnifyingGlassIcon, ChevronRightIcon, HomeIcon } from '@heroicons/vue/20/solid'
 
 interface User {
@@ -76,6 +79,40 @@ const userNavigation = ref<UserNavigationItem[]>([
 const fullName = computed((): string => {
   return `${props.user?.first_name ?? ''} ${props.user?.last_name ?? ''}`.trim()
 })
+
+// Bug report modal state
+const showBugModal = ref(false)
+const bugForm = useForm({
+  subject: '',
+  description: '',
+  page_url: '',
+  metadata: {} as Record<string, any>,
+})
+
+const openBugModal = () => {
+  bugForm.page_url = window.location.href
+  bugForm.metadata = {
+    userAgent: navigator.userAgent,
+    screenWidth: window.screen.width,
+    screenHeight: window.screen.height,
+    timestamp: new Date().toISOString(),
+  }
+  showBugModal.value = true
+}
+
+const closeBugModal = () => {
+  showBugModal.value = false
+  bugForm.reset()
+}
+
+const submitBugReport = () => {
+  bugForm.post(route('bug-reports.store'), {
+    preserveScroll: true,
+    onSuccess: () => {
+      closeBugModal()
+    },
+  })
+}
 </script>
 
 <template>
@@ -393,8 +430,15 @@ const fullName = computed((): string => {
               >
                 <span class="">jason.barnett@jaytech.io</span>
                 <EnvelopeIcon class="h-4 w-4 ml-2" aria-hidden="true" />
-            </a>
+              </a>
             </p>
+            <button
+              @click="openBugModal"
+              class="mt-4 flex items-center gap-2 text-gray-600 hover:text-primary transition-colors"
+            >
+              <BugAntIcon class="h-5 w-5" />
+              <span>Report a Bug</span>
+            </button>
             <p class="text-gray-500 mt-4 text-sm">
               &copy; {{ new Date().getFullYear() }} JayTech LLC. All rights reserved.
             </p>
@@ -402,6 +446,123 @@ const fullName = computed((): string => {
         </div>
       </div>
     </footer>
+
+    <!-- Bug Report Modal -->
+    <TransitionRoot appear :show="showBugModal" as="template">
+      <Dialog as="div" @close="closeBugModal" class="relative z-50">
+        <TransitionChild
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
+          <div class="fixed inset-0 bg-black bg-opacity-25" />
+        </TransitionChild>
+
+        <div class="fixed inset-0 overflow-y-auto">
+          <div class="flex min-h-full items-center justify-center p-4 text-center">
+            <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
+            >
+              <DialogPanel
+                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+              >
+                <div class="flex items-start justify-between mb-4">
+                  <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900 flex items-center gap-2">
+                    <BugAntIcon class="h-6 w-6 text-primary" />
+                    Report a Bug
+                  </DialogTitle>
+                  <button
+                    @click="closeBugModal"
+                    class="text-gray-400 hover:text-gray-500 transition-colors"
+                  >
+                    <XCircleIcon class="h-6 w-6" />
+                  </button>
+                </div>
+
+                <form @submit.prevent="submitBugReport" class="space-y-4">
+                  <div>
+                    <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">
+                      Subject
+                    </label>
+                    <input
+                      id="subject"
+                      v-model="bugForm.subject"
+                      type="text"
+                      required
+                      maxlength="255"
+                      placeholder="Brief description of the issue"
+                      class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                      :class="{ 'border-danger': bugForm.errors.subject }"
+                    />
+                    <p v-if="bugForm.errors.subject" class="mt-1 text-sm text-danger">
+                      {{ bugForm.errors.subject }}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                      Description
+                    </label>
+                    <textarea
+                      id="description"
+                      v-model="bugForm.description"
+                      required
+                      maxlength="2000"
+                      rows="6"
+                      placeholder="Please provide details about what happened, what you expected, and steps to reproduce..."
+                      class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary resize-none"
+                      :class="{ 'border-danger': bugForm.errors.description }"
+                    />
+                    <p v-if="bugForm.errors.description" class="mt-1 text-sm text-danger">
+                      {{ bugForm.errors.description }}
+                    </p>
+                    <p class="mt-1 text-xs text-gray-500">
+                      {{ bugForm.description.length }}/2000 characters
+                    </p>
+                  </div>
+
+                  <div class="bg-gray-50 p-3 rounded-lg text-xs text-gray-600">
+                    <p class="font-medium mb-1">The following information will be included:</p>
+                    <ul class="list-disc list-inside space-y-1">
+                      <li>Current page URL</li>
+                      <li>Browser information</li>
+                      <li>Screen resolution</li>
+                    </ul>
+                  </div>
+
+                  <div class="flex gap-3 pt-2">
+                    <button
+                      type="button"
+                      @click="closeBugModal"
+                      class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      :disabled="bugForm.processing"
+                      class="flex-1 px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary-shade-1 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {{ bugForm.processing ? 'Submitting...' : 'Submit Report' }}
+                    </button>
+                  </div>
+                </form>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </TransitionRoot>
   </div>
 </template>
 

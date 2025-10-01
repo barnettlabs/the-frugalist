@@ -79,6 +79,7 @@ class PriceTrackerController extends Controller
             'retailer_id' => 'required|exists:retailers,id',
             'sku_upc' => 'required|string',
             'target_price' => 'required|numeric|min:0.01',
+            'notification_method' => 'required|in:email,sms,push,all',
             'tracking_start_date' => 'required|date|after_or_equal:today',
             'tracking_end_date' => 'nullable|date|after:tracking_start_date',
         ]);
@@ -111,9 +112,9 @@ class PriceTrackerController extends Controller
             }
 
             // Validate target price is not above current price
-            if ($request->target_price >= $productData['price']) {
+            if ($request->target_price >= $productData['current_price']) {
                 throw ValidationException::withMessages([
-                    'target_price' => 'Target price must be lower than current price ($' . number_format($productData['price'], 2) . ')'
+                    'target_price' => 'Target price must be lower than current price ($' . number_format($productData['current_price'], 2) . ')'
                 ]);
             }
 
@@ -126,9 +127,10 @@ class PriceTrackerController extends Controller
                 'product_variant' => $productData['variant'],
                 'product_description' => $productData['description'],
                 'product_image_url' => $productData['image_url'],
-                'original_price' => $productData['price'],
-                'current_price' => $productData['price'],
+                'retail_price' => $productData['retail_price'],
+                'current_price' => $productData['current_price'],
                 'target_price' => $request->target_price,
+                'notification_method' => $request->notification_method,
                 'tracking_start_date' => $request->tracking_start_date,
                 'tracking_end_date' => $request->tracking_end_date,
                 'product_metadata' => $productData['metadata'],
@@ -137,7 +139,7 @@ class PriceTrackerController extends Controller
 
             // Create initial price history entry
             $trackedProduct->priceHistory()->create([
-                'price' => $productData['price'],
+                'price' => $productData['current_price'],
                 'in_stock' => $productData['in_stock'],
                 'api_response' => $productData,
                 'checked_at' => now(),

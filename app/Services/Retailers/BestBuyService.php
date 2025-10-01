@@ -59,20 +59,22 @@ class BestBuyService extends BaseRetailerService
 
     protected function parseProductData(array $apiResponse): array
     {
-        $price = $apiResponse['salePrice'] ?? $apiResponse['regularPrice'] ?? 0;
+        $retailPrice = $apiResponse['regularPrice'] ?? 0;
+        $currentPrice = $apiResponse['salePrice'] ?? 0;
 
         $data = [
             'name' => $apiResponse['name'] ?? 'Unknown Product',
             'variant' => $apiResponse['modelNumber'] ?? null,
             'description' => $apiResponse['longDescription'] ?? null,
             'image_url' => $apiResponse['image'] ?? null,
-            'price' => (float) $price,
+            'retail_price' => (float) $retailPrice,
+            'current_price' => (float) $currentPrice,
             'in_stock' => isset($apiResponse['onSale']) ? true : false, // Best Buy doesn't always provide stock info
             'sku_upc' => $apiResponse['sku'] ?? null,
             'retailer_url' => $apiResponse['url'] ?? null,
             'metadata' => [
-                'regular_price' => $apiResponse['regularPrice'] ?? null,
-                'sale_price' => $apiResponse['salePrice'] ?? null,
+                // 'retail_price' => $apiResponse['regularPrice'] ?? null,
+                // 'current_price' => $apiResponse['salePrice'] ?? null,
                 'on_sale' => $apiResponse['onSale'] ?? false,
                 'model_number' => $apiResponse['modelNumber'] ?? null,
             ],

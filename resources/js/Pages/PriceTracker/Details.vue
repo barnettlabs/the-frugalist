@@ -18,7 +18,7 @@ interface TrackedProduct {
   product_variant?: string
   product_description?: string
   product_image_url?: string
-  original_price: number
+  retail_price: number
   current_price: number
   target_price: number
   tracking_start_date: string
@@ -107,6 +107,26 @@ const formatDateShort = (dateString: string) => {
   })
 }
 
+const getStatusColor = (product: TrackedProduct) => {
+  if (product.current_price <= product.target_price) {
+    return 'text-success border border-success/20 bg-success/10 rounded-full'
+  }
+  if (product.price_drop_percentage > 0) {
+    return 'text-warning border border-warning/20 bg-warning/10 rounded-full'
+  }
+  return 'text-gray-500 border border-gray-200 rounded-full'
+}
+
+const getStatusText = (product: TrackedProduct) => {
+  if (product.current_price <= product.target_price) {
+    return 'Target Reached'
+  }
+  if (product.price_drop_percentage > 0) {
+    return `${product.price_drop_percentage.toFixed(1)}% Off`
+  }
+  return 'Tracking'
+}
+
 const getAlertTypeColor = (type: string) => {
   switch (type) {
     case 'target_reached':
@@ -145,47 +165,54 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="flex items-center space-x-3 mb-2">
+          <div class="flex items-start justify-between gap-6">
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-3">
                 <h1 class="text-3xl font-bold text-gray-900">{{ trackedProduct.product_name }}</h1>
-                <span class="text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+              </div>
+
+              <div class="flex items-center gap-3 mb-2">
+                <span class="text-xs font-medium text-gray-500 bg-gray-200 px-2 py-1 rounded">
                   {{ trackedProduct.retailer.name }}
                 </span>
+                <div class="tech-status text-xs px-2 py-1 rounded" :class="getStatusColor(trackedProduct)">
+                  {{ getStatusText(trackedProduct) }}
+                </div>
               </div>
-              <p v-if="trackedProduct.product_variant" class="text-gray-600">
+
+              <p v-if="trackedProduct.product_variant" class="text-gray-600 mb-1">
                 {{ trackedProduct.product_variant }}
               </p>
-              <p class="text-sm text-gray-500 mt-1">
+              <p class="text-sm text-gray-500">
                 SKU/UPC: {{ trackedProduct.sku_upc }}
               </p>
             </div>
-            
-            <div class="flex space-x-3">
+
+            <div class="flex gap-3 flex-shrink-0">
               <button
                 @click="refreshPrice"
                 :disabled="refreshForm.processing"
-                class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+                class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
                 :class="{ 'opacity-50 cursor-not-allowed': refreshForm.processing }"
               >
                 <ArrowPathIcon class="h-5 w-5" :class="{ 'animate-spin': refreshForm.processing }" />
                 <span>Refresh</span>
               </button>
-              
+
               <button
                 @click="isEditing = !isEditing"
-                class="bg-primary hover:bg-primary-shade-1 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+                class="bg-primary hover:bg-primary-shade-1 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
               >
                 <PencilIcon class="h-5 w-5" />
                 <span>{{ isEditing ? 'Cancel' : 'Edit' }}</span>
               </button>
-              
+
               <button
                 @click="deleteProduct"
-                class="bg-danger hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+                class="bg-danger hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
               >
                 <TrashIcon class="h-5 w-5" />
-                <span>Stop Tracking</span>
+                <span>Stop</span>
               </button>
             </div>
           </div>
@@ -213,7 +240,7 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
                       </p>
                       <div v-if="trackedProduct.price_drop_percentage > 0" class="mt-2">
                         <span class="text-success font-medium">
-                          {{ formatCurrency(trackedProduct.original_price - trackedProduct.current_price) }} saved
+                          {{ formatCurrency(trackedProduct.retail_price - trackedProduct.current_price) }} saved
                           ({{ trackedProduct.price_drop_percentage.toFixed(1) }}% off)
                         </span>
                       </div>
@@ -242,14 +269,14 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
                     <div class="flex justify-between text-sm text-gray-600 mb-2">
                       <span>Progress to Target</span>
                       <span>
-                        {{ Math.max(0, Math.min(100, ((trackedProduct.original_price - trackedProduct.current_price) / (trackedProduct.original_price - trackedProduct.target_price)) * 100)).toFixed(0) }}%
+                        {{ Math.max(0, Math.min(100, ((trackedProduct.retail_price - trackedProduct.current_price) / (trackedProduct.retail_price - trackedProduct.target_price)) * 100)).toFixed(0) }}%
                       </span>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-3">
-                      <div 
+                      <div
                         class="bg-primary rounded-full h-3 transition-all duration-300"
-                        :style="{ 
-                          width: Math.max(0, Math.min(100, ((trackedProduct.original_price - trackedProduct.current_price) / (trackedProduct.original_price - trackedProduct.target_price)) * 100)) + '%' 
+                        :style="{
+                          width: Math.max(0, Math.min(100, ((trackedProduct.retail_price - trackedProduct.current_price) / (trackedProduct.retail_price - trackedProduct.target_price)) * 100)) + '%'
                         }"
                       ></div>
                     </div>
@@ -414,8 +441,8 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
               
               <div class="space-y-3 text-sm">
                 <div class="flex justify-between">
-                  <span class="text-gray-600">Original Price</span>
-                  <span class="font-medium">{{ formatCurrency(trackedProduct.original_price) }}</span>
+                  <span class="text-gray-600">Retail Price</span>
+                  <span class="font-medium">{{ formatCurrency(trackedProduct.retail_price) }}</span>
                 </div>
                 
                 <div class="flex justify-between">

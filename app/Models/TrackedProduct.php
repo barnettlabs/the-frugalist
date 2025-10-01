@@ -16,18 +16,19 @@ class TrackedProduct extends Model
         'product_variant',
         'product_description',
         'product_image_url',
-        'original_price',
+        'retail_price',
         'current_price',
         'target_price',
         'tracking_start_date',
         'tracking_end_date',
         'is_active',
+        'notification_method',
         'product_metadata',
         'last_checked_at',
     ];
 
     protected $casts = [
-        'original_price' => 'decimal:2',
+        'retail_price' => 'decimal:2',
         'current_price' => 'decimal:2',
         'target_price' => 'decimal:2',
         'tracking_start_date' => 'datetime',
@@ -82,10 +83,10 @@ class TrackedProduct extends Model
 
     public function getPriceDropPercentageAttribute(): float
     {
-        if ($this->original_price == 0) {
+        if ($this->retail_price == 0) {
             return 0;
         }
-        
-        return (($this->original_price - $this->current_price) / $this->original_price) * 100;
+
+        return (($this->retail_price - $this->current_price) / $this->retail_price) * 100;
     }
 }

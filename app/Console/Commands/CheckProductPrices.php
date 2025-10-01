@@ -147,7 +147,7 @@ class CheckProductPrices extends Command
                 if ($newPrice < $oldPrice) {
                     // Price dropped
                     $alertType = $newPrice <= $product->target_price ? 'target_reached' : 'price_drop';
-                    
+
                     $alert = $product->priceAlerts()->create([
                         'old_price' => $oldPrice,
                         'new_price' => $newPrice,
@@ -156,13 +156,19 @@ class CheckProductPrices extends Command
                     ]);
 
                     $alertsCreated++;
-                    
+
                     $this->line("  💰 {$product->product_name}: {$this->formatCurrency($oldPrice)} → {$this->formatCurrency($newPrice)} ({$alertType})");
-                
+
+                    // Auto-deactivate if target price reached
+                    if ($alertType === 'target_reached') {
+                        $product->update(['is_active' => false]);
+                        $this->line("  🎯 Target price reached - tracking auto-deactivated");
+                    }
+
                 } elseif (!$productData['in_stock'] && $product->priceHistory()->where('in_stock', false)->doesntExist()) {
                     // Just went out of stock
                     $this->line("  ⚠️  {$product->product_name}: Out of stock");
-                
+
                 } elseif ($productData['in_stock'] && $product->priceHistory()->latest()->first()?->in_stock === false) {
                     // Back in stock
                     $alert = $product->priceAlerts()->create([

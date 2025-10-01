@@ -387,13 +387,13 @@ const fullName = computed((): string => {
           <div>
             <h4 class="text-lg font-semibold mb-4 text-gray-900">Contact</h4>
             <p class="text-gray-600">
-              <Link
+              <a
                 href="mailto:jason.barnett@jaytech.io"
                 class="hover:text-primary transition-colors flex items-center"
               >
                 <span class="">jason.barnett@jaytech.io</span>
                 <EnvelopeIcon class="h-4 w-4 ml-2" aria-hidden="true" />
-              </Link>
+            </a>
             </p>
             <p class="text-gray-500 mt-4 text-sm">
               &copy; {{ new Date().getFullYear() }} JayTech LLC. All rights reserved.

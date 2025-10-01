@@ -10,6 +10,7 @@ class Retailer extends Model
     protected $fillable = [
         'name',
         'slug',
+        'logo_url',
         'api_base_url',
         'api_key',
         'api_config',

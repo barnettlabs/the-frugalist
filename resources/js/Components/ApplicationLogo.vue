@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import FoxLogo from '@/../assets/logos/fox-logo.svg'
+import FoxLogo from '@/../assets/logos/sneaky-salesman/fox-logo.svg'
 
 interface Props {
   variant?: 'white' | 'black'

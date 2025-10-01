@@ -164,6 +164,15 @@ Route::middleware('auth')->group(function () {
             'user' => $user,
         ]);
     })->name('coming-soon');
+
+    // Disclaimers route
+    Route::get('/disclaimers', function (Request $request) {
+        $user = $request->user();
+
+        return Inertia::render('Disclaimers', [
+            'user' => $user,
+        ]);
+    })->name('disclaimers');
 });
 
 // API Routes

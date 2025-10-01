@@ -2,17 +2,23 @@
 import { Head, useForm } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { ref, watch, computed } from 'vue'
-import { 
+import {
   MagnifyingGlassIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,
-  CalendarIcon
+  CalendarIcon,
+  BellIcon,
+  EnvelopeIcon,
+  DevicePhoneMobileIcon,
 } from '@heroicons/vue/24/outline'
+import BestBuyLogo from '@/../assets/logos/retailers/best-buy-logo.jpg'
+import HomeDepotLogo from '@/../assets/logos/retailers/home-depot-logo.png'
 
 interface Retailer {
   id: number
   name: string
   slug: string
+  logo_url?: string
   is_active: boolean
 }
 
@@ -21,7 +27,8 @@ interface ProductData {
   variant?: string
   description?: string
   image_url?: string
-  price: number
+  retail_price: number
+  current_price: number
   in_stock: boolean
   sku_upc: string
   retailer_url?: string
@@ -38,6 +45,8 @@ const form = useForm({
   retailer_id: '',
   sku_upc: '',
   target_price: '',
+  discount_percentage: '',
+  notification_method: 'email',
   tracking_start_date: new Date().toISOString().split('T')[0],
   tracking_end_date: '',
 })
@@ -51,7 +60,7 @@ const productValidation = ref<{
   isValidating: false,
   isValid: false,
   product: null,
-  error: null
+  error: null,
 })
 
 const validateProduct = async () => {
@@ -60,7 +69,7 @@ const validateProduct = async () => {
       isValidating: false,
       isValid: false,
       product: null,
-      error: null
+      error: null,
     }
     return
   }
@@ -73,7 +82,8 @@ const validateProduct = async () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+        'X-CSRF-TOKEN':
+          document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
       },
       body: JSON.stringify({
         retailer_id: form.retailer_id,
@@ -88,19 +98,21 @@ const validateProduct = async () => {
         isValidating: false,
         isValid: true,
         product: data.product,
-        error: null
+        error: null,
       }
-      
+
       // Set a reasonable target price (10% below current price)
       if (!form.target_price) {
-        form.target_price = (data.product.price * 0.9).toFixed(2)
+        const discountPercentage = 10
+        form.target_price = (data.product.retail_price * (1 - discountPercentage / 100)).toFixed(2)
+        form.discount_percentage = discountPercentage.toString()
       }
     } else {
       productValidation.value = {
         isValidating: false,
         isValid: false,
         product: null,
-        error: data.message || 'Product not found'
+        error: data.message || 'Product not found',
       }
     }
   } catch (error) {
@@ -108,7 +120,7 @@ const validateProduct = async () => {
       isValidating: false,
       isValid: false,
       product: null,
-      error: 'Error validating product. Please try again.'
+      error: 'Error validating product. Please try again.',
     }
   }
 }
@@ -119,21 +131,65 @@ watch([() => form.retailer_id, () => form.sku_upc], () => {
     const debounceTimer = setTimeout(() => {
       validateProduct()
     }, 500)
-    
+
     return () => clearTimeout(debounceTimer)
   }
 })
 
 const maxTargetPrice = computed(() => {
-  return productValidation.value.product ? productValidation.value.product.price - 0.01 : null
+  return productValidation.value.product ? productValidation.value.product.current_price - 0.01 : null
 })
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD'
+    currency: 'USD',
   }).format(amount)
 }
+
+// Computed property for discount amount
+const discountAmount = computed(() => {
+  if (!productValidation.value.product || !form.target_price) return null
+  const retailPrice = productValidation.value.product.retail_price
+  const targetPrice = parseFloat(form.target_price)
+  if (isNaN(targetPrice)) return null
+  return retailPrice - targetPrice
+})
+
+// Computed property for discount percentage
+const calculatedDiscountPercentage = computed(() => {
+  if (!productValidation.value.product || !form.target_price) return null
+  const retailPrice = productValidation.value.product.retail_price
+  const targetPrice = parseFloat(form.target_price)
+  if (isNaN(targetPrice) || retailPrice === 0) return null
+  return (((retailPrice - targetPrice) / retailPrice) * 100).toFixed(1)
+})
+
+// Handler for target price blur - update discount percentage
+const handleTargetPriceBlur = () => {
+  if (form.target_price && calculatedDiscountPercentage.value) {
+    form.discount_percentage = calculatedDiscountPercentage.value
+  }
+}
+
+// Handler for discount percentage blur - update target price
+const handleDiscountPercentageBlur = () => {
+  if (form.discount_percentage && productValidation.value.product) {
+    const discount = parseFloat(form.discount_percentage)
+    if (!isNaN(discount) && discount >= 0 && discount <= 100) {
+      const retailPrice = productValidation.value.product.retail_price
+      const targetPrice = retailPrice * (1 - discount / 100)
+      form.target_price = targetPrice.toFixed(2)
+    }
+  }
+}
+
+// Computed for form step progression
+const canProceedToProduct = computed(() => !!form.retailer_id)
+const canProceedToPrice = computed(
+  () => canProceedToProduct.value && productValidation.value.isValid
+)
+const canProceedToNotifications = computed(() => canProceedToPrice.value && !!form.target_price)
 
 const submit = () => {
   form.post(route('price-tracker.store'))
@@ -149,19 +205,23 @@ const submit = () => {
         <!-- Header -->
         <div class="mb-8">
           <h1 class="text-3xl font-bold text-gray-900">Track New Product</h1>
-          <p class="mt-2 text-gray-600">
-            Enter a product SKU or UPC to start monitoring its price
-          </p>
+          <p class="mt-2 text-gray-600">Enter a product SKU or UPC to start monitoring its price</p>
         </div>
 
         <form @submit.prevent="submit" class="space-y-8">
-          <!-- Retailer Selection -->
+          <!-- Step 1: Retailer Selection -->
           <div class="futuristic-card p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Select Retailer</h2>
-            
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">
+              <span
+                class="inline-flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full mr-2 text-sm"
+                >1</span
+              >
+              Select Retailer
+            </h2>
+
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <label 
-                v-for="retailer in retailers" 
+              <label
+                v-for="retailer in retailers"
                 :key="retailer.id"
                 class="relative cursor-pointer"
               >
@@ -171,14 +231,20 @@ const submit = () => {
                   v-model="form.retailer_id"
                   class="sr-only"
                 />
-                <div 
-                  class="border-2 rounded-lg p-4 text-center transition-all duration-150"
-                  :class="form.retailer_id == retailer.id 
-                    ? 'border-primary bg-primary/5 text-primary' 
-                    : 'border-gray-200 hover:border-gray-300 text-gray-600'"
+                <div
+                  class="border-2 rounded-lg p-4 text-center transition-all duration-150 flex flex-col items-center"
+                  :class="
+                    form.retailer_id == retailer.id
+                      ? 'border-primary bg-primary/5 text-primary'
+                      : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                  "
                 >
+                  <img
+                    :src="retailer.name === 'Best Buy' ? BestBuyLogo : HomeDepotLogo"
+                    :alt="retailer.name"
+                    class="h-12 w-auto mb-2 rounded"
+                  />
                   <div class="font-medium">{{ retailer.name }}</div>
-                  <div class="text-xs mt-1 opacity-75">{{ retailer.slug }}</div>
                 </div>
               </label>
             </div>
@@ -188,10 +254,19 @@ const submit = () => {
             </div>
           </div>
 
-          <!-- Product Information -->
-          <div class="futuristic-card p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Product Information</h2>
-            
+          <!-- Step 2: Product Information -->
+          <div
+            class="futuristic-card p-6"
+            :class="{ 'opacity-50 pointer-events-none': !canProceedToProduct }"
+          >
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">
+              <span
+                class="inline-flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full mr-2 text-sm"
+                >2</span
+              >
+              Product Information
+            </h2>
+
             <div class="space-y-4">
               <!-- SKU/UPC Input -->
               <div>
@@ -210,19 +285,24 @@ const submit = () => {
                     class="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
                     :class="{ 'border-danger': form.errors.sku_upc }"
                   />
-                  
+
                   <!-- Validation Status -->
                   <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <div v-if="productValidation.isValidating" 
-                         class="animate-spin rounded-full h-5 w-5 border-2 border-primary border-t-transparent">
-                    </div>
-                    <CheckCircleIcon v-else-if="productValidation.isValid" 
-                                     class="h-5 w-5 text-success" />
-                    <ExclamationTriangleIcon v-else-if="productValidation.error" 
-                                             class="h-5 w-5 text-danger" />
+                    <div
+                      v-if="productValidation.isValidating"
+                      class="animate-spin rounded-full h-5 w-5 border-2 border-primary border-t-transparent"
+                    ></div>
+                    <CheckCircleIcon
+                      v-else-if="productValidation.isValid"
+                      class="h-5 w-5 text-success"
+                    />
+                    <ExclamationTriangleIcon
+                      v-else-if="productValidation.error"
+                      class="h-5 w-5 text-danger"
+                    />
                   </div>
                 </div>
-                
+
                 <div v-if="form.errors.sku_upc" class="mt-2 text-sm text-danger">
                   {{ form.errors.sku_upc }}
                 </div>
@@ -232,18 +312,20 @@ const submit = () => {
               </div>
 
               <!-- Product Preview -->
-              <div v-if="productValidation.isValid && productValidation.product" 
-                   class="bg-gray-50 rounded-lg p-4 border">
+              <div
+                v-if="productValidation.isValid && productValidation.product"
+                class="bg-gray-50 rounded-lg p-4 border"
+              >
                 <h3 class="font-medium text-gray-900 mb-2">Product Found</h3>
-                
+
                 <div class="flex items-start space-x-4">
-                  <img 
+                  <img
                     v-if="productValidation.product.image_url"
                     :src="productValidation.product.image_url"
                     :alt="productValidation.product.name"
                     class="w-20 h-20 object-cover rounded-lg"
                   />
-                  
+
                   <div class="flex-1">
                     <h4 class="font-medium text-gray-900">{{ productValidation.product.name }}</h4>
                     <p v-if="productValidation.product.variant" class="text-sm text-gray-600 mt-1">
@@ -251,13 +333,15 @@ const submit = () => {
                     </p>
                     <div class="mt-2">
                       <span class="text-lg font-bold text-gray-900">
-                        {{ formatCurrency(productValidation.product.price) }}
+                        {{ formatCurrency(productValidation.product.retail_price) }}
                       </span>
-                      <span 
+                      <span
                         class="ml-2 text-sm px-2 py-1 rounded"
-                        :class="productValidation.product.in_stock 
-                          ? 'bg-success/10 text-success' 
-                          : 'bg-danger/10 text-danger'"
+                        :class="
+                          productValidation.product.in_stock
+                            ? 'bg-success/10 text-success'
+                            : 'bg-danger/10 text-danger'
+                        "
                       >
                         {{ productValidation.product.in_stock ? 'In Stock' : 'Out of Stock' }}
                       </span>
@@ -268,48 +352,174 @@ const submit = () => {
             </div>
           </div>
 
-          <!-- Price Target -->
-          <div class="futuristic-card p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Price Target</h2>
-            
-            <div>
-              <label for="target_price" class="block text-sm font-medium text-gray-700 mb-2">
-                Target Price (Alert when price drops to or below this amount)
-              </label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span class="text-gray-500">$</span>
+          <!-- Step 3: Price Target -->
+          <div
+            class="futuristic-card p-6"
+            :class="{ 'opacity-50 pointer-events-none': !canProceedToPrice }"
+          >
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">
+              <span
+                class="inline-flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full mr-2 text-sm"
+                >3</span
+              >
+              Price Target
+            </h2>
+
+            <!-- Price Information -->
+            <div v-if="productValidation.product" class="mb-6 p-4 bg-gray-50 rounded-lg">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <div class="text-sm text-gray-600 mb-1">Retail Price</div>
+                  <div class="text-xl font-bold text-gray-900">
+                    {{ formatCurrency(productValidation.product.retail_price) }}
+                  </div>
                 </div>
-                <input
-                  id="target_price"
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                  :max="maxTargetPrice"
-                  v-model="form.target_price"
-                  placeholder="0.00"
-                  class="block w-full pl-8 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  :class="{ 'border-danger': form.errors.target_price }"
-                />
-              </div>
-              
-              <div v-if="form.errors.target_price" class="mt-2 text-sm text-danger">
-                {{ form.errors.target_price }}
-              </div>
-              <div v-else-if="productValidation.product" class="mt-2 text-sm text-gray-600">
-                Current price: {{ formatCurrency(productValidation.product.price) }}. 
-                Target must be lower than current price.
+                <div>
+                  <div class="text-sm text-gray-600 mb-1">Current Listed Price</div>
+                  <div class="text-xl font-bold text-gray-900">
+                    {{ formatCurrency(productValidation.product.current_price) }}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Tracking Period -->
-          <div class="futuristic-card p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Tracking Period</h2>
-            
+            <!-- Target Price and Discount -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label for="tracking_start_date" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="target_price" class="block text-sm font-medium text-gray-700 mb-2">
+                  Target Price
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span class="text-gray-500">$</span>
+                  </div>
+                  <input
+                    id="target_price"
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    :max="maxTargetPrice"
+                    v-model="form.target_price"
+                    @blur="handleTargetPriceBlur"
+                    placeholder="0.00"
+                    class="block w-full pl-8 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                    :class="{ 'border-danger': form.errors.target_price }"
+                  />
+                </div>
+                <div v-if="form.errors.target_price" class="mt-2 text-sm text-danger">
+                  {{ form.errors.target_price }}
+                </div>
+              </div>
+
+              <div>
+                <label
+                  for="discount_percentage"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Discount %
+                </label>
+                <div class="relative">
+                  <input
+                    id="discount_percentage"
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    max="100"
+                    v-model="form.discount_percentage"
+                    @blur="handleDiscountPercentageBlur"
+                    placeholder="0.0"
+                    class="block w-full pr-8 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                  />
+                  <div
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+                  >
+                    <span class="text-gray-500">%</span>
+                  </div>
+                </div>
+                <div v-if="discountAmount" class="mt-2 text-sm text-success">
+                  Save {{ formatCurrency(discountAmount) }}
+                </div>
+              </div>
+            </div>
+
+            <p class="mt-4 text-sm text-gray-600">
+              Enter a target price manually or specify a discount percentage. Values update
+              automatically.
+            </p>
+          </div>
+
+          <!-- Step 4: Notification Preferences -->
+          <div
+            class="futuristic-card p-6"
+            :class="{ 'opacity-50 pointer-events-none': !canProceedToNotifications }"
+          >
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">
+              <span
+                class="inline-flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full mr-2 text-sm"
+                >4</span
+              >
+              Notification Preferences
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <label
+                v-for="method in [
+                  { value: 'email', label: 'Email', icon: EnvelopeIcon },
+                  { value: 'sms', label: 'SMS', icon: DevicePhoneMobileIcon },
+                  { value: 'all', label: 'All Methods', icon: BellIcon },
+                ]"
+                :key="method.value"
+                class="relative cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  :value="method.value"
+                  v-model="form.notification_method"
+                  class="sr-only"
+                />
+                <div
+                  class="border-2 rounded-lg p-4 text-center transition-all duration-150 flex flex-col items-center"
+                  :class="
+                    form.notification_method === method.value
+                      ? 'border-primary bg-primary/5 text-primary'
+                      : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                  "
+                >
+                  <component :is="method.icon" class="h-8 w-8 mb-2" />
+                  <div class="font-medium">{{ method.label }}</div>
+                </div>
+              </label>
+            </div>
+
+            <div v-if="form.errors.notification_method" class="mt-2 text-sm text-danger">
+              {{ form.errors.notification_method }}
+            </div>
+
+            <p class="mt-4 text-sm text-gray-600">
+              Select how you'd like to be notified when your target price is reached. Tracking will
+              automatically stop after notification is sent.
+            </p>
+          </div>
+
+          <!-- Step 5: Tracking Period -->
+          <div
+            class="futuristic-card p-6"
+            :class="{ 'opacity-50 pointer-events-none': !canProceedToNotifications }"
+          >
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">
+              <span
+                class="inline-flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full mr-2 text-sm"
+                >5</span
+              >
+              Tracking Period
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label
+                  for="tracking_start_date"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Start Date
                 </label>
                 <div class="relative">
@@ -348,22 +558,20 @@ const submit = () => {
                 <div v-if="form.errors.tracking_end_date" class="mt-2 text-sm text-danger">
                   {{ form.errors.tracking_end_date }}
                 </div>
-                <p class="mt-2 text-sm text-gray-600">
-                  Leave blank to track indefinitely
-                </p>
+                <p class="mt-2 text-sm text-gray-600">Leave blank to track indefinitely</p>
               </div>
             </div>
           </div>
 
           <!-- Form Actions -->
           <div class="flex items-center justify-between">
-            <a 
+            <a
               :href="route('price-tracker.index')"
               class="text-gray-600 hover:text-gray-800 font-medium"
             >
               Cancel
             </a>
-            
+
             <button
               type="submit"
               :disabled="form.processing || !productValidation.isValid"

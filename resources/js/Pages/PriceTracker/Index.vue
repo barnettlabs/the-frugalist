@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { 
-  EyeIcon, 
-  PlusIcon, 
-  TrashIcon, 
+import {
+  EyeIcon,
+  PlusIcon,
+  TrashIcon,
   ArrowPathIcon,
   ChartBarIcon,
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
 } from '@heroicons/vue/24/outline'
 import { CheckCircleIcon } from '@heroicons/vue/20/solid'
 
@@ -17,7 +17,7 @@ interface TrackedProduct {
   product_name: string
   product_variant?: string
   product_image_url?: string
-  original_price: number
+  retail_price: number
   current_price: number
   target_price: number
   tracking_start_date: string
@@ -75,7 +75,7 @@ const deleteProduct = (productId: number) => {
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD'
+    currency: 'USD',
   }).format(amount)
 }
 
@@ -85,12 +85,12 @@ const formatDate = (dateString: string) => {
 
 const getStatusColor = (product: TrackedProduct) => {
   if (product.current_price <= product.target_price) {
-    return 'text-success border-success/20 bg-success/10'
+    return 'text-success border border-success/20 bg-success/10 rounded-full'
   }
   if (product.price_drop_percentage > 0) {
-    return 'text-warning border-warning/20 bg-warning/10'
+    return 'text-warning border border-warning/20 bg-warning/10 rounded-full'
   }
-  return 'text-gray-500 border-gray-200 bg-gray-50'
+  return 'text-gray-500 border border-gray-200 rounded-full'
 }
 
 const getStatusText = (product: TrackedProduct) => {
@@ -151,7 +151,7 @@ const getStatusText = (product: TrackedProduct) => {
               <div class="ml-4">
                 <p class="text-sm font-medium text-gray-600">Target Reached</p>
                 <p class="text-2xl font-bold text-gray-900">
-                  {{ trackedProducts.filter(p => p.current_price <= p.target_price).length }}
+                  {{ trackedProducts.filter((p) => p.current_price <= p.target_price).length }}
                 </p>
               </div>
             </div>
@@ -165,7 +165,7 @@ const getStatusText = (product: TrackedProduct) => {
               <div class="ml-4">
                 <p class="text-sm font-medium text-gray-600">Price Drops</p>
                 <p class="text-2xl font-bold text-gray-900">
-                  {{ trackedProducts.filter(p => p.price_drop_percentage > 0).length }}
+                  {{ trackedProducts.filter((p) => p.price_drop_percentage > 0).length }}
                 </p>
               </div>
             </div>
@@ -187,46 +187,57 @@ const getStatusText = (product: TrackedProduct) => {
         </div>
 
         <!-- Products Grid -->
-        <div v-if="trackedProducts.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          v-if="trackedProducts.length > 0"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
           <div v-for="product in trackedProducts" :key="product.id" class="futuristic-card p-6">
             <!-- Product Header -->
-            <div class="flex items-start justify-between mb-4">
-              <div class="flex-1">
-                <div class="flex items-center space-x-2 mb-2">
-                  <span class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                    {{ product.retailer.name }}
-                  </span>
-                  <div 
-                    class="tech-status text-xs"
-                    :class="getStatusColor(product)"
-                  >
-                    {{ getStatusText(product) }}
-                  </div>
+            <div class="flex flex-col items-start justify-between mb-4">
+              <div class="flex flex-row justify-between items-center space-x-2 mb-2 w-full">
+                <span class="text-xs font-medium text-gray-500 bg-gray-200 px-2 py-1 rounded">
+                  {{ product.retailer.name }}
+                </span>
+                <div class="tech-status text-xs px-2 py-1 rounded" :class="getStatusColor(product)">
+                  {{ getStatusText(product) }}
                 </div>
-                <h3 class="font-bold text-gray-900 text-sm leading-tight mb-1">
-                  {{ product.product_name }}
-                </h3>
-                <p v-if="product.product_variant" class="text-xs text-gray-500">
-                  {{ product.product_variant }}
-                </p>
               </div>
-              <img 
-                v-if="product.product_image_url" 
-                :src="product.product_image_url" 
-                :alt="product.product_name"
-                class="w-16 h-16 object-cover rounded-lg ml-4"
-              />
+
+              <div class="flex-1 flex flex-row">
+                <div>
+                  <h3 class="font-bold text-gray-900 text-sm leading-tight mb-1">
+                    {{ product.product_name }}
+                  </h3>
+                  <p v-if="product.product_variant" class="text-xs text-gray-500">
+                    {{ product.product_variant }}
+                  </p>
+                </div>
+
+                <img
+                  v-if="product.product_image_url"
+                  :src="product.product_image_url"
+                  :alt="product.product_name"
+                  class="w-16 h-16 object-cover rounded-lg ml-4"
+                />
+              </div>
             </div>
 
             <!-- Price Information -->
             <div class="space-y-3 mb-4">
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Retail Price</span>
+                <span class="text-sm text-gray-500 line-through">
+                  {{ formatCurrency(product.retail_price) }}
+                </span>
+              </div>
+
               <div class="flex justify-between items-center">
                 <span class="text-sm text-gray-600">Current Price</span>
                 <span class="text-lg font-bold text-gray-900">
                   {{ formatCurrency(product.current_price) }}
                 </span>
               </div>
-              
+
               <div class="flex justify-between items-center">
                 <span class="text-sm text-gray-600">Target Price</span>
                 <span class="text-sm font-medium text-primary">
@@ -234,17 +245,13 @@ const getStatusText = (product: TrackedProduct) => {
                 </span>
               </div>
 
-              <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Original Price</span>
-                <span class="text-sm text-gray-500 line-through">
-                  {{ formatCurrency(product.original_price) }}
-                </span>
-              </div>
-
-              <div v-if="product.price_drop_percentage > 0" class="flex justify-between items-center">
+              <div
+                v-if="product.price_drop_percentage > 0"
+                class="flex justify-between items-center"
+              >
                 <span class="text-sm text-gray-600">Savings</span>
                 <span class="text-sm font-medium text-success">
-                  {{ formatCurrency(product.original_price - product.current_price) }}
+                  {{ formatCurrency(product.retail_price - product.current_price) }}
                   ({{ product.price_drop_percentage.toFixed(1) }}%)
                 </span>
               </div>
@@ -255,14 +262,33 @@ const getStatusText = (product: TrackedProduct) => {
               <div class="flex justify-between text-xs text-gray-600 mb-1">
                 <span>Progress to Target</span>
                 <span>
-                  {{ Math.max(0, Math.min(100, ((product.original_price - product.current_price) / (product.original_price - product.target_price)) * 100)).toFixed(0) }}%
+                  {{
+                    Math.max(
+                      0,
+                      Math.min(
+                        100,
+                        ((product.retail_price - product.current_price) /
+                          (product.retail_price - product.target_price)) *
+                          100
+                      )
+                    ).toFixed(0)
+                  }}%
                 </span>
               </div>
               <div class="w-full bg-gray-200 rounded-full h-2">
-                <div 
+                <div
                   class="bg-primary rounded-full h-2 transition-all duration-300"
-                  :style="{ 
-                    width: Math.max(0, Math.min(100, ((product.original_price - product.current_price) / (product.original_price - product.target_price)) * 100)) + '%' 
+                  :style="{
+                    width:
+                      Math.max(
+                        0,
+                        Math.min(
+                          100,
+                          ((product.retail_price - product.current_price) /
+                            (product.retail_price - product.target_price)) *
+                            100
+                        )
+                      ) + '%',
                   }"
                 ></div>
               </div>
@@ -285,16 +311,19 @@ const getStatusText = (product: TrackedProduct) => {
                 <EyeIcon class="h-4 w-4" />
                 <span>Details</span>
               </Link>
-              
+
               <button
                 @click="refreshPrice(product.id)"
                 :disabled="refreshForm.processing"
                 class="bg-primary hover:bg-primary-shade-1 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center"
                 :class="{ 'opacity-50 cursor-not-allowed': refreshForm.processing }"
               >
-                <ArrowPathIcon class="h-4 w-4" :class="{ 'animate-spin': refreshForm.processing }" />
+                <ArrowPathIcon
+                  class="h-4 w-4"
+                  :class="{ 'animate-spin': refreshForm.processing }"
+                />
               </button>
-              
+
               <button
                 @click="deleteProduct(product.id)"
                 class="bg-danger hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center"

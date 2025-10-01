@@ -63,11 +63,11 @@ const breadcrumbs = computed(() => [{ name: 'Profile', href: '/profile', current
                   <div class="sm:flex sm:items-start sm:justify-between">
                     <div class="sm:flex sm:space-x-5">
                       <div class="flex-shrink-0">
-                        <img
-                          class="mx-auto h-16 w-16 rounded-full"
-                          :src="user?.avatar_url"
-                          alt=""
-                        />
+                        <div
+                          class="mx-auto h-16 w-16 rounded-full bg-primary flex items-center justify-center text-white text-2xl font-bold"
+                        >
+                          {{ (user?.first_name?.[0] || '') + (user?.last_name?.[0] || '') }}
+                        </div>
                       </div>
                       <div class="mt-4 text-center sm:mt-0 sm:text-left">
                         <p class="text-xl font-bold text-gray-900 sm:text-2xl">

@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tracked_products', function (Blueprint $table) {
-            $table->enum('notification_method', ['email', 'sms', 'push'])->default('email')->after('is_active');
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('phone_number')->nullable()->after('email');
+            $table->timestamp('phone_verified_at')->nullable()->after('phone_number');
         });
     }
 
@@ -21,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tracked_products', function (Blueprint $table) {
-            $table->dropColumn('notification_method');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['phone_number', 'phone_verified_at']);
         });
     }
 };

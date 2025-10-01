@@ -2,15 +2,18 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\PriceDropAlert;
 use App\Models\PriceAlert;
 use App\Models\TrackedProduct;
 use App\Services\Retailers\RetailerServiceFactory;
+use App\Services\TwilioService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class CheckProductPrices extends Command
 {
-    protected $signature = 'prices:check 
+    protected $signature = 'prices:check
                             {--limit=50 : Maximum number of products to check per run}
                             {--retailer= : Check only products from specific retailer}
                             {--user= : Check only products for specific user}
@@ -74,7 +77,7 @@ class CheckProductPrices extends Command
         foreach ($products as $product) {
             try {
                 $result = $this->checkProductPrice($product);
-                
+
                 if ($result['checked']) {
                     $checkedCount++;
                     $alertsCreated += $result['alerts_created'];
@@ -89,7 +92,7 @@ class CheckProductPrices extends Command
             }
 
             $progressBar->advance();
-            
+
             // Small delay to respect API rate limits
             usleep(200000); // 200ms delay
         }
@@ -98,7 +101,7 @@ class CheckProductPrices extends Command
         $this->newLine();
 
         $duration = round(microtime(true) - $startTime, 2);
-        
+
         $this->info("Price check completed in {$duration} seconds");
         $this->table(['Metric', 'Count'], [
             ['Products Checked', $checkedCount],
@@ -114,14 +117,14 @@ class CheckProductPrices extends Command
         try {
             $service = RetailerServiceFactory::create($product->retailer);
             $productData = $service->getProductDetails($product->sku_upc);
-            
+
             if (!$productData) {
                 $this->warn("Product not found: {$product->product_name} ({$product->sku_upc})");
                 return ['checked' => false, 'alerts_created' => 0];
             }
 
             $oldPrice = $product->current_price;
-            $newPrice = $productData['price'];
+            $newPrice = $productData['current_price'];
             $alertsCreated = 0;
 
             // Update product with new price data
@@ -158,6 +161,25 @@ class CheckProductPrices extends Command
                     $alertsCreated++;
 
                     $this->line("  💰 {$product->product_name}: {$this->formatCurrency($oldPrice)} → {$this->formatCurrency($newPrice)} ({$alertType})");
+
+                    // Send email notification if user has email verified and email is in notification methods
+                    if (in_array('email', $product->notification_method) && $product->user->canReceiveEmailNotifications()) {
+                        Mail::to($product->user->email)->send(new PriceDropAlert($product, $alertType));
+                        $this->line("  📧 Email notification sent to {$product->user->email}");
+                    }
+
+                    // Send SMS notification if user has phone verified and sms is in notification methods
+                    if (in_array('sms', $product->notification_method) && $product->user->canReceiveSmsNotifications()) {
+                        $twilioService = app(TwilioService::class);
+                        $twilioService->sendPriceAlert(
+                            $product->user->phone_number,
+                            $product->product_name,
+                            $newPrice,
+                            $product->retail_price,
+                            $alertType
+                        );
+                        $this->line("  📱 SMS notification sent to {$product->user->phone_number}");
+                    }
 
                     // Auto-deactivate if target price reached
                     if ($alertType === 'target_reached') {

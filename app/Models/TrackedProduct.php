@@ -38,6 +38,7 @@ class TrackedProduct extends Model
         'last_checked_at' => 'datetime',
         'is_active' => 'boolean',
         'product_metadata' => 'array',
+        'notification_method' => 'array',
     ];
 
     public function user(): BelongsTo

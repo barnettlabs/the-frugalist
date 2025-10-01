@@ -33,9 +33,11 @@ class PriceTrackerController extends Controller
     public function create()
     {
         $retailers = Retailer::active()->get();
+        $user = Auth::user();
 
         return Inertia::render('PriceTracker/Create', [
             'retailers' => $retailers,
+            'user' => $user,
         ]);
     }
 
@@ -78,7 +80,8 @@ class PriceTrackerController extends Controller
             'retailer_id' => 'required|exists:retailers,id',
             'sku_upc' => 'required|string',
             'target_price' => 'required|numeric|min:0.01',
-            'notification_method' => 'required|in:email,sms,push,all',
+            'notification_methods' => 'required|array|min:1',
+            'notification_methods.*' => 'in:email,sms',
             'tracking_start_date' => 'required|date|after_or_equal:today',
             'tracking_end_date' => 'nullable|date|after:tracking_start_date',
         ]);
@@ -129,7 +132,7 @@ class PriceTrackerController extends Controller
                 'retail_price' => $productData['retail_price'],
                 'current_price' => $productData['current_price'],
                 'target_price' => $request->target_price,
-                'notification_method' => $request->notification_method,
+                'notification_method' => $request->notification_methods,
                 'tracking_start_date' => $request->tracking_start_date,
                 'tracking_end_date' => $request->tracking_end_date,
                 'product_metadata' => $productData['metadata'],

@@ -35,8 +35,17 @@ interface ProductData {
   metadata: Record<string, any>
 }
 
+interface User {
+  id: number
+  email: string
+  email_verified_at?: string
+  phone_number?: string
+  phone_verified_at?: string
+}
+
 interface Props {
   retailers: Retailer[]
+  user: User
 }
 
 const props = defineProps<Props>()
@@ -46,7 +55,7 @@ const form = useForm({
   sku_upc: '',
   target_price: '',
   discount_percentage: '',
-  notification_method: 'email',
+  notification_methods: [] as string[],
   tracking_start_date: new Date().toISOString().split('T')[0],
   tracking_end_date: '',
 })
@@ -461,44 +470,68 @@ const submit = () => {
               Notification Preferences
             </h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <label
                 v-for="method in [
-                  { value: 'email', label: 'Email', icon: EnvelopeIcon },
-                  { value: 'sms', label: 'SMS', icon: DevicePhoneMobileIcon },
-                  { value: 'all', label: 'All Methods', icon: BellIcon },
+                  { value: 'email', label: 'Email', icon: EnvelopeIcon, available: !!user.email_verified_at },
+                  { value: 'sms', label: 'SMS', icon: DevicePhoneMobileIcon, available: !!user.phone_verified_at },
                 ]"
                 :key="method.value"
-                class="relative cursor-pointer"
+                class="relative"
+                :class="method.available ? 'cursor-pointer' : 'cursor-not-allowed'"
               >
                 <input
-                  type="radio"
+                  type="checkbox"
                   :value="method.value"
-                  v-model="form.notification_method"
+                  v-model="form.notification_methods"
+                  :disabled="!method.available"
                   class="sr-only"
                 />
                 <div
-                  class="border-2 rounded-lg p-4 text-center transition-all duration-150 flex flex-col items-center"
+                  class="border-2 rounded-lg p-4 text-center transition-all duration-150 flex flex-col items-center relative"
                   :class="
-                    form.notification_method === method.value
+                    !method.available
+                      ? 'border-gray-200 bg-gray-50 text-gray-400 opacity-50'
+                      : form.notification_methods.includes(method.value)
                       ? 'border-primary bg-primary/5 text-primary'
                       : 'border-gray-200 hover:border-gray-300 text-gray-600'
                   "
                 >
                   <component :is="method.icon" class="h-8 w-8 mb-2" />
                   <div class="font-medium">{{ method.label }}</div>
+                  <div v-if="!method.available" class="absolute top-2 right-2">
+                    <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <div v-if="method.available && form.notification_methods.includes(method.value)" class="absolute top-2 right-2">
+                    <svg class="h-5 w-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
               </label>
             </div>
 
-            <div v-if="form.errors.notification_method" class="mt-2 text-sm text-danger">
-              {{ form.errors.notification_method }}
+            <div v-if="form.errors.notification_methods" class="mt-2 text-sm text-danger">
+              {{ form.errors.notification_methods }}
             </div>
 
             <p class="mt-4 text-sm text-gray-600">
               Select how you'd like to be notified when your target price is reached. Tracking will
               automatically stop after notification is sent.
             </p>
+
+            <div v-if="!user.phone_verified_at || !user.email_verified_at" class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p class="text-sm text-yellow-800">
+                <strong>Note:</strong>
+                <span v-if="!user.email_verified_at">Email notifications are unavailable until you verify your email address.</span>
+                <span v-if="!user.phone_verified_at">
+                  SMS notifications are unavailable until you verify your phone number in your
+                  <a href="/profile" class="underline font-medium">profile settings</a>.
+                </span>
+              </p>
+            </div>
           </div>
 
           <!-- Step 5: Tracking Period -->

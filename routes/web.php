@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\BugReportController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\PriceTrackerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleFinanceSheetController;
@@ -82,6 +83,11 @@ Route::middleware('auth')->group(function () {
     })->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Phone verification routes
+    Route::post('/phone-verification/send', [PhoneVerificationController::class, 'sendCode'])->name('phone-verification.send');
+    Route::post('/phone-verification/verify', [PhoneVerificationController::class, 'verifyCode'])->name('phone-verification.verify');
+    Route::post('/phone-verification/resend', [PhoneVerificationController::class, 'resendCode'])->name('phone-verification.resend');
 
     // Estimates routes
     Route::get('/estimates/financing', function (Request $request) {
@@ -211,5 +217,12 @@ Route::get('/api/announcements/{announcement}', [AnnouncementController::class, 
 
 // Bug report route
 Route::post('/bug-reports', [BugReportController::class, 'store'])->name('bug-reports.store');
+
+// debugging
+// Route::get('/test/email-preview', function () {
+//     $trackedProduct = \App\Models\TrackedProduct::with('retailer')->first();
+
+//     return new \App\Mail\PriceDropAlert($trackedProduct, 'target_reached');
+// })->middleware('auth');
 
 require __DIR__ . '/auth.php';

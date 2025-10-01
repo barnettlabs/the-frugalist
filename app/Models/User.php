@@ -24,6 +24,8 @@ class User extends Authenticatable
         'website',
         'first_name',
         'last_name',
+        'phone_number',
+        'phone_verified_at',
     ];
 
     /**
@@ -45,6 +47,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'phone_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -70,5 +73,30 @@ class User extends Authenticatable
     public function vehicleLeaseSheets()
     {
         return $this->hasMany(VehicleLeaseSheet::class);
+    }
+
+    public function phoneVerificationCodes()
+    {
+        return $this->hasMany(PhoneVerificationCode::class);
+    }
+
+    public function hasVerifiedPhone(): bool
+    {
+        return $this->phone_verified_at !== null;
+    }
+
+    public function hasVerifiedEmail(): bool
+    {
+        return $this->email_verified_at !== null;
+    }
+
+    public function canReceiveSmsNotifications(): bool
+    {
+        return $this->hasVerifiedPhone();
+    }
+
+    public function canReceiveEmailNotifications(): bool
+    {
+        return $this->hasVerifiedEmail();
     }
 }

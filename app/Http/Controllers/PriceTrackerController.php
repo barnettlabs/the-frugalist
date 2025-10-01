@@ -19,7 +19,6 @@ class PriceTrackerController extends Controller
 
         $trackedProducts = TrackedProduct::with(['retailer', 'priceHistory', 'priceAlerts'])
             ->where('user_id', $user->id)
-            ->active()
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -209,7 +208,7 @@ class PriceTrackerController extends Controller
             abort(403);
         }
 
-        $trackedProduct->update(['is_active' => false]);
+        $trackedProduct->delete();
 
         return redirect()->route('price-tracker.index')
             ->with('success', 'Product tracking stopped successfully!');

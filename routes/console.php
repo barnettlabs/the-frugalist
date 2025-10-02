@@ -14,3 +14,6 @@ Schedule::command('prices:check --limit=100')->twiceDaily(9, 21)->name('price-ch
 
 // Send notifications for price alerts every 15 minutes
 Schedule::command('notifications:send-price-alerts')->everyFifteenMinutes()->name('send-price-notifications')->withoutOverlapping();
+
+// Horizon metrics snapshot (every 5 minutes)
+Schedule::command('horizon:snapshot')->everyFiveMinutes();

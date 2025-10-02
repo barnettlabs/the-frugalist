@@ -35,8 +35,9 @@ class PhoneVerificationController extends Controller
             'expires_at' => now()->addMinutes(10),
         ]);
 
+        // SMS TEMPORARILY DISABLED - waiting for Twilio approval
         // Send SMS with code using Twilio
-        $twilioService->sendVerificationCode($phoneNumber, $code);
+        // $twilioService->sendVerificationCode($phoneNumber, $code);
 
         return back()->with('status', 'verification-code-sent');
     }

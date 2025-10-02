@@ -168,18 +168,19 @@ class CheckProductPrices extends Command
                         $this->line("  📧 Email notification sent to {$product->user->email}");
                     }
 
+                    // SMS TEMPORARILY DISABLED - waiting for Twilio approval
                     // Send SMS notification if user has phone verified and sms is in notification methods
-                    if (in_array('sms', $product->notification_method) && $product->user->canReceiveSmsNotifications()) {
-                        $twilioService = app(TwilioService::class);
-                        $twilioService->sendPriceAlert(
-                            $product->user->phone_number,
-                            $product->product_name,
-                            $newPrice,
-                            $product->retail_price,
-                            $alertType
-                        );
-                        $this->line("  📱 SMS notification sent to {$product->user->phone_number}");
-                    }
+                    // if (in_array('sms', $product->notification_method) && $product->user->canReceiveSmsNotifications()) {
+                    //     $twilioService = app(TwilioService::class);
+                    //     $twilioService->sendPriceAlert(
+                    //         $product->user->phone_number,
+                    //         $product->product_name,
+                    //         $newPrice,
+                    //         $product->retail_price,
+                    //         $alertType
+                    //     );
+                    //     $this->line("  📱 SMS notification sent to {$product->user->phone_number}");
+                    // }
 
                     // Auto-deactivate if target price reached
                     if ($alertType === 'target_reached') {

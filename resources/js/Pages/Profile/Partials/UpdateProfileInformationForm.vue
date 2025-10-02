@@ -71,6 +71,12 @@ const resendCode = () => {
     },
   })
 }
+
+const sendEmailVerification = () => {
+  router.post('/email/verification-notification', {}, {
+    preserveScroll: true,
+  })
+}
 </script>
 
 <template>
@@ -85,7 +91,21 @@ const resendCode = () => {
 
     <form @submit.prevent="submit" class="mt-6 space-y-6">
       <div>
-        <InputLabel for="email" value="Email" />
+        <div class="flex items-center gap-2">
+          <InputLabel for="email" value="Email" />
+          <span
+            v-if="user?.email_verified_at"
+            class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20"
+          >
+            Verified
+          </span>
+          <span
+            v-else
+            class="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-700 ring-1 ring-inset ring-yellow-600/20"
+          >
+            Unverified
+          </span>
+        </div>
 
         <TextInput
           id="email"
@@ -96,7 +116,30 @@ const resendCode = () => {
           autocomplete="email"
         />
 
-        <p class="mt-1 text-xs text-gray-500">Email cannot be changed at this time.</p>
+        <div v-if="mustVerifyEmail && !user?.email_verified_at" class="mt-2">
+          <p class="text-sm text-gray-600">
+            Your email address is unverified. Click the button below to receive a verification link.
+          </p>
+
+          <div class="mt-3 flex items-center gap-4">
+            <SecondaryButton @click="sendEmailVerification">
+              Send Verification Email
+            </SecondaryButton>
+
+            <Transition
+              enter-active-class="transition ease-in-out"
+              enter-from-class="opacity-0"
+              leave-active-class="transition ease-in-out"
+              leave-to-class="opacity-0"
+            >
+              <p v-if="status === 'verification-link-sent'" class="text-sm text-gray-600">
+                A new verification link has been sent to your email address.
+              </p>
+            </Transition>
+          </div>
+        </div>
+
+        <p v-else class="mt-1 text-xs text-gray-500">Email cannot be changed at this time.</p>
       </div>
 
       <div>
@@ -141,8 +184,8 @@ const resendCode = () => {
       </div>
     </form>
 
-    <!-- Phone Verification Section -->
-    <div class="mt-8 pt-8 border-t border-gray-200">
+    <!-- Phone Verification Section - TEMPORARILY DISABLED -->
+    <!-- <div class="mt-8 pt-8 border-t border-gray-200">
       <header class="mb-6">
         <h3 class="text-lg font-medium text-gray-900">Phone Verification</h3>
         <p class="mt-1 text-sm text-gray-600">
@@ -237,6 +280,6 @@ const resendCode = () => {
           </Transition>
         </div>
       </form>
-    </div>
+    </div> -->
   </section>
 </template>

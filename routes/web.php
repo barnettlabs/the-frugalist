@@ -77,7 +77,7 @@ Route::middleware('auth')->group(function () {
 
         return Inertia::render('Profile/Edit', [
             'user' => $user,
-            'mustVerifyEmail' => false,
+            'mustVerifyEmail' => $user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail,
             'status' => session('status'),
         ]);
     })->name('profile.edit');

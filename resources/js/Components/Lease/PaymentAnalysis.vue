@@ -93,7 +93,7 @@ const salesTaxPercentage = computed(() => {
               ></path>
             </svg>
             <p class="text-sm text-gray-500">Monthly Payment Breakdown</p>
-            <p class="text-xs text-gray-400">Chart visualization would go here</p>
+            <p class="text-xs text-gray-400">Chart visualization coming soon!</p>
           </div>
         </div>
       </div>

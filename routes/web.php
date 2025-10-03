@@ -49,12 +49,6 @@ Route::get('/', function (Request $request) {
     }
 });
 
-Route::get('/system-status', function (Request $request) {
-    return Inertia::render('SystemStatus', [
-        'user' => $request->user(),
-    ]);
-})->name('system-status');
-
 Route::get('/renegade/price-drop', [PriceTrackerController::class, 'index'])->middleware('auth')->name('renegade.price-drop');
 
 Route::get('/dashboard', function (Request $request) {

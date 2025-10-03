@@ -321,11 +321,6 @@ const pipelineApps: ActionItem[] = [
                   >Smart Price Tracker</Link
                 >
               </li>
-              <li>
-                <Link href="/system-status" class="hover:text-white transition-colors"
-                  >System Status</Link
-                >
-              </li>
             </ul>
           </div>
           <div>

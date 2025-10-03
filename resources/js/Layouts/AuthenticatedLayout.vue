@@ -408,11 +408,6 @@ const submitBugReport = () => {
                   >Smart Price Tracker</Link
                 >
               </li>
-              <li>
-                <Link href="/system-status" class="hover:text-primary transition-colors"
-                  >System Status</Link
-                >
-              </li>
             </ul>
           </div>
           <div>

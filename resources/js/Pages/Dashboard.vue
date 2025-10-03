@@ -109,7 +109,7 @@ const fullName = computed((): string => {
   <Head title="Dashboard" />
 
   <AuthenticatedLayout :user="user">
-    <main class="sm:-mt-24 pb-8 flex-1">
+    <main class="-mt-24 pb-8 flex-1">
       <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <h1 class="sr-only">Dashboard</h1>
 

@@ -35,7 +35,7 @@
     </select>
 
     <!-- Custom dropdown icon -->
-    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+    <!-- <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
       <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
@@ -44,7 +44,7 @@
           d="M19 9l-7 7-7-7"
         ></path>
       </svg>
-    </div>
+    </div> -->
   </div>
 </template>
 

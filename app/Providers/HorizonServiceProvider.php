@@ -34,10 +34,6 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     {
         Gate::define('viewHorizon', function ($user = null) {
 
-            logger('viewHorizon', [
-                'user' => $user,
-                'environment' => app()->environment(),
-            ]);
 
             // In local environment, allow all authenticated users
             if (app()->environment('local')) {
@@ -46,8 +42,16 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
 
             // In production, only allow specific admin emails
             $adminEmails = explode(',', env('HORIZON_ADMIN_EMAILS', ''));
+            $isAdmin = $user && in_array($user->email, $adminEmails);
 
-            return $user && in_array($user->email, $adminEmails);
+            logger('viewHorizon', [
+                'user' => $user,
+                'environment' => app()->environment(),
+                'adminEmails' => $adminEmails,
+                'isAdmin' => $isAdmin,
+            ]);
+
+            return $isAdmin;
         });
     }
 }

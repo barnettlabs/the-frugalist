@@ -33,15 +33,35 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     protected function gate(): void
     {
         Gate::define('viewHorizon', function ($user = null) {
-
+            // $environment = app()->environment();
 
             // In local environment, allow all authenticated users
-            if (app()->environment('local')) {
-                return $user !== null;
-            }
+            // if ($environment === 'local') {
+            //     return $user !== null;
+            // }
+
+            // Get admin emails from config (which is loaded after service providers)
+            // $adminEmails = collect(config('services.horizon.admin_emails', []))
+            //     ->map(fn($email) => strtolower(trim($email)))
+            //     ->filter()
+            //     ->toArray();
+
+            $aa = env('HORIZON_ADMIN_EMAILS', '');
+            $bb = config('services.horizon.admin_emails', []);
+
+            logger('viewHorizon', [
+                'aa' => $aa,
+                'bb' => $bb,
+                // 'adminEmails' => $adminEmails,
+            ]);
+
+            $adminEmails = array_map(
+                'strtolower',
+                array_map('trim', config('services.horizon.admin_emails', []))
+            );
 
             // In production, only allow specific admin emails
-            $adminEmails = explode(',', env('HORIZON_ADMIN_EMAILS', ''));
+            // $adminEmails = explode(',', env('HORIZON_ADMIN_EMAILS', ''));
             $isAdmin = $user && in_array($user->email, $adminEmails);
 
             logger('viewHorizon', [

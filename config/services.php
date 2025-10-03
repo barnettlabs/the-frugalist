@@ -41,4 +41,7 @@ return [
         'from' => env('TWILIO_FROM'),
     ],
 
+    'horizon' => [
+        'admin_emails' => explode(',', env('HORIZON_ADMIN_EMAILS', '')),
+    ],
 ];

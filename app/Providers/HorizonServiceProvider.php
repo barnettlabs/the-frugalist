@@ -15,6 +15,11 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     {
         parent::boot();
 
+        // Disable Horizon's built-in local environment bypass
+        Horizon::auth(function ($request) {
+            return Gate::allows('viewHorizon', $request->user());
+        });
+
         // Horizon::routeSmsNotificationsTo('15556667777');
         // Horizon::routeMailNotificationsTo('example@example.com');
         // Horizon::routeSlackNotificationsTo('slack-webhook-url', '#channel');
@@ -28,6 +33,12 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     protected function gate(): void
     {
         Gate::define('viewHorizon', function ($user = null) {
+
+            logger('viewHorizon', [
+                'user' => $user,
+                'environment' => app()->environment(),
+            ]);
+
             // In local environment, allow all authenticated users
             if (app()->environment('local')) {
                 return $user !== null;

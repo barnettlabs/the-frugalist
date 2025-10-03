@@ -109,223 +109,270 @@ const fullName = computed((): string => {
   <Head title="Dashboard" />
 
   <AuthenticatedLayout :user="user">
-    <main class="-mt-24 pb-8 flex-1">
+    <main class="sm:-mt-24 pb-8 flex-1">
       <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <h1 class="sr-only">Dashboard</h1>
 
-        <!-- Renegade Dashboard Header -->
-        <div class="mb-8">
-          <div class="glass rounded-2xl p-8 text-gray-900 bg-white/80 relative overflow-hidden">
-            <div class="relative">
-              <!-- Header Text -->
-              <div class="mb-6 text-center lg:text-left">
-                <h1 class="text-4xl font-bold text-gray-900 mb-2">Smart Shopping Dashboard</h1>
-                <p class="text-lg text-gray-600">
-                  Save time and money with smart calculations and insights.
-                </p>
+        <!-- Compact Header -->
+        <div class="mb-6 lg:mb-12">
+          <div class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div
+                  class="h-12 w-12 rounded-lg overflow-hidden bg-gradient-to-br from-primary to-secondary flex items-center justify-center"
+                >
+                  <img
+                    v-if="user?.avatar_url"
+                    class="h-full w-full object-cover"
+                    :src="user?.avatar_url"
+                    :alt="fullName"
+                    @error="($event.target as HTMLImageElement).style.display = 'none'"
+                  />
+                  <UserIcon v-else class="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h2 class="text-lg font-bold text-gray-900">{{ fullName || 'Welcome' }}</h2>
+                  <p class="text-xs text-gray-500">{{ user?.email }}</p>
+                </div>
               </div>
-
-              <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                <div class="flex items-center space-x-6">
-                  <div class="relative">
-                    <div
-                      class="h-20 w-20 rounded-full ring-4 ring-primary/20 overflow-hidden bg-gradient-to-br from-primary to-secondary flex items-center justify-center"
-                    >
-                      <img
-                        v-if="user?.avatar_url"
-                        class="h-full w-full object-cover"
-                        :src="user?.avatar_url"
-                        :alt="fullName"
-                        @error="($event.target as HTMLImageElement).style.display = 'none'"
-                      />
-                      <UserIcon v-else class="h-12 w-12 text-white" />
+              <div class="flex items-center gap-3">
+                <div class="hidden sm:flex items-center gap-4 mr-4">
+                  <div class="text-center">
+                    <div class="text-xl font-bold text-primary">
+                      {{ (vehicleFinanceSheets?.length ?? 0) + (vehicleLeaseSheets?.length ?? 0) }}
                     </div>
-                    <div
-                      class="absolute -bottom-1 -right-1 h-6 w-6 bg-success rounded-full border-2 border-white flex items-center justify-center"
-                    >
-                      <span class="text-xs text-white font-bold">🦊</span>
-                    </div>
-                  </div>
-                  <div>
-                    <p class="text-sm font-medium text-gray-600">Welcome back, Smart Shopper</p>
-                    <h2 class="text-3xl font-bold text-gray-900">
-                      {{ fullName }}
-                    </h2>
-                    <p class="text-sm text-gray-500">
-                      {{ user?.email }}
-                    </p>
+                    <div class="text-xs text-gray-500">Estimates</div>
                   </div>
                 </div>
-                <div class="mt-6 lg:mt-0">
-                  <Link href="/profile">
-                    <button
-                      class="bg-primary hover:bg-primary-shade-1 px-6 py-3 rounded-xl font-medium text-white transition-all duration-100 hover:neon-glow"
-                    >
-                      Manage Profile
-                    </button>
-                  </Link>
-                </div>
+                <Link href="/profile">
+                  <button
+                    class="bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-md text-sm font-medium text-gray-700 transition-colors"
+                  >
+                    Profile
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Main Dashboard Content -->
-        <div class="space-y-8">
-          <!-- Main Content Area -->
-            <!-- Renegade Applications Section -->
-            <div class="mb-8">
-              <div class="mb-6">
-                <h2 class="text-2xl font-bold text-gray-900 mb-2">Smart Tools</h2>
-                <p class="text-gray-600">
-                  Access intelligent applications designed to save you time and money on your next
-                  vehicle purchase
-                </p>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div v-for="app in smartApps" :key="app.name" class="group relative">
-                  <div
-                    class="futuristic-card p-6 transition-all duration-150 hover:neon-glow cursor-pointer"
-                    @click="$inertia.visit(app.href)"
-                  >
-                    <!-- Icon Section -->
-                    <div class="flex items-center justify-between mb-4">
-                      <div class="p-3 rounded-xl" :class="[app.iconBackground]">
-                        <component
-                          :is="app.icon"
-                          class="h-8 w-8"
-                          :class="[app.iconForeground]"
-                          aria-hidden="true"
-                        />
-                      </div>
-                      <div class="opacity-50 group-hover:opacity-100 transition-opacity">
-                        <svg
-                          class="w-6 h-6 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M13 7l5 5m0 0l-5 5m5-5H6"
-                          ></path>
-                        </svg>
-                      </div>
-                    </div>
-
-                    <!-- Content -->
-                    <h3
-                      class="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors"
-                    >
-                      {{ app.name }}
-                    </h3>
-                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
-                      {{ app.description }}
-                    </p>
-
-                    <!-- Status and Actions -->
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center text-xs">
-                        <div
-                          class="w-2 h-2 rounded-full mr-2 animate-pulse"
-                          :class="app.status === 'Available' ? 'bg-success' : 'bg-warning'"
-                        ></div>
-                        <span class="text-gray-500">{{ app.status }}</span>
-                      </div>
-                      <div class="flex space-x-3">
-                        <Link
-                          v-if="app.status === 'Available'"
-                          :href="app.href + '/create'"
-                          class="bg-primary hover:bg-primary-shade-1 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150"
-                          @click.stop
-                        >
-                          Create
-                        </Link>
-                      </div>
-                    </div>
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <!-- Sidebar -->
+          <div class="lg:col-span-1 space-y-4">
+            <!-- Quick Navigation -->
+            <div class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+              <h3 class="text-sm font-bold text-gray-900 mb-3">Quick Access</h3>
+              <nav class="space-y-1">
+                <Link
+                  v-for="app in smartApps"
+                  :key="app.name"
+                  :href="app.href"
+                  class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-50 transition-colors group"
+                >
+                  <div class="p-1.5 rounded-md" :class="[app.iconBackground]">
+                    <component :is="app.icon" class="h-4 w-4" :class="[app.iconForeground]" />
                   </div>
+                  <span class="text-sm text-gray-700 group-hover:text-gray-900 flex-1 truncate">{{
+                    app.name.replace('Vehicle ', '')
+                  }}</span>
+                  <svg
+                    class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    ></path>
+                  </svg>
+                </Link>
+              </nav>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+              <h3 class="text-sm font-bold text-gray-900 mb-3">Overview</h3>
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-gray-600">Finance Sheets</span>
+                  <span class="text-sm font-bold text-primary">{{
+                    vehicleFinanceSheets?.length ?? 0
+                  }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-gray-600">Lease Sheets</span>
+                  <span class="text-sm font-bold text-secondary">{{
+                    vehicleLeaseSheets?.length ?? 0
+                  }}</span>
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Recent Calculations -->
-            <div class="mb-8">
-              <div class="flex items-center justify-between mb-6">
+          <!-- Main Content Area -->
+          <div class="lg:col-span-3 space-y-6">
+            <!-- Smart Tools Section -->
+            <div>
+              <div class="mb-4">
+                <h2 class="text-xl font-bold text-gray-900 mb-1">Smart Tools</h2>
+                <p class="text-sm text-gray-600">
+                  Intelligent calculators to help you make informed decisions
+                </p>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Link
+                  v-for="app in smartApps"
+                  :key="app.name"
+                  :href="app.href"
+                  class="group relative bg-white rounded-lg border border-gray-200 p-5 shadow-sm hover:shadow-md hover:border-gray-300 transition-all"
+                >
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="p-2.5 rounded-lg" :class="[app.iconBackground]">
+                      <component :is="app.icon" class="h-6 w-6" :class="[app.iconForeground]" />
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <div
+                        class="w-1.5 h-1.5 rounded-full animate-pulse"
+                        :class="app.status === 'Available' ? 'bg-green-500' : 'bg-yellow-500'"
+                      ></div>
+                      <span class="text-xs text-gray-500">{{ app.status }}</span>
+                    </div>
+                  </div>
+                  <h3 class="text-base font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+                    {{ app.name }}
+                  </h3>
+                  <p class="text-xs text-gray-600 mb-3 line-clamp-2">
+                    {{ app.description }}
+                  </p>
+                  <div class="flex items-center gap-2">
+                    <button
+                      v-if="app.status === 'Available'"
+                      @click.prevent="$inertia.visit(app.href + '/create')"
+                      class="text-xs bg-primary hover:bg-primary-shade-1 text-white px-3 py-1.5 rounded-md font-medium transition-colors"
+                    >
+                      Create New
+                    </button>
+                    <button
+                      @click.prevent="$inertia.visit(app.href)"
+                      class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-md font-medium transition-colors"
+                    >
+                      View All
+                    </button>
+                  </div>
+                </Link>
+              </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div>
+              <div class="flex items-center justify-between mb-4">
                 <div>
-                  <h2 class="text-2xl font-bold text-gray-900">Recent Calculations</h2>
-                  <p class="text-gray-600">Your latest finance and lease estimates</p>
+                  <h2 class="text-xl font-bold text-gray-900 mb-1">Recent Activity</h2>
+                  <p class="text-sm text-gray-600">Your latest estimates</p>
                 </div>
                 <Link
                   href="/estimates/financing"
-                  class="text-primary hover:text-primary-shade-1 text-sm font-medium"
+                  class="text-xs text-primary hover:text-primary-shade-1 font-medium"
                 >
                   View All →
                 </Link>
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+              <div class="space-y-3">
+                <!-- Finance Sheets -->
                 <div
                   v-if="vehicleFinanceSheets?.length > 0"
-                  v-for="sheet in vehicleFinanceSheets.slice(0, 2)"
-                  :key="sheet.id"
-                  class="futuristic-card p-6"
+                  v-for="sheet in vehicleFinanceSheets.slice(0, 3)"
+                  :key="'finance-' + sheet.id"
+                  class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md hover:border-gray-300 transition-all"
                 >
-                  <div class="flex items-center justify-between mb-4">
-                    <div class="p-2 rounded-lg bg-primary/10">
-                      <component :is="BanknotesIcon" class="h-5 w-5 text-primary" />
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="flex items-start gap-3 flex-1 min-w-0">
+                      <div class="p-2 rounded-lg bg-primary/10 flex-shrink-0">
+                        <component :is="BanknotesIcon" class="h-4 w-4 text-primary" />
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                          <h3 class="font-bold text-sm text-gray-900 truncate">
+                            {{ sheet.vehicle_year }} {{ sheet.vehicle_make }}
+                            {{ sheet.vehicle_model }}
+                          </h3>
+                          <span
+                            class="flex-shrink-0 bg-primary/10 text-primary text-xs px-2 py-0.5 rounded-full"
+                          >
+                            Finance
+                          </span>
+                        </div>
+                        <p class="text-xs text-gray-600">
+                          ${{ sheet.vehicle_price?.toLocaleString() }} •
+                          {{ sheet.loan_term_months }} months
+                        </p>
+                      </div>
                     </div>
-                    <span class="text-xs text-gray-500">Finance</span>
+                    <Link :href="`/estimates/financing/${sheet.id}/edit`">
+                      <button
+                        class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-md font-medium transition-colors flex-shrink-0"
+                      >
+                        Edit
+                      </button>
+                    </Link>
                   </div>
-                  <h3 class="font-bold text-gray-900 mb-2">
-                    {{ sheet.vehicle_year }} {{ sheet.vehicle_make }} {{ sheet.vehicle_model }}
-                  </h3>
-                  <p class="text-gray-600 text-sm mb-3">
-                    ${{ sheet.vehicle_price?.toLocaleString() }} •
-                    {{ sheet.loan_term_months }} months
-                  </p>
-                  <Link
-                    :href="`/estimates/financing/${sheet.id}/edit`"
-                    class="text-primary hover:text-primary-shade-1 text-sm font-medium"
-                  >
-                    Edit Calculation →
-                  </Link>
                 </div>
+
+                <!-- Lease Sheets -->
                 <div
                   v-if="vehicleLeaseSheets?.length > 0"
-                  v-for="sheet in vehicleLeaseSheets.slice(0, 2)"
-                  :key="sheet.id"
-                  class="futuristic-card p-6"
+                  v-for="sheet in vehicleLeaseSheets.slice(0, 3)"
+                  :key="'lease-' + sheet.id"
+                  class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md hover:border-gray-300 transition-all"
                 >
-                  <div class="flex items-center justify-between mb-4">
-                    <div class="p-2 rounded-lg bg-secondary/10">
-                      <component :is="CurrencyDollarIcon" class="h-5 w-5 text-secondary" />
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="flex items-start gap-3 flex-1 min-w-0">
+                      <div class="p-2 rounded-lg bg-secondary/10 flex-shrink-0">
+                        <component :is="CurrencyDollarIcon" class="h-4 w-4 text-secondary" />
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                          <h3 class="font-bold text-sm text-gray-900 truncate">
+                            {{ sheet.vehicle_year }} {{ sheet.vehicle_make }}
+                            {{ sheet.vehicle_model }}
+                          </h3>
+                          <span
+                            class="flex-shrink-0 bg-secondary/10 text-secondary text-xs px-2 py-0.5 rounded-full"
+                          >
+                            Lease
+                          </span>
+                        </div>
+                        <p class="text-xs text-gray-600">
+                          ${{ sheet.vehicle_price?.toLocaleString() }} •
+                          {{ sheet.lease_term_months }} months
+                        </p>
+                      </div>
                     </div>
-                    <span class="text-xs text-gray-500">Lease</span>
+                    <Link :href="`/estimates/leasing/${sheet.id}/edit`">
+                      <button
+                        class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-md font-medium transition-colors flex-shrink-0"
+                      >
+                        Edit
+                      </button>
+                    </Link>
                   </div>
-                  <h3 class="font-bold text-gray-900 mb-2">
-                    {{ sheet.vehicle_year }} {{ sheet.vehicle_make }} {{ sheet.vehicle_model }}
-                  </h3>
-                  <p class="text-gray-600 text-sm mb-3">
-                    ${{ sheet.vehicle_price?.toLocaleString() }} •
-                    {{ sheet.lease_term_months }} months
-                  </p>
-                  <Link
-                    :href="`/estimates/leasing/${sheet.id}/edit`"
-                    class="text-secondary hover:text-secondary-shade-1 text-sm font-medium"
-                  >
-                    Edit Calculation →
-                  </Link>
                 </div>
+
+                <!-- Empty State -->
                 <div
                   v-if="!vehicleFinanceSheets?.length && !vehicleLeaseSheets?.length"
-                  class="col-span-full futuristic-card p-8 text-center"
+                  class="bg-white rounded-lg border border-gray-200 p-8 shadow-sm text-center"
                 >
                   <div
-                    class="p-4 rounded-xl bg-gray-100 w-16 h-16 mx-auto mb-4 flex items-center justify-center"
+                    class="p-3 rounded-lg bg-gray-100 w-12 h-12 mx-auto mb-3 flex items-center justify-center"
                   >
                     <svg
-                      class="w-8 h-8 text-gray-400"
+                      class="w-6 h-6 text-gray-400"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -338,19 +385,21 @@ const fullName = computed((): string => {
                       ></path>
                     </svg>
                   </div>
-                  <h3 class="text-lg font-bold text-gray-900 mb-2">No calculations yet</h3>
-                  <p class="text-gray-600 mb-4">
-                    Start your first vehicle calculation to see your estimates here
+                  <h3 class="text-base font-bold text-gray-900 mb-1">No estimates yet</h3>
+                  <p class="text-xs text-gray-600 mb-4">
+                    Create your first estimate to get started
                   </p>
-                  <Link
-                    href="/estimates/financing/create"
-                    class="bg-primary hover:bg-primary-shade-1 text-white px-6 py-2 rounded-lg font-medium transition-all duration-150"
-                  >
-                    Create First Calculation
+                  <Link href="/estimates/financing/create">
+                    <button
+                      class="bg-primary hover:bg-primary-shade-1 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                    >
+                      Create Estimate
+                    </button>
                   </Link>
                 </div>
               </div>
             </div>
+          </div>
         </div>
       </div>
     </main>

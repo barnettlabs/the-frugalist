@@ -129,9 +129,9 @@ const submitBugReport = () => {
       </div>
 
       <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8 z-10">
-        <div class="relative flex items-center justify-center py-3 lg:justify-between">
+        <div class="relative flex items-center justify-between py-3 lg:justify-between">
           <!-- Logo and Breadcrumbs -->
-          <div class="absolute left-0 flex-shrink-0 lg:static">
+          <div class="flex-shrink-0">
             <div class="flex items-center space-x-6">
               <Link href="/" class="flex flex-row items-center">
                 <span class="sr-only">SneakySalesman by JayTech LLC</span>
@@ -139,15 +139,9 @@ const submitBugReport = () => {
                 <ApplicationLogo variant="white" class="h-8 w-auto mr-2" />
 
                 <div class="flex flex-col">
-                  <span class="text-white font-bold hidden lg:inline-block"> Sneaky Salesman </span>
-                  <span class="text-white opacity-80 hidden lg:inline-block text-xs font-medium">
+                  <span class="text-white font-bold"> Sneaky Salesman </span>
+                  <span class="text-white opacity-80 text-xs font-medium">
                     Your smart shopping companion
-                  </span>
-
-                  <span class="text-white font-bold text-sm lg:hidden text-wrap">
-                    Sneaky
-                    <br />
-                    Salesman
                   </span>
                 </div>
               </Link>

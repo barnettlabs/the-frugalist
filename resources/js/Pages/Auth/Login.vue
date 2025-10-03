@@ -83,7 +83,7 @@ const submit = () => {
             :href="route('register')"
             class="text-primary hover:text-primary-shade-1 font-medium transition-colors underline"
           >
-Start smart shopping
+            Start smart shopping
           </Link>
         </p>
       </div>

@@ -116,7 +116,7 @@ const pipelineApps: ActionItem[] = [
 
         <!-- Hero Section -->
         <div class="py-20 text-center">
-          <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">
+          <h1 class="text-5xl font-bold text-white mb-6">
             Welcome to the
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300">
               Smart Shopping Suite
@@ -131,19 +131,19 @@ const pipelineApps: ActionItem[] = [
             </p>
           </div>
           <p class="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
-            Navigate the market with intelligence and cunning. Our smart tools help you save time
-            and money by finding the best deals and avoiding common pitfalls.
+            Make informed decisions with intelligent calculators. Track interest rates, rebates,
+            fees, and get the best deal every time.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               :href="$page.props.auth.user ? '/dashboard' : route('login')"
-              class="bg-white text-gray-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all duration-150 hover:neon-glow"
+              class="bg-white text-gray-900 px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition-all duration-150 hover:neon-glow"
             >
               Start Saving
             </Link>
             <Link
               href="#applications"
-              class="bg-white/20 hover:bg-white/30 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all duration-150"
+              class="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-xl font-bold transition-all duration-150"
             >
               Learn More
             </Link>

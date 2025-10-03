@@ -27,7 +27,7 @@ const submit = () => {
 
     <div class="text-center mb-6">
       <h2 class="text-2xl font-bold text-gray-900 mb-2">Start Smart Shopping</h2>
-      <p class="text-gray-600">Create your account and start saving time and money on vehicle purchases</p>
+      <p class="text-gray-600">Create your account and start saving time and money when shopping</p>
     </div>
 
     <form @submit.prevent="submit" class="space-y-5">

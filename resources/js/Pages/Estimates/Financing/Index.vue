@@ -157,55 +157,46 @@ onMounted(() => {
     <main class="-mt-24 pb-8 flex-1">
       <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <!-- Hero Header -->
-        <div class="mb-8">
-          <div class="glass rounded-2xl p-8 text-gray-900 bg-white/80 relative overflow-hidden">
+        <div class="mb-6">
+          <div class="glass rounded-xl p-5 text-gray-900 bg-white/80 relative overflow-hidden">
             <div class="relative text-center lg:text-left">
-              <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                <div class="flex items-center space-x-6 mb-6 lg:mb-0">
-                  <div class="p-4 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/20">
-                    <BanknotesIcon class="h-12 w-12 text-primary" />
-                  </div>
-                  <div>
-                    <h1 class="text-4xl font-bold text-gray-900 mb-2">Vehicle Finance Calculator</h1>
-                    <p class="text-lg text-gray-600">
-                      Break traditional financing rules with advanced calculations and real-time
-                      rates
-                    </p>
-                  </div>
+              <div class="flex items-center space-x-4 mb-4">
+                <div class="p-3 rounded-xl bg-gradient-to-br from-primary/10 to-primary/20">
+                  <BanknotesIcon class="h-8 w-8 text-primary" />
                 </div>
-                <div class="flex items-center space-x-3">
+                <div>
+                  <h1 class="text-2xl font-bold text-gray-900 mb-1">Vehicle Finance Calculator</h1>
+                  <p class="text-sm text-gray-600">
+                    Track all the required information like interest rates, rebates, dealer fees, and incentives so you stay informed and get the best deal
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center justify-center lg:justify-start space-x-2">
+                <Link href="/estimates/financing/create">
                   <button
-                    v-if="selectedSheets.size >= 2"
-                    @click="startComparison"
-                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2"
+                    class="bg-primary hover:bg-primary-shade-1 px-3 py-2 rounded-lg text-sm font-medium text-white transition-all duration-150 hover:neon-glow flex items-center space-x-1.5"
                   >
-                    <ScaleIcon class="h-4 w-4" />
-                    <span>Compare</span>
+                    <PlusIcon class="h-4 w-4" />
+                    <span>New Estimate</span>
                   </button>
+                </Link>
 
-                  <Link href="/estimates/financing/create">
-                    <button
-                      class="bg-primary hover:bg-primary-shade-1 px-4 py-2 rounded-lg font-medium text-white transition-all duration-150 hover:neon-glow flex items-center space-x-2"
-                    >
-                      <PlusIcon class="h-5 w-5" />
-                      <span>New Estimate</span>
-                    </button>
-                  </Link>
-                </div>
+                <button
+                  v-if="selectedSheets.size >= 2"
+                  @click="startComparison"
+                  class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 flex items-center space-x-1.5"
+                >
+                  <ScaleIcon class="h-4 w-4" />
+                  <span>Compare</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
+        <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-6">
           <div class="grid grid-cols-1 gap-2 lg:col-span-2">
             <section aria-labelledby="finance-estimates-overview-title">
-              <div class="mb-6">
-                <h2 class="text-2xl font-bold text-gray-900 mb-2">Your Finance Estimates</h2>
-                <p class="text-gray-600">
-                  Manage your vehicle financing calculations and compare different scenarios
-                </p>
-              </div>
               <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <!-- Loading state -->
                 <div v-if="loading" class="col-span-full">
@@ -247,93 +238,72 @@ onMounted(() => {
                     class="list-none"
                   >
                     <div
-                      class="futuristic-card bg-white p-6 group hover:neon-glow transition-all duration-150 border border-gray-200 shadow-sm"
+                      class="futuristic-card bg-white p-4 group hover:neon-glow transition-all duration-150 border border-gray-200 shadow-sm"
                     >
                       <!-- Header -->
-                      <div class="flex items-start justify-between mb-4">
-                        <div class="flex items-start space-x-3">
-                          <input
-                            type="checkbox"
-                            :checked="isSelected(sheet.id)"
-                            @change="toggleSelection(sheet.id)"
-                            class="w-4 h-4 text-primary border border-gray-300 rounded focus:ring-0 focus:outline-none mt-1.5"
-                          />
-                          <div>
+                      <div class="flex items-start space-x-3 mb-3">
+                        <input
+                          type="checkbox"
+                          :checked="isSelected(sheet.id)"
+                          @change="toggleSelection(sheet.id)"
+                          class="w-4 h-4 text-primary border border-gray-300 rounded focus:ring-0 focus:outline-none mt-1"
+                        />
+                        <div class="flex-1 min-w-0">
+                          <div class="flex items-start justify-between gap-2 mb-1">
                             <h3
-                              class="text-lg font-bold text-gray-900 group-hover:text-primary transition-colors"
+                              class="text-base font-bold text-gray-900 group-hover:text-primary transition-colors truncate"
                             >
                               {{ getVehicleTitle(sheet) }}
                             </h3>
-                            <p class="text-sm text-gray-500">
-                              {{ sheet.dealership_name || 'No dealership specified' }}
-                            </p>
-                            <span v-if="sheet.updated_at" class="text-xs text-gray-400">
+                            <span
+                              v-if="sheet.updated_at"
+                              class="flex-shrink-0 bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full whitespace-nowrap mt-0.5 ml-2"
+                            >
                               {{ formatRelativeTime(sheet.updated_at) }}
                             </span>
                           </div>
-                        </div>
-
-                        <div class="flex flex-col items-end space-y-2">
-                          <Link :href="`/estimates/financing/${sheet.id}/edit`">
-                            <button
-                              class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-colors"
-                            >
-                              <PencilIcon class="h-4 w-4" />
-                            </button>
-                          </Link>
-                          <button
-                            @click="deleteSheet(sheet.id)"
-                            class="p-2 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-800 transition-colors"
-                          >
-                            <TrashIcon class="h-4 w-4" />
-                          </button>
+                          <p class="text-xs text-gray-500 truncate">
+                            {{ sheet.dealership_name || 'No dealership specified' }}
+                          </p>
                         </div>
                       </div>
 
                       <!-- Monthly Payment (Always Visible) -->
-                      <div class="bg-gray-50 rounded-lg p-4 mb-4 flex-1">
+                      <div class="bg-gray-50 rounded-lg p-3 mb-3">
                         <div class="text-center">
-                          <span class="text-gray-500 text-sm uppercase tracking-wide block mb-1"
+                          <span class="text-gray-500 text-xs uppercase tracking-wide block mb-1"
                             >Monthly Payment</span
                           >
-                          <div class="font-bold text-green-600 text-2xl">
+                          <div class="font-bold text-green-600 text-xl">
                             ${{ formatCurrency(getSheetCalculations(sheet).monthlyPayment) }}
                           </div>
                         </div>
                       </div>
 
                       <!-- Action Buttons -->
-                      <div class="mb-4">
-                        <div class="grid grid-cols-2 gap-3">
-                          <Link :href="`/estimates/financing/${sheet.id}/edit`">
-                            <button
-                              class="w-full bg-primary hover:bg-primary-shade-1 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 flex items-center justify-center space-x-2"
-                            >
-                              <EyeIcon class="h-4 w-4" />
-                              <span>View</span>
-                            </button>
-                          </Link>
+                      <div class="grid grid-cols-3 gap-2">
+                        <Link :href="`/estimates/financing/${sheet.id}/edit`">
                           <button
-                            @click="deleteSheet(sheet.id)"
-                            class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 flex items-center justify-center space-x-2"
+                            class="w-full bg-primary hover:bg-primary-shade-1 text-white px-2 py-2 rounded-lg text-xs font-medium transition-all duration-150 flex items-center justify-center space-x-1"
                           >
-                            <TrashIcon class="h-4 w-4" />
-                            <span>Delete</span>
+                            <EyeIcon class="h-3.5 w-3.5" />
+                            <span>View</span>
                           </button>
-                        </div>
-                      </div>
-
-                      <!-- Show More/Less Button -->
-                      <div class="mb-4">
+                        </Link>
+                        <button
+                          @click="deleteSheet(sheet.id)"
+                          class="w-full bg-red-600 hover:bg-red-700 text-white px-2 py-2 rounded-lg text-xs font-medium transition-all duration-150 flex items-center justify-center space-x-1"
+                        >
+                          <TrashIcon class="h-3.5 w-3.5" />
+                          <span>Delete</span>
+                        </button>
                         <button
                           @click="toggleCardDetails(sheet.id)"
-                          class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2"
+                          class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-2 rounded-lg text-xs font-medium transition-colors flex items-center justify-center space-x-1"
                         >
-                          <span>{{
-                            isCardExpanded(sheet.id) ? 'Show Less' : 'Show More Details'
-                          }}</span>
+                          <span>{{ isCardExpanded(sheet.id) ? 'Less' : 'More' }}</span>
                           <svg
-                            class="w-4 h-4 transition-transform"
+                            class="w-3 h-3 transition-transform"
                             :class="{ 'rotate-180': isCardExpanded(sheet.id) }"
                             fill="none"
                             stroke="currentColor"
@@ -350,7 +320,7 @@ onMounted(() => {
                       </div>
 
                       <!-- Expanded Details -->
-                      <div v-if="isCardExpanded(sheet.id)" class="space-y-4">
+                      <div v-if="isCardExpanded(sheet.id)" class="space-y-4 mt-4">
                         <!-- Vehicle Info -->
                         <div>
                           <h4 class="font-semibold text-gray-900 text-sm mb-2">

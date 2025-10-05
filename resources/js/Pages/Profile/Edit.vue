@@ -46,7 +46,7 @@ const breadcrumbs = computed(() => [{ name: 'Profile', href: '/profile', current
   <Head title="Profile" />
 
   <AuthenticatedLayout :user="user" :breadcrumbs="breadcrumbs">
-    <main class="-mt-24 pb-8 flex-1">
+    <main class="mt-6 pb-8 flex-1">
       <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <h1 class="sr-only">Profile</h1>
 

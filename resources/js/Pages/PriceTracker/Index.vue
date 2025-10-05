@@ -190,7 +190,7 @@ const getStatusText = (product: TrackedProduct) => {
 
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div class="futuristic-card p-6">
+          <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <div class="flex items-center">
               <div class="p-3 rounded-lg bg-primary/10">
                 <EyeIcon class="h-6 w-6 text-primary" />
@@ -202,7 +202,7 @@ const getStatusText = (product: TrackedProduct) => {
             </div>
           </div>
 
-          <div class="futuristic-card p-6">
+          <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <div class="flex items-center">
               <div class="p-3 rounded-lg bg-success/10">
                 <CheckCircleIcon class="h-6 w-6 text-success" />
@@ -216,7 +216,7 @@ const getStatusText = (product: TrackedProduct) => {
             </div>
           </div>
 
-          <div class="futuristic-card p-6">
+          <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <div class="flex items-center">
               <div class="p-3 rounded-lg bg-warning/10">
                 <ChartBarIcon class="h-6 w-6 text-warning" />
@@ -230,7 +230,7 @@ const getStatusText = (product: TrackedProduct) => {
             </div>
           </div>
 
-          <div class="futuristic-card p-6">
+          <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <div class="flex items-center">
               <div class="p-3 rounded-lg bg-info/10">
                 <ExclamationTriangleIcon class="h-6 w-6 text-info" />
@@ -247,7 +247,7 @@ const getStatusText = (product: TrackedProduct) => {
 
         <!-- Quick Filters -->
         <div v-if="trackedProducts.length > 0" class="mb-6">
-          <div class="futuristic-card p-4">
+          <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
             <div class="flex items-center gap-3 flex-wrap">
               <span class="text-sm font-medium text-gray-700">Filter by:</span>
               <div class="flex gap-2 flex-wrap">
@@ -284,7 +284,7 @@ const getStatusText = (product: TrackedProduct) => {
           v-if="filteredProducts.length > 0"
           class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          <div v-for="product in filteredProducts" :key="product.id" class="futuristic-card p-6">
+          <div v-for="product in filteredProducts" :key="product.id" class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <!-- Product Header -->
             <div class="flex flex-col items-start justify-between mb-4">
               <div class="flex flex-row justify-between items-center space-x-2 mb-2 w-full">
@@ -456,7 +456,7 @@ const getStatusText = (product: TrackedProduct) => {
 
         <!-- Empty State - No products matching filter -->
         <div v-else-if="trackedProducts.length > 0" class="text-center py-12">
-          <div class="futuristic-card p-12 max-w-md mx-auto">
+          <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-12 max-w-md mx-auto">
             <ExclamationTriangleIcon class="h-16 w-16 text-gray-300 mx-auto mb-4" />
             <h3 class="text-lg font-medium text-gray-900 mb-2">No products match this filter</h3>
             <p class="text-gray-600 mb-6">
@@ -473,7 +473,7 @@ const getStatusText = (product: TrackedProduct) => {
 
         <!-- Empty State - No products at all -->
         <div v-else class="text-center py-12">
-          <div class="futuristic-card p-12 max-w-md mx-auto">
+          <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-12 max-w-md mx-auto">
             <EyeIcon class="h-16 w-16 text-gray-300 mx-auto mb-4" />
             <h3 class="text-lg font-medium text-gray-900 mb-2">No products being tracked</h3>
             <p class="text-gray-600 mb-6">

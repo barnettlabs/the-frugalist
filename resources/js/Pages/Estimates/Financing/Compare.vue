@@ -118,7 +118,7 @@ onMounted(() => {
   <Head title="Compare Finance Estimates" />
 
   <AuthenticatedLayout :user="props.user" :breadcrumbs="breadcrumbs">
-    <main class="-mt-24 pb-8 flex-1">
+    <main class="mt-6 pb-8 flex-1">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <!-- Hero Header -->
         <div class="mb-8">

@@ -17,7 +17,15 @@ import {
   DialogTitle,
 } from '@headlessui/vue'
 import ApplicationLogo from '@/Components/ApplicationLogo.vue'
-import { Bars3Icon, XMarkIcon, PhoneIcon, EnvelopeIcon, UserIcon, BugAntIcon, XCircleIcon } from '@heroicons/vue/24/outline'
+import {
+  Bars3Icon,
+  XMarkIcon,
+  PhoneIcon,
+  EnvelopeIcon,
+  UserIcon,
+  BugAntIcon,
+  XCircleIcon,
+} from '@heroicons/vue/24/outline'
 import { MagnifyingGlassIcon, ChevronRightIcon, HomeIcon } from '@heroicons/vue/20/solid'
 
 interface User {
@@ -52,21 +60,6 @@ interface UserNavigationItem {
   href?: string
   onClick?: () => void
 }
-
-const navigation = computed((): NavigationItem[] => [
-  // {
-  //   name: 'Dashboard',
-  //   href: '/dashboard',
-  // },
-  // {
-  //   name: 'Finance Renegade',
-  //   href: '/estimates/financing',
-  // },
-  // {
-  //   name: 'Lease Renegade',
-  //   href: '/estimates/leasing',
-  // },
-])
 
 const userNavigation = ref<UserNavigationItem[]>([
   { name: 'Profile', href: '/profile' },
@@ -119,7 +112,7 @@ const submitBugReport = () => {
   <div class="flex-1 flex flex-col">
     <Popover
       as="header"
-      class="bg-animated-gradient dotted-background-light pb-24 relative overflow-hidden"
+      class="bg-animated-gradient dotted-background-light relative overflow-hidden"
       v-slot="{ open }"
     >
       <!-- Floating geometric shapes for visual interest -->
@@ -214,13 +207,9 @@ const submitBugReport = () => {
             </PopoverButton>
           </div>
         </div>
-        <div class="hidden border- border-white border-opacity-20 pt-2 pb-5 lg:block">
+        <div v-if="breadcrumbs && breadcrumbs.length > 0" class="hidden pt-2 pb-5 lg:block">
           <!-- Breadcrumbs -->
-          <nav
-            v-if="breadcrumbs && breadcrumbs.length > 0"
-            class="hidden lg:flex flex-row !justify-start"
-            aria-label="Breadcrumb"
-          >
+          <nav class="hidden lg:flex flex-row !justify-start" aria-label="Breadcrumb">
             <ol class="flex items-center space-x-2">
               <li>
                 <Link
@@ -246,26 +235,6 @@ const submitBugReport = () => {
               </li>
             </ol>
           </nav>
-
-          <div class="grid grid-cols-3 items-center gap-8">
-            <div class="col-span-2">
-              <nav class="flex !justify-start space-x-4">
-                <Link
-                  v-for="item in navigation"
-                  :key="item.name"
-                  :href="item.href"
-                  :class="[
-                    item.current
-                      ? 'bg-white bg-opacity-20 text-white'
-                      : 'text-white hover:bg-white hover:bg-opacity-10',
-                    'rounded-md px-3 py-2 text-sm font-medium',
-                  ]"
-                >
-                  {{ item.name }}
-                </Link>
-              </nav>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -466,7 +435,10 @@ const submitBugReport = () => {
                 class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
               >
                 <div class="flex items-start justify-between mb-4">
-                  <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900 flex items-center gap-2">
+                  <DialogTitle
+                    as="h3"
+                    class="text-lg font-medium leading-6 text-gray-900 flex items-center gap-2"
+                  >
                     <BugAntIcon class="h-6 w-6 text-primary" />
                     Report a Bug
                   </DialogTitle>

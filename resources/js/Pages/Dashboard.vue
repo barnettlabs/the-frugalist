@@ -109,49 +109,47 @@ const fullName = computed((): string => {
   <Head title="Dashboard" />
 
   <AuthenticatedLayout :user="user">
-    <main class="-mt-24 pb-8 flex-1">
+    <main class="py-12 flex-1">
       <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <h1 class="sr-only">Dashboard</h1>
 
-        <!-- Compact Header -->
-        <div class="mb-6 lg:mb-12">
-          <div class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div
-                  class="h-12 w-12 rounded-lg overflow-hidden bg-gradient-to-br from-primary to-secondary flex items-center justify-center"
-                >
-                  <img
-                    v-if="user?.avatar_url"
-                    class="h-full w-full object-cover"
-                    :src="user?.avatar_url"
-                    :alt="fullName"
-                    @error="($event.target as HTMLImageElement).style.display = 'none'"
-                  />
-                  <UserIcon v-else class="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <h2 class="text-lg font-bold text-gray-900">{{ fullName || 'Welcome' }}</h2>
-                  <p class="text-xs text-gray-500">{{ user?.email }}</p>
-                </div>
+        <!-- Header -->
+        <div class="mb-8">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div
+                class="h-12 w-12 rounded-lg overflow-hidden bg-gradient-to-br from-primary to-secondary flex items-center justify-center"
+              >
+                <img
+                  v-if="user?.avatar_url"
+                  class="h-full w-full object-cover"
+                  :src="user?.avatar_url"
+                  :alt="fullName"
+                  @error="($event.target as HTMLImageElement).style.display = 'none'"
+                />
+                <UserIcon v-else class="h-6 w-6 text-white" />
               </div>
-              <div class="flex items-center gap-3">
-                <div class="hidden sm:flex items-center gap-4 mr-4">
-                  <div class="text-center">
-                    <div class="text-xl font-bold text-primary">
-                      {{ (vehicleFinanceSheets?.length ?? 0) + (vehicleLeaseSheets?.length ?? 0) }}
-                    </div>
-                    <div class="text-xs text-gray-500">Estimates</div>
+              <div>
+                <h2 class="text-3xl font-bold text-gray-900">{{ fullName || 'Welcome' }}</h2>
+                <p class="text-sm text-gray-600 mt-1">{{ user?.email }}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="hidden sm:flex items-center gap-4 mr-4">
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-primary">
+                    {{ (vehicleFinanceSheets?.length ?? 0) + (vehicleLeaseSheets?.length ?? 0) }}
                   </div>
+                  <div class="text-sm text-gray-500">Estimates</div>
                 </div>
-                <Link href="/profile">
-                  <button
-                    class="bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-md text-sm font-medium text-gray-700 transition-colors"
-                  >
-                    Profile
-                  </button>
-                </Link>
               </div>
+              <Link href="/profile">
+                <button
+                  class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-150"
+                >
+                  Manage Profile
+                </button>
+              </Link>
             </div>
           </div>
         </div>

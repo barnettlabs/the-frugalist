@@ -222,7 +222,7 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
           <!-- Main Content -->
           <div class="lg:col-span-2 space-y-6">
             <!-- Product Overview -->
-            <div class="futuristic-card p-6">
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
               <div class="flex items-start space-x-6">
                 <img 
                   v-if="trackedProduct.product_image_url"
@@ -291,7 +291,7 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
             </div>
 
             <!-- Edit Form -->
-            <div v-if="isEditing" class="futuristic-card p-6">
+            <div v-if="isEditing" class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
               <h2 class="text-lg font-semibold text-gray-900 mb-4">Edit Tracking Settings</h2>
               
               <form @submit.prevent="updateProduct" class="space-y-4">
@@ -367,7 +367,7 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
             </div>
 
             <!-- Price History Chart -->
-            <div class="futuristic-card p-6">
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
               <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
                 <ChartBarIcon class="h-5 w-5" />
                 <span>Price History</span>
@@ -436,7 +436,7 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
           <!-- Sidebar -->
           <div class="space-y-6">
             <!-- Tracking Info -->
-            <div class="futuristic-card p-6">
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
               <h3 class="text-lg font-semibold text-gray-900 mb-4">Tracking Info</h3>
               
               <div class="space-y-3 text-sm">
@@ -475,7 +475,7 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
             </div>
 
             <!-- Recent Alerts -->
-            <div class="futuristic-card p-6">
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
               <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
                 <BellIcon class="h-5 w-5" />
                 <span>Recent Alerts</span>
@@ -508,7 +508,7 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
             </div>
 
             <!-- Quick Actions -->
-            <div class="futuristic-card p-6">
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
               <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
               
               <div class="space-y-3">

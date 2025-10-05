@@ -108,7 +108,7 @@ const getTimeSavings = () => {
 </script>
 
 <template>
-  <div class="futuristic-card bg-white p-6">
+  <div class="bg-white rounded-lg border border-gray-200 shadow-sm bg-white p-6">
     <div class="flex items-center justify-between mb-6">
       <h3 class="text-lg font-bold text-gray-900">Extra Payments</h3>
       <button

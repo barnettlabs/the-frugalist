@@ -23,7 +23,7 @@ defineEmits<{
 </script>
 
 <template>
-  <div class="futuristic-card p-6 bg-white">
+  <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 bg-white">
     <form @submit.prevent="$emit('submit')" class="space-y-6">
       <!-- Basic Information -->
       <div>

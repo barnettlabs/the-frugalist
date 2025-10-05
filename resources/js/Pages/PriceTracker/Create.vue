@@ -221,7 +221,7 @@ const submit = () => {
 
         <form @submit.prevent="submit" class="space-y-8">
           <!-- Step 1: Retailer Selection -->
-          <div class="futuristic-card p-6">
+          <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4">
               <span
                 class="inline-flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full mr-2 text-sm"
@@ -267,7 +267,7 @@ const submit = () => {
 
           <!-- Step 2: Product Information -->
           <div
-            class="futuristic-card p-6"
+            class="bg-white rounded-lg border border-gray-200 shadow-sm p-6"
             :class="{ 'opacity-50 pointer-events-none': !canProceedToProduct }"
           >
             <h2 class="text-lg font-semibold text-gray-900 mb-4">
@@ -365,7 +365,7 @@ const submit = () => {
 
           <!-- Step 3: Price Target -->
           <div
-            class="futuristic-card p-6"
+            class="bg-white rounded-lg border border-gray-200 shadow-sm p-6"
             :class="{ 'opacity-50 pointer-events-none': !canProceedToPrice }"
           >
             <h2 class="text-lg font-semibold text-gray-900 mb-4">
@@ -461,7 +461,7 @@ const submit = () => {
 
           <!-- Step 4: Notification Preferences -->
           <div
-            class="futuristic-card p-6"
+            class="bg-white rounded-lg border border-gray-200 shadow-sm p-6"
             :class="{ 'opacity-50 pointer-events-none': !canProceedToNotifications }"
           >
             <h2 class="text-lg font-semibold text-gray-900 mb-4">
@@ -569,7 +569,7 @@ const submit = () => {
 
           <!-- Step 5: Tracking Period -->
           <div
-            class="futuristic-card p-6"
+            class="bg-white rounded-lg border border-gray-200 shadow-sm p-6"
             :class="{ 'opacity-50 pointer-events-none': !canProceedToNotifications }"
           >
             <h2 class="text-lg font-semibold text-gray-900 mb-4">

@@ -27,6 +27,8 @@ class TrackedProduct extends Model
         'notification_method',
         'product_metadata',
         'last_checked_at',
+        'last_scraper_error',
+        'last_error_at',
     ];
 
     protected $casts = [
@@ -36,6 +38,7 @@ class TrackedProduct extends Model
         'tracking_start_date' => 'datetime',
         'tracking_end_date' => 'datetime',
         'last_checked_at' => 'datetime',
+        'last_error_at' => 'datetime',
         'is_active' => 'boolean',
         'product_metadata' => 'array',
         'notification_method' => 'array',

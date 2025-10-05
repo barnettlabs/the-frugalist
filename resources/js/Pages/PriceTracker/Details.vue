@@ -8,7 +8,8 @@ import {
   TrashIcon,
   ChartBarIcon,
   BellIcon,
-  ExternalLinkIcon
+  ArrowTopRightOnSquareIcon,
+  ExclamationTriangleIcon,
 } from '@heroicons/vue/24/outline'
 
 interface TrackedProduct {
@@ -25,6 +26,12 @@ interface TrackedProduct {
   tracking_end_date?: string
   is_active: boolean
   last_checked_at?: string
+  last_scraper_error?: string
+  last_error_at?: string
+  product_metadata?: {
+    retailer_url?: string
+    [key: string]: any
+  }
   retailer: {
     id: number
     name: string
@@ -73,7 +80,7 @@ const updateProduct = () => {
     preserveScroll: true,
     onSuccess: () => {
       isEditing.value = false
-    }
+    },
   })
 }
 
@@ -86,7 +93,7 @@ const deleteProduct = () => {
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD'
+    currency: 'USD',
   }).format(amount)
 }
 
@@ -96,14 +103,14 @@ const formatDate = (dateString: string) => {
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   })
 }
 
 const formatDateShort = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
   })
 }
 
@@ -175,7 +182,10 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
                 <span class="text-xs font-medium text-gray-500 bg-gray-200 px-2 py-1 rounded">
                   {{ trackedProduct.retailer.name }}
                 </span>
-                <div class="tech-status text-xs px-2 py-1 rounded" :class="getStatusColor(trackedProduct)">
+                <div
+                  class="tech-status text-xs px-2 py-1 rounded"
+                  :class="getStatusColor(trackedProduct)"
+                >
                   {{ getStatusText(trackedProduct) }}
                 </div>
               </div>
@@ -183,37 +193,27 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
               <p v-if="trackedProduct.product_variant" class="text-gray-600 mb-1">
                 {{ trackedProduct.product_variant }}
               </p>
-              <p class="text-sm text-gray-500">
-                SKU/UPC: {{ trackedProduct.sku_upc }}
-              </p>
+              <p class="text-sm text-gray-500">SKU/UPC: {{ trackedProduct.sku_upc }}</p>
             </div>
+          </div>
+        </div>
 
-            <div class="flex gap-3 flex-shrink-0">
-              <button
-                @click="refreshPrice"
-                :disabled="refreshForm.processing"
-                class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
-                :class="{ 'opacity-50 cursor-not-allowed': refreshForm.processing }"
-              >
-                <ArrowPathIcon class="h-5 w-5" :class="{ 'animate-spin': refreshForm.processing }" />
-                <span>Refresh</span>
-              </button>
-
-              <button
-                @click="isEditing = !isEditing"
-                class="bg-primary hover:bg-primary-shade-1 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
-              >
-                <PencilIcon class="h-5 w-5" />
-                <span>{{ isEditing ? 'Cancel' : 'Edit' }}</span>
-              </button>
-
-              <button
-                @click="deleteProduct"
-                class="bg-danger hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
-              >
-                <TrashIcon class="h-5 w-5" />
-                <span>Stop</span>
-              </button>
+        <!-- Scraper Error Alert -->
+        <div v-if="trackedProduct.last_scraper_error" class="mb-6">
+          <div class="bg-danger/10 border border-danger/20 rounded-lg p-4">
+            <div class="flex items-start gap-3">
+              <ExclamationTriangleIcon class="h-6 w-6 text-danger flex-shrink-0 mt-0.5" />
+              <div class="flex-1">
+                <h3 class="text-base font-semibold text-danger mb-1">Price Scraper Error</h3>
+                <p class="text-sm text-danger/80">{{ trackedProduct.last_scraper_error }}</p>
+                <p v-if="trackedProduct.last_error_at" class="text-xs text-danger/60 mt-2">
+                  Error occurred at {{ formatDate(trackedProduct.last_error_at) }}
+                </p>
+                <p class="text-xs text-danger/70 mt-2">
+                  Try refreshing the price to resolve this issue. If the problem persists, the
+                  product may no longer be available.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -224,13 +224,13 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
             <!-- Product Overview -->
             <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
               <div class="flex items-start space-x-6">
-                <img 
+                <img
                   v-if="trackedProduct.product_image_url"
                   :src="trackedProduct.product_image_url"
                   :alt="trackedProduct.product_name"
                   class="w-32 h-32 object-cover rounded-lg"
                 />
-                
+
                 <div class="flex-1">
                   <div class="grid grid-cols-2 gap-6">
                     <div>
@@ -240,51 +240,74 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
                       </p>
                       <div v-if="trackedProduct.price_drop_percentage > 0" class="mt-2">
                         <span class="text-success font-medium">
-                          {{ formatCurrency(trackedProduct.retail_price - trackedProduct.current_price) }} saved
-                          ({{ trackedProduct.price_drop_percentage.toFixed(1) }}% off)
+                          {{
+                            formatCurrency(
+                              trackedProduct.retail_price - trackedProduct.current_price
+                            )
+                          }}
+                          saved ({{ trackedProduct.price_drop_percentage.toFixed(1) }}% off)
                         </span>
                       </div>
                     </div>
-                    
+
                     <div>
                       <h3 class="text-sm font-medium text-gray-600 mb-2">Target Price</h3>
                       <p class="text-2xl font-bold text-primary">
                         {{ formatCurrency(trackedProduct.target_price) }}
                       </p>
-                      <div class="mt-2">
-                        <span 
-                          class="text-sm px-2 py-1 rounded"
-                          :class="trackedProduct.current_price <= trackedProduct.target_price 
-                            ? 'bg-success/10 text-success' 
-                            : 'bg-gray-100 text-gray-600'"
-                        >
-                          {{ trackedProduct.current_price <= trackedProduct.target_price ? 'Target Reached!' : 'Tracking...' }}
-                        </span>
-                      </div>
                     </div>
                   </div>
-                  
+
+                  <!-- Best Buy TotalTech Note -->
+                  <div v-if="trackedProduct.retailer.slug === 'bestbuy'" class="mt-3">
+                    <p class="text-xs text-gray-500 italic">
+                      * TotalTech member prices cannot be shown
+                    </p>
+                  </div>
+
                   <!-- Progress Bar -->
                   <div class="mt-6">
                     <div class="flex justify-between text-sm text-gray-600 mb-2">
                       <span>Progress to Target</span>
                       <span>
-                        {{ Math.max(0, Math.min(100, ((trackedProduct.retail_price - trackedProduct.current_price) / (trackedProduct.retail_price - trackedProduct.target_price)) * 100)).toFixed(0) }}%
+                        {{
+                          Math.max(
+                            0,
+                            Math.min(
+                              100,
+                              ((trackedProduct.retail_price - trackedProduct.current_price) /
+                                (trackedProduct.retail_price - trackedProduct.target_price)) *
+                                100
+                            )
+                          ).toFixed(0)
+                        }}%
                       </span>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-3">
                       <div
                         class="bg-primary rounded-full h-3 transition-all duration-300"
                         :style="{
-                          width: Math.max(0, Math.min(100, ((trackedProduct.retail_price - trackedProduct.current_price) / (trackedProduct.retail_price - trackedProduct.target_price)) * 100)) + '%'
+                          width:
+                            Math.max(
+                              0,
+                              Math.min(
+                                100,
+                                ((trackedProduct.retail_price - trackedProduct.current_price) /
+                                  (trackedProduct.retail_price - trackedProduct.target_price)) *
+                                  100
+                              )
+                            ) + '%',
                         }"
                       ></div>
                     </div>
                   </div>
                 </div>
               </div>
-              
-              <div v-if="trackedProduct.product_description" class="mt-6 pt-6 border-t border-gray-200">
+
+              <div
+                v-if="trackedProduct.product_description"
+                class="mt-6 pt-6 border-t border-gray-200"
+              >
                 <h3 class="text-sm font-medium text-gray-600 mb-2">Description</h3>
                 <p class="text-gray-700 text-sm">{{ trackedProduct.product_description }}</p>
               </div>
@@ -293,7 +316,7 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
             <!-- Edit Form -->
             <div v-if="isEditing" class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
               <h2 class="text-lg font-semibold text-gray-900 mb-4">Edit Tracking Settings</h2>
-              
+
               <form @submit.prevent="updateProduct" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -301,7 +324,9 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
                       Target Price
                     </label>
                     <div class="relative">
-                      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <div
+                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                      >
                         <span class="text-gray-500">$</span>
                       </div>
                       <input
@@ -320,7 +345,10 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
                   </div>
 
                   <div>
-                    <label for="tracking_end_date" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label
+                      for="tracking_end_date"
+                      class="block text-sm font-medium text-gray-700 mb-2"
+                    >
                       End Date (Optional)
                     </label>
                     <input
@@ -372,7 +400,7 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
                 <ChartBarIcon class="h-5 w-5" />
                 <span>Price History</span>
               </h2>
-              
+
               <div v-if="chartData.length > 1" class="space-y-4">
                 <!-- Simple visualization -->
                 <div class="relative h-64 bg-gray-50 rounded-lg p-4">
@@ -381,31 +409,41 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
                       <!-- Grid lines -->
                       <defs>
                         <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                          <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#e5e7eb" stroke-width="0.5"/>
+                          <path
+                            d="M 10 0 L 0 0 0 10"
+                            fill="none"
+                            stroke="#e5e7eb"
+                            stroke-width="0.5"
+                          />
                         </pattern>
                       </defs>
                       <rect width="100" height="100" fill="url(#grid)" />
-                      
+
                       <!-- Price line -->
                       <polyline
-                        :points="chartData.map((point, index) => {
-                          const x = (index / (chartData.length - 1)) * 100
-                          const minPrice = Math.min(...chartData.map(p => p.price))
-                          const maxPrice = Math.max(...chartData.map(p => p.price))
-                          const y = 100 - ((point.price - minPrice) / (maxPrice - minPrice)) * 100
-                          return `${x},${y}`
-                        }).join(' ')"
+                        :points="
+                          chartData
+                            .map((point, index) => {
+                              const x = (index / (chartData.length - 1)) * 100
+                              const minPrice = Math.min(...chartData.map((p) => p.price))
+                              const maxPrice = Math.max(...chartData.map((p) => p.price))
+                              const y =
+                                100 - ((point.price - minPrice) / (maxPrice - minPrice)) * 100
+                              return `${x},${y}`
+                            })
+                            .join(' ')
+                        "
                         fill="none"
                         stroke="#6366f1"
                         stroke-width="2"
                         class="drop-shadow-sm"
                       />
-                      
+
                       <!-- Target price line -->
                       <line
                         x1="0"
                         y1="80"
-                        x2="100" 
+                        x2="100"
                         y2="80"
                         stroke="#10b981"
                         stroke-width="1"
@@ -415,7 +453,7 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
                     </svg>
                   </div>
                 </div>
-                
+
                 <!-- Price points -->
                 <div class="flex justify-between text-xs text-gray-600">
                   <div v-for="(point, index) in chartData.slice(0, 5)" :key="point.id">
@@ -424,7 +462,7 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
                   </div>
                 </div>
               </div>
-              
+
               <div v-else class="text-center py-8 text-gray-500">
                 <ChartBarIcon class="h-12 w-12 mx-auto mb-3 opacity-50" />
                 <p>Not enough data points for chart visualization</p>
@@ -435,38 +473,91 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
 
           <!-- Sidebar -->
           <div class="space-y-6">
+            <!-- Actions -->
+            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">Actions</h3>
+
+              <div class="space-y-3">
+                <a
+                  v-if="trackedProduct.product_metadata?.retailer_url"
+                  :href="trackedProduct.product_metadata.retailer_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="block w-full text-center bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                >
+                  <ArrowTopRightOnSquareIcon class="h-5 w-5" />
+                  <span>View on Retailer Site</span>
+                </a>
+
+                <button
+                  @click="refreshPrice"
+                  :disabled="refreshForm.processing"
+                  class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                  :class="{ 'opacity-50 cursor-not-allowed': refreshForm.processing }"
+                >
+                  <ArrowPathIcon
+                    class="h-5 w-5"
+                    :class="{ 'animate-spin': refreshForm.processing }"
+                  />
+                  <span>Refresh Price</span>
+                </button>
+
+                <button
+                  @click="isEditing = !isEditing"
+                  class="w-full bg-primary hover:bg-primary-shade-1 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                >
+                  <PencilIcon class="h-5 w-5" />
+                  <span>{{ isEditing ? 'Cancel Edit' : 'Edit Settings' }}</span>
+                </button>
+
+                <button
+                  @click="deleteProduct"
+                  class="w-full bg-danger hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                >
+                  <TrashIcon class="h-5 w-5" />
+                  <span>Stop Tracking</span>
+                </button>
+              </div>
+            </div>
+
             <!-- Tracking Info -->
             <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
               <h3 class="text-lg font-semibold text-gray-900 mb-4">Tracking Info</h3>
-              
+
               <div class="space-y-3 text-sm">
                 <div class="flex justify-between">
                   <span class="text-gray-600">Retail Price</span>
                   <span class="font-medium">{{ formatCurrency(trackedProduct.retail_price) }}</span>
                 </div>
-                
+
                 <div class="flex justify-between">
                   <span class="text-gray-600">Started</span>
-                  <span class="font-medium">{{ formatDate(trackedProduct.tracking_start_date) }}</span>
+                  <span class="font-medium">{{
+                    formatDate(trackedProduct.tracking_start_date)
+                  }}</span>
                 </div>
-                
+
                 <div v-if="trackedProduct.tracking_end_date" class="flex justify-between">
                   <span class="text-gray-600">Ends</span>
-                  <span class="font-medium">{{ formatDate(trackedProduct.tracking_end_date) }}</span>
+                  <span class="font-medium">{{
+                    formatDate(trackedProduct.tracking_end_date)
+                  }}</span>
                 </div>
-                
+
                 <div v-if="trackedProduct.last_checked_at" class="flex justify-between">
                   <span class="text-gray-600">Last Checked</span>
                   <span class="font-medium">{{ formatDate(trackedProduct.last_checked_at) }}</span>
                 </div>
-                
+
                 <div class="flex justify-between">
                   <span class="text-gray-600">Status</span>
-                  <span 
+                  <span
                     class="px-2 py-1 rounded text-xs font-medium"
-                    :class="trackedProduct.is_active 
-                      ? 'bg-success/10 text-success' 
-                      : 'bg-gray-100 text-gray-600'"
+                    :class="
+                      trackedProduct.is_active
+                        ? 'bg-success/10 text-success'
+                        : 'bg-gray-100 text-gray-600'
+                    "
                   >
                     {{ trackedProduct.is_active ? 'Active' : 'Paused' }}
                   </span>
@@ -480,16 +571,18 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
                 <BellIcon class="h-5 w-5" />
                 <span>Recent Alerts</span>
               </h3>
-              
+
               <div v-if="trackedProduct.price_alerts.length > 0" class="space-y-3">
-                <div 
-                  v-for="alert in trackedProduct.price_alerts.slice(0, 5)" 
+                <div
+                  v-for="alert in trackedProduct.price_alerts.slice(0, 5)"
                   :key="alert.id"
                   class="border rounded-lg p-3"
                   :class="getAlertTypeColor(alert.alert_type)"
                 >
                   <div class="flex justify-between items-start mb-1">
-                    <span class="text-sm font-medium">{{ getAlertTypeText(alert.alert_type) }}</span>
+                    <span class="text-sm font-medium">{{
+                      getAlertTypeText(alert.alert_type)
+                    }}</span>
                     <span class="text-xs opacity-75">{{ formatDate(alert.triggered_at) }}</span>
                   </div>
                   <div class="text-sm">
@@ -500,31 +593,10 @@ const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 
                   </div>
                 </div>
               </div>
-              
+
               <div v-else class="text-center py-6 text-gray-500">
                 <BellIcon class="h-8 w-8 mx-auto mb-2 opacity-50" />
                 <p class="text-sm">No alerts yet</p>
-              </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-              <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-              
-              <div class="space-y-3">
-                <a
-                  :href="route('price-tracker.index')"
-                  class="block w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg font-medium transition-colors"
-                >
-                  Back to All Products
-                </a>
-                
-                <a
-                  :href="route('price-tracker.create')"
-                  class="block w-full text-center bg-primary hover:bg-primary-shade-1 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-                >
-                  Track Another Product
-                </a>
               </div>
             </div>
           </div>

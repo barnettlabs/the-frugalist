@@ -77,6 +77,7 @@ class BestBuyService extends BaseRetailerService
                 // 'current_price' => $apiResponse['salePrice'] ?? null,
                 'on_sale' => $apiResponse['onSale'] ?? false,
                 'model_number' => $apiResponse['modelNumber'] ?? null,
+                'retailer_url' => $apiResponse['url'] ?? null,
             ],
         ];
 

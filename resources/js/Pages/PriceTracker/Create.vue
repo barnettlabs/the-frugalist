@@ -357,6 +357,13 @@ const submit = () => {
                         {{ productValidation.product.in_stock ? 'In Stock' : 'Out of Stock' }}
                       </span>
                     </div>
+
+                    <!-- Best Buy TotalTech Note -->
+                    <div v-if="retailers.find(r => r.id == form.retailer_id)?.slug === 'bestbuy'" class="mt-3">
+                      <p class="text-xs text-gray-500 italic">
+                        * TotalTech member prices cannot be shown
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>

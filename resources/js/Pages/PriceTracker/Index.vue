@@ -12,6 +12,7 @@ import {
   EllipsisVerticalIcon,
   PauseIcon,
   PlayIcon,
+  ArrowTopRightOnSquareIcon,
 } from '@heroicons/vue/24/outline'
 import { CheckCircleIcon } from '@heroicons/vue/20/solid'
 
@@ -28,6 +29,12 @@ interface TrackedProduct {
   tracking_end_date?: string
   is_active: boolean
   last_checked_at?: string
+  last_scraper_error?: string
+  last_error_at?: string
+  product_metadata?: {
+    retailer_url?: string
+    [key: string]: any
+  }
   retailer: {
     id: number
     name: string
@@ -83,13 +90,13 @@ const activeFilter = ref<FilterType>('all')
 const filteredProducts = computed(() => {
   switch (activeFilter.value) {
     case 'active':
-      return props.trackedProducts.filter(p => p.is_active)
+      return props.trackedProducts.filter((p) => p.is_active)
     case 'paused':
-      return props.trackedProducts.filter(p => !p.is_active)
+      return props.trackedProducts.filter((p) => !p.is_active)
     case 'target_reached':
-      return props.trackedProducts.filter(p => p.current_price <= p.target_price)
+      return props.trackedProducts.filter((p) => p.current_price <= p.target_price)
     case 'price_drops':
-      return props.trackedProducts.filter(p => p.price_drop_percentage > 0)
+      return props.trackedProducts.filter((p) => p.price_drop_percentage > 0)
     default:
       return props.trackedProducts
   }
@@ -98,10 +105,28 @@ const filteredProducts = computed(() => {
 // Filter buttons configuration
 const filters = [
   { key: 'all' as FilterType, label: 'All', count: computed(() => props.trackedProducts.length) },
-  { key: 'active' as FilterType, label: 'Active', count: computed(() => props.trackedProducts.filter(p => p.is_active).length) },
-  { key: 'paused' as FilterType, label: 'Paused', count: computed(() => props.trackedProducts.filter(p => !p.is_active).length) },
-  { key: 'target_reached' as FilterType, label: 'Target Reached', count: computed(() => props.trackedProducts.filter(p => p.current_price <= p.target_price).length) },
-  { key: 'price_drops' as FilterType, label: 'Price Drops', count: computed(() => props.trackedProducts.filter(p => p.price_drop_percentage > 0).length) },
+  {
+    key: 'active' as FilterType,
+    label: 'Active',
+    count: computed(() => props.trackedProducts.filter((p) => p.is_active).length),
+  },
+  {
+    key: 'paused' as FilterType,
+    label: 'Paused',
+    count: computed(() => props.trackedProducts.filter((p) => !p.is_active).length),
+  },
+  {
+    key: 'target_reached' as FilterType,
+    label: 'Target Reached',
+    count: computed(
+      () => props.trackedProducts.filter((p) => p.current_price <= p.target_price).length
+    ),
+  },
+  {
+    key: 'price_drops' as FilterType,
+    label: 'Price Drops',
+    count: computed(() => props.trackedProducts.filter((p) => p.price_drop_percentage > 0).length),
+  },
 ]
 
 const refreshPrice = (productId: number) => {
@@ -284,7 +309,11 @@ const getStatusText = (product: TrackedProduct) => {
           v-if="filteredProducts.length > 0"
           class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          <div v-for="product in filteredProducts" :key="product.id" class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+          <div
+            v-for="product in filteredProducts"
+            :key="product.id"
+            class="bg-white rounded-lg border border-gray-200 shadow-sm p-6"
+          >
             <!-- Product Header -->
             <div class="flex flex-col items-start justify-between mb-4">
               <div class="flex flex-row justify-between items-center space-x-2 mb-2 w-full">
@@ -336,6 +365,13 @@ const getStatusText = (product: TrackedProduct) => {
                 <span class="text-sm font-medium text-primary">
                   {{ formatCurrency(product.target_price) }}
                 </span>
+              </div>
+
+              <!-- Best Buy TotalTech Note -->
+              <div v-if="product.retailer.slug === 'bestbuy'" class="pt-2">
+                <p class="text-xs text-gray-500 italic">
+                  * TotalTech member prices cannot be shown
+                </p>
               </div>
 
               <div
@@ -395,15 +431,45 @@ const getStatusText = (product: TrackedProduct) => {
               </p>
             </div>
 
+            <!-- Scraper Error Alert -->
+            <div
+              v-if="product.last_scraper_error"
+              class="mb-4 p-3 bg-danger/10 border border-danger/20 rounded-lg"
+            >
+              <div class="flex items-start gap-2">
+                <ExclamationTriangleIcon class="h-5 w-5 text-danger flex-shrink-0 mt-0.5" />
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-danger">Scraper Error</p>
+                  <p class="text-xs text-danger/80 mt-1">{{ product.last_scraper_error }}</p>
+                  <p v-if="product.last_error_at" class="text-xs text-danger/60 mt-1">
+                    {{ formatDate(product.last_error_at) }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <!-- Actions -->
             <div class="flex justify-between items-center gap-2">
-              <Link
-                :href="route('price-tracker.show', product.id)"
-                class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
-              >
-                <EyeIcon class="h-4 w-4" />
-                <span>Details</span>
-              </Link>
+              <div class="flex gap-2">
+                <Link
+                  :href="route('price-tracker.show', product.id)"
+                  class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
+                >
+                  <EyeIcon class="h-4 w-4" />
+                  <span>Details</span>
+                </Link>
+
+                <a
+                  v-if="product.product_metadata?.retailer_url"
+                  :href="product.product_metadata.retailer_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="bg-primary/10 hover:bg-primary/20 text-primary px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
+                  title="View on retailer website"
+                >
+                  <ArrowTopRightOnSquareIcon class="h-4 w-4" />
+                </a>
+              </div>
 
               <!-- Actions Dropdown -->
               <div class="relative ml-auto">
@@ -426,7 +492,10 @@ const getStatusText = (product: TrackedProduct) => {
                       :disabled="refreshForm.processing"
                       class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2 disabled:opacity-50"
                     >
-                      <ArrowPathIcon class="h-4 w-4" :class="{ 'animate-spin': refreshForm.processing }" />
+                      <ArrowPathIcon
+                        class="h-4 w-4"
+                        :class="{ 'animate-spin': refreshForm.processing }"
+                      />
                       <span>Refresh Price</span>
                     </button>
 

@@ -229,16 +229,24 @@ class PriceTrackerController extends Controller
             $productData = $service->getProductDetails($trackedProduct->sku_upc);
 
             if (!$productData) {
+                // Save error to database
+                $trackedProduct->update([
+                    'last_scraper_error' => 'Unable to fetch current product data',
+                    'last_error_at' => now(),
+                ]);
                 return back()->with('error', 'Unable to fetch current product data');
             }
 
             $oldPrice = $trackedProduct->current_price;
-            $newPrice = $productData['price'];
+            $newPrice = $productData['current_price'];
 
-            // Update current price
+            // Update current price, metadata, and clear any previous errors
             $trackedProduct->update([
                 'current_price' => $newPrice,
+                'product_metadata' => $productData['metadata'],
                 'last_checked_at' => now(),
+                'last_scraper_error' => null,
+                'last_error_at' => null,
             ]);
 
             // Add to price history
@@ -264,6 +272,11 @@ class PriceTrackerController extends Controller
             return back()->with('success', 'Price updated successfully!');
 
         } catch (\Exception $e) {
+            // Save error to database
+            $trackedProduct->update([
+                'last_scraper_error' => $e->getMessage(),
+                'last_error_at' => now(),
+            ]);
             return back()->with('error', 'Error refreshing price: ' . $e->getMessage());
         }
     }

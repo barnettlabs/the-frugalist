@@ -72,6 +72,7 @@ class HomeDepotService extends BaseRetailerService
                 'availability_type' => $apiResponse['availabilityType'] ?? null,
                 'special_offers' => $apiResponse['specialOffers'] ?? [],
                 'store_sku' => $apiResponse['storeSkuNumber'] ?? null,
+                'retailer_url' => $apiResponse['seoURL'] ?? null,
             ],
         ];
 

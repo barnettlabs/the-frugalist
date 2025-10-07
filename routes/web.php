@@ -49,8 +49,6 @@ Route::get('/', function (Request $request) {
     }
 });
 
-Route::get('/renegade/price-drop', [PriceTrackerController::class, 'index'])->middleware('auth')->name('renegade.price-drop');
-
 Route::get('/dashboard', function (Request $request) {
     $user = $request->user();
 

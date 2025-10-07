@@ -155,7 +155,7 @@
 
         <div class="footer">
             <p>You're receiving this email because you're tracking this product on Sneaky Salesman.</p>
-            <p>Visit your <a href="{{ url('/renegade/price-drop') }}">Price Tracker Dashboard</a> to manage your tracked products.</p>
+            <p>Visit your <a href="{{ url('/price-tracker') }}">Price Tracker Dashboard</a> to manage your tracked products.</p>
         </div>
     </div>
 </body>

@@ -49,20 +49,19 @@ const actions: ActionItem[] = [
     iconBackground: 'bg-gradient-to-br from-secondary/10 to-secondary/20',
     status: 'Available',
   },
-]
-
-const pipelineApps: ActionItem[] = [
   {
     icon: MagnifyingGlassIcon,
     name: 'Smart Price Tracker',
     description:
       'Never miss a deal again. Monitor prices and get alerted when they drop below your threshold. Intelligent tracking saves you time and money.',
-    href: '/renegade/price-drop',
+    href: '/price-tracker',
     iconForeground: 'text-warning',
     iconBackground: 'bg-gradient-to-br from-warning/10 to-warning/20',
     status: 'Coming Soon',
   },
 ]
+
+const pipelineApps: ActionItem[] = []
 </script>
 
 <template>
@@ -222,7 +221,6 @@ const pipelineApps: ActionItem[] = [
           </div>
         </section>
 
-        <!-- Renegade Pipeline -->
         <section class="mb-16">
           <div class="text-center mb-12">
             <h2 class="text-4xl font-bold text-gray-900 mb-4">Coming Soon</h2>
@@ -307,19 +305,19 @@ const pipelineApps: ActionItem[] = [
             <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
             <ul class="space-y-2 text-gray-400">
               <li>
-                <Link href="/estimates/financing" class="hover:text-white transition-colors"
-                  >Vehicle Finance Calculator</Link
-                >
+                <Link href="/estimates/financing" class="hover:text-white transition-colors">
+                  Vehicle Finance Calculator
+                </Link>
               </li>
               <li>
-                <Link href="/estimates/leasing" class="hover:text-white transition-colors"
-                  >Vehicle Lease Calculator</Link
-                >
+                <Link href="/estimates/leasing" class="hover:text-white transition-colors">
+                  Vehicle Lease Calculator
+                </Link>
               </li>
               <li>
-                <Link href="/renegade/price-drop" class="hover:text-white transition-colors"
-                  >Smart Price Tracker</Link
-                >
+                <Link href="/price-tracker" class="hover:text-white transition-colors">
+                  Smart Price Tracker
+                </Link>
               </li>
             </ul>
           </div>

@@ -47,9 +47,9 @@ class TwilioService
     public function sendPriceAlert(string $to, string $productName, float $currentPrice, float $retailPrice, string $alertType): bool
     {
         if ($alertType === 'target_reached') {
-            $message = "🎯 Target price reached! {$productName} is now \${$currentPrice} (was \${$retailPrice}). View details at " . url('/renegade/price-drop');
+            $message = "🎯 Target price reached! {$productName} is now \${$currentPrice} (was \${$retailPrice}). View details at " . url('/price-tracker');
         } else {
-            $message = "📉 Price drop alert! {$productName} dropped to \${$currentPrice} (was \${$retailPrice}). View details at " . url('/renegade/price-drop');
+            $message = "📉 Price drop alert! {$productName} dropped to \${$currentPrice} (was \${$retailPrice}). View details at " . url('/price-tracker');
         }
 
         return $this->sendSms($to, $message);

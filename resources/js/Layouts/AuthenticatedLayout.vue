@@ -363,19 +363,19 @@ const submitBugReport = () => {
             <h4 class="text-lg font-semibold mb-4 text-gray-900">Quick Links</h4>
             <ul class="space-y-2 text-gray-600">
               <li>
-                <Link href="/estimates/financing" class="hover:text-primary transition-colors"
-                  >Vehicle Finance Calculator</Link
-                >
+                <Link href="/estimates/financing" class="hover:text-primary transition-colors">
+                  Vehicle Finance Calculator
+                </Link>
               </li>
               <li>
-                <Link href="/estimates/leasing" class="hover:text-primary transition-colors"
-                  >Vehicle Lease Calculator</Link
-                >
+                <Link href="/estimates/leasing" class="hover:text-primary transition-colors">
+                  Vehicle Lease Calculator
+                </Link>
               </li>
               <li>
-                <Link href="/renegade/price-drop" class="hover:text-primary transition-colors"
-                  >Smart Price Tracker</Link
-                >
+                <Link href="/price-tracker" class="hover:text-primary transition-colors">
+                  Smart Price Tracker
+                </Link>
               </li>
             </ul>
           </div>

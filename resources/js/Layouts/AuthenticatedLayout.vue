@@ -368,8 +368,18 @@ const submitBugReport = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/learning/financing" class="hover:text-primary transition-colors">
+                  Learn About Financing
+                </Link>
+              </li>
+              <li>
                 <Link href="/estimates/leasing" class="hover:text-primary transition-colors">
                   Vehicle Lease Calculator
+                </Link>
+              </li>
+              <li>
+                <Link href="/learning/leasing" class="hover:text-primary transition-colors">
+                  Learn About Leasing
                 </Link>
               </li>
               <li>

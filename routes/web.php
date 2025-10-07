@@ -172,6 +172,25 @@ Route::middleware('auth')->group(function () {
             'user' => $user,
         ]);
     })->name('disclaimers');
+
+    // Learning routes
+    Route::get('/learning/financing', function (Request $request) {
+        $user = $request->user();
+
+        return Inertia::render('Learning/Show', [
+            'user' => $user,
+            'tool' => 'financing',
+        ]);
+    })->name('learning.financing');
+
+    Route::get('/learning/leasing', function (Request $request) {
+        $user = $request->user();
+
+        return Inertia::render('Learning/Show', [
+            'user' => $user,
+            'tool' => 'leasing',
+        ]);
+    })->name('learning.leasing');
 });
 
 // API Routes

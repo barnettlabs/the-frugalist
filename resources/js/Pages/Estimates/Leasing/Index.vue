@@ -9,6 +9,7 @@ import {
   TrashIcon,
   ScaleIcon,
   EyeIcon,
+  BookOpenIcon,
 } from '@heroicons/vue/24/outline'
 import { LeaseCalculator } from '@/utils/leaseCalculator'
 import { formatCurrency } from '@/utils/formatters'
@@ -156,13 +157,20 @@ onMounted(() => {
       <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <!-- Header -->
         <div class="mb-8">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
               <h1 class="text-3xl font-bold text-gray-900">Vehicle Lease Calculator</h1>
               <p class="mt-2 text-gray-600">
                 Track money factor, residual value, acquisition fees, and dealer contributions to
                 get the best deal
               </p>
+              <Link
+                href="/learning/leasing"
+                class="inline-flex items-center gap-2 mt-3 text-primary hover:text-primary-shade-1 transition-colors text-sm font-medium"
+              >
+                <BookOpenIcon class="h-4 w-4" />
+                <span>Learn about leasing terms</span>
+              </Link>
             </div>
             <div class="flex items-center gap-2">
               <button

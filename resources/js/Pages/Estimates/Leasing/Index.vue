@@ -80,12 +80,14 @@ const getSheetCalculations = (sheet: VehicleLeaseSheet) => {
   try {
     const calculator = new LeaseCalculator(sheet)
     const netCapCost = calculator.calculateNetCapCost()
-    // For lease, we'd need monthly payment calculation from the calculator
+    const monthlyPayment = calculator.calculateLeasePayment();
+
     return {
-      monthlyPayment: 0, // Would need to implement this in LeaseCalculator
+      monthlyPayment: monthlyPayment || 0,
       netCapCost: netCapCost || 0,
     }
   } catch (error) {
+    console.error('Error calculating sheet:', error)
     return {
       monthlyPayment: 0,
       netCapCost: 0,

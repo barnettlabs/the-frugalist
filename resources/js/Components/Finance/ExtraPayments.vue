@@ -83,10 +83,21 @@ const getInterestSavings = () => {
   const calculatorWithoutExtra = new FinanceCalculator(dataWithoutExtra)
   const calculatorWithExtra = new FinanceCalculator(dataWithExtra)
 
-  const interestWithoutExtra = calculatorWithoutExtra.calculateInterestAmount()
-  const interestWithExtra = calculatorWithExtra.calculateInterestAmount()
+  const amortizationWithoutExtra = calculatorWithoutExtra.calculateAmortization(false)
+  const amortizationWithExtra = calculatorWithExtra.calculateAmortization(true)
 
-  return Math.max(0, interestWithoutExtra - interestWithExtra)
+  if (!amortizationWithoutExtra || !amortizationWithExtra) {
+    return 0
+  }
+
+  console.log('getInterestSavings', {
+    amortizationWithoutExtra,
+    amortizationWithExtra,
+  })
+
+  const diff = amortizationWithoutExtra.totalInterest - amortizationWithExtra.totalInterest
+
+  return Math.max(0, diff)
 }
 
 const getTimeSavings = () => {

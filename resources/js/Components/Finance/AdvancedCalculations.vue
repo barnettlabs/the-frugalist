@@ -50,10 +50,20 @@ const interestSaved = computed(() => {
   if (!hasExtraPayments.value) return 0
 
   const dataWithoutExtra = { ...props.data, extra_payments_json: '' }
-  const calculatorWithoutExtra = new FinanceCalculator(dataWithoutExtra)
-  const interestWithoutExtra = calculatorWithoutExtra.calculateInterestAmount()
 
-  return Math.max(0, interestWithoutExtra - summary.value.interestAmount)
+  const calculatorWithoutExtra = new FinanceCalculator(dataWithoutExtra)
+  const calculatorWithExtra = new FinanceCalculator(props.data)
+
+  const amortizationWithoutExtra = calculatorWithoutExtra.calculateAmortization(false)
+  const amortizationWithExtra = calculatorWithExtra.calculateAmortization(true)
+
+  if (!amortizationWithoutExtra || !amortizationWithExtra) {
+    return 0
+  }
+
+  const diff = amortizationWithoutExtra.totalInterest - amortizationWithExtra.totalInterest
+
+  return Math.max(0, diff)
 })
 
 const totalExtraPayments = computed(() => {

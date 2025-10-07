@@ -7,13 +7,6 @@ import { Link } from '@inertiajs/vue3'
   <div
     class="min-h-screen bg-animated-gradient dotted-background-light relative overflow-hidden flex items-center justify-center"
   >
-    <!-- Floating geometric shapes -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute -top-4 -right-4 w-72 h-72 bg-white opacity-5 rounded-full"></div>
-      <div class="absolute top-20 -left-10 w-48 h-48 bg-white opacity-10 rounded-full"></div>
-      <div class="absolute bottom-10 right-20 w-32 h-32 bg-white opacity-5 rounded-full"></div>
-    </div>
-
     <div class="relative w-full max-w-md px-6">
       <!-- Logo/Brand Section -->
       <div class="text-center mb-8">

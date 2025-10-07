@@ -90,11 +90,6 @@ const getInterestSavings = () => {
     return 0
   }
 
-  console.log('getInterestSavings', {
-    amortizationWithoutExtra,
-    amortizationWithExtra,
-  })
-
   const diff = amortizationWithoutExtra.totalInterest - amortizationWithExtra.totalInterest
 
   return Math.max(0, diff)

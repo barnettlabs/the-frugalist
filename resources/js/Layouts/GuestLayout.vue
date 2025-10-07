@@ -43,12 +43,6 @@ const navigation = computed((): NavigationItem[] => [
       class="bg-animated-gradient dotted-background-light pb-24 relative overflow-hidden"
       v-slot="{ open }"
     >
-      <!-- Floating geometric shapes for visual interest -->
-      <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute -top-4 -right-4 w-72 h-72 bg-white opacity-5 rounded-full"></div>
-        <div class="absolute top-20 -left-10 w-48 h-48 bg-white opacity-10 rounded-full"></div>
-      </div>
-
       <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8 z-10">
         <div class="relative flex items-center justify-center py-3 lg:justify-between">
           <!-- Logo and Breadcrumbs -->

@@ -81,6 +81,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(PhoneVerificationCode::class);
     }
 
+    public function trackedProducts()
+    {
+        return $this->hasMany(TrackedProduct::class);
+    }
+
     public function hasVerifiedPhone(): bool
     {
         return $this->phone_verified_at !== null;

@@ -186,12 +186,19 @@ const getStatusText = (product: TrackedProduct) => {
   }
   return 'Tracking'
 }
+
+const breadcrumbs = [
+  {
+    name: 'Smart Price Tracker',
+    current: true,
+  },
+]
 </script>
 
 <template>
   <Head title="Smart Price Tracker" />
 
-  <AuthenticatedLayout>
+  <AuthenticatedLayout :breadcrumbs="breadcrumbs">
     <div class="py-12" @click="closeDropdown">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <!-- Header -->

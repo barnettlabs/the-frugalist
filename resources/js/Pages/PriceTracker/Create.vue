@@ -205,12 +205,23 @@ const canProceedToNotifications = computed(() => canProceedToPrice.value && !!fo
 const submit = () => {
   form.post(route('price-tracker.store'))
 }
+
+const breadcrumbs = [
+  {
+    name: 'Smart Price Tracker',
+    href: '/price-tracker',
+  },
+  {
+    name: 'Track New Product',
+    current: true,
+  },
+]
 </script>
 
 <template>
   <Head title="Track New Product - Smart Price Tracker" />
 
-  <AuthenticatedLayout>
+  <AuthenticatedLayout :breadcrumbs="breadcrumbs">
     <div class="py-12">
       <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
         <!-- Header -->

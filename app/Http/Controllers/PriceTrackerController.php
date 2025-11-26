@@ -280,4 +280,175 @@ class PriceTrackerController extends Controller
             return back()->with('error', 'Error refreshing price: ' . $e->getMessage());
         }
     }
+
+    // API methods for mobile app
+    public function apiIndex()
+    {
+        $user = Auth::user();
+
+        $trackedProducts = TrackedProduct::with(['retailer', 'priceHistory', 'priceAlerts'])
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $retailers = Retailer::active()->get();
+
+        return response()->json([
+            'tracked_products' => $trackedProducts,
+            'retailers' => $retailers,
+        ]);
+    }
+
+    public function apiStore(Request $request)
+    {
+        $request->validate([
+            'retailer_id' => 'required|exists:retailers,id',
+            'sku_upc' => 'required|string',
+            'target_price' => 'required|numeric|min:0.01',
+            'notification_methods' => 'required|array|min:1',
+            'notification_methods.*' => 'in:email,sms',
+            'tracking_start_date' => 'required|date|after_or_equal:today',
+            'tracking_end_date' => 'nullable|date|after:tracking_start_date',
+        ]);
+
+        $user = Auth::user();
+        $retailer = Retailer::findOrFail($request->retailer_id);
+
+        // Check if user already tracking this product
+        $existing = TrackedProduct::where('user_id', $user->id)
+            ->where('retailer_id', $request->retailer_id)
+            ->where('sku_upc', $request->sku_upc)
+            ->active()
+            ->first();
+
+        if ($existing) {
+            throw ValidationException::withMessages([
+                'sku_upc' => 'You are already tracking this product.'
+            ]);
+        }
+
+        try {
+            // Validate and fetch product details
+            $service = RetailerServiceFactory::create($retailer);
+            $productData = $service->getProductDetails($request->sku_upc);
+
+            if (!$productData) {
+                throw ValidationException::withMessages([
+                    'sku_upc' => 'Product not found or invalid SKU/UPC'
+                ]);
+            }
+
+            // Validate target price is not above current price
+            if ($request->target_price >= $productData['current_price']) {
+                throw ValidationException::withMessages([
+                    'target_price' => 'Target price must be lower than current price ($' . number_format($productData['current_price'], 2) . ')'
+                ]);
+            }
+
+            // Create tracked product
+            $trackedProduct = TrackedProduct::create([
+                'user_id' => $user->id,
+                'retailer_id' => $request->retailer_id,
+                'sku_upc' => $request->sku_upc,
+                'product_name' => $productData['name'],
+                'product_variant' => $productData['variant'],
+                'product_description' => $productData['description'],
+                'product_image_url' => $productData['image_url'],
+                'retail_price' => $productData['retail_price'],
+                'current_price' => $productData['current_price'],
+                'target_price' => $request->target_price,
+                'notification_method' => $request->notification_methods,
+                'tracking_start_date' => $request->tracking_start_date,
+                'tracking_end_date' => $request->tracking_end_date,
+                'product_metadata' => $productData['metadata'],
+                'last_checked_at' => now(),
+            ]);
+
+            // Create initial price history entry
+            $trackedProduct->priceHistory()->create([
+                'price' => $productData['current_price'],
+                'in_stock' => $productData['in_stock'],
+                'api_response' => $productData,
+                'checked_at' => now(),
+            ]);
+
+            $trackedProduct->load(['retailer', 'priceHistory']);
+
+            return response()->json([
+                'message' => 'Product tracking started successfully!',
+                'tracked_product' => $trackedProduct,
+            ], 201);
+
+        } catch (\Exception $e) {
+            throw ValidationException::withMessages([
+                'sku_upc' => 'Error setting up product tracking: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function apiShow(TrackedProduct $trackedProduct)
+    {
+        // Ensure user owns this tracked product
+        if ($trackedProduct->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $trackedProduct->load(['retailer', 'priceHistory' => function($query) {
+            $query->orderBy('checked_at', 'desc')->limit(50);
+        }, 'priceAlerts' => function($query) {
+            $query->orderBy('triggered_at', 'desc')->limit(10);
+        }]);
+
+        return response()->json([
+            'tracked_product' => $trackedProduct,
+        ]);
+    }
+
+    public function apiUpdate(Request $request, TrackedProduct $trackedProduct)
+    {
+        // Ensure user owns this tracked product
+        if ($trackedProduct->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'target_price' => 'nullable|numeric|min:0.01',
+            'tracking_end_date' => 'nullable|date|after:today',
+            'is_active' => 'boolean',
+        ]);
+
+        // Custom validation for target price
+        if ($request->target_price >= $trackedProduct->current_price) {
+            throw ValidationException::withMessages([
+                'target_price' => 'Target price must be lower than current price ($' . number_format($trackedProduct->current_price, 2) . ')'
+            ]);
+        }
+
+        $trackedProduct->update($request->only([
+            'target_price',
+            'tracking_end_date',
+            'is_active'
+        ]));
+
+        $trackedProduct->load(['retailer', 'priceHistory', 'priceAlerts']);
+
+        return response()->json([
+            'message' => 'Tracking settings updated successfully!',
+            'tracked_product' => $trackedProduct,
+        ]);
+    }
+
+    public function apiDestroy(TrackedProduct $trackedProduct)
+    {
+        // Ensure user owns this tracked product
+        if ($trackedProduct->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $trackedProduct->delete();
+
+        return response()->json([
+            'message' => 'Product tracking stopped successfully!',
+        ]);
+    }
 }

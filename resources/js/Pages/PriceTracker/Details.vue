@@ -162,12 +162,23 @@ const getAlertTypeText = (type: string) => {
 
 // Prepare chart data for price history
 const chartData = props.trackedProduct.price_history.slice().reverse().slice(0, 30)
+
+const breadcrumbs = [
+  {
+    name: 'Smart Price Tracker',
+    href: '/price-tracker',
+  },
+  {
+    name: props.trackedProduct.product_name,
+    current: true,
+  },
+]
 </script>
 
 <template>
   <Head :title="`${trackedProduct.product_name} - Price Tracker`" />
 
-  <AuthenticatedLayout>
+  <AuthenticatedLayout :breadcrumbs="breadcrumbs">
     <div class="py-12">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <!-- Header -->

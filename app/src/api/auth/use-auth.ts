@@ -13,23 +13,17 @@ import type {
   RegisterResponse,
 } from './types';
 
-export const useLogin = createMutation<LoginResponse, LoginRequest, AxiosError>(
-  {
-    mutationFn: async (data) => {
-      const response = await client.post<LoginResponse>('/api/login', data);
-      // Store token on successful login
-      signIn({ access: response.data.token, refresh: '' });
-      return response.data;
-    },
-  }
-);
+export const useLogin = createMutation<LoginResponse, LoginRequest, AxiosError>({
+  mutationFn: async data => {
+    const response = await client.post<LoginResponse>('/api/login', data);
+    // Store token on successful login
+    signIn({ access: response.data.token, refresh: '' });
+    return response.data;
+  },
+});
 
-export const useRegister = createMutation<
-  RegisterResponse,
-  RegisterRequest,
-  AxiosError
->({
-  mutationFn: async (data) => {
+export const useRegister = createMutation<RegisterResponse, RegisterRequest, AxiosError>({
+  mutationFn: async data => {
     const response = await client.post<RegisterResponse>('/api/register', data);
     // Store token on successful registration
     signIn({ access: response.data.token, refresh: '' });
@@ -37,29 +31,16 @@ export const useRegister = createMutation<
   },
 });
 
-export const useForgotPassword = createMutation<
-  ForgotPasswordResponse,
-  ForgotPasswordRequest,
-  AxiosError
->({
-  mutationFn: async (data) => {
-    const response = await client.post<ForgotPasswordResponse>(
-      '/api/forgot-password',
-      data
-    );
+export const useForgotPassword = createMutation<ForgotPasswordResponse, ForgotPasswordRequest, AxiosError>({
+  mutationFn: async data => {
+    const response = await client.post<ForgotPasswordResponse>('/api/forgot-password', data);
     return response.data;
   },
 });
 
-export const useResendVerificationEmail = createMutation<
-  { message: string },
-  void,
-  AxiosError
->({
+export const useResendVerificationEmail = createMutation<{ message: string }, void, AxiosError>({
   mutationFn: async () => {
-    const response = await client.post<{ message: string }>(
-      '/api/email/verification-notification'
-    );
+    const response = await client.post<{ message: string }>('/api/email/verification-notification');
     return response.data;
   },
 });

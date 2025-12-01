@@ -48,20 +48,18 @@ const button = tv({
         indicator: 'text-white',
       },
       ghost: {
-        container:
-          'bg-transparent active:bg-charcoal-100 dark:active:bg-charcoal-800',
+        container: 'bg-transparent active:bg-charcoal-100 dark:active:bg-charcoal-800',
         label: 'text-charcoal-700 dark:text-charcoal-200',
         indicator: 'text-charcoal-700 dark:text-charcoal-200',
       },
       link: {
-        container: 'bg-transparent shadow-none',
+        container: 'bg-transparent',
         label: 'text-primary-600 dark:text-primary-400',
         indicator: 'text-primary-600',
       },
       // Glassy button for dark backgrounds
       glass: {
-        container:
-          'border border-white/20 bg-white/10 backdrop-blur-md active:bg-white/20',
+        container: 'border border-white/20 bg-white/10 backdrop-blur-md active:bg-white/20',
         label: 'text-white',
         indicator: 'text-white',
       },
@@ -84,7 +82,7 @@ const button = tv({
     },
     disabled: {
       true: {
-        container: 'bg-charcoal-200 shadow-none dark:bg-charcoal-700',
+        container: 'bg-charcoal-200 dark:bg-charcoal-700',
         label: 'text-charcoal-400 dark:text-charcoal-500',
         indicator: 'text-charcoal-400 dark:text-charcoal-500',
       },
@@ -130,17 +128,22 @@ export const Button = React.forwardRef<View, Props>(
     ref
   ) => {
     const styles = React.useMemo(
-      () => button({ variant, disabled, size }),
+      () =>
+        button({
+          variant,
+          // disabled,
+          size,
+        }),
       [variant, disabled, size]
     );
 
     return (
       <Pressable
         disabled={disabled || loading}
-        // className={styles.container({ className })}
+        className={styles.container({ className })}
         {...props}
-        // ref={ref}
-        // testID={testID}
+        ref={ref}
+        testID={testID}
       >
         {props.children ? (
           props.children
@@ -149,13 +152,13 @@ export const Button = React.forwardRef<View, Props>(
             {loading ? (
               <ActivityIndicator
                 size="small"
-                // className={styles.indicator()}
+                className={styles.indicator()}
                 testID={testID ? `${testID}-activity-indicator` : undefined}
               />
             ) : (
               <Text
                 testID={testID ? `${testID}-label` : undefined}
-                // className={styles.label({ className: textClassName })}
+                className={styles.label({ className: textClassName })}
               >
                 {text}
               </Text>

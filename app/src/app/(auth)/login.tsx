@@ -5,15 +5,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useLogin } from '@/api/auth/use-auth';
-import {
-  Button,
-  ControlledInput,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  View,
-} from '@/components/ui';
+import { Button, ControlledInput, Pressable, SafeAreaView, ScrollView, Text, View } from '@/components/ui';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -53,9 +45,7 @@ export default function LoginScreen() {
       >
         {/* Header */}
         <View className="mb-8 mt-12">
-          <Text className="font-rubik text-3xl font-bold text-neutral-900 dark:text-white">
-            Welcome Back
-          </Text>
+          <Text className="font-rubik text-3xl font-bold text-neutral-900 dark:text-white">Welcome Back</Text>
           <Text className="mt-2 font-rubik text-neutral-600 dark:text-neutral-400">
             Sign in to continue to Sneaky Salesman
           </Text>
@@ -95,7 +85,8 @@ export default function LoginScreen() {
         <View className="mt-6">
           <Button
             label={isPending ? 'Signing In...' : 'Sign In'}
-            onPress={handleSubmit(onSubmit)}
+            // onPress={handleSubmit(onSubmit)}
+            onPress={() => onSubmit({ email: 'test@test.com', password: '123456' })}
             disabled={isPending}
             loading={isPending}
           />
@@ -103,14 +94,10 @@ export default function LoginScreen() {
 
         {/* Register Link */}
         <View className="mt-6 flex-row items-center justify-center">
-          <Text className="font-rubik text-neutral-600 dark:text-neutral-400">
-            Don{"'"}t have an account?{' '}
-          </Text>
+          <Text className="font-rubik text-neutral-600 dark:text-neutral-400">Don{"'"}t have an account? </Text>
           <Link href="/(auth)/register" asChild>
             <Pressable>
-              <Text className="font-rubik font-semibold text-primary-600 dark:text-primary-400">
-                Sign Up
-              </Text>
+              <Text className="font-rubik font-semibold text-primary-600 dark:text-primary-400">Sign Up</Text>
             </Pressable>
           </Link>
         </View>

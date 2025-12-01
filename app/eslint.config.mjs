@@ -112,10 +112,7 @@ export default defineConfig([
       'i18n-json/valid-message-syntax': [
         2,
         {
-          syntax: path.resolve(
-            __dirname,
-            './scripts/i18next-syntax-validation.js'
-          ),
+          syntax: path.resolve(__dirname, './scripts/i18next-syntax-validation.js'),
         },
       ],
       'i18n-json/valid-json': 2,

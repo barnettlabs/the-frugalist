@@ -206,6 +206,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
 // Bug report route
 Route::post('/bug-reports', [BugReportController::class, 'store'])->name('bug-reports.store');
 
+// Public legal pages
+Route::get('/privacy', function () {
+    return Inertia::render('Privacy');
+})->name('privacy');
+
+Route::get('/terms', function () {
+    return Inertia::render('Terms');
+})->name('terms');
+
 // Well-known routes for app deep linking
 Route::get('/.well-known/apple-app-site-association', function () {
     return response()->file(

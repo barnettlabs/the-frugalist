@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PriceTrackerController;
 use App\Http\Controllers\ProfileController;
@@ -168,3 +169,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/notifications/{notification}', [NotificationController::class, 'show']);
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
 });
+
+// Public routes (no auth required)
+Route::get('/announcements', [AnnouncementController::class, 'index']);
+Route::get('/announcements/{announcement}', [AnnouncementController::class, 'show']);

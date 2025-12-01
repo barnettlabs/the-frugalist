@@ -1,13 +1,9 @@
 <?php
 
-use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\BugReportController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\PriceTrackerController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\VehicleFinanceSheetController;
-use App\Http\Controllers\VehicleLeaseSheetController;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
@@ -193,23 +189,8 @@ Route::middleware('auth')->group(function () {
     })->name('learning.leasing');
 });
 
-// API Routes
+// Price Tracker web routes (for Inertia.js frontend)
 Route::middleware(['auth:sanctum'])->group(function () {
-    // Profile routes
-    Route::get('/api/profile', [ProfileController::class, 'show']);
-    Route::put('/api/profile', [ProfileController::class, 'update']);
-
-    // Vehicle Finance Sheets
-    Route::apiResource('/api/vehicle-finance-sheets', VehicleFinanceSheetController::class);
-
-    // Vehicle Lease Sheets
-    Route::apiResource('/api/vehicle-lease-sheets', VehicleLeaseSheetController::class);
-
-    // Notifications
-    Route::get('/api/notifications', [NotificationController::class, 'index']);
-    Route::get('/api/notifications/{notification}', [NotificationController::class, 'show']);
-
-    // Price Tracker routes
     Route::prefix('price-tracker')->name('price-tracker.')->group(function () {
         Route::get('/', [PriceTrackerController::class, 'index'])->name('index');
         Route::get('/create', [PriceTrackerController::class, 'create'])->name('create');
@@ -221,10 +202,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/{trackedProduct}/refresh', [PriceTrackerController::class, 'refresh'])->name('refresh');
     });
 });
-
-// Public routes
-Route::get('/api/announcements', [AnnouncementController::class, 'index']);
-Route::get('/api/announcements/{announcement}', [AnnouncementController::class, 'show']);
 
 // Bug report route
 Route::post('/bug-reports', [BugReportController::class, 'store'])->name('bug-reports.store');

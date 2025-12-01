@@ -1,11 +1,12 @@
 import { BottomSheetFlatList, type BottomSheetModal } from '@gorhom/bottom-sheet';
 import { FlashList } from '@shopify/flash-list';
+import { Image } from 'expo-image';
 import { useColorScheme } from 'nativewind';
 import * as React from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useController } from 'react-hook-form';
 import { Platform, View } from 'react-native';
-import { Pressable, type PressableProps } from 'react-native';
+import { Pressable } from 'react-native';
 import type { SvgProps } from 'react-native-svg';
 import Svg, { Path } from 'react-native-svg';
 import { tv } from 'tailwind-variants';
@@ -21,12 +22,11 @@ const selectTv = tv({
   slots: {
     container: 'mb-3',
     label: 'mb-1.5 text-sm font-medium text-neutral-700 dark:text-neutral-200',
-    // Match input styling for consistency
     input:
-      'mt-0 flex-row items-center justify-center rounded-md border border-neutral-200 bg-white px-4 py-3.5 shadow-sm dark:border-charcoal-600 dark:bg-charcoal-800/80',
+      'mt-0 flex-row items-center rounded-xl border border-neutral-200 bg-white px-4 py-3.5 dark:border-charcoal-600 dark:bg-charcoal-800',
     inputValue: 'text-base text-neutral-900 dark:text-white',
+    inputPlaceholder: 'text-base text-neutral-400 dark:text-neutral-500',
   },
-
   variants: {
     focused: {
       true: {
@@ -42,7 +42,7 @@ const selectTv = tv({
     },
     disabled: {
       true: {
-        input: 'bg-neutral-100 dark:bg-charcoal-700',
+        input: 'bg-neutral-100 dark:bg-charcoal-700 opacity-60',
       },
     },
   },
@@ -54,78 +54,151 @@ const selectTv = tv({
 
 const List = Platform.OS === 'web' ? FlashList : BottomSheetFlatList;
 
-export type OptionType = { label: string; value: string | number };
+export type OptionType = {
+  label: string;
+  value: string | number;
+  description?: string;
+  icon?: React.ReactNode;
+  image?: string;
+};
 
 type OptionsProps = {
   options: OptionType[];
   onSelect: (option: OptionType) => void;
   value?: string | number;
   testID?: string;
+  title?: string;
 };
 
 function keyExtractor(item: OptionType) {
   return `select-item-${item.value}`;
 }
 
-export const Options = React.forwardRef<BottomSheetModal, OptionsProps>(({ options, onSelect, value, testID }, ref) => {
-  const height = options.length * 70 + 100;
-  const snapPoints = React.useMemo(() => [height], [height]);
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === 'dark';
+export const Options = React.forwardRef<BottomSheetModal, OptionsProps>(
+  ({ options, onSelect, value, testID, title }, ref) => {
+    const hasExtendedContent = options.some(o => o.description || o.icon || o.image);
+    const itemHeight = hasExtendedContent ? 72 : 56;
+    const headerHeight = title ? 56 : 0;
+    const height = Math.min(options.length * itemHeight + headerHeight + 40, 400);
+    const snapPoints = React.useMemo(() => [height], [height]);
+    const { colorScheme } = useColorScheme();
+    const isDark = colorScheme === 'dark';
 
-  const renderSelectItem = React.useCallback(
-    ({ item }: { item: OptionType }) => (
-      <Option
-        key={`select-item-${item.value}`}
-        label={item.label}
-        selected={value === item.value}
-        onPress={() => onSelect(item)}
-        testID={testID ? `${testID}-item-${item.value}` : undefined}
-      />
-    ),
-    [onSelect, value, testID]
-  );
+    const renderSelectItem = React.useCallback(
+      ({ item, index }: { item: OptionType; index: number }) => (
+        <Option
+          key={`select-item-${item.value}`}
+          option={item}
+          selected={value === item.value}
+          onPress={() => onSelect(item)}
+          testID={testID ? `${testID}-item-${item.value}` : undefined}
+          isLast={index === options.length - 1}
+        />
+      ),
+      [onSelect, value, testID, options.length]
+    );
 
-  return (
-    <Modal
-      ref={ref}
-      index={0}
-      snapPoints={snapPoints}
-      backgroundStyle={{
-        backgroundColor: isDark ? colors.charcoal[850] : colors.white,
-      }}
-    >
-      <List
-        data={options}
-        keyExtractor={keyExtractor}
-        renderItem={renderSelectItem}
-        testID={testID ? `${testID}-modal` : undefined}
-        estimatedItemSize={52}
-      />
-    </Modal>
-  );
-});
+    const ListHeader = React.useCallback(
+      () =>
+        title ? (
+          <View className="border-b border-neutral-100 px-5 pb-3 pt-1 dark:border-charcoal-700">
+            <Text className="text-center text-lg font-semibold text-neutral-900 dark:text-white">
+              {title}
+            </Text>
+          </View>
+        ) : null,
+      [title]
+    );
 
-const Option = React.memo(
-  ({
-    label,
-    selected = false,
-    ...props
-  }: PressableProps & {
-    selected?: boolean;
-    label: string;
-  }) => {
     return (
-      <Pressable
-        className="flex-row items-center border-b border-neutral-100 bg-white px-4 py-3 dark:border-charcoal-700 dark:bg-charcoal-850"
-        {...props}
+      <Modal
+        ref={ref}
+        index={0}
+        snapPoints={snapPoints}
+        backgroundStyle={{
+          backgroundColor: isDark ? colors.charcoal[850] : colors.white,
+        }}
+        handleIndicatorStyle={{
+          backgroundColor: isDark ? colors.charcoal[600] : colors.neutral[300],
+          width: 40,
+        }}
       >
-        <Text className="flex-1 dark:text-neutral-100">{label}</Text>
-        {selected && <Check />}
-      </Pressable>
+        <List
+          data={options}
+          keyExtractor={keyExtractor}
+          renderItem={renderSelectItem}
+          ListHeaderComponent={ListHeader}
+          testID={testID ? `${testID}-modal` : undefined}
+          estimatedItemSize={itemHeight}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
+      </Modal>
     );
   }
 );
+
+type OptionProps = {
+  option: OptionType;
+  selected?: boolean;
+  onPress: () => void;
+  testID?: string;
+  isLast?: boolean;
+};
+
+const Option = React.memo(({ option, selected = false, onPress, testID, isLast }: OptionProps) => {
+  const hasExtendedContent = option.description || option.icon || option.image;
+
+  return (
+    <Pressable
+      className={`mx-3 flex-row items-center rounded-xl px-4 ${hasExtendedContent ? 'py-3' : 'py-3.5'} ${
+        selected
+          ? 'bg-primary-50 dark:bg-primary-900/30'
+          : 'active:bg-neutral-50 dark:active:bg-charcoal-700'
+      } ${!isLast ? 'mb-1' : ''}`}
+      onPress={onPress}
+      testID={testID}
+    >
+      {(option.icon || option.image) && (
+        <View className="mr-3">
+          {option.icon ? (
+            <View className="size-10 items-center justify-center rounded-lg bg-neutral-100 dark:bg-charcoal-700">
+              {option.icon}
+            </View>
+          ) : option.image ? (
+            <Image
+              source={{ uri: option.image }}
+              className="size-10 rounded-lg"
+              contentFit="cover"
+            />
+          ) : null}
+        </View>
+      )}
+
+      <View className="flex-1">
+        <Text
+          className={`text-base ${
+            selected
+              ? 'font-medium text-primary-700 dark:text-primary-300'
+              : 'text-neutral-900 dark:text-neutral-100'
+          }`}
+        >
+          {option.label}
+        </Text>
+        {option.description && (
+          <Text className="mt-0.5 text-sm text-neutral-500 dark:text-neutral-400">
+            {option.description}
+          </Text>
+        )}
+      </View>
+
+      {selected && (
+        <View className="ml-3 size-6 items-center justify-center rounded-full bg-primary-600 dark:bg-primary-500">
+          <Check />
+        </View>
+      )}
+    </Pressable>
+  );
+});
 
 export interface SelectProps {
   value?: string | number;
@@ -136,11 +209,23 @@ export interface SelectProps {
   onSelect?: (value: string | number) => void;
   placeholder?: string;
   testID?: string;
+  title?: string;
 }
+
 interface ControlledSelectProps<T extends FieldValues> extends SelectProps, InputControllerType<T> {}
 
 export const Select = (props: SelectProps) => {
-  const { label, value, error, options = [], placeholder = 'select...', disabled = false, onSelect, testID } = props;
+  const {
+    label,
+    value,
+    error,
+    options = [],
+    placeholder = 'Select an option...',
+    disabled = false,
+    onSelect,
+    testID,
+    title,
+  } = props;
   const modal = useModal();
 
   const onSelectOption = React.useCallback(
@@ -160,10 +245,12 @@ export const Select = (props: SelectProps) => {
     [error, disabled]
   );
 
-  const textValue = React.useMemo(
-    () => (value !== undefined ? (options?.filter(t => t.value === value)?.[0]?.label ?? placeholder) : placeholder),
-    [value, options, placeholder]
+  const selectedOption = React.useMemo(
+    () => options?.find(t => t.value === value),
+    [value, options]
   );
+
+  const isPlaceholder = value === undefined || !selectedOption;
 
   return (
     <>
@@ -179,18 +266,46 @@ export const Select = (props: SelectProps) => {
           onPress={modal.present}
           testID={testID ? `${testID}-trigger` : undefined}
         >
+          {selectedOption?.icon && (
+            <View className="mr-3">
+              <View className="size-8 items-center justify-center rounded-md bg-neutral-100 dark:bg-charcoal-700">
+                {selectedOption.icon}
+              </View>
+            </View>
+          )}
+          {selectedOption?.image && (
+            <Image
+              source={{ uri: selectedOption.image }}
+              className="mr-3 size-8 rounded-md"
+              contentFit="cover"
+            />
+          )}
           <View className="flex-1">
-            <Text className={styles.inputValue()}>{textValue}</Text>
+            <Text className={isPlaceholder ? styles.inputPlaceholder() : styles.inputValue()}>
+              {selectedOption?.label ?? placeholder}
+            </Text>
           </View>
-          <CaretDown color={colors.neutral[400]} />
+          <View className="ml-2 size-8 items-center justify-center rounded-lg">
+            <CaretDown color={colors.neutral[400]} />
+          </View>
         </Pressable>
         {error && (
-          <Text testID={`${testID}-error`} className="mt-1 text-sm text-danger-500 dark:text-danger-400">
+          <Text
+            testID={`${testID}-error`}
+            className="mt-1.5 text-sm text-danger-500 dark:text-danger-400"
+          >
             {error}
           </Text>
         )}
       </View>
-      <Options testID={testID} ref={modal.ref} options={options} onSelect={onSelectOption} />
+      <Options
+        testID={testID}
+        ref={modal.ref}
+        options={options}
+        onSelect={onSelectOption}
+        value={value}
+        title={title}
+      />
     </>
   );
 };
@@ -207,18 +322,24 @@ export function ControlledSelect<T extends FieldValues>(props: ControlledSelectP
     },
     [field, onNSelect]
   );
-  return <Select onSelect={onSelect} value={field.value} error={fieldState.error?.message} {...selectProps} />;
+  return (
+    <Select
+      onSelect={onSelect}
+      value={field.value}
+      error={fieldState.error?.message}
+      {...selectProps}
+    />
+  );
 }
 
 const Check = ({ ...props }: SvgProps) => (
-  <Svg
-    width={25}
-    height={24}
-    fill="none"
-    viewBox="0 0 25 24"
-    {...props}
-    className="stroke-primary-600 dark:stroke-primary-400"
-  >
-    <Path d="m20.256 6.75-10.5 10.5L4.506 12" strokeWidth={2.438} strokeLinecap="round" strokeLinejoin="round" />
+  <Svg width={14} height={14} fill="none" viewBox="0 0 24 24" {...props}>
+    <Path
+      d="m20.256 6.75-10.5 10.5L4.506 12"
+      strokeWidth={3}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      stroke="white"
+    />
   </Svg>
 );

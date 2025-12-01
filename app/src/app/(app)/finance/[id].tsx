@@ -3,10 +3,7 @@ import React, { useState } from 'react';
 import { ActivityIndicator, Alert } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
 
-import {
-  useDeleteFinanceSheet,
-  useUpdateFinanceSheet,
-} from '@/api/finance/use-finance-mutations';
+import { useDeleteFinanceSheet, useUpdateFinanceSheet } from '@/api/finance/use-finance-mutations';
 import { useFinanceSheet } from '@/api/finance/use-finance-sheet';
 import { FinanceDetail } from '@/components/finance/finance-detail';
 import { FinanceForm } from '@/components/finance/finance-form';
@@ -27,10 +24,8 @@ export default function FinanceDetailScreen() {
     variables: { id: id! },
   });
 
-  const { mutate: updateSheet, isPending: isUpdating } =
-    useUpdateFinanceSheet();
-  const { mutate: deleteSheet, isPending: isDeleting } =
-    useDeleteFinanceSheet();
+  const { mutate: updateSheet, isPending: isUpdating } = useUpdateFinanceSheet();
+  const { mutate: deleteSheet, isPending: isDeleting } = useDeleteFinanceSheet();
 
   if (isLoading) {
     return (
@@ -43,17 +38,13 @@ export default function FinanceDetailScreen() {
   if (isError || !sheet) {
     return (
       <View className="flex-1 items-center justify-center bg-neutral-50 p-6 dark:bg-charcoal-950">
-        <Text className="mb-4 text-center text-lg text-danger-600">
-          Failed to load estimate
-        </Text>
+        <Text className="mb-4 text-center text-lg text-danger-600">Failed to load estimate</Text>
         <Button label="Try Again" onPress={() => refetch()} />
       </View>
     );
   }
 
   const handleUpdate = (data: FinanceFormData) => {
-    console.log('handleUpdate');
-
     updateSheet(
       { id: sheet.id, data },
       {
@@ -66,7 +57,7 @@ export default function FinanceDetailScreen() {
           setIsEditing(false);
           refetch();
         },
-        onError: (error) => {
+        onError: error => {
           showMessage({
             message: 'Error',
             description: error.message || 'Failed to update estimate',
@@ -78,8 +69,6 @@ export default function FinanceDetailScreen() {
   };
 
   const handleDelete = () => {
-    console.log('handleDelete');
-
     Alert.alert(
       'Delete Estimate',
       'Are you sure you want to delete this finance estimate? This action cannot be undone.',
@@ -100,7 +89,7 @@ export default function FinanceDetailScreen() {
                   });
                   router.back();
                 },
-                onError: (error) => {
+                onError: error => {
                   showMessage({
                     message: 'Error',
                     description: error.message || 'Failed to delete estimate',
@@ -128,11 +117,6 @@ export default function FinanceDetailScreen() {
   }
 
   return (
-    <FinanceDetail
-      sheet={sheet}
-      onEdit={() => setIsEditing(true)}
-      onDelete={handleDelete}
-      isDeleting={isDeleting}
-    />
+    <FinanceDetail sheet={sheet} onEdit={() => setIsEditing(true)} onDelete={handleDelete} isDeleting={isDeleting} />
   );
 }

@@ -39,6 +39,7 @@ export default function TrackerLayout() {
         name="[id]"
         options={{
           title: 'Product Details',
+          headerBackTitle: 'Back',
         }}
       />
     </Stack>

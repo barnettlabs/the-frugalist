@@ -4,8 +4,14 @@ import { createMutation } from 'react-query-kit';
 
 import type { LeaseFormData, VehicleLeaseSheet } from '@/lib/types/models';
 
-import { client } from '../common';
+import { client, queryClient } from '../common';
 import type { DeleteLeaseSheetRequest, UpdateLeaseSheetRequest } from './types';
+
+const invalidateLeaseQueries = () => {
+  queryClient.invalidateQueries({ queryKey: ['lease-sheets'] });
+  queryClient.invalidateQueries({ queryKey: ['lease-sheet'] });
+  queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+};
 
 export const useAddLeaseSheet = createMutation<
   VehicleLeaseSheet,
@@ -19,6 +25,7 @@ export const useAddLeaseSheet = createMutation<
     );
     return response.data;
   },
+  onSuccess: invalidateLeaseQueries,
 });
 
 export const useUpdateLeaseSheet = createMutation<
@@ -33,6 +40,7 @@ export const useUpdateLeaseSheet = createMutation<
     );
     return response.data;
   },
+  onSuccess: invalidateLeaseQueries,
 });
 
 export const useDeleteLeaseSheet = createMutation<
@@ -43,6 +51,7 @@ export const useDeleteLeaseSheet = createMutation<
   mutationFn: async ({ id }) => {
     await client.delete(`/api/vehicle-lease-sheets/${id}`);
   },
+  onSuccess: invalidateLeaseQueries,
 });
 
 // Hook to invalidate lease queries after mutations

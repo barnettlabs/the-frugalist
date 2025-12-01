@@ -4,13 +4,19 @@ import { createMutation } from 'react-query-kit';
 
 import type { PriceTrackerItem } from '@/lib/types/models';
 
-import { client } from '../common';
+import { client, queryClient } from '../common';
 import type {
   CreatePriceTrackerRequest,
   DeletePriceTrackerRequest,
   RefreshPriceTrackerRequest,
   UpdatePriceTrackerRequest,
 } from './types';
+
+const invalidatePriceTrackerQueries = () => {
+  queryClient.invalidateQueries({ queryKey: ['price-tracker'] });
+  queryClient.invalidateQueries({ queryKey: ['price-tracker-item'] });
+  queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+};
 
 export const useAddPriceTrackerItem = createMutation<
   PriceTrackerItem,
@@ -24,6 +30,7 @@ export const useAddPriceTrackerItem = createMutation<
     );
     return response.data;
   },
+  onSuccess: invalidatePriceTrackerQueries,
 });
 
 export const useUpdatePriceTrackerItem = createMutation<
@@ -38,6 +45,7 @@ export const useUpdatePriceTrackerItem = createMutation<
     );
     return response.data;
   },
+  onSuccess: invalidatePriceTrackerQueries,
 });
 
 export const useDeletePriceTrackerItem = createMutation<
@@ -48,6 +56,7 @@ export const useDeletePriceTrackerItem = createMutation<
   mutationFn: async ({ id }) => {
     await client.delete(`/api/price-tracker/${id}`);
   },
+  onSuccess: invalidatePriceTrackerQueries,
 });
 
 export const useRefreshPriceTrackerItem = createMutation<
@@ -61,6 +70,7 @@ export const useRefreshPriceTrackerItem = createMutation<
     );
     return response.data;
   },
+  onSuccess: invalidatePriceTrackerQueries,
 });
 
 // Hook to invalidate price tracker queries after mutations

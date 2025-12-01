@@ -39,6 +39,7 @@ export default function LeaseLayout() {
         name="[id]"
         options={{
           title: 'Lease Details',
+          headerBackTitle: 'Back',
         }}
       />
       <Stack.Screen

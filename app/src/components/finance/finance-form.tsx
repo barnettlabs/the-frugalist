@@ -4,19 +4,8 @@ import type { Control, UseFormSetValue } from 'react-hook-form';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
-import {
-  CurrencyInput,
-  FormSection,
-  PercentageInput,
-} from '@/components/forms';
-import {
-  Button,
-  ControlledInput,
-  ScrollView,
-  Select,
-  Text,
-  View,
-} from '@/components/ui';
+import { CurrencyInput, FormSection, PercentageInput } from '@/components/forms';
+import { Button, ControlledInput, ScrollView, Select, Text, View } from '@/components/ui';
 import { FinanceCalculator, formatCurrencyWithSymbol } from '@/lib/calculators';
 import type { FinanceFormData } from '@/lib/types/models';
 import { VehicleType } from '@/lib/types/models';
@@ -68,41 +57,22 @@ const TERM_OPTIONS = [
   { value: 84, label: '84 months' },
 ];
 
-export function FinanceForm({
-  initialData,
-  onSubmit,
-  isSubmitting,
-  submitLabel,
-  onCancel,
-}: FinanceFormProps) {
-  const { control, handleSubmit, setValue, formState } =
-    useForm<FinanceFormData>({
-      resolver: zodResolver(financeSchema),
-      defaultValues: initialData,
-    });
+export function FinanceForm({ initialData, onSubmit, isSubmitting, submitLabel, onCancel }: FinanceFormProps) {
+  const { control, handleSubmit, setValue, formState } = useForm<FinanceFormData>({
+    resolver: zodResolver(financeSchema),
+    defaultValues: initialData,
+  });
   const watchedValues = useWatch({ control });
-  const summary = useMemo(
-    () => new FinanceCalculator(watchedValues as FinanceFormData).getSummary(),
-    [watchedValues]
-  );
+  const summary = useMemo(() => new FinanceCalculator(watchedValues as FinanceFormData).getSummary(), [watchedValues]);
 
   return (
     <View className="flex-1 bg-neutral-100 dark:bg-neutral-900">
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
-        <Text>{JSON.stringify(formState.errors)}</Text>
         <SummaryCard summary={summary} />
         <EstimateInfoSection control={control} />
-        <VehicleInfoSection
-          control={control}
-          watchedValues={watchedValues}
-          setValue={setValue}
-        />
+        <VehicleInfoSection control={control} watchedValues={watchedValues} setValue={setValue} />
         <PricingSection control={control} />
-        <FinancingSection
-          control={control}
-          watchedValues={watchedValues}
-          setValue={setValue}
-        />
+        <FinancingSection control={control} watchedValues={watchedValues} setValue={setValue} />
         <ContactSection control={control} />
         <NotesSection control={control} />
         <AdvancedSection control={control} />
@@ -118,54 +88,33 @@ export function FinanceForm({
   );
 }
 
-function SummaryCard({
-  summary,
-}: {
-  summary: ReturnType<FinanceCalculator['getSummary']>;
-}) {
+function SummaryCard({ summary }: { summary: ReturnType<FinanceCalculator['getSummary']> }) {
   return (
     <View className="mb-6 rounded-xl bg-primary-600 p-4">
       <Text className="mb-2 text-white opacity-80">Monthly Payment</Text>
-      <Text className="text-3xl font-bold text-white">
-        {formatCurrencyWithSymbol(summary.monthlyPayment)}
-      </Text>
+      <Text className="text-3xl font-bold text-white">{formatCurrencyWithSymbol(summary.monthlyPayment)}</Text>
       <View className="mt-3 flex-row justify-between">
         <View>
           <Text className="text-xs text-white opacity-60">Loan Amount</Text>
-          <Text className="text-white">
-            {formatCurrencyWithSymbol(summary.loanAmount)}
-          </Text>
+          <Text className="text-white">{formatCurrencyWithSymbol(summary.loanAmount)}</Text>
         </View>
         <View>
           <Text className="text-xs text-white opacity-60">Total Interest</Text>
-          <Text className="text-white">
-            {formatCurrencyWithSymbol(summary.interestAmount)}
-          </Text>
+          <Text className="text-white">{formatCurrencyWithSymbol(summary.interestAmount)}</Text>
         </View>
         <View>
           <Text className="text-xs text-white opacity-60">Grand Total</Text>
-          <Text className="text-white">
-            {formatCurrencyWithSymbol(summary.grandTotal)}
-          </Text>
+          <Text className="text-white">{formatCurrencyWithSymbol(summary.grandTotal)}</Text>
         </View>
       </View>
     </View>
   );
 }
 
-function EstimateInfoSection({
-  control,
-}: {
-  control: Control<FinanceFormData>;
-}) {
+function EstimateInfoSection({ control }: { control: Control<FinanceFormData> }) {
   return (
     <FormSection title="Estimate Info">
-      <ControlledInput
-        control={control}
-        name="sheet_name"
-        label="Estimate Name"
-        placeholder="My Car Estimate"
-      />
+      <ControlledInput control={control} name="sheet_name" label="Estimate Name" placeholder="My Car Estimate" />
     </FormSection>
   );
 }
@@ -183,7 +132,7 @@ function VehicleInfoSection({ control, watchedValues, setValue }: FormProps) {
         label="Vehicle Type"
         options={VEHICLE_TYPE_OPTIONS}
         value={watchedValues.vehicle_type}
-        onSelect={(v) => setValue('vehicle_type', v as VehicleType)}
+        onSelect={v => setValue('vehicle_type', v as VehicleType)}
       />
       <View className="mt-2 flex-row gap-2">
         <View className="flex-1">
@@ -196,30 +145,15 @@ function VehicleInfoSection({ control, watchedValues, setValue }: FormProps) {
           />
         </View>
         <View className="flex-1">
-          <ControlledInput
-            control={control}
-            name="vehicle_make"
-            label="Make"
-            placeholder="Toyota"
-          />
+          <ControlledInput control={control} name="vehicle_make" label="Make" placeholder="Toyota" />
         </View>
       </View>
       <View className="flex-row gap-2">
         <View className="flex-1">
-          <ControlledInput
-            control={control}
-            name="vehicle_model"
-            label="Model"
-            placeholder="Camry"
-          />
+          <ControlledInput control={control} name="vehicle_model" label="Model" placeholder="Camry" />
         </View>
         <View className="flex-1">
-          <ControlledInput
-            control={control}
-            name="vehicle_trim"
-            label="Trim"
-            placeholder="XLE"
-          />
+          <ControlledInput control={control} name="vehicle_trim" label="Trim" placeholder="XLE" />
         </View>
       </View>
     </FormSection>
@@ -240,33 +174,16 @@ function PricingSection({ control }: { control: Control<FinanceFormData> }) {
 function FinancingSection({ control, watchedValues, setValue }: FormProps) {
   return (
     <FormSection title="Financing">
-      <CurrencyInput
-        control={control}
-        name="down_payment"
-        label="Down Payment"
-      />
-      <PercentageInput
-        control={control}
-        name="sales_tax_percent"
-        label="Sales Tax"
-      />
-      <PercentageInput
-        control={control}
-        name="interest_rate"
-        label="Interest Rate (APR)"
-      />
+      <CurrencyInput control={control} name="down_payment" label="Down Payment" />
+      <PercentageInput control={control} name="sales_tax_percent" label="Sales Tax" />
+      <PercentageInput control={control} name="interest_rate" label="Interest Rate (APR)" />
       <Select
         label="Loan Term"
         options={TERM_OPTIONS}
         value={watchedValues.finance_term}
-        onSelect={(v) => setValue('finance_term', v as number)}
+        onSelect={v => setValue('finance_term', v as number)}
       />
-      <ControlledInput
-        control={control}
-        name="start_date"
-        label="Start Date"
-        placeholder="YYYY-MM-DD"
-      />
+      <ControlledInput control={control} name="start_date" label="Start Date" placeholder="YYYY-MM-DD" />
     </FormSection>
   );
 }
@@ -274,18 +191,8 @@ function FinancingSection({ control, watchedValues, setValue }: FormProps) {
 function ContactSection({ control }: { control: Control<FinanceFormData> }) {
   return (
     <FormSection title="Contact Information" collapsible defaultCollapsed>
-      <ControlledInput
-        control={control}
-        name="sales_consultant"
-        label="Sales Consultant"
-        placeholder="John Smith"
-      />
-      <ControlledInput
-        control={control}
-        name="dealership_name"
-        label="Dealership"
-        placeholder="ABC Motors"
-      />
+      <ControlledInput control={control} name="sales_consultant" label="Sales Consultant" placeholder="John Smith" />
+      <ControlledInput control={control} name="dealership_name" label="Dealership" placeholder="ABC Motors" />
       <ControlledInput
         control={control}
         name="contact_email"
@@ -355,11 +262,7 @@ function ActionBar({
           </View>
         )}
         <View className="flex-1">
-          <Button
-            label={isSubmitting ? 'Saving...' : submitLabel}
-            onPress={onSubmit}
-            disabled={isSubmitting}
-          />
+          <Button label={isSubmitting ? 'Saving...' : submitLabel} onPress={onSubmit} disabled={isSubmitting} />
         </View>
       </View>
     </View>

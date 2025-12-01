@@ -4,8 +4,6 @@ import axios from 'axios';
 import { signOut } from '@/lib/auth';
 import { getToken } from '@/lib/auth/utils';
 
-console.log(Env.API_URL);
-
 export const client = axios.create({
   baseURL: Env.API_URL,
   headers: {
@@ -18,7 +16,7 @@ let requestId = 0;
 
 // Request interceptor to add auth token
 client.interceptors.request.use(
-  (config) => {
+  config => {
     const id = ++requestId;
     const fullUrl = `${config.baseURL}${config.url}`;
     (config as any)._requestId = id;
@@ -31,21 +29,21 @@ client.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
+  error => {
     return Promise.reject(error);
   }
 );
 
 // Response interceptor for handling 401 errors
 client.interceptors.response.use(
-  (response) => {
+  response => {
     const id = (response.config as any)._requestId;
     const startTime = (response.config as any)._startTime;
     const duration = Date.now() - startTime;
     console.log(`[API #${id}] ← ${response.status} (${duration}ms)`);
     return response;
   },
-  (error) => {
+  error => {
     const id = (error.config as any)?._requestId;
     const startTime = (error.config as any)?._startTime;
     const duration = startTime ? Date.now() - startTime : 0;

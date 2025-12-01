@@ -39,6 +39,7 @@ export default function FinanceLayout() {
         name="[id]"
         options={{
           title: 'Finance Details',
+          headerBackTitle: 'Back',
         }}
       />
       <Stack.Screen

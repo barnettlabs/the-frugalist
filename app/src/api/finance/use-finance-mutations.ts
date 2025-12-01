@@ -4,11 +4,17 @@ import { createMutation } from 'react-query-kit';
 
 import type { FinanceFormData, VehicleFinanceSheet } from '@/lib/types/models';
 
-import { client } from '../common';
+import { client, queryClient } from '../common';
 import type {
   DeleteFinanceSheetRequest,
   UpdateFinanceSheetRequest,
 } from './types';
+
+const invalidateFinanceQueries = () => {
+  queryClient.invalidateQueries({ queryKey: ['finance-sheets'] });
+  queryClient.invalidateQueries({ queryKey: ['finance-sheet'] });
+  queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+};
 
 export const useAddFinanceSheet = createMutation<
   VehicleFinanceSheet,
@@ -22,9 +28,7 @@ export const useAddFinanceSheet = createMutation<
     );
     return response.data;
   },
-  onSuccess: () => {
-    // Invalidate finance sheets list to trigger refetch
-  },
+  onSuccess: invalidateFinanceQueries,
 });
 
 export const useUpdateFinanceSheet = createMutation<
@@ -39,6 +43,7 @@ export const useUpdateFinanceSheet = createMutation<
     );
     return response.data;
   },
+  onSuccess: invalidateFinanceQueries,
 });
 
 export const useDeleteFinanceSheet = createMutation<
@@ -49,6 +54,7 @@ export const useDeleteFinanceSheet = createMutation<
   mutationFn: async ({ id }) => {
     await client.delete(`/api/vehicle-finance-sheets/${id}`);
   },
+  onSuccess: invalidateFinanceQueries,
 });
 
 // Hook to invalidate finance queries after mutations

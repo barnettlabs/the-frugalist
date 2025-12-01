@@ -1,0 +1,35 @@
+import type { AxiosError } from 'axios';
+import { createMutation, createQuery } from 'react-query-kit';
+
+import type { User } from '@/lib/types/models';
+
+import { client } from '../common';
+import type { ProfileResponse, UpdateProfileRequest } from './types';
+
+export const useProfile = createQuery<User, void, AxiosError>({
+  queryKey: ['profile'],
+  fetcher: async () => {
+    const response = await client.get<ProfileResponse>('/api/user');
+    return response.data.data;
+  },
+});
+
+export const useUpdateProfile = createMutation<
+  User,
+  UpdateProfileRequest,
+  AxiosError
+>({
+  mutationFn: async (data) => {
+    const response = await client.put<ProfileResponse>(
+      '/api/user/profile',
+      data
+    );
+    return response.data.data;
+  },
+});
+
+export const useDeleteAccount = createMutation<void, void, AxiosError>({
+  mutationFn: async () => {
+    await client.delete('/api/user');
+  },
+});

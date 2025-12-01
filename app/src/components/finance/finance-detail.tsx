@@ -1,0 +1,270 @@
+import React, { useMemo } from 'react';
+
+import { Button, ScrollView, Text, View } from '@/components/ui';
+import { SummaryRow } from '@/components/ui/summary-row';
+import { FinanceCalculator, formatCurrencyWithSymbol } from '@/lib/calculators';
+import type { VehicleFinanceSheet } from '@/lib/types/models';
+
+interface FinanceDetailProps {
+  sheet: VehicleFinanceSheet;
+  onEdit: () => void;
+  onDelete: () => void;
+  isDeleting: boolean;
+}
+
+export function FinanceDetail({
+  sheet,
+  onEdit,
+  onDelete,
+  isDeleting,
+}: FinanceDetailProps) {
+  const summary = useMemo(
+    () => new FinanceCalculator(sheet).getSummary(),
+    [sheet]
+  );
+
+  return (
+    <View className="flex-1 bg-neutral-100 dark:bg-neutral-900">
+      <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
+        <PaymentHeader
+          payment={summary.monthlyPayment}
+          term={sheet.finance_term}
+          rate={sheet.interest_rate}
+        />
+        <VehicleInfoCard sheet={sheet} />
+        <FinancialSummaryCard summary={summary} sheet={sheet} />
+        {summary.amortization && (
+          <AmortizationCard amortization={summary.amortization} />
+        )}
+        <ContactInfoCard sheet={sheet} />
+        {sheet.notes && <NotesCard notes={sheet.notes} />}
+        <View className="h-20" />
+      </ScrollView>
+      <ActionBar onEdit={onEdit} onDelete={onDelete} isDeleting={isDeleting} />
+    </View>
+  );
+}
+
+function PaymentHeader({
+  payment,
+  term,
+  rate,
+}: {
+  payment: number;
+  term: number;
+  rate: number;
+}) {
+  return (
+    <View className="mb-4 rounded-xl bg-primary-600 p-4">
+      <Text className="text-white opacity-80">Monthly Payment</Text>
+      <Text className="text-4xl font-bold text-white">
+        {formatCurrencyWithSymbol(payment)}
+      </Text>
+      <Text className="text-white opacity-70">
+        for {term} months @ {rate}% APR
+      </Text>
+    </View>
+  );
+}
+
+function VehicleInfoCard({ sheet }: { sheet: VehicleFinanceSheet }) {
+  return (
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+      <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
+        {sheet.sheet_name || 'Untitled Estimate'}
+      </Text>
+      <Text className="text-neutral-600 dark:text-neutral-400">
+        {sheet.vehicle_year} {sheet.vehicle_make} {sheet.vehicle_model}
+        {sheet.vehicle_trim ? ` ${sheet.vehicle_trim}` : ''}
+      </Text>
+      <View className="mt-2 self-start rounded-full bg-neutral-100 px-3 py-1 dark:bg-neutral-700">
+        <Text className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
+          {sheet.vehicle_type}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+function FinancialSummaryCard({
+  summary,
+  sheet,
+}: {
+  summary: ReturnType<FinanceCalculator['getSummary']>;
+  sheet: VehicleFinanceSheet;
+}) {
+  return (
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+      <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
+        Financial Summary
+      </Text>
+      <View className="gap-3">
+        <SummaryRow label="MSRP" value={formatCurrencyWithSymbol(sheet.msrp)} />
+        {sheet.discounts > 0 && (
+          <SummaryRow
+            label="Discounts"
+            value={`-${formatCurrencyWithSymbol(sheet.discounts)}`}
+            isNegative
+          />
+        )}
+        {sheet.rebates > 0 && (
+          <SummaryRow
+            label="Rebates"
+            value={`-${formatCurrencyWithSymbol(sheet.rebates)}`}
+            isNegative
+          />
+        )}
+        <SummaryRow
+          label="Purchase Price"
+          value={formatCurrencyWithSymbol(summary.purchasePrice)}
+          isBold
+        />
+        {sheet.fees > 0 && (
+          <SummaryRow
+            label="Fees"
+            value={formatCurrencyWithSymbol(sheet.fees)}
+          />
+        )}
+        <SummaryRow
+          label="Sales Tax"
+          value={formatCurrencyWithSymbol(summary.salesTaxAmount)}
+        />
+        {sheet.down_payment > 0 && (
+          <SummaryRow
+            label="Down Payment"
+            value={`-${formatCurrencyWithSymbol(sheet.down_payment)}`}
+            isNegative
+          />
+        )}
+        <View className="my-2 border-t border-neutral-200 dark:border-neutral-700" />
+        <SummaryRow
+          label="Loan Amount"
+          value={formatCurrencyWithSymbol(summary.loanAmount)}
+          isBold
+        />
+        <SummaryRow
+          label="Total Interest"
+          value={formatCurrencyWithSymbol(summary.interestAmount)}
+        />
+        <SummaryRow
+          label="Total Payments"
+          value={formatCurrencyWithSymbol(summary.paymentsTotal)}
+        />
+        <SummaryRow
+          label="Grand Total"
+          value={formatCurrencyWithSymbol(summary.grandTotal)}
+          isBold
+          isHighlight
+        />
+      </View>
+    </View>
+  );
+}
+
+type AmortizationType = NonNullable<
+  ReturnType<FinanceCalculator['getSummary']>['amortization']
+>;
+
+function AmortizationCard({
+  amortization,
+}: {
+  amortization: AmortizationType;
+}) {
+  return (
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+      <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
+        Amortization Summary
+      </Text>
+      <View className="gap-2">
+        <SummaryRow
+          label="Payments"
+          value={`${amortization.monthsPaid} months`}
+        />
+        {amortization.monthsSaved > 0 && (
+          <SummaryRow
+            label="Months Saved"
+            value={`${amortization.monthsSaved} months`}
+            isHighlight
+          />
+        )}
+        <SummaryRow
+          label="Total Principal"
+          value={formatCurrencyWithSymbol(amortization.totalPrincipal)}
+        />
+        <SummaryRow
+          label="Total Interest"
+          value={formatCurrencyWithSymbol(amortization.totalInterest)}
+        />
+      </View>
+    </View>
+  );
+}
+
+function ContactInfoCard({ sheet }: { sheet: VehicleFinanceSheet }) {
+  if (!sheet.dealership_name && !sheet.sales_consultant && !sheet.contact_email)
+    return null;
+  return (
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+      <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
+        Contact Information
+      </Text>
+      {sheet.dealership_name && (
+        <Text className="text-neutral-600 dark:text-neutral-400">
+          {sheet.dealership_name}
+        </Text>
+      )}
+      {sheet.sales_consultant && (
+        <Text className="text-neutral-600 dark:text-neutral-400">
+          {sheet.sales_consultant}
+        </Text>
+      )}
+      {sheet.contact_email && (
+        <Text className="text-primary-600">{sheet.contact_email}</Text>
+      )}
+      {sheet.contact_phone && (
+        <Text className="text-neutral-600 dark:text-neutral-400">
+          {sheet.contact_phone}
+        </Text>
+      )}
+    </View>
+  );
+}
+
+function NotesCard({ notes }: { notes: string }) {
+  return (
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+      <Text className="mb-2 text-lg font-semibold text-neutral-900 dark:text-white">
+        Notes
+      </Text>
+      <Text className="text-neutral-600 dark:text-neutral-400">{notes}</Text>
+    </View>
+  );
+}
+
+function ActionBar({
+  onEdit,
+  onDelete,
+  isDeleting,
+}: {
+  onEdit: () => void;
+  onDelete: () => void;
+  isDeleting: boolean;
+}) {
+  return (
+    <View className="border-t border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800">
+      <View className="flex-row gap-3">
+        <View className="flex-1">
+          <Button
+            label={isDeleting ? 'Deleting...' : 'Delete'}
+            variant="destructive"
+            onPress={onDelete}
+            disabled={isDeleting}
+          />
+        </View>
+        <View className="flex-1">
+          <Button label="Edit" onPress={onEdit} />
+        </View>
+      </View>
+    </View>
+  );
+}

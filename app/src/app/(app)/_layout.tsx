@@ -30,9 +30,9 @@ export default function TabLayout() {
     }
   }, [hideSplash, status]);
 
-  if (isFirstTime) {
-    return <Redirect href="/onboarding" />;
-  }
+  //   if (isFirstTime) {
+  //     return <Redirect href="/onboarding" />;
+  //   }
   if (status === 'signOut') {
     return <Redirect href="/(auth)/login" />;
   }
@@ -44,10 +44,101 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-          tabBarActiveTintColor: tabBarColors.active,
-          tabBarInactiveTintColor: tabBarColors.inactive,
+        tabBarActiveTintColor: tabBarColors.active,
+        tabBarInactiveTintColor: tabBarColors.inactive,
+        headerShown: true,
+        // Neutral header - no color, just clean
+        headerStyle: {
+          backgroundColor: headerColors.background,
+          borderBottomWidth: 1,
+          borderBottomColor: headerColors.border,
+          elevation: 0,
+          shadowOpacity: 0,
+        },
+        headerTintColor: headerColors.text,
+        headerTitleStyle: {
+          fontFamily: 'Rubik-SemiBold',
+          fontSize: 17,
+        },
+        // Tab bar styling - theme aware
+        tabBarStyle: {
+          backgroundColor: tabBarColors.background,
+          borderTopColor: tabBarColors.border,
+          borderTopWidth: 1,
+          paddingTop: 6,
+          paddingBottom: 6,
+          // height: 60,
+        },
+        tabBarLabelStyle: {
+          fontFamily: 'Rubik-Medium',
+          fontSize: 11,
+        },
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Dashboard',
+          tabBarIcon: ({ color }) => <DashboardIcon color={color} />,
+          tabBarButtonTestID: 'dashboard-tab',
+        }}
+      />
+
+      <Tabs.Screen
+        name="finance"
+        options={{
+          title: 'Finance',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <CalculatorIcon color={color} />,
+          tabBarButtonTestID: 'finance-tab',
+        }}
+      />
+
+      <Tabs.Screen
+        name="lease"
+        options={{
+          title: 'Lease',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <CarIcon color={color} />,
+          tabBarButtonTestID: 'lease-tab',
+        }}
+      />
+
+      <Tabs.Screen
+        name="tracker"
+        options={{
+          title: 'Tracker',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TagIcon color={color} />,
+          tabBarButtonTestID: 'tracker-tab',
+        }}
+      />
+
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
           headerShown: true,
-          // Neutral header - no color, just clean
+          tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
+          tabBarButtonTestID: 'settings-tab',
+          headerStyle: {
+            backgroundColor: headerColors.background,
+          },
+          headerTintColor: headerColors.text,
+          headerTitleStyle: {
+            fontFamily: 'Rubik-SemiBold',
+          },
+          headerShadowVisible: false,
+        }}
+      />
+
+      {/* Hidden screens that are accessible but not in tabs */}
+      <Tabs.Screen
+        name="profile"
+        options={{
+          href: null,
+          headerShown: true,
+          title: 'Profile',
           headerStyle: {
             backgroundColor: headerColors.background,
             borderBottomWidth: 1,
@@ -60,115 +151,24 @@ export default function TabLayout() {
             fontFamily: 'Rubik-SemiBold',
             fontSize: 17,
           },
-          // Tab bar styling - theme aware
-          tabBarStyle: {
-            backgroundColor: tabBarColors.background,
-            borderTopColor: tabBarColors.border,
-            borderTopWidth: 1,
-            paddingTop: 6,
-            paddingBottom: 6,
-            // height: 60,
-          },
-          tabBarLabelStyle: {
-            fontFamily: 'Rubik-Medium',
-            fontSize: 11,
-          },
         }}
-      >
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: 'Dashboard',
-            tabBarIcon: ({ color }) => <DashboardIcon color={color} />,
-            tabBarButtonTestID: 'dashboard-tab',
-          }}
-        />
+      />
 
-        <Tabs.Screen
-          name="finance"
-          options={{
-            title: 'Finance',
-            headerShown: false,
-            tabBarIcon: ({ color }) => <CalculatorIcon color={color} />,
-            tabBarButtonTestID: 'finance-tab',
-          }}
-        />
+      <Tabs.Screen
+        name="learning"
+        options={{
+          href: null,
+          headerShown: false,
+        }}
+      />
 
-        <Tabs.Screen
-          name="lease"
-          options={{
-            title: 'Lease',
-            headerShown: false,
-            tabBarIcon: ({ color }) => <CarIcon color={color} />,
-            tabBarButtonTestID: 'lease-tab',
-          }}
-        />
-
-        <Tabs.Screen
-          name="tracker"
-          options={{
-            title: 'Tracker',
-            headerShown: false,
-            tabBarIcon: ({ color }) => <TagIcon color={color} />,
-            tabBarButtonTestID: 'tracker-tab',
-          }}
-        />
-
-        <Tabs.Screen
-          name="settings"
-          options={{
-            title: 'Settings',
-            headerShown: true,
-            tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
-            tabBarButtonTestID: 'settings-tab',
-            headerStyle: {
-              backgroundColor: headerColors.background,
-            },
-            headerTintColor: headerColors.text,
-            headerTitleStyle: {
-              fontFamily: 'Rubik-SemiBold',
-            },
-            headerShadowVisible: false,
-          }}
-        />
-
-        {/* Hidden screens that are accessible but not in tabs */}
-        <Tabs.Screen
-          name="profile"
-          options={{
-            href: null,
-            headerShown: true,
-            title: 'Profile',
-            headerStyle: {
-              backgroundColor: headerColors.background,
-              borderBottomWidth: 1,
-              borderBottomColor: headerColors.border,
-              elevation: 0,
-              shadowOpacity: 0,
-            },
-            headerTintColor: headerColors.text,
-            headerTitleStyle: {
-              fontFamily: 'Rubik-SemiBold',
-              fontSize: 17,
-            },
-          }}
-        />
-
-        <Tabs.Screen
-          name="learning"
-          options={{
-            href: null,
-            headerShown: false,
-          }}
-        />
-
-        {/* Hide the old style screen */}
-        <Tabs.Screen
-          name="style"
-          options={{
-            href: null,
-          }}
-        />
+      {/* Hide the old style screen */}
+      <Tabs.Screen
+        name="style"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

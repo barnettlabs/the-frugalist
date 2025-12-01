@@ -1,18 +1,8 @@
 import * as React from 'react';
-import type {
-  Control,
-  FieldValues,
-  Path,
-  RegisterOptions,
-} from 'react-hook-form';
+import type { Control, FieldValues, Path, RegisterOptions } from 'react-hook-form';
 import { useController } from 'react-hook-form';
 import type { TextInputProps } from 'react-native';
-import {
-  I18nManager,
-  StyleSheet,
-  TextInput as NTextInput,
-  View,
-} from 'react-native';
+import { I18nManager, StyleSheet, TextInput as NTextInput, View } from 'react-native';
 import { tv } from 'tailwind-variants';
 
 import colors from './colors';
@@ -21,11 +11,10 @@ import { Text } from './text';
 const inputTv = tv({
   slots: {
     container: 'mb-3',
-    label:
-      'mb-1.5 text-sm font-medium text-charcoal-700 dark:text-charcoal-200',
+    label: 'mb-1.5 text-sm font-medium text-charcoal-700 dark:text-charcoal-200',
     // Clean modern input with subtle border
     input:
-      'mt-0 rounded-md border border-charcoal-200 bg-white px-4 py-3.5 font-rubik text-base font-normal leading-5 text-charcoal-900 dark:border-charcoal-600 dark:bg-charcoal-800 dark:text-white',
+      'mt-0 rounded-md border border-charcoal-200 bg-white px-4 py-3.5 text-base font-normal leading-5 text-charcoal-900 dark:border-charcoal-600 dark:bg-charcoal-800 dark:text-white',
   },
 
   variants: {
@@ -43,8 +32,7 @@ const inputTv = tv({
     },
     disabled: {
       true: {
-        input:
-          'bg-charcoal-100 text-charcoal-400 dark:bg-charcoal-700 dark:text-charcoal-500',
+        input: 'bg-charcoal-100 text-charcoal-400 dark:bg-charcoal-700 dark:text-charcoal-500',
       },
     },
   },
@@ -62,10 +50,7 @@ export interface NInputProps extends TextInputProps {
 }
 
 type TRule<T extends FieldValues> =
-  | Omit<
-      RegisterOptions<T>,
-      'disabled' | 'valueAsNumber' | 'valueAsDate' | 'setValueAs'
-    >
+  | Omit<RegisterOptions<T>, 'disabled' | 'valueAsNumber' | 'valueAsDate' | 'setValueAs'>
   | undefined;
 
 export type RuleType<T extends FieldValues> = { [name in keyof T]: TRule<T> };
@@ -75,9 +60,7 @@ export type InputControllerType<T extends FieldValues> = {
   rules?: RuleType<T>;
 };
 
-interface ControlledInputProps<T extends FieldValues>
-  extends NInputProps,
-    InputControllerType<T> {}
+interface ControlledInputProps<T extends FieldValues> extends NInputProps, InputControllerType<T> {}
 
 export const Input = React.forwardRef<NTextInput, NInputProps>((props, ref) => {
   const { label, error, testID, ...inputProps } = props;
@@ -98,10 +81,7 @@ export const Input = React.forwardRef<NTextInput, NInputProps>((props, ref) => {
   return (
     <View className={styles.container()}>
       {label && (
-        <Text
-          testID={testID ? `${testID}-label` : undefined}
-          className={styles.label()}
-        >
+        <Text testID={testID ? `${testID}-label` : undefined} className={styles.label()}>
           {label}
         </Text>
       )}
@@ -132,9 +112,7 @@ export const Input = React.forwardRef<NTextInput, NInputProps>((props, ref) => {
 });
 
 // only used with react-hook-form
-export function ControlledInput<T extends FieldValues>(
-  props: ControlledInputProps<T>
-) {
+export function ControlledInput<T extends FieldValues>(props: ControlledInputProps<T>) {
   const { name, control, rules, ...inputProps } = props;
 
   const { field, fieldState } = useController({ control, name, rules });

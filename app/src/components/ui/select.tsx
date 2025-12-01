@@ -1,7 +1,4 @@
-import {
-  BottomSheetFlatList,
-  type BottomSheetModal,
-} from '@gorhom/bottom-sheet';
+import { BottomSheetFlatList, type BottomSheetModal } from '@gorhom/bottom-sheet';
 import { FlashList } from '@shopify/flash-list';
 import { useColorScheme } from 'nativewind';
 import * as React from 'react';
@@ -27,7 +24,7 @@ const selectTv = tv({
     // Match input styling for consistency
     input:
       'mt-0 flex-row items-center justify-center rounded-md border border-neutral-200 bg-white px-4 py-3.5 shadow-sm dark:border-charcoal-600 dark:bg-charcoal-800/80',
-    inputValue: 'font-rubik text-base text-neutral-900 dark:text-white',
+    inputValue: 'text-base text-neutral-900 dark:text-white',
   },
 
   variants: {
@@ -70,46 +67,44 @@ function keyExtractor(item: OptionType) {
   return `select-item-${item.value}`;
 }
 
-export const Options = React.forwardRef<BottomSheetModal, OptionsProps>(
-  ({ options, onSelect, value, testID }, ref) => {
-    const height = options.length * 70 + 100;
-    const snapPoints = React.useMemo(() => [height], [height]);
-    const { colorScheme } = useColorScheme();
-    const isDark = colorScheme === 'dark';
+export const Options = React.forwardRef<BottomSheetModal, OptionsProps>(({ options, onSelect, value, testID }, ref) => {
+  const height = options.length * 70 + 100;
+  const snapPoints = React.useMemo(() => [height], [height]);
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
-    const renderSelectItem = React.useCallback(
-      ({ item }: { item: OptionType }) => (
-        <Option
-          key={`select-item-${item.value}`}
-          label={item.label}
-          selected={value === item.value}
-          onPress={() => onSelect(item)}
-          testID={testID ? `${testID}-item-${item.value}` : undefined}
-        />
-      ),
-      [onSelect, value, testID]
-    );
+  const renderSelectItem = React.useCallback(
+    ({ item }: { item: OptionType }) => (
+      <Option
+        key={`select-item-${item.value}`}
+        label={item.label}
+        selected={value === item.value}
+        onPress={() => onSelect(item)}
+        testID={testID ? `${testID}-item-${item.value}` : undefined}
+      />
+    ),
+    [onSelect, value, testID]
+  );
 
-    return (
-      <Modal
-        ref={ref}
-        index={0}
-        snapPoints={snapPoints}
-        backgroundStyle={{
-          backgroundColor: isDark ? colors.charcoal[850] : colors.white,
-        }}
-      >
-        <List
-          data={options}
-          keyExtractor={keyExtractor}
-          renderItem={renderSelectItem}
-          testID={testID ? `${testID}-modal` : undefined}
-          estimatedItemSize={52}
-        />
-      </Modal>
-    );
-  }
-);
+  return (
+    <Modal
+      ref={ref}
+      index={0}
+      snapPoints={snapPoints}
+      backgroundStyle={{
+        backgroundColor: isDark ? colors.charcoal[850] : colors.white,
+      }}
+    >
+      <List
+        data={options}
+        keyExtractor={keyExtractor}
+        renderItem={renderSelectItem}
+        testID={testID ? `${testID}-modal` : undefined}
+        estimatedItemSize={52}
+      />
+    </Modal>
+  );
+});
 
 const Option = React.memo(
   ({
@@ -125,7 +120,7 @@ const Option = React.memo(
         className="flex-row items-center border-b border-neutral-100 bg-white px-4 py-3 dark:border-charcoal-700 dark:bg-charcoal-850"
         {...props}
       >
-        <Text className="flex-1 font-rubik dark:text-neutral-100">{label}</Text>
+        <Text className="flex-1 dark:text-neutral-100">{label}</Text>
         {selected && <Check />}
       </Pressable>
     );
@@ -142,21 +137,10 @@ export interface SelectProps {
   placeholder?: string;
   testID?: string;
 }
-interface ControlledSelectProps<T extends FieldValues>
-  extends SelectProps,
-    InputControllerType<T> {}
+interface ControlledSelectProps<T extends FieldValues> extends SelectProps, InputControllerType<T> {}
 
 export const Select = (props: SelectProps) => {
-  const {
-    label,
-    value,
-    error,
-    options = [],
-    placeholder = 'select...',
-    disabled = false,
-    onSelect,
-    testID,
-  } = props;
+  const { label, value, error, options = [], placeholder = 'select...', disabled = false, onSelect, testID } = props;
   const modal = useModal();
 
   const onSelectOption = React.useCallback(
@@ -177,10 +161,7 @@ export const Select = (props: SelectProps) => {
   );
 
   const textValue = React.useMemo(
-    () =>
-      value !== undefined
-        ? (options?.filter((t) => t.value === value)?.[0]?.label ?? placeholder)
-        : placeholder,
+    () => (value !== undefined ? (options?.filter(t => t.value === value)?.[0]?.label ?? placeholder) : placeholder),
     [value, options, placeholder]
   );
 
@@ -188,10 +169,7 @@ export const Select = (props: SelectProps) => {
     <>
       <View className={styles.container()}>
         {label && (
-          <Text
-            testID={testID ? `${testID}-label` : undefined}
-            className={styles.label()}
-          >
+          <Text testID={testID ? `${testID}-label` : undefined} className={styles.label()}>
             {label}
           </Text>
         )}
@@ -207,28 +185,18 @@ export const Select = (props: SelectProps) => {
           <CaretDown color={colors.neutral[400]} />
         </Pressable>
         {error && (
-          <Text
-            testID={`${testID}-error`}
-            className="mt-1 text-sm text-danger-500 dark:text-danger-400"
-          >
+          <Text testID={`${testID}-error`} className="mt-1 text-sm text-danger-500 dark:text-danger-400">
             {error}
           </Text>
         )}
       </View>
-      <Options
-        testID={testID}
-        ref={modal.ref}
-        options={options}
-        onSelect={onSelectOption}
-      />
+      <Options testID={testID} ref={modal.ref} options={options} onSelect={onSelectOption} />
     </>
   );
 };
 
 // only used with react-hook-form
-export function ControlledSelect<T extends FieldValues>(
-  props: ControlledSelectProps<T>
-) {
+export function ControlledSelect<T extends FieldValues>(props: ControlledSelectProps<T>) {
   const { name, control, rules, onSelect: onNSelect, ...selectProps } = props;
 
   const { field, fieldState } = useController({ control, name, rules });
@@ -239,14 +207,7 @@ export function ControlledSelect<T extends FieldValues>(
     },
     [field, onNSelect]
   );
-  return (
-    <Select
-      onSelect={onSelect}
-      value={field.value}
-      error={fieldState.error?.message}
-      {...selectProps}
-    />
-  );
+  return <Select onSelect={onSelect} value={field.value} error={fieldState.error?.message} {...selectProps} />;
 }
 
 const Check = ({ ...props }: SvgProps) => (
@@ -258,11 +219,6 @@ const Check = ({ ...props }: SvgProps) => (
     {...props}
     className="stroke-primary-600 dark:stroke-primary-400"
   >
-    <Path
-      d="m20.256 6.75-10.5 10.5L4.506 12"
-      strokeWidth={2.438}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <Path d="m20.256 6.75-10.5 10.5L4.506 12" strokeWidth={2.438} strokeLinecap="round" strokeLinejoin="round" />
   </Svg>
 );

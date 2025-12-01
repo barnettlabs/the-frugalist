@@ -5,7 +5,8 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useLogin } from '@/api/auth/use-auth';
-import { Button, ControlledInput, Pressable, SafeAreaView, ScrollView, Text, View } from '@/components/ui';
+import { foxLogo } from '@/assets/images';
+import { Button, ControlledInput, Image, Pressable, SafeAreaView, ScrollView, Text, View } from '@/components/ui';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -30,29 +31,34 @@ export default function LoginScreen() {
       onSuccess: () => {
         router.replace('/(app)');
       },
-      onError: (error: any) => {
+      onError: (error: Error & { response?: { data?: unknown } }) => {
         console.error('Login error:', error.response?.data || error.message);
       },
     });
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-neutral-50 dark:bg-charcoal-950">
+    <SafeAreaView className="flex-1 bg-white dark:bg-neutral-900">
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1, padding: 24 }}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Header */}
-        <View className="mb-8 mt-12">
-          <Text className="font-rubik text-3xl font-bold text-neutral-900 dark:text-white">Welcome Back</Text>
-          <Text className="mt-2 font-rubik text-neutral-600 dark:text-neutral-400">
-            Sign in to continue to Sneaky Salesman
-          </Text>
+        {/* Logo */}
+        <View className="my-6 items-center">
+          <Image source={foxLogo} className="size-28" contentFit="contain" />
         </View>
 
-        {/* Form Card - Glassmorphism style */}
-        <View className="gap-4 rounded-xl border border-neutral-200/60 bg-white p-5 shadow-card dark:border-charcoal-700/60 dark:bg-charcoal-850/90">
+        {/* Header */}
+        <View className="mb-8 items-center">
+          <Text className="text-center text-3xl font-bold text-neutral-900 dark:text-white">
+            Welcome to Sneaky Salesman
+          </Text>
+          <Text className="mt-2 text-lg text-neutral-600 dark:text-neutral-400">Login</Text>
+        </View>
+
+        {/* Form */}
+        <View className="gap-4">
           <ControlledInput
             control={control}
             name="email"
@@ -71,22 +77,13 @@ export default function LoginScreen() {
             secureTextEntry
             autoComplete="password"
           />
-
-          <Link href="/(auth)/forgot-password" asChild>
-            <Pressable className="self-end">
-              <Text className="font-rubik text-sm font-medium text-primary-600 dark:text-primary-400">
-                Forgot Password?
-              </Text>
-            </Pressable>
-          </Link>
         </View>
 
         {/* Submit Button */}
-        <View className="mt-6">
+        <View className="mt-8">
           <Button
             label={isPending ? 'Signing In...' : 'Sign In'}
-            // onPress={handleSubmit(onSubmit)}
-            onPress={() => onSubmit({ email: 'test@test.com', password: '123456' })}
+            onPress={handleSubmit(onSubmit)}
             disabled={isPending}
             loading={isPending}
           />
@@ -94,10 +91,19 @@ export default function LoginScreen() {
 
         {/* Register Link */}
         <View className="mt-6 flex-row items-center justify-center">
-          <Text className="font-rubik text-neutral-600 dark:text-neutral-400">Don{"'"}t have an account? </Text>
+          <Text className="text-neutral-600 dark:text-neutral-400">Don{"'"}t have an account? </Text>
           <Link href="/(auth)/register" asChild>
             <Pressable>
-              <Text className="font-rubik font-semibold text-primary-600 dark:text-primary-400">Sign Up</Text>
+              <Text className="font-semibold text-primary-600">Sign Up</Text>
+            </Pressable>
+          </Link>
+        </View>
+
+        {/* Forgot Password Link */}
+        <View className="mt-4 items-center">
+          <Link href="/(auth)/forgot-password" asChild>
+            <Pressable>
+              <Text className="text-sm font-medium text-primary-600 dark:text-primary-400">Forgot Password?</Text>
             </Pressable>
           </Link>
         </View>

@@ -29,13 +29,8 @@ export const Card = ({ title, body, id }: Props) => {
           />
 
           <View className="p-4">
-            <Text className="py-2 font-rubik text-xl font-semibold text-neutral-900 dark:text-white">
-              {title}
-            </Text>
-            <Text
-              numberOfLines={3}
-              className="font-rubik leading-relaxed text-neutral-600 dark:text-neutral-400"
-            >
+            <Text className="py-2 text-xl font-semibold text-neutral-900 dark:text-white">{title}</Text>
+            <Text numberOfLines={3} className="leading-relaxed text-neutral-600 dark:text-neutral-400">
               {body}
             </Text>
           </View>

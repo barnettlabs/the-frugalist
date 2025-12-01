@@ -10,7 +10,7 @@ const button = tv({
   slots: {
     container: 'my-2 flex flex-row items-center justify-center rounded-md px-4',
     // Clean button text with subtle letter-spacing
-    label: 'font-rubik-semibold text-sm tracking-wide',
+    label: 'text-sm font-semibold tracking-wide',
     indicator: 'h-6 text-white',
   },
 

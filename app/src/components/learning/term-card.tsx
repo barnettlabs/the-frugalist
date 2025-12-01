@@ -16,19 +16,11 @@ export function TermCard({ term, definition }: TermCardProps) {
       className="rounded-xl border border-neutral-200/60 bg-white p-4 shadow-card dark:border-charcoal-700/60 dark:bg-charcoal-850/90"
     >
       <View className="flex-row items-start justify-between">
-        <Text className="flex-1 font-rubik font-semibold text-neutral-900 dark:text-white">
-          {term}
-        </Text>
-        <Text className="ml-2 text-primary-500 dark:text-primary-400">
-          {isExpanded ? '▲' : '▼'}
-        </Text>
+        <Text className="flex-1 font-semibold text-neutral-900 dark:text-white">{term}</Text>
+        <Text className="ml-2 text-primary-500 dark:text-primary-400">{isExpanded ? '▲' : '▼'}</Text>
       </View>
 
-      {isExpanded && (
-        <Text className="mt-3 font-rubik leading-relaxed text-neutral-600 dark:text-neutral-400">
-          {definition}
-        </Text>
-      )}
+      {isExpanded && <Text className="mt-3 leading-relaxed text-neutral-600 dark:text-neutral-400">{definition}</Text>}
     </Pressable>
   );
 }

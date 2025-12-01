@@ -1,0 +1,26 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "44BTVU6QAF.com.tensifi.sneakysalesman",
+        "paths": ["*"]
+      },
+      {
+        "appID": "44BTVU6QAF.com.tensifi.sneakysalesman.staging",
+        "paths": ["*"]
+      },
+      {
+        "appID": "44BTVU6QAF.com.tensifi.sneakysalesman.development",
+        "paths": ["*"]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "44BTVU6QAF.com.tensifi.sneakysalesman",
+      "44BTVU6QAF.com.tensifi.sneakysalesman.staging",
+      "44BTVU6QAF.com.tensifi.sneakysalesman.development"
+    ]
+  }
+}

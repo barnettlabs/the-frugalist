@@ -1,0 +1,32 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.tensifi.sneakysalesman",
+      "sha256_cert_fingerprints": [
+        "TODO:REPLACE_WITH_YOUR_PRODUCTION_SHA256_FINGERPRINT"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.tensifi.sneakysalesman.staging",
+      "sha256_cert_fingerprints": [
+        "TODO:REPLACE_WITH_YOUR_STAGING_SHA256_FINGERPRINT"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.tensifi.sneakysalesman.development",
+      "sha256_cert_fingerprints": [
+        "TODO:REPLACE_WITH_YOUR_DEBUG_SHA256_FINGERPRINT"
+      ]
+    }
+  }
+]

@@ -229,6 +229,21 @@ Route::get('/api/announcements/{announcement}', [AnnouncementController::class, 
 // Bug report route
 Route::post('/bug-reports', [BugReportController::class, 'store'])->name('bug-reports.store');
 
+// Well-known routes for app deep linking
+Route::get('/.well-known/apple-app-site-association', function () {
+    return response()->file(
+        public_path('.well-known/apple-app-site-association'),
+        ['Content-Type' => 'application/json']
+    );
+});
+
+Route::get('/.well-known/assetlinks.json', function () {
+    return response()->file(
+        public_path('.well-known/assetlinks.json'),
+        ['Content-Type' => 'application/json']
+    );
+});
+
 // debugging
 // Route::get('/test/email-preview', function () {
 //     $trackedProduct = \App\Models\TrackedProduct::with('retailer')->first();

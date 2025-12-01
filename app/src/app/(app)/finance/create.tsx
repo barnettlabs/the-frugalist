@@ -1,3 +1,4 @@
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { router } from 'expo-router';
 import React from 'react';
 import { showMessage } from 'react-native-flash-message';
@@ -44,7 +45,7 @@ export default function FinanceCreateScreen() {
         });
         router.back();
       },
-      onError: (error) => {
+      onError: error => {
         showMessage({
           message: 'Error',
           description: error.message || 'Failed to create estimate',
@@ -55,11 +56,13 @@ export default function FinanceCreateScreen() {
   };
 
   return (
-    <FinanceForm
-      initialData={defaultFormData}
-      onSubmit={handleSubmit}
-      isSubmitting={isPending}
-      submitLabel="Create Estimate"
-    />
+    <BottomSheetModalProvider>
+      <FinanceForm
+        initialData={defaultFormData}
+        onSubmit={handleSubmit}
+        isSubmitting={isPending}
+        submitLabel="Create Estimate"
+      />
+    </BottomSheetModalProvider>
   );
 }

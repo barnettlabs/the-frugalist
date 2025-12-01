@@ -51,10 +51,7 @@ export default function RootLayout() {
 function Providers({ children }: { children: React.ReactNode }) {
   const theme = useThemeConfig();
   return (
-    <GestureHandlerRootView
-      style={styles.container}
-      className={theme.dark ? `dark` : undefined}
-    >
+    <GestureHandlerRootView style={styles.container} className={theme.dark ? `dark` : undefined}>
       <KeyboardProvider>
         <ThemeProvider value={theme}>
           <APIProvider>

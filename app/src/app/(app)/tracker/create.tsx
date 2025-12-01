@@ -1,3 +1,4 @@
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { router } from 'expo-router';
 import React from 'react';
 import { showMessage } from 'react-native-flash-message';
@@ -32,5 +33,9 @@ export default function TrackerCreateScreen() {
     });
   };
 
-  return <TrackerForm onSubmit={handleSubmit} isSubmitting={isPending} />;
+  return (
+    <BottomSheetModalProvider>
+      <TrackerForm onSubmit={handleSubmit} isSubmitting={isPending} />
+    </BottomSheetModalProvider>
+  );
 }

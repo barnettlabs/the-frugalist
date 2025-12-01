@@ -1,3 +1,4 @@
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { router } from 'expo-router';
 import React from 'react';
 import { showMessage } from 'react-native-flash-message';
@@ -58,11 +59,13 @@ export default function LeaseCreateScreen() {
   };
 
   return (
-    <LeaseForm
-      initialData={defaultFormData}
-      onSubmit={handleSubmit}
-      isSubmitting={isPending}
-      submitLabel="Create Estimate"
-    />
+    <BottomSheetModalProvider>
+      <LeaseForm
+        initialData={defaultFormData}
+        onSubmit={handleSubmit}
+        isSubmitting={isPending}
+        submitLabel="Create Estimate"
+      />
+    </BottomSheetModalProvider>
   );
 }

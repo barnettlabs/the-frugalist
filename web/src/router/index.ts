@@ -43,17 +43,19 @@ const Disclaimers = () => import('@/pages/Disclaimers.vue')
 const ComingSoon = () => import('@/pages/ComingSoon.vue')
 
 const routes: RouteRecordRaw[] = [
-  // Public routes
+  // Welcome page (standalone - has its own header/footer)
+  {
+    path: '/',
+    name: 'welcome',
+    component: Welcome,
+    meta: { guest: true },
+  },
+
+  // Public routes with GuestLayout
   {
     path: '/',
     component: GuestLayout,
     children: [
-      {
-        path: '',
-        name: 'welcome',
-        component: Welcome,
-        meta: { guest: true },
-      },
       {
         path: 'privacy',
         name: 'privacy',

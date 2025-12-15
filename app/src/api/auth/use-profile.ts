@@ -9,22 +9,15 @@ import type { ProfileResponse, UpdateProfileRequest } from './types';
 export const useProfile = createQuery<User, void, AxiosError>({
   queryKey: ['profile'],
   fetcher: async () => {
-    const response = await client.get<ProfileResponse>('/api/user');
-    return response.data.data;
+    const response = await client.get<User>('/api/user');
+    return response.data;
   },
 });
 
-export const useUpdateProfile = createMutation<
-  User,
-  UpdateProfileRequest,
-  AxiosError
->({
-  mutationFn: async (data) => {
-    const response = await client.put<ProfileResponse>(
-      '/api/user/profile',
-      data
-    );
-    return response.data.data;
+export const useUpdateProfile = createMutation<User, UpdateProfileRequest, AxiosError>({
+  mutationFn: async data => {
+    const response = await client.put<ProfileResponse>('/api/user/profile', data);
+    return response.data;
   },
 });
 

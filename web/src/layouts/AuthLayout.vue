@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ApplicationLogo from '@/components/ApplicationLogo.vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
@@ -23,7 +23,7 @@ import { RouterLink } from 'vue-router'
 
       <!-- Auth Form Card -->
       <div class="glass rounded-2xl p-8 bg-white/90 backdrop-blur-sm border border-white/20">
-        <slot />
+        <RouterView />
       </div>
 
       <!-- Back to Home Link -->

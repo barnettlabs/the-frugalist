@@ -26,6 +26,7 @@ const TAB_CONFIG = [
   { name: 'settings', label: 'Settings', Icon: SettingsIcon },
 ];
 
+const TAB_BAR_HEIGHT = 64;
 const PILL_HEIGHT = 56;
 const TAB_BAR_PADDING = 4;
 const SPRING_CONFIG = { damping: 18, stiffness: 200 };
@@ -245,14 +246,7 @@ function CustomTabBar({
       </GestureDetector>
 
       {/* Top layer: Masked active icons (blue icon + text, covers inactive) */}
-      <Animated.View
-        style={[
-          tabBarStyles.maskContainer,
-          { backgroundColor: isDark ? colors.charcoal[700] : colors.neutral[100] },
-          maskContainerStyle,
-        ]}
-        pointerEvents="none"
-      >
+      <Animated.View style={[tabBarStyles.maskContainer, maskContainerStyle]} pointerEvents="none">
         <Animated.View style={[tabBarStyles.maskContent, maskContentStyle]}>
           {visibleRoutes.map((route, index) => {
             const tabConfig = TAB_CONFIG.find(t => t.name === route.name);
@@ -276,8 +270,6 @@ function CustomTabBar({
   );
 }
 
-const TAB_BAR_HEIGHT = 64;
-
 const tabBarStyles = StyleSheet.create({
   container: {
     position: 'absolute',
@@ -299,7 +291,7 @@ const tabBarStyles = StyleSheet.create({
     position: 'absolute',
     height: PILL_HEIGHT,
     borderRadius: 26,
-    top: TAB_BAR_PADDING,
+    top: TAB_BAR_PADDING - 1,
   },
   tabButton: {
     flex: 1,

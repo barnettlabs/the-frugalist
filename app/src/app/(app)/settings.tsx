@@ -13,7 +13,8 @@ import {
   Text,
   View,
 } from '@/components/ui';
-import { Github, Rate, Share, Support, Website } from '@/components/ui/icons';
+import { Rate, Share, Support, Website } from '@/components/ui/icons';
+import { openLinkInBrowser } from '@/lib/utils';
 import { translate, useAuth } from '@/lib';
 
 export default function Settings() {
@@ -59,17 +60,24 @@ export default function Settings() {
           </ItemsContainer>
 
           <ItemsContainer title="settings.links">
-            <Item text="settings.privacy" onPress={() => {}} />
-            <Item text="settings.terms" onPress={() => {}} />
-            <Item
-              text="settings.github"
-              icon={<Github color={iconColor} />}
-              onPress={() => {}}
-            />
             <Item
               text="settings.website"
               icon={<Website color={iconColor} />}
-              onPress={() => {}}
+              onPress={() =>
+                openLinkInBrowser('https://sneakysalesman.com')
+              }
+            />
+            <Item
+              text="settings.privacy"
+              onPress={() =>
+                openLinkInBrowser('https://sneakysalesman.com/privacy')
+              }
+            />
+            <Item
+              text="settings.terms"
+              onPress={() =>
+                openLinkInBrowser('https://sneakysalesman.com/terms')
+              }
             />
           </ItemsContainer>
 

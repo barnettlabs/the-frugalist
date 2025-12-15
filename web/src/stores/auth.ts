@@ -1,0 +1,156 @@
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+import type { User } from '@/types'
+import { authApi } from '@/api/auth'
+import type { LoginCredentials, RegisterData } from '@/api/auth'
+
+const TOKEN_KEY = 'auth_token'
+const USER_KEY = 'auth_user'
+
+export const useAuthStore = defineStore('auth', () => {
+  // State
+  const user = ref<User | null>(null)
+  const token = ref<string | null>(null)
+  const initialized = ref(false)
+  const loading = ref(false)
+  const errors = ref<Record<string, string[]>>({})
+
+  // Getters
+  const isAuthenticated = computed(() => !!token.value && !!user.value)
+  const fullName = computed(() => {
+    if (!user.value) return ''
+    const firstName = (user.value as any).first_name || ''
+    const lastName = (user.value as any).last_name || ''
+    return `${firstName} ${lastName}`.trim()
+  })
+
+  // Actions
+  const initialize = async () => {
+    if (initialized.value) return
+
+    // Try to restore from localStorage
+    const storedToken = localStorage.getItem(TOKEN_KEY)
+    const storedUser = localStorage.getItem(USER_KEY)
+
+    if (storedToken && storedUser) {
+      token.value = storedToken
+      try {
+        user.value = JSON.parse(storedUser)
+        // Verify token is still valid by fetching user
+        const freshUser = await authApi.getUser()
+        user.value = freshUser
+        localStorage.setItem(USER_KEY, JSON.stringify(freshUser))
+      } catch (error) {
+        // Token is invalid, clear everything
+        clearAuth()
+      }
+    }
+
+    initialized.value = true
+  }
+
+  const login = async (credentials: LoginCredentials) => {
+    loading.value = true
+    errors.value = {}
+
+    try {
+      const response = await authApi.login(credentials)
+      setAuth(response.user, response.token)
+      return true
+    } catch (error: any) {
+      if (error.response?.data?.errors) {
+        errors.value = error.response.data.errors
+      } else if (error.response?.data?.message) {
+        errors.value = { email: [error.response.data.message] }
+      }
+      return false
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const register = async (data: RegisterData) => {
+    loading.value = true
+    errors.value = {}
+
+    try {
+      const response = await authApi.register(data)
+      setAuth(response.user, response.token)
+      return true
+    } catch (error: any) {
+      if (error.response?.data?.errors) {
+        errors.value = error.response.data.errors
+      } else if (error.response?.data?.message) {
+        errors.value = { email: [error.response.data.message] }
+      }
+      return false
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const logout = async () => {
+    try {
+      if (token.value) {
+        await authApi.logout()
+      }
+    } catch (error) {
+      // Ignore errors during logout
+    } finally {
+      clearAuth()
+    }
+  }
+
+  const refreshUser = async () => {
+    if (!token.value) return
+
+    try {
+      const freshUser = await authApi.getUser()
+      user.value = freshUser
+      localStorage.setItem(USER_KEY, JSON.stringify(freshUser))
+    } catch (error) {
+      clearAuth()
+    }
+  }
+
+  const setAuth = (newUser: User, newToken: string) => {
+    user.value = newUser
+    token.value = newToken
+    localStorage.setItem(TOKEN_KEY, newToken)
+    localStorage.setItem(USER_KEY, JSON.stringify(newUser))
+  }
+
+  const clearAuth = () => {
+    user.value = null
+    token.value = null
+    localStorage.removeItem(TOKEN_KEY)
+    localStorage.removeItem(USER_KEY)
+  }
+
+  const clearErrors = () => {
+    errors.value = {}
+  }
+
+  return {
+    // State
+    user,
+    token,
+    initialized,
+    loading,
+    errors,
+
+    // Getters
+    isAuthenticated,
+    fullName,
+
+    // Actions
+    initialize,
+    login,
+    register,
+    logout,
+    refreshUser,
+    setAuth,
+    clearAuth,
+    clearErrors,
+  }
+})

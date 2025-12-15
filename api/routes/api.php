@@ -95,6 +95,33 @@ Route::post('/forgot-password', function (Request $request) {
     ]);
 });
 
+Route::post('/reset-password', function (Request $request) {
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+    ]);
+
+    $status = \Illuminate\Support\Facades\Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function ($user) use ($request) {
+            $user->forceFill([
+                'password' => Hash::make($request->password),
+            ])->save();
+        }
+    );
+
+    if ($status === \Illuminate\Support\Facades\Password::PASSWORD_RESET) {
+        return response()->json([
+            'message' => 'Password has been reset successfully.',
+        ]);
+    }
+
+    throw ValidationException::withMessages([
+        'email' => [__($status)],
+    ]);
+});
+
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     // Get current user
@@ -129,6 +156,22 @@ Route::middleware('auth:sanctum')->group(function () {
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
+
+    // Password update
+    Route::put('/password', function (Request $request) {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return response()->json([
+            'message' => 'Password updated successfully.',
+        ]);
+    });
 
     // Dashboard stats
     Route::get('/dashboard/stats', function (Request $request) {

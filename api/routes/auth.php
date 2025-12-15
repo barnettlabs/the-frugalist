@@ -48,9 +48,7 @@ Route::middleware('auth')->group(function () {
         ->name('verification.send');
 
     Route::get('email-verified', function () {
-        return \Inertia\Inertia::render('Auth/VerificationSuccess', [
-            'user' => request()->user(),
-        ]);
+        return redirect('/dashboard');
     })->name('verification.success');
 
     Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])

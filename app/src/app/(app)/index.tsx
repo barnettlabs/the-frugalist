@@ -1,28 +1,18 @@
+import { BlurView } from 'expo-blur';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Link, useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React from 'react';
 import { ActivityIndicator, RefreshControl, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Circle, Defs, Pattern, Rect } from 'react-native-svg';
 
 import { useProfile } from '@/api/auth/use-profile';
 import { useDashboardStats } from '@/api/dashboard/use-dashboard-stats';
-import {
-  FocusAwareStatusBar,
-  Pressable,
-  ScreenContainer,
-  ScrollView,
-  Text,
-  View,
-} from '@/components/ui';
+import { FocusAwareStatusBar, Pressable, ScrollView, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
-import {
-  Calculator as CalculatorIcon,
-  Car as CarIcon,
-  Chevron,
-  Plus,
-  Tag as TagIcon,
-} from '@/components/ui/icons';
+import { Calculator as CalculatorIcon, Car as CarIcon, Chevron, Plus, Tag as TagIcon } from '@/components/ui/icons';
 
 export default function Dashboard() {
   const { data: stats, isLoading, refetch, isRefetching } = useDashboardStats();
@@ -43,8 +33,22 @@ export default function Dashboard() {
 
   const firstName = user?.first_name || 'User';
 
+  const gradientColors = isDark
+    ? [colors.charcoal[950], colors.charcoal[900], colors.charcoal[950]]
+    : [colors.neutral[50], colors.neutral[100], colors.neutral[50]];
+
+  const dotColor = isDark ? 'rgba(148, 163, 184, 0.08)' : 'rgba(148, 163, 184, 0.15)';
+
   return (
-    <ScreenContainer>
+    <LinearGradient colors={gradientColors} style={styles.container} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+      <Svg style={StyleSheet.absoluteFill} pointerEvents="none">
+        <Defs>
+          <Pattern id="dotPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+            <Circle cx="2" cy="2" r="1" fill={dotColor} />
+          </Pattern>
+        </Defs>
+        <Rect x="0" y="0" width="100%" height="100%" fill="url(#dotPattern)" />
+      </Svg>
       <FocusAwareStatusBar />
 
       <ScrollView
@@ -52,11 +56,7 @@ export default function Dashboard() {
         contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 16 }]}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl
-            refreshing={isRefetching}
-            onRefresh={refetch}
-            tintColor={colors.primary[400]}
-          />
+          <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={colors.primary[400]} />
         }
       >
         {/* Header */}
@@ -99,9 +99,7 @@ export default function Dashboard() {
               {isLoading ? (
                 <ActivityIndicator size="small" color={colors.primary[500]} />
               ) : (
-                <Text style={[styles.overviewValue, { color: theme.textPrimary }]}>
-                    {stats?.trackerCount ?? 0}
-                </Text>
+                <Text style={[styles.overviewValue, { color: theme.textPrimary }]}>{stats?.trackerCount ?? 0}</Text>
               )}
               <Text style={[styles.overviewLabel, { color: theme.textMuted }]}>Tracked Items</Text>
             </View>
@@ -149,7 +147,9 @@ export default function Dashboard() {
           <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>Learn</Text>
           <View style={styles.resourcesRow}>
             <Link href="/(app)/learning/financing" asChild>
-              <Pressable style={[styles.resourceCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
+              <Pressable
+                style={[styles.resourceCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}
+              >
                 <View style={[styles.resourceIcon, { backgroundColor: '#3B82F615' }]}>
                   <CalculatorIcon color="#3B82F6" size={18} />
                 </View>
@@ -158,7 +158,9 @@ export default function Dashboard() {
               </Pressable>
             </Link>
             <Link href="/(app)/learning/leasing" asChild>
-              <Pressable style={[styles.resourceCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
+              <Pressable
+                style={[styles.resourceCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}
+              >
                 <View style={[styles.resourceIcon, { backgroundColor: '#10B98115' }]}>
                   <CarIcon color="#10B981" size={18} />
                 </View>
@@ -171,7 +173,14 @@ export default function Dashboard() {
 
         <View style={{ height: 100 }} />
       </ScrollView>
-    </ScreenContainer>
+
+      {/* Blurred status bar area */}
+      <BlurView
+        intensity={20}
+        tint={isDark ? 'dark' : 'light'}
+        style={[styles.statusBarBlur, { height: insets.top }]}
+      />
+    </LinearGradient>
   );
 }
 
@@ -222,9 +231,7 @@ function EntitySection({
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
         <View style={styles.sectionTitleRow}>
-          <View style={[styles.sectionIcon, { backgroundColor: `${accentColor}15` }]}>
-            {icon}
-          </View>
+          <View style={[styles.sectionIcon, { backgroundColor: `${accentColor}15` }]}>{icon}</View>
           <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>{title}</Text>
         </View>
         <Pressable onPress={onViewAll} style={styles.viewAllButton}>
@@ -241,16 +248,11 @@ function EntitySection({
             ) : (
               <Text style={[styles.entityCount, { color: accentColor }]}>{count}</Text>
             )}
-            <Text style={[styles.entityLabel, { color: theme.textMuted }]}>
-              {count === 1 ? 'item' : 'items'}
-            </Text>
+            <Text style={[styles.entityLabel, { color: theme.textMuted }]}>{count === 1 ? 'item' : 'items'}</Text>
           </View>
 
           <View style={styles.entityActions}>
-            <Pressable
-              onPress={onViewAll}
-              style={[styles.entityButton, { backgroundColor: theme.cardBorder }]}
-            >
+            <Pressable onPress={onViewAll} style={[styles.entityButton, { backgroundColor: theme.cardBorder }]}>
               <Chevron direction="right" color={theme.textSecondary} size={18} />
               <Text style={[styles.entityButtonText, { color: theme.textSecondary }]}>View</Text>
             </Pressable>
@@ -269,6 +271,9 @@ function EntitySection({
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   scrollView: {
     flex: 1,
   },
@@ -448,5 +453,11 @@ const styles = StyleSheet.create({
   },
   resourceSubtitle: {
     fontSize: 13,
+  },
+  statusBarBlur: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
   },
 });

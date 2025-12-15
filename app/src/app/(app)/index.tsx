@@ -169,7 +169,7 @@ export default function Dashboard() {
           </View>
         </View>
 
-        <View style={{ height: 40 }} />
+        <View style={{ height: 100 }} />
       </ScrollView>
     </ScreenContainer>
   );

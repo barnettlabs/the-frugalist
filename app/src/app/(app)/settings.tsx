@@ -27,7 +27,7 @@ export default function Settings() {
     <ScreenContainer>
       <FocusAwareStatusBar />
 
-      <ScrollView>
+      <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
         <View className="flex-1 px-4 pt-4">
           <Text className="text-xl font-bold text-neutral-900 dark:text-white">
             {translate('settings.title')}

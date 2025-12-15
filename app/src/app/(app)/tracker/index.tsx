@@ -105,7 +105,7 @@ export default function TrackerListScreen() {
 
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ padding: 16 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
         refreshControl={
           <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
         }
@@ -136,14 +136,6 @@ export default function TrackerListScreen() {
           </View>
         )}
       </ScrollView>
-
-      {allProducts.length > 0 && (
-        <View className="border-t border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800">
-          <Link href="/(app)/tracker/create" asChild>
-            <Button label="Track New Product" />
-          </Link>
-        </View>
-      )}
     </ScreenContainer>
   );
 }

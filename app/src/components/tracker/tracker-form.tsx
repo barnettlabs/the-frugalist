@@ -24,6 +24,7 @@ type TrackerFormData = z.infer<typeof trackerSchema>;
 interface TrackerFormProps {
   onSubmit: (data: TrackerFormData) => void;
   isSubmitting: boolean;
+  onCancel?: () => void;
 }
 
 const RETAILER_OPTIONS = [
@@ -35,7 +36,7 @@ const RETAILER_OPTIONS = [
   { value: 6, label: 'Target' },
 ];
 
-export function TrackerForm({ onSubmit, isSubmitting }: TrackerFormProps) {
+export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormProps) {
   const { control, handleSubmit, setValue, watch } = useForm<TrackerFormData>({
     resolver: zodResolver(trackerSchema),
     defaultValues: {
@@ -109,13 +110,22 @@ export function TrackerForm({ onSubmit, isSubmitting }: TrackerFormProps) {
         </View>
       </ScrollView>
 
-      {/* Submit Button */}
+      {/* Action Buttons */}
       <View className="border-t border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800">
-        <Button
-          label={isSubmitting ? 'Tracking...' : 'Start Tracking'}
-          onPress={handleSubmit(onSubmit)}
-          disabled={isSubmitting}
-        />
+        <View className="flex-row gap-3">
+          {onCancel && (
+            <View className="flex-1">
+              <Button label="Cancel" variant="outline" onPress={onCancel} />
+            </View>
+          )}
+          <View className="flex-1">
+            <Button
+              label={isSubmitting ? 'Tracking...' : 'Start Tracking'}
+              onPress={handleSubmit(onSubmit)}
+              disabled={isSubmitting}
+            />
+          </View>
+        </View>
       </View>
     </View>
   );

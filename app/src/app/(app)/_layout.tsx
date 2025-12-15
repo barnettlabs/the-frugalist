@@ -79,6 +79,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Dashboard',
+          headerShown: false,
           tabBarIcon: ({ color }) => <DashboardIcon color={color} />,
           tabBarButtonTestID: 'dashboard-tab',
         }}

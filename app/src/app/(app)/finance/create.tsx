@@ -62,6 +62,7 @@ export default function FinanceCreateScreen() {
         onSubmit={handleSubmit}
         isSubmitting={isPending}
         submitLabel="Create Estimate"
+        onCancel={() => router.back()}
       />
     </BottomSheetModalProvider>
   );

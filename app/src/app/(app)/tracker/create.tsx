@@ -35,7 +35,11 @@ export default function TrackerCreateScreen() {
 
   return (
     <BottomSheetModalProvider>
-      <TrackerForm onSubmit={handleSubmit} isSubmitting={isPending} />
+      <TrackerForm
+        onSubmit={handleSubmit}
+        isSubmitting={isPending}
+        onCancel={() => router.back()}
+      />
     </BottomSheetModalProvider>
   );
 }

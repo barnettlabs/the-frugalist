@@ -9,6 +9,7 @@ import { ThemeItem } from '@/components/settings/theme-item';
 import {
   colors,
   FocusAwareStatusBar,
+  ScreenContainer,
   ScrollView,
   Text,
   View,
@@ -23,12 +24,12 @@ export default function Settings() {
   const iconColor =
     colorScheme === 'dark' ? colors.neutral[400] : colors.neutral[500];
   return (
-    <>
+    <ScreenContainer>
       <FocusAwareStatusBar />
 
       <ScrollView>
-        <View className="flex-1 px-4 pt-16 ">
-          <Text className="text-xl font-bold">
+        <View className="flex-1 px-4 pt-4">
+          <Text className="text-xl font-bold text-neutral-900 dark:text-white">
             {translate('settings.title')}
           </Text>
           <ItemsContainer title="settings.generale">
@@ -88,6 +89,6 @@ export default function Settings() {
           </View>
         </View>
       </ScrollView>
-    </>
+    </ScreenContainer>
   );
 }

@@ -11,6 +11,7 @@ export default function LeaseLayout() {
 
   return (
     <Stack
+      initialRouteName="index"
       screenOptions={{
         headerStyle: {
           backgroundColor: headerColors.background,

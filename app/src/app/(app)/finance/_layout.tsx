@@ -11,6 +11,7 @@ export default function FinanceLayout() {
 
   return (
     <Stack
+      initialRouteName="index"
       screenOptions={{
         headerStyle: {
           backgroundColor: headerColors.background,

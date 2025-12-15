@@ -11,6 +11,7 @@ export default function TrackerLayout() {
 
   return (
     <Stack
+      initialRouteName="index"
       screenOptions={{
         headerStyle: {
           backgroundColor: headerColors.background,

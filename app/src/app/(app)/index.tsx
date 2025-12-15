@@ -1,28 +1,38 @@
 import { Image } from 'expo-image';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
+import { useColorScheme } from 'nativewind';
 import React from 'react';
 import { ActivityIndicator, RefreshControl, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useProfile } from '@/api/auth/use-profile';
 import { useDashboardStats } from '@/api/dashboard/use-dashboard-stats';
 import {
   FocusAwareStatusBar,
   Pressable,
+  ScreenContainer,
   ScrollView,
   Text,
   View,
 } from '@/components/ui';
 import colors from '@/components/ui/colors';
 import {
-  ArrowRight,
   Calculator as CalculatorIcon,
   Car as CarIcon,
+  Chevron,
+  Plus,
   Tag as TagIcon,
 } from '@/components/ui/icons';
 
 export default function Dashboard() {
   const { data: stats, isLoading, refetch, isRefetching } = useDashboardStats();
   const { data: user } = useProfile();
+  const { colorScheme } = useColorScheme();
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const isDark = colorScheme === 'dark';
+
+  const theme = isDark ? darkTheme : lightTheme;
 
   const greeting = React.useMemo(() => {
     const hour = new Date().getHours();
@@ -31,13 +41,15 @@ export default function Dashboard() {
     return 'Good evening';
   }, []);
 
+  const firstName = user?.first_name || 'User';
+
   return (
-    <View style={styles.container}>
+    <ScreenContainer>
       <FocusAwareStatusBar />
 
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 16 }]}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -50,236 +62,245 @@ export default function Dashboard() {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerText}>
-            <Text style={styles.greeting}>{greeting}</Text>
-            <Text style={styles.userName}>{user?.first_name || 'Welcome'}</Text>
+            <Text style={[styles.greeting, { color: theme.textMuted }]}>{greeting},</Text>
+            <Text style={[styles.userName, { color: theme.textPrimary }]} numberOfLines={1}>
+              {firstName}
+            </Text>
           </View>
-          <Pressable style={styles.avatar}>
-            {user?.avatar_url ? (
-              <Image source={{ uri: user.avatar_url }} style={styles.avatarImage} />
-            ) : (
-              <Text style={styles.avatarText}>
-                {user?.first_name?.[0]?.toUpperCase() || 'U'}
-              </Text>
-            )}
-          </Pressable>
+          <Link href="/(app)/profile" asChild>
+            <Pressable style={[styles.avatar, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
+              {user?.avatar_url ? (
+                <Image source={{ uri: user.avatar_url }} style={styles.avatarImage} />
+              ) : (
+                <Text style={[styles.avatarText, { color: theme.textSecondary }]}>
+                  {firstName[0]?.toUpperCase() || 'U'}
+                </Text>
+              )}
+            </Pressable>
+          </Link>
         </View>
 
-        {/* Stats Cards */}
-        <View style={styles.statsContainer}>
-          <StatCard
-            title="Finance"
-            value={stats?.financeCount ?? 0}
-            subtitle="estimates"
-            isLoading={isLoading}
-            href="/(app)/finance"
-            accentColor="#3B82F6"
-            icon={<CalculatorIcon color="#3B82F6" />}
-          />
-          <StatCard
-            title="Lease"
-            value={stats?.leaseCount ?? 0}
-            subtitle="estimates"
-            isLoading={isLoading}
-            href="/(app)/lease"
-            accentColor="#10B981"
-            icon={<CarIcon color="#10B981" />}
-          />
-          <StatCard
-            title="Tracked"
-            value={stats?.trackerCount ?? 0}
-            subtitle="products"
-            isLoading={isLoading}
-            href="/(app)/tracker"
-            accentColor="#14B8A6"
-            icon={<TagIcon color="#14B8A6" />}
-          />
-        </View>
-
-        {/* Quick Actions */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.actionsGrid}>
-            <ActionCard
-              href="/(app)/finance/create"
-              title="Finance"
-              subtitle="New estimate"
-              icon={<CalculatorIcon color="#3B82F6" />}
-              accentColor="#3B82F6"
-            />
-            <ActionCard
-              href="/(app)/lease/create"
-              title="Lease"
-              subtitle="New estimate"
-              icon={<CarIcon color="#10B981" />}
-              accentColor="#10B981"
-            />
-            <ActionCard
-              href="/(app)/tracker/create"
-              title="Track"
-              subtitle="New product"
-              icon={<TagIcon color="#14B8A6" />}
-              accentColor="#14B8A6"
-            />
+        {/* Overview Stats */}
+        <View style={[styles.overviewCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
+          <Text style={[styles.overviewTitle, { color: theme.textSecondary }]}>Overview</Text>
+          <View style={styles.overviewStats}>
+            <View style={styles.overviewStat}>
+              {isLoading ? (
+                <ActivityIndicator size="small" color={colors.primary[500]} />
+              ) : (
+                <Text style={[styles.overviewValue, { color: theme.textPrimary }]}>
+                  {(stats?.financeCount ?? 0) + (stats?.leaseCount ?? 0)}
+                </Text>
+              )}
+              <Text style={[styles.overviewLabel, { color: theme.textMuted }]}>Total Estimates</Text>
+            </View>
+            <View style={[styles.overviewDivider, { backgroundColor: theme.cardBorder }]} />
+            <View style={styles.overviewStat}>
+              {isLoading ? (
+                <ActivityIndicator size="small" color={colors.primary[500]} />
+              ) : (
+                <Text style={[styles.overviewValue, { color: theme.textPrimary }]}>
+                    {stats?.trackerCount ?? 0}
+                </Text>
+              )}
+              <Text style={[styles.overviewLabel, { color: theme.textMuted }]}>Tracked Items</Text>
+            </View>
           </View>
         </View>
 
-        {/* Resources */}
+        {/* Finance Section */}
+        <EntitySection
+          title="Finance Estimates"
+          icon={<CalculatorIcon color="#3B82F6" size={20} />}
+          accentColor="#3B82F6"
+          count={stats?.financeCount ?? 0}
+          isLoading={isLoading}
+          theme={theme}
+          onViewAll={() => router.push('/(app)/finance')}
+          onCreateNew={() => router.push('/(app)/finance/create')}
+        />
+
+        {/* Lease Section */}
+        <EntitySection
+          title="Lease Estimates"
+          icon={<CarIcon color="#10B981" size={20} />}
+          accentColor="#10B981"
+          count={stats?.leaseCount ?? 0}
+          isLoading={isLoading}
+          theme={theme}
+          onViewAll={() => router.push('/(app)/lease')}
+          onCreateNew={() => router.push('/(app)/lease/create')}
+        />
+
+        {/* Tracker Section */}
+        <EntitySection
+          title="Product Tracker"
+          icon={<TagIcon color="#8B5CF6" size={20} />}
+          accentColor="#8B5CF6"
+          count={stats?.trackerCount ?? 0}
+          isLoading={isLoading}
+          theme={theme}
+          onViewAll={() => router.push('/(app)/tracker')}
+          onCreateNew={() => router.push('/(app)/tracker/create')}
+        />
+
+        {/* Learning Resources */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Resources</Text>
-          <View style={styles.resourcesContainer}>
-            <ResourceCard
-              href="/(app)/learning/financing"
-              title="Financing Guide"
-              description="Learn key terms and strategies"
-              tag="GUIDE"
-            />
-            <ResourceCard
-              href="/(app)/learning/leasing"
-              title="Leasing Explained"
-              description="Understand your options"
-              tag="LEARN"
-            />
+          <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>Learn</Text>
+          <View style={styles.resourcesRow}>
+            <Link href="/(app)/learning/financing" asChild>
+              <Pressable style={[styles.resourceCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
+                <View style={[styles.resourceIcon, { backgroundColor: '#3B82F615' }]}>
+                  <CalculatorIcon color="#3B82F6" size={18} />
+                </View>
+                <Text style={[styles.resourceTitle, { color: theme.textPrimary }]}>Financing</Text>
+                <Text style={[styles.resourceSubtitle, { color: theme.textMuted }]}>Guide</Text>
+              </Pressable>
+            </Link>
+            <Link href="/(app)/learning/leasing" asChild>
+              <Pressable style={[styles.resourceCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
+                <View style={[styles.resourceIcon, { backgroundColor: '#10B98115' }]}>
+                  <CarIcon color="#10B981" size={18} />
+                </View>
+                <Text style={[styles.resourceTitle, { color: theme.textPrimary }]}>Leasing</Text>
+                <Text style={[styles.resourceSubtitle, { color: theme.textMuted }]}>Guide</Text>
+              </Pressable>
+            </Link>
           </View>
         </View>
 
         <View style={{ height: 40 }} />
       </ScrollView>
+    </ScreenContainer>
+  );
+}
+
+type Theme = {
+  cardBg: string;
+  cardBorder: string;
+  textPrimary: string;
+  textSecondary: string;
+  textMuted: string;
+};
+
+const darkTheme: Theme = {
+  cardBg: colors.charcoal[800],
+  cardBorder: colors.charcoal[700],
+  textPrimary: '#FFFFFF',
+  textSecondary: '#94A3B8',
+  textMuted: '#64748B',
+};
+
+const lightTheme: Theme = {
+  cardBg: '#FFFFFF',
+  cardBorder: colors.neutral[200],
+  textPrimary: colors.neutral[900],
+  textSecondary: colors.neutral[600],
+  textMuted: colors.neutral[500],
+};
+
+function EntitySection({
+  title,
+  icon,
+  accentColor,
+  count,
+  isLoading,
+  theme,
+  onViewAll,
+  onCreateNew,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  accentColor: string;
+  count: number;
+  isLoading: boolean;
+  theme: Theme;
+  onViewAll: () => void;
+  onCreateNew: () => void;
+}) {
+  return (
+    <View style={styles.section}>
+      <View style={styles.sectionHeader}>
+        <View style={styles.sectionTitleRow}>
+          <View style={[styles.sectionIcon, { backgroundColor: `${accentColor}15` }]}>
+            {icon}
+          </View>
+          <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>{title}</Text>
+        </View>
+        <Pressable onPress={onViewAll} style={styles.viewAllButton}>
+          <Text style={[styles.viewAllText, { color: accentColor }]}>View All</Text>
+          <Chevron direction="right" color={accentColor} size={16} />
+        </Pressable>
+      </View>
+
+      <View style={[styles.entityCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
+        <View style={styles.entityContent}>
+          <View style={styles.entityMetric}>
+            {isLoading ? (
+              <ActivityIndicator size="small" color={accentColor} />
+            ) : (
+              <Text style={[styles.entityCount, { color: accentColor }]}>{count}</Text>
+            )}
+            <Text style={[styles.entityLabel, { color: theme.textMuted }]}>
+              {count === 1 ? 'item' : 'items'}
+            </Text>
+          </View>
+
+          <View style={styles.entityActions}>
+            <Pressable
+              onPress={onViewAll}
+              style={[styles.entityButton, { backgroundColor: theme.cardBorder }]}
+            >
+              <Chevron direction="right" color={theme.textSecondary} size={18} />
+              <Text style={[styles.entityButtonText, { color: theme.textSecondary }]}>View</Text>
+            </Pressable>
+            <Pressable
+              onPress={onCreateNew}
+              style={[styles.entityButton, styles.entityButtonPrimary, { backgroundColor: accentColor }]}
+            >
+              <Plus color="#FFFFFF" size={18} />
+              <Text style={[styles.entityButtonText, { color: '#FFFFFF' }]}>New</Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
     </View>
   );
 }
 
-function StatCard({
-  title,
-  value,
-  subtitle,
-  isLoading,
-  href,
-  accentColor,
-  icon,
-}: {
-  title: string;
-  value: number;
-  subtitle: string;
-  isLoading: boolean;
-  href: string;
-  accentColor: string;
-  icon: React.ReactNode;
-}) {
-  return (
-    <Link href={href as any} asChild>
-      <Pressable style={styles.statCard}>
-        <View style={styles.statCardContent}>
-          <View style={[styles.statIconContainer, { backgroundColor: `${accentColor}20` }]}>
-            {icon}
-          </View>
-          <Text style={styles.statTitle}>{title}</Text>
-          {isLoading ? (
-            <ActivityIndicator size="small" color={accentColor} style={{ marginTop: 8 }} />
-          ) : (
-            <Text style={[styles.statValue, { color: accentColor }]}>{value}</Text>
-          )}
-          <Text style={styles.statSubtitle}>{subtitle}</Text>
-        </View>
-      </Pressable>
-    </Link>
-  );
-}
-
-function ActionCard({
-  href,
-  title,
-  subtitle,
-  icon,
-  accentColor,
-}: {
-  href: string;
-  title: string;
-  subtitle: string;
-  icon: React.ReactNode;
-  accentColor: string;
-}) {
-  return (
-    <Link href={href as any} asChild>
-      <Pressable style={styles.actionCard}>
-        <View style={[styles.actionIconContainer, { backgroundColor: `${accentColor}15` }]}>
-          {icon}
-        </View>
-        <Text style={styles.actionTitle}>{title}</Text>
-        <Text style={styles.actionSubtitle}>{subtitle}</Text>
-        <View style={[styles.actionArrow, { backgroundColor: `${accentColor}20` }]}>
-          <ArrowRight color={accentColor} />
-        </View>
-      </Pressable>
-    </Link>
-  );
-}
-
-function ResourceCard({
-  href,
-  title,
-  description,
-  tag,
-}: {
-  href: string;
-  title: string;
-  description: string;
-  tag: string;
-}) {
-  return (
-    <Link href={href as any} asChild>
-      <Pressable style={styles.resourceCard}>
-        <View style={styles.resourceContent}>
-          <View style={styles.resourceTag}>
-            <Text style={styles.resourceTagText}>{tag}</Text>
-          </View>
-          <Text style={styles.resourceTitle}>{title}</Text>
-          <Text style={styles.resourceDescription}>{description}</Text>
-        </View>
-        <ArrowRight color="#64748B" />
-      </Pressable>
-    </Link>
-  );
-}
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0F172A',
-  },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
-    paddingTop: 60,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 32,
+    marginBottom: 24,
   },
   headerText: {
     flex: 1,
+    marginRight: 16,
   },
   greeting: {
-    fontSize: 14,
-    color: '#94A3B8',
-    marginBottom: 4,
+    fontSize: 15,
+    fontWeight: '500',
+    marginBottom: 2,
   },
   userName: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: '700',
-    color: '#FFFFFF',
     letterSpacing: -0.5,
   },
   avatar: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#1E293B',
     borderWidth: 2,
-    borderColor: '#334155',
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
@@ -291,136 +312,141 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#94A3B8',
   },
-  statsContainer: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 32,
-  },
-  statCard: {
-    flex: 1,
-    borderRadius: 20,
-    overflow: 'hidden',
+  overviewCard: {
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#ffffff10',
-    backgroundColor: '#1E293B',
+    padding: 20,
+    marginBottom: 24,
   },
-  statCardContent: {
-    padding: 16,
-    alignItems: 'center',
-  },
-  statIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
-  },
-  statTitle: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#94A3B8',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  statValue: {
-    fontSize: 32,
-    fontWeight: '700',
-    marginTop: 4,
-  },
-  statSubtitle: {
-    fontSize: 12,
-    color: '#64748B',
-    marginTop: 2,
-  },
-  section: {
-    marginBottom: 28,
-  },
-  sectionTitle: {
+  overviewTitle: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#64748B',
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 0.5,
     marginBottom: 16,
   },
-  actionsGrid: {
+  overviewStats: {
     flexDirection: 'row',
-    gap: 12,
-  },
-  actionCard: {
-    flex: 1,
-    backgroundColor: '#1E293B',
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#334155',
-  },
-  actionIconContainer: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
   },
-  actionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    marginBottom: 2,
+  overviewStat: {
+    flex: 1,
+    alignItems: 'center',
   },
-  actionSubtitle: {
-    fontSize: 12,
-    color: '#64748B',
+  overviewValue: {
+    fontSize: 36,
+    fontWeight: '700',
+    lineHeight: 44,
+    marginBottom: 4,
+  },
+  overviewLabel: {
+    fontSize: 13,
+  },
+  overviewDivider: {
+    width: 1,
+    height: 40,
+    marginHorizontal: 16,
+  },
+  section: {
+    marginBottom: 20,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 12,
   },
-  actionArrow: {
-    width: 28,
-    height: 28,
+  sectionTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sectionIcon: {
+    width: 32,
+    height: 32,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 10,
   },
-  resourcesContainer: {
+  sectionTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  viewAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  viewAllText: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginRight: 2,
+  },
+  entityCard: {
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 16,
+  },
+  entityContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  entityMetric: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  entityCount: {
+    fontSize: 32,
+    fontWeight: '700',
+    marginRight: 8,
+    lineHeight: 40,
+  },
+  entityLabel: {
+    fontSize: 14,
+  },
+  entityActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  entityButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+    gap: 6,
+  },
+  entityButtonPrimary: {},
+  entityButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  resourcesRow: {
+    flexDirection: 'row',
     gap: 12,
   },
   resourceCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1E293B',
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#334155',
-  },
-  resourceContent: {
     flex: 1,
+    borderRadius: 14,
+    borderWidth: 1,
+    padding: 16,
+    alignItems: 'center',
   },
-  resourceTag: {
-    backgroundColor: '#3B82F620',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    alignSelf: 'flex-start',
-    marginBottom: 8,
-  },
-  resourceTagText: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#3B82F6',
-    letterSpacing: 0.5,
+  resourceIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
   },
   resourceTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
-    color: '#FFFFFF',
-    marginBottom: 4,
+    marginBottom: 2,
   },
-  resourceDescription: {
+  resourceSubtitle: {
     fontSize: 13,
-    color: '#64748B',
   },
 });

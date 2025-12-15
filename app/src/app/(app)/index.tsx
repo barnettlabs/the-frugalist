@@ -67,43 +67,25 @@ export default function Dashboard() {
               {firstName}
             </Text>
           </View>
-          <Link href="/(app)/profile" asChild>
-            <Pressable style={[styles.avatar, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
+          <Link href="/(app)/profile">
+            <View
+              style={[
+                styles.avatar,
+                {
+                  // backgroundColor: theme.cardBg,
+                  borderColor: colors.primary[500],
+                },
+              ]}
+            >
               {user?.avatar_url ? (
                 <Image source={{ uri: user.avatar_url }} style={styles.avatarImage} />
               ) : (
-                <Text style={[styles.avatarText, { color: theme.textSecondary }]}>
+                <Text style={[styles.avatarText, { color: colors.primary[500] }]}>
                   {firstName[0]?.toUpperCase() || 'U'}
                 </Text>
               )}
-            </Pressable>
+            </View>
           </Link>
-        </View>
-
-        {/* Overview Stats */}
-        <View style={[styles.overviewCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
-          <Text style={[styles.overviewTitle, { color: theme.textSecondary }]}>Overview</Text>
-          <View style={styles.overviewStats}>
-            <View style={styles.overviewStat}>
-              {isLoading ? (
-                <ActivityIndicator size="small" color={colors.primary[500]} />
-              ) : (
-                <Text style={[styles.overviewValue, { color: theme.textPrimary }]}>
-                  {(stats?.financeCount ?? 0) + (stats?.leaseCount ?? 0)}
-                </Text>
-              )}
-              <Text style={[styles.overviewLabel, { color: theme.textMuted }]}>Total Estimates</Text>
-            </View>
-            <View style={[styles.overviewDivider, { backgroundColor: theme.cardBorder }]} />
-            <View style={styles.overviewStat}>
-              {isLoading ? (
-                <ActivityIndicator size="small" color={colors.primary[500]} />
-              ) : (
-                <Text style={[styles.overviewValue, { color: theme.textPrimary }]}>{stats?.trackerCount ?? 0}</Text>
-              )}
-              <Text style={[styles.overviewLabel, { color: theme.textMuted }]}>Tracked Items</Text>
-            </View>
-          </View>
         </View>
 
         {/* Finance Section */}
@@ -251,19 +233,13 @@ function EntitySection({
             <Text style={[styles.entityLabel, { color: theme.textMuted }]}>{count === 1 ? 'item' : 'items'}</Text>
           </View>
 
-          <View style={styles.entityActions}>
-            <Pressable onPress={onViewAll} style={[styles.entityButton, { backgroundColor: theme.cardBorder }]}>
-              <Chevron direction="right" color={theme.textSecondary} size={18} />
-              <Text style={[styles.entityButtonText, { color: theme.textSecondary }]}>View</Text>
-            </Pressable>
-            <Pressable
-              onPress={onCreateNew}
-              style={[styles.entityButton, styles.entityButtonPrimary, { backgroundColor: accentColor }]}
-            >
-              <Plus color="#FFFFFF" size={18} />
-              <Text style={[styles.entityButtonText, { color: '#FFFFFF' }]}>New</Text>
-            </Pressable>
-          </View>
+          <Pressable
+            onPress={onCreateNew}
+            style={[styles.entityButton, styles.entityButtonPrimary, { backgroundColor: accentColor }]}
+          >
+            <Plus color="#FFFFFF" size={18} />
+            <Text style={[styles.entityButtonText, { color: '#FFFFFF' }]}>New</Text>
+          </Pressable>
         </View>
       </View>
     </View>
@@ -317,41 +293,6 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 18,
     fontWeight: '600',
-  },
-  overviewCard: {
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: 20,
-    marginBottom: 24,
-  },
-  overviewTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginBottom: 16,
-  },
-  overviewStats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  overviewStat: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  overviewValue: {
-    fontSize: 36,
-    fontWeight: '700',
-    lineHeight: 44,
-    marginBottom: 4,
-  },
-  overviewLabel: {
-    fontSize: 13,
-  },
-  overviewDivider: {
-    width: 1,
-    height: 40,
-    marginHorizontal: 16,
   },
   section: {
     marginBottom: 20,
@@ -409,10 +350,6 @@ const styles = StyleSheet.create({
   },
   entityLabel: {
     fontSize: 14,
-  },
-  entityActions: {
-    flexDirection: 'row',
-    gap: 8,
   },
   entityButton: {
     flexDirection: 'row',

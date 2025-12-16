@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useMemo } from 'react';
 import type { Control, UseFormSetValue } from 'react-hook-form';
 import { useForm, useWatch } from 'react-hook-form';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
 import { CurrencyInput, FormSection, PercentageInput } from '@/components/forms';
@@ -58,12 +59,16 @@ const TERM_OPTIONS = [
 ];
 
 export function FinanceForm({ initialData, onSubmit, isSubmitting, submitLabel, onCancel }: FinanceFormProps) {
+  const insets = useSafeAreaInsets();
   const { control, handleSubmit, setValue, formState } = useForm<FinanceFormData>({
     resolver: zodResolver(financeSchema),
     defaultValues: initialData,
   });
   const watchedValues = useWatch({ control });
   const summary = useMemo(() => new FinanceCalculator(watchedValues as FinanceFormData).getSummary(), [watchedValues]);
+
+  // Account for floating tab bar (64px height + 16px margin + safe area)
+  const bottomPadding = Math.max(insets.bottom, 16) + 80;
 
   return (
     <View className="flex-1 bg-neutral-100 dark:bg-neutral-900">
@@ -83,6 +88,7 @@ export function FinanceForm({ initialData, onSubmit, isSubmitting, submitLabel, 
         onCancel={onCancel}
         isSubmitting={isSubmitting}
         submitLabel={submitLabel}
+        bottomPadding={bottomPadding}
       />
     </View>
   );
@@ -247,14 +253,19 @@ function ActionBar({
   onCancel,
   isSubmitting,
   submitLabel,
+  bottomPadding,
 }: {
   onSubmit: () => void;
   onCancel?: () => void;
   isSubmitting: boolean;
   submitLabel: string;
+  bottomPadding: number;
 }) {
   return (
-    <View className="border-t border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800">
+    <View
+      className="border-t border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800"
+      style={{ paddingBottom: bottomPadding }}
+    >
       <View className="flex-row gap-3">
         {onCancel && (
           <View className="flex-1">

@@ -239,7 +239,7 @@ function CustomTabBar({
         <Animated.View
           style={[
             tabBarStyles.pill,
-            { backgroundColor: isDark ? colors.charcoal[700] : colors.neutral[100] },
+            { backgroundColor: isDark ? colors.charcoal[700] : colors.neutral[200] },
             pillStyle,
           ]}
         />

@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button, ScrollView, Text, View } from '@/components/ui';
 import { SummaryRow } from '@/components/ui/summary-row';
@@ -22,10 +23,14 @@ export function LeaseDetail({
   onDelete,
   isDeleting,
 }: LeaseDetailProps) {
+  const insets = useSafeAreaInsets();
   const summary = useMemo(
     () => new LeaseCalculator(sheet).getSummary(),
     [sheet]
   );
+
+  // Account for floating tab bar (64px height + 16px margin + safe area)
+  const bottomPadding = Math.max(insets.bottom, 16) + 80;
 
   return (
     <View className="flex-1 bg-neutral-100 dark:bg-neutral-900">
@@ -43,7 +48,12 @@ export function LeaseDetail({
         {sheet.notes && <NotesCard notes={sheet.notes} />}
         <View className="h-20" />
       </ScrollView>
-      <ActionBar onEdit={onEdit} onDelete={onDelete} isDeleting={isDeleting} />
+      <ActionBar
+        onEdit={onEdit}
+        onDelete={onDelete}
+        isDeleting={isDeleting}
+        bottomPadding={bottomPadding}
+      />
     </View>
   );
 }
@@ -272,13 +282,18 @@ function ActionBar({
   onEdit,
   onDelete,
   isDeleting,
+  bottomPadding,
 }: {
   onEdit: () => void;
   onDelete: () => void;
   isDeleting: boolean;
+  bottomPadding: number;
 }) {
   return (
-    <View className="border-t border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800">
+    <View
+      className="border-t border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800"
+      style={{ paddingBottom: bottomPadding }}
+    >
       <View className="flex-row gap-3">
         <View className="flex-1">
           <Button

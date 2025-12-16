@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
 import { CurrencyInput } from '@/components/forms';
@@ -37,6 +38,7 @@ const RETAILER_OPTIONS = [
 ];
 
 export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormProps) {
+  const insets = useSafeAreaInsets();
   const { control, handleSubmit, setValue, watch } = useForm<TrackerFormData>({
     resolver: zodResolver(trackerSchema),
     defaultValues: {
@@ -47,6 +49,9 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
   });
 
   const retailerId = watch('retailer_id');
+
+  // Account for floating tab bar (64px height + 16px margin + safe area)
+  const bottomPadding = Math.max(insets.bottom, 16) + 80;
 
   return (
     <View className="flex-1 bg-neutral-100 dark:bg-neutral-900">
@@ -111,7 +116,10 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
       </ScrollView>
 
       {/* Action Buttons */}
-      <View className="border-t border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800">
+      <View
+        className="border-t border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800"
+        style={{ paddingBottom: bottomPadding }}
+      >
         <View className="flex-row gap-3">
           {onCancel && (
             <View className="flex-1">

@@ -36,7 +36,7 @@ export default function FinanceListScreen() {
     <ScreenContainer>
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 10 }}
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
       >
         {/* Terms Link */}
@@ -63,7 +63,7 @@ export default function FinanceListScreen() {
           </View>
         ) : (
           <View className="gap-4">
-            {sheets.map((sheet) => (
+            {sheets.map(sheet => (
               <FinanceCard key={sheet.id} sheet={sheet} />
             ))}
           </View>

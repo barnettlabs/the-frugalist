@@ -1,7 +1,11 @@
+import { Link } from 'expo-router';
 import React, { useMemo } from 'react';
+import { StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button, ScrollView, Text, View } from '@/components/ui';
+import { Button, Pressable, ScrollView, Text, View } from '@/components/ui';
+import colors from '@/components/ui/colors';
+import { Book } from '@/components/ui/icons';
 import { SummaryRow } from '@/components/ui/summary-row';
 import {
   formatCurrencyWithSymbol,
@@ -40,6 +44,7 @@ export function LeaseDetail({
           term={sheet.lease_term}
           residual={sheet.residual_percent}
         />
+        <TermsLink />
         <VehicleInfoCard sheet={sheet} />
         <PaymentBreakdownCard summary={summary} />
         <FinancialSummaryCard summary={summary} sheet={sheet} />
@@ -277,6 +282,39 @@ function NotesCard({ notes }: { notes: string }) {
     </View>
   );
 }
+
+function TermsLink() {
+  return (
+    <Link href="/(app)/learning/leasing" asChild>
+      <Pressable style={styles.termsLink}>
+        <View style={styles.termsIconContainer}>
+          <Book color={colors.secondary[500]} size={16} />
+        </View>
+        <Text style={styles.termsText}>Learn Leasing Terms</Text>
+      </Pressable>
+    </Link>
+  );
+}
+
+const styles = StyleSheet.create({
+  termsLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    marginBottom: 16,
+  },
+  termsIconContainer: {
+    marginRight: 10,
+  },
+  termsText: {
+    color: '#10B981',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+});
 
 function ActionBar({
   onEdit,

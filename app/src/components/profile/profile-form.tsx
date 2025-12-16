@@ -36,8 +36,8 @@ export function ProfileForm({
 
   return (
     <View>
-      <Text className="mb-4 text-xl font-semibold text-neutral-900 dark:text-white">
-        Profile Information
+      <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
+        Personal Information
       </Text>
 
       <View className="rounded-xl bg-white p-4 dark:bg-neutral-800">
@@ -86,14 +86,19 @@ export function ProfileForm({
           Email Verification
         </Text>
         {profile.email_verified_at ? (
-          <View className="flex-row items-center">
-            <Text className="text-green-600">✓ Email verified</Text>
+          <View className="flex-row items-center rounded-lg bg-green-50 p-3 dark:bg-green-900/20">
+            <Text className="text-green-700 dark:text-green-400">
+              Your email address has been verified
+            </Text>
           </View>
         ) : (
-          <View>
-            <Text className="text-yellow-600">Email not verified</Text>
-            <Text className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-              Please check your inbox for the verification email.
+          <View className="rounded-lg bg-amber-50 p-3 dark:bg-amber-900/20">
+            <Text className="font-medium text-amber-700 dark:text-amber-400">
+              Email not verified
+            </Text>
+            <Text className="mt-1 text-sm text-amber-600 dark:text-amber-500">
+              Please check your inbox for the verification email. You may need
+              to check your spam folder.
             </Text>
           </View>
         )}

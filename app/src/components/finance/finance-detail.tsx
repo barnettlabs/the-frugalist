@@ -1,7 +1,11 @@
+import { Link } from 'expo-router';
 import React, { useMemo } from 'react';
+import { StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button, ScrollView, Text, View } from '@/components/ui';
+import { Button, Pressable, ScrollView, Text, View } from '@/components/ui';
+import colors from '@/components/ui/colors';
+import { Book } from '@/components/ui/icons';
 import { SummaryRow } from '@/components/ui/summary-row';
 import { FinanceCalculator, formatCurrencyWithSymbol } from '@/lib/calculators';
 import type { VehicleFinanceSheet } from '@/lib/types/models';
@@ -36,6 +40,7 @@ export function FinanceDetail({
           term={sheet.finance_term}
           rate={sheet.interest_rate}
         />
+        <TermsLink />
         <VehicleInfoCard sheet={sheet} />
         <FinancialSummaryCard summary={summary} sheet={sheet} />
         {summary.amortization && (
@@ -250,6 +255,39 @@ function NotesCard({ notes }: { notes: string }) {
     </View>
   );
 }
+
+function TermsLink() {
+  return (
+    <Link href="/(app)/learning/financing" asChild>
+      <Pressable style={styles.termsLink}>
+        <View style={styles.termsIconContainer}>
+          <Book color={colors.primary[500]} size={16} />
+        </View>
+        <Text style={styles.termsText}>Learn Financing Terms</Text>
+      </Pressable>
+    </Link>
+  );
+}
+
+const styles = StyleSheet.create({
+  termsLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    marginBottom: 16,
+  },
+  termsIconContainer: {
+    marginRight: 10,
+  },
+  termsText: {
+    color: '#3B82F6',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+});
 
 function ActionBar({
   onEdit,

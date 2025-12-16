@@ -1,17 +1,10 @@
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 
 import { usePriceTracker } from '@/api/tracker';
 import { ProductCard } from '@/components/tracker/product-card';
-import {
-  Button,
-  Pressable,
-  ScreenContainer,
-  ScrollView,
-  Text,
-  View,
-} from '@/components/ui';
+import { Button, FloatingAddButton, Pressable, ScreenContainer, ScrollView, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
 import type { PriceTrackerFilter } from '@/lib/types/models';
 
@@ -24,16 +17,15 @@ const FILTERS: { key: PriceTrackerFilter; label: string }[] = [
 ];
 
 export default function TrackerListScreen() {
+  const router = useRouter();
   const [filter, setFilter] = useState<PriceTrackerFilter>('all');
   const { data, isLoading, isError, refetch, isRefetching } = usePriceTracker();
 
   if (isLoading) {
     return (
       <ScreenContainer className="items-center justify-center">
-        <ActivityIndicator size="large" color={colors.primary[500]} />
-        <Text className="mt-4 text-neutral-600 dark:text-neutral-400">
-          Loading products...
-        </Text>
+        <ActivityIndicator size="large" color={colors.accent.violet} />
+        <Text className="mt-4 text-neutral-600 dark:text-neutral-400">Loading products...</Text>
       </ScreenContainer>
     );
   }
@@ -41,9 +33,7 @@ export default function TrackerListScreen() {
   if (isError) {
     return (
       <ScreenContainer className="items-center justify-center p-6">
-        <Text className="mb-4 text-center text-lg text-danger-600">
-          Failed to load products
-        </Text>
+        <Text className="mb-4 text-center text-lg text-danger-600">Failed to load products</Text>
         <Button label="Try Again" onPress={() => refetch()} />
       </ScreenContainer>
     );
@@ -85,16 +75,12 @@ export default function TrackerListScreen() {
             key={f.key}
             onPress={() => setFilter(f.key)}
             className={`rounded-full px-4 py-2 ${
-              filter === f.key
-                ? 'bg-primary-500'
-                : 'bg-neutral-200 dark:bg-neutral-700'
+              filter === f.key ? 'bg-primary-500' : 'bg-neutral-200 dark:bg-neutral-700'
             }`}
           >
             <Text
               className={`text-sm font-medium ${
-                filter === f.key
-                  ? 'text-white'
-                  : 'text-neutral-700 dark:text-neutral-300'
+                filter === f.key ? 'text-white' : 'text-neutral-700 dark:text-neutral-300'
               }`}
             >
               {f.label}
@@ -106,16 +92,12 @@ export default function TrackerListScreen() {
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
-        refreshControl={
-          <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
-        }
+        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
       >
         {filteredProducts.length === 0 ? (
           <View className="flex-1 items-center justify-center py-20">
             <Text className="mb-2 text-xl font-semibold text-neutral-700 dark:text-neutral-300">
-              {allProducts.length === 0
-                ? 'No Tracked Products'
-                : 'No Products Match Filter'}
+              {allProducts.length === 0 ? 'No Tracked Products' : 'No Products Match Filter'}
             </Text>
             <Text className="mb-6 text-center text-neutral-500 dark:text-neutral-400">
               {allProducts.length === 0
@@ -136,6 +118,13 @@ export default function TrackerListScreen() {
           </View>
         )}
       </ScrollView>
+
+      {/* Floating Add Button */}
+      <FloatingAddButton
+        onPress={() => router.push('/(app)/tracker/create')}
+        color={colors.accent.violet}
+        accessibilityLabel="Track new product"
+      />
     </ScreenContainer>
   );
 }

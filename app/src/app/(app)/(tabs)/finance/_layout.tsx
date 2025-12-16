@@ -4,7 +4,7 @@ import React from 'react';
 
 import colors from '@/components/ui/colors';
 
-export default function LeaseLayout() {
+export default function FinanceLayout() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const headerColors = isDark ? colors.header.dark : colors.header.light;
@@ -26,20 +26,20 @@ export default function LeaseLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Lease Estimates',
+          title: 'Finance Estimates',
         }}
       />
       <Stack.Screen
         name="create"
         options={{
-          title: 'New Lease Estimate',
+          title: 'New Finance Estimate',
           presentation: 'modal',
         }}
       />
       <Stack.Screen
         name="[id]"
         options={{
-          title: 'Lease Details',
+          title: 'Finance Details',
           headerBackTitle: 'Back',
         }}
       />
@@ -47,6 +47,13 @@ export default function LeaseLayout() {
         name="compare"
         options={{
           title: 'Compare Estimates',
+        }}
+      />
+      <Stack.Screen
+        name="learn"
+        options={{
+          title: 'Learning Center',
+          headerBackTitle: 'Back',
         }}
       />
     </Stack>

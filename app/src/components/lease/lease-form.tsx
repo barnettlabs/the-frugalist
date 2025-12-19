@@ -55,6 +55,7 @@ interface LeaseFormProps {
   isSubmitting: boolean;
   submitLabel: string;
   onCancel?: () => void;
+  isModal?: boolean;
 }
 
 const VEHICLE_TYPE_OPTIONS = [
@@ -76,6 +77,7 @@ export function LeaseForm({
   isSubmitting,
   submitLabel,
   onCancel,
+  isModal = false,
 }: LeaseFormProps) {
   const insets = useSafeAreaInsets();
   const { control, handleSubmit, setValue } = useForm<LeaseFormData>({
@@ -88,8 +90,8 @@ export function LeaseForm({
     [watchedValues]
   );
 
-  // Account for floating tab bar (64px height + 16px margin + safe area)
-  const bottomPadding = Math.max(insets.bottom, 16) + 80;
+  // Account for floating tab bar (64px height + 16px margin + safe area) when not in modal
+  const bottomPadding = isModal ? Math.max(insets.bottom, 16) : Math.max(insets.bottom, 16) + 80;
 
   return (
     <View className="flex-1 bg-neutral-100 dark:bg-neutral-900">

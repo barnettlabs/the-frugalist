@@ -66,6 +66,7 @@ export default function LeaseCreateScreen() {
         isSubmitting={isPending}
         submitLabel="Create Estimate"
         onCancel={() => router.back()}
+        isModal
       />
     </BottomSheetModalProvider>
   );

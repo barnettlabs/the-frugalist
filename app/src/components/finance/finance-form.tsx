@@ -41,6 +41,7 @@ interface FinanceFormProps {
   isSubmitting: boolean;
   submitLabel: string;
   onCancel?: () => void;
+  isModal?: boolean;
 }
 
 const VEHICLE_TYPE_OPTIONS = [
@@ -58,7 +59,7 @@ const TERM_OPTIONS = [
   { value: 84, label: '84 months' },
 ];
 
-export function FinanceForm({ initialData, onSubmit, isSubmitting, submitLabel, onCancel }: FinanceFormProps) {
+export function FinanceForm({ initialData, onSubmit, isSubmitting, submitLabel, onCancel, isModal = false }: FinanceFormProps) {
   const insets = useSafeAreaInsets();
   const { control, handleSubmit, setValue, formState } = useForm<FinanceFormData>({
     resolver: zodResolver(financeSchema),
@@ -67,8 +68,8 @@ export function FinanceForm({ initialData, onSubmit, isSubmitting, submitLabel, 
   const watchedValues = useWatch({ control });
   const summary = useMemo(() => new FinanceCalculator(watchedValues as FinanceFormData).getSummary(), [watchedValues]);
 
-  // Account for floating tab bar (64px height + 16px margin + safe area)
-  const bottomPadding = Math.max(insets.bottom, 16) + 80;
+  // Account for floating tab bar (64px height + 16px margin + safe area) when not in modal
+  const bottomPadding = isModal ? Math.max(insets.bottom, 16) : Math.max(insets.bottom, 16) + 80;
 
   return (
     <View className="flex-1 bg-neutral-100 dark:bg-neutral-900">

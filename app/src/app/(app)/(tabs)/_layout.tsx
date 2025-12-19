@@ -413,45 +413,6 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: 'Settings',
-          headerShown: true,
-          headerStyle: {
-            backgroundColor: headerColors.background,
-          },
-          headerTintColor: headerColors.text,
-          headerTitleStyle: {
-            fontFamily: 'Rubik-SemiBold',
-          },
-          headerShadowVisible: false,
-        }}
-      />
-
-      {/* Hidden screens that are accessible but not in tabs */}
-      <Tabs.Screen
-        name="profile"
-        options={{
-          href: null,
-          headerShown: true,
-          title: 'Profile',
-          headerStyle: {
-            backgroundColor: headerColors.background,
-            borderBottomWidth: 1,
-            borderBottomColor: headerColors.border,
-            elevation: 0,
-            shadowOpacity: 0,
-          },
-          headerTintColor: headerColors.text,
-          headerTitleStyle: {
-            fontFamily: 'Rubik-SemiBold',
-            fontSize: 17,
-          },
-        }}
-      />
-
-      {/* Learning screens - hidden from tab bar, has its own Stack layout */}
-      <Tabs.Screen
-        name="learning"
-        options={{
-          href: null,
           headerShown: false,
         }}
       />

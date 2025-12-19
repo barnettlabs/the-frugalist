@@ -3,7 +3,7 @@ import React from 'react';
 import { LearningContent } from '@/components/learning';
 import { FINANCE_TERMS, FINANCE_TIPS } from '@/lib/data/learning-content';
 
-export default function FinancingTermsScreen() {
+export default function FinancingLearningScreen() {
   return (
     <LearningContent
       variant="finance"

@@ -15,7 +15,7 @@ import colors from '@/components/ui/colors';
 import { signOut } from '@/lib/auth';
 import type { User } from '@/lib/types/models';
 
-export default function ProfileScreen() {
+export function ProfileContent() {
   const { data: profile, isLoading, isError, refetch } = useProfile();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount();

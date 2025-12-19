@@ -4,13 +4,14 @@ import React from 'react';
 
 import colors from '@/components/ui/colors';
 
-export default function AppLayout() {
+export default function SettingsLayout() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const headerColors = isDark ? colors.header.dark : colors.header.light;
 
   return (
     <Stack
+      initialRouteName="index"
       screenOptions={{
         headerStyle: {
           backgroundColor: headerColors.background,
@@ -23,22 +24,16 @@ export default function AppLayout() {
       }}
     >
       <Stack.Screen
-        name="(tabs)"
+        name="index"
         options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="learning"
-        options={{
-          headerShown: false,
+          title: 'Settings',
         }}
       />
       <Stack.Screen
         name="profile"
         options={{
           title: 'Profile',
-          headerBackTitle: 'Home',
+          headerBackTitle: 'Settings',
         }}
       />
     </Stack>

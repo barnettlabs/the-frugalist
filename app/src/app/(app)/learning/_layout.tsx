@@ -4,7 +4,7 @@ import React from 'react';
 
 import colors from '@/components/ui/colors';
 
-export default function AppLayout() {
+export default function LearningLayout() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const headerColors = isDark ? colors.header.dark : colors.header.light;
@@ -23,21 +23,16 @@ export default function AppLayout() {
       }}
     >
       <Stack.Screen
-        name="(tabs)"
+        name="financing"
         options={{
-          headerShown: false,
+          title: 'Financing Terms',
+          headerBackTitle: 'Home',
         }}
       />
       <Stack.Screen
-        name="learning"
+        name="leasing"
         options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
+          title: 'Leasing Terms',
           headerBackTitle: 'Home',
         }}
       />

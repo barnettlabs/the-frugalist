@@ -3,7 +3,7 @@ import React from 'react';
 import { LearningContent } from '@/components/learning';
 import { LEASE_TERMS, LEASE_TIPS } from '@/lib/data/learning-content';
 
-export default function LeasingTermsScreen() {
+export default function LeasingLearningScreen() {
   return (
     <LearningContent
       variant="lease"

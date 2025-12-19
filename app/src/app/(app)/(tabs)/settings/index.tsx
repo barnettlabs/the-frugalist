@@ -63,7 +63,7 @@ export default function Settings() {
 
           {/* Account Section */}
           <ItemsContainer title="settings.account">
-            <Item text="settings.profile" icon={<User color={iconColor} />} onPress={() => router.push('/profile')} />
+            <Item text="settings.profile" icon={<User color={iconColor} />} onPress={() => router.push('/settings/profile')} />
           </ItemsContainer>
 
           {/* Preferences Section */}
@@ -122,7 +122,7 @@ function ProfileCard({
 
   return (
     <Pressable
-      onPress={() => router.push('/profile')}
+      onPress={() => router.push('/settings/profile')}
       className="mb-4 flex-row items-center rounded-xl bg-white p-4 dark:bg-neutral-800"
     >
       {/* Avatar */}

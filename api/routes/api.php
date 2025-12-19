@@ -204,7 +204,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{trackedProduct}', [PriceTrackerController::class, 'apiShow']);
         Route::patch('/{trackedProduct}', [PriceTrackerController::class, 'apiUpdate']);
         Route::delete('/{trackedProduct}', [PriceTrackerController::class, 'apiDestroy']);
-        Route::post('/{trackedProduct}/refresh', [PriceTrackerController::class, 'refresh']);
+        Route::post('/{trackedProduct}/refresh', [PriceTrackerController::class, 'apiRefresh']);
     });
 
     // Notifications

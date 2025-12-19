@@ -5,11 +5,8 @@ import { Link, useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React, { useEffect } from 'react';
 import { Dimensions, RefreshControl, StyleSheet } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   FadeInDown,
-  interpolate,
-  useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
@@ -286,75 +283,6 @@ function GlassCard({
   );
 }
 
-// Interactive Glass Entity Card
-function InteractiveGlassCard({
-  children,
-  isDark,
-  accentColor,
-}: {
-  children: React.ReactNode;
-  isDark: boolean;
-  accentColor: string;
-}) {
-  const scale = useSharedValue(1);
-  const rotateX = useSharedValue(0);
-  const rotateY = useSharedValue(0);
-
-  const gesture = Gesture.Pan()
-    .onBegin(() => {
-      scale.value = withSpring(0.98, { damping: 15 });
-    })
-    .onUpdate((event) => {
-      rotateY.value = interpolate(event.translationX, [-100, 100], [-5, 5]);
-      rotateX.value = interpolate(event.translationY, [-100, 100], [5, -5]);
-    })
-    .onFinalize(() => {
-      scale.value = withSpring(1, { damping: 15 });
-      rotateX.value = withSpring(0, { damping: 15 });
-      rotateY.value = withSpring(0, { damping: 15 });
-    });
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { perspective: 1000 },
-      { scale: scale.value },
-      { rotateX: `${rotateX.value}deg` },
-      { rotateY: `${rotateY.value}deg` },
-    ],
-  }));
-
-  return (
-    <GestureDetector gesture={gesture}>
-      <Animated.View
-        style={[
-          {
-            borderRadius: 16,
-            overflow: 'hidden',
-            borderWidth: 1,
-            borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
-            shadowColor: accentColor,
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: 0.15,
-            shadowRadius: 16,
-            elevation: 8,
-          },
-          animatedStyle,
-        ]}
-      >
-        <BlurView
-          intensity={isDark ? 40 : 60}
-          tint={isDark ? 'dark' : 'light'}
-          style={[
-            StyleSheet.absoluteFill,
-            { backgroundColor: isDark ? 'rgba(30,30,40,0.5)' : 'rgba(255,255,255,0.7)' },
-          ]}
-        />
-        {children}
-      </Animated.View>
-    </GestureDetector>
-  );
-}
-
 type Theme = {
   cardBg: string;
   cardBorder: string;
@@ -428,7 +356,7 @@ function GlassEntitySection({
         </Pressable>
       </View>
 
-      <InteractiveGlassCard isDark={isDark} accentColor={accentColor}>
+      <GlassCard isDark={isDark} style={styles.entityCardContainer}>
         <View style={styles.entityCard}>
           <View style={styles.entityContent}>
             <View style={styles.entityMetric}>
@@ -457,7 +385,7 @@ function GlassEntitySection({
             </Pressable>
           </View>
         </View>
-      </InteractiveGlassCard>
+      </GlassCard>
     </Animated.View>
   );
 }
@@ -547,6 +475,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     marginRight: 2,
+  },
+  entityCardContainer: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
   },
   entityCard: {
     padding: 18,

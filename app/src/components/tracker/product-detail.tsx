@@ -5,6 +5,7 @@ import { Button, Image, ScrollView, Text, View } from '@/components/ui';
 import {
   formatCurrencyWithSymbol,
   formatDate,
+  formatDateTime,
   formatRelativeTime,
 } from '@/lib/calculators';
 import type { PriceTrackerItem } from '@/lib/types/models';
@@ -38,11 +39,13 @@ export function ProductDetail({
     <View className="flex-1 bg-neutral-100 dark:bg-neutral-900">
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
         <ProductHeader product={product} targetReached={targetReached} />
-        <PriceInfoCard product={product} />
-        {!targetReached && <ProgressCard product={product} />}
+        <PriceTimelineCard product={product} targetReached={targetReached} />
         <TrackingInfoCard product={product} />
         {product.price_history && product.price_history.length > 0 && (
-          <PriceHistoryCard priceHistory={product.price_history} />
+          <PriceHistoryCard
+            priceHistory={product.price_history}
+            targetPrice={product.target_price}
+          />
         )}
         {product.last_scraper_error && (
           <ErrorCard error={product.last_scraper_error} />
@@ -133,58 +136,12 @@ function StatusBadge({
   );
 }
 
-function PriceInfoCard({
+function PriceTimelineCard({
   product,
+  targetReached,
 }: {
   product: PriceTrackerItem['tracked_product'];
-}) {
-  const savings = product.retail_price - product.current_price;
-  const savingsPercent = (savings / product.retail_price) * 100;
-
-  return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
-      <View className="flex-row justify-between">
-        <View className="flex-1 items-center">
-          <Text className="text-sm text-neutral-500 dark:text-neutral-400">
-            Current
-          </Text>
-          <Text className="text-2xl font-bold text-primary-600">
-            {formatCurrencyWithSymbol(product.current_price)}
-          </Text>
-        </View>
-        <View className="flex-1 items-center">
-          <Text className="text-sm text-neutral-500 dark:text-neutral-400">
-            Target
-          </Text>
-          <Text className="text-2xl font-bold text-neutral-700 dark:text-neutral-300">
-            {formatCurrencyWithSymbol(product.target_price)}
-          </Text>
-        </View>
-        <View className="flex-1 items-center">
-          <Text className="text-sm text-neutral-500 dark:text-neutral-400">
-            Retail
-          </Text>
-          <Text className="text-2xl font-bold text-neutral-400 line-through">
-            {formatCurrencyWithSymbol(product.retail_price)}
-          </Text>
-        </View>
-      </View>
-      {savings > 0 && (
-        <View className="mt-4 rounded-lg bg-green-50 p-3 dark:bg-green-900/20">
-          <Text className="text-center text-green-700 dark:text-green-400">
-            You{"'"}re saving {formatCurrencyWithSymbol(savings)} (
-            {savingsPercent.toFixed(0)}% off)
-          </Text>
-        </View>
-      )}
-    </View>
-  );
-}
-
-function ProgressCard({
-  product,
-}: {
-  product: PriceTrackerItem['tracked_product'];
+  targetReached: boolean;
 }) {
   const progress = Math.min(
     Math.max(
@@ -195,21 +152,69 @@ function ProgressCard({
     ),
     100
   );
+
   return (
     <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
-      <Text className="mb-2 font-semibold text-neutral-900 dark:text-white">
-        Progress to Target
+      <Text className="mb-4 font-semibold text-neutral-900 dark:text-white">
+        Price Progress
       </Text>
-      <View className="h-4 rounded-full bg-neutral-200 dark:bg-neutral-700">
-        <View
-          className="h-4 rounded-full bg-primary-500"
-          style={{ width: `${progress}%` }}
-        />
+
+      {/* Labels above bar */}
+      <View className="mb-2 flex-row justify-between">
+        <View>
+          <Text className="text-xs text-neutral-500 dark:text-neutral-400">
+            Retail
+          </Text>
+          <Text className="text-lg font-semibold text-neutral-400">
+            {formatCurrencyWithSymbol(product.retail_price)}
+          </Text>
+        </View>
+        <View className="items-end">
+          <Text className="text-xs text-neutral-500 dark:text-neutral-400">
+            Target
+          </Text>
+          <Text className="text-lg font-semibold text-green-600">
+            {formatCurrencyWithSymbol(product.target_price)}
+          </Text>
+        </View>
       </View>
-      <Text className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
-        {formatCurrencyWithSymbol(product.current_price - product.target_price)}{' '}
-        to go
-      </Text>
+
+      {/* Progress bar */}
+      <View className="relative mb-2">
+        <View className="h-4 rounded-full bg-neutral-200 dark:bg-neutral-700">
+          <View
+            className={`h-4 rounded-full ${targetReached ? 'bg-green-500' : 'bg-primary-500'}`}
+            style={{ width: `${progress}%` }}
+          />
+        </View>
+      </View>
+
+      {/* Current price indicator */}
+      <View className="mb-4 items-center">
+        <View className="rounded-lg bg-neutral-900 px-4 py-2 dark:bg-neutral-100">
+          <Text className="text-center text-xs text-neutral-400 dark:text-neutral-500">
+            Current
+          </Text>
+          <Text className="text-lg font-bold text-white dark:text-neutral-900">
+            {formatCurrencyWithSymbol(product.current_price)}
+          </Text>
+        </View>
+      </View>
+
+      {/* Progress status */}
+      <View className="flex-row items-center justify-between">
+        <Text className="text-sm text-neutral-500 dark:text-neutral-400">
+          Last checked:{' '}
+          {product.last_checked_at
+            ? formatRelativeTime(product.last_checked_at)
+            : 'Never'}
+        </Text>
+        <Text
+          className={`text-sm font-medium ${targetReached ? 'text-green-600' : 'text-neutral-600 dark:text-neutral-300'}`}
+        >
+          {targetReached ? 'Target reached!' : `${progress.toFixed(0)}% to target`}
+        </Text>
+      </View>
     </View>
   );
 }
@@ -249,8 +254,10 @@ function TrackingInfoCard({
 
 function PriceHistoryCard({
   priceHistory,
+  targetPrice,
 }: {
-  priceHistory: { checked_at: string; price: number }[];
+  priceHistory: { checked_at: string; price: number; in_stock?: boolean }[];
+  targetPrice?: number;
 }) {
   return (
     <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
@@ -259,12 +266,27 @@ function PriceHistoryCard({
       </Text>
       <View className="gap-2">
         {priceHistory.slice(0, 10).map((entry, index) => (
-          <View key={index} className="flex-row justify-between">
-            <Text className="text-neutral-500 dark:text-neutral-400">
-              {formatDate(entry.checked_at)}
-            </Text>
-            <Text className="font-medium text-neutral-900 dark:text-white">
-              {formatCurrencyWithSymbol(entry.price)}
+          <View key={index} className="flex-row items-center justify-between">
+            <View className="flex-row items-center gap-2">
+              <Text
+                className={`font-medium ${
+                  targetPrice && entry.price <= targetPrice
+                    ? 'text-green-600'
+                    : 'text-neutral-900 dark:text-white'
+                }`}
+              >
+                {formatCurrencyWithSymbol(entry.price)}
+              </Text>
+              {entry.in_stock === false && (
+                <View className="rounded bg-red-100 px-1.5 py-0.5 dark:bg-red-900/30">
+                  <Text className="text-xs text-red-600 dark:text-red-400">
+                    Out of stock
+                  </Text>
+                </View>
+              )}
+            </View>
+            <Text className="text-sm text-neutral-500 dark:text-neutral-400">
+              {formatDateTime(entry.checked_at)}
             </Text>
           </View>
         ))}

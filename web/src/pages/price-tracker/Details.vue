@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { ArrowPathIcon } from '@heroicons/vue/24/outline'
 import { formatCurrency } from '@/utils/formatters'
-import { formatRelativeTime } from '@/utils/time'
+import { formatRelativeTime, formatDateTime } from '@/utils/time'
 import { priceTrackerApi, type TrackedProduct } from '@/api/price-tracker'
 
 const route = useRoute()
@@ -51,6 +51,17 @@ const deleteProduct = async () => {
   }
 }
 
+const progressPercent = computed(() => {
+  if (!product.value || !product.value.target_price) return 0
+  const retail = product.value.retail_price
+  const target = product.value.target_price
+  const current = product.value.current_price
+
+  if (retail <= target) return 100
+  const progress = ((retail - current) / (retail - target)) * 100
+  return Math.min(100, Math.max(0, progress))
+})
+
 onMounted(() => {
   loadProduct()
 })
@@ -82,10 +93,10 @@ onMounted(() => {
           </div>
         </div>
 
-        <!-- Price Info -->
+        <!-- Price Timeline -->
         <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-bold text-gray-900">Price Information</h2>
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-bold text-gray-900">Price Progress</h2>
             <button
               @click="refreshPrice"
               :disabled="refreshing"
@@ -96,22 +107,69 @@ onMounted(() => {
             </button>
           </div>
 
-          <div class="grid grid-cols-2 gap-6">
-            <div class="bg-gray-50 rounded-lg p-4">
-              <span class="text-gray-500 text-sm block mb-1">Current Price</span>
-              <span class="text-3xl font-bold text-green-600">${{ formatCurrency(product.current_price) }}</span>
+          <!-- Timeline Bar -->
+          <div class="relative mb-6">
+            <!-- Labels above bar -->
+            <div class="flex justify-between mb-2">
+              <div class="text-left">
+                <span class="text-xs text-gray-500 block">Retail</span>
+                <span class="text-lg font-semibold text-gray-600">${{ formatCurrency(product.retail_price) }}</span>
+              </div>
+              <div class="text-center" v-if="product.target_price">
+                <span class="text-xs text-gray-500 block">Target</span>
+                <span class="text-lg font-semibold text-green-600">${{ formatCurrency(product.target_price) }}</span>
+              </div>
             </div>
-            <div class="bg-gray-50 rounded-lg p-4">
-              <span class="text-gray-500 text-sm block mb-1">Target Price</span>
-              <span v-if="product.target_price" class="text-3xl font-bold text-gray-900">
-                ${{ formatCurrency(product.target_price) }}
-              </span>
-              <span v-else class="text-xl text-gray-400">Not set</span>
+
+            <!-- Progress bar -->
+            <div class="relative h-4 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                class="absolute left-0 top-0 h-full bg-gradient-to-r from-warning to-green-500 rounded-full transition-all duration-500"
+                :style="{ width: progressPercent + '%' }"
+              ></div>
+            </div>
+
+            <!-- Current price indicator -->
+            <div
+              class="absolute -bottom-8 transition-all duration-500"
+              :style="{ left: `calc(${progressPercent}% - 40px)` }"
+            >
+              <div class="bg-gray-900 text-white px-3 py-1 rounded-lg text-sm font-semibold whitespace-nowrap">
+                ${{ formatCurrency(product.current_price) }}
+              </div>
             </div>
           </div>
 
-          <div class="mt-4 text-sm text-gray-500">
-            Last checked: {{ product.last_checked_at ? formatRelativeTime(product.last_checked_at) : 'Never' }}
+          <div class="mt-12 flex items-center justify-between text-sm text-gray-500">
+            <span>Last checked: {{ product.last_checked_at ? formatRelativeTime(product.last_checked_at) : 'Never' }}</span>
+            <span v-if="product.target_price" class="font-medium" :class="progressPercent >= 100 ? 'text-green-600' : 'text-gray-600'">
+              {{ progressPercent >= 100 ? 'Target reached!' : `${progressPercent.toFixed(0)}% to target` }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Price History -->
+        <div v-if="product.price_history && product.price_history.length > 0" class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
+          <h2 class="text-lg font-bold text-gray-900 mb-4">Price History</h2>
+          <div class="space-y-3 max-h-64 overflow-y-auto">
+            <div
+              v-for="entry in product.price_history"
+              :key="entry.id"
+              class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0"
+            >
+              <div class="flex items-center gap-3">
+                <span class="text-lg font-semibold" :class="entry.price <= (product.target_price || 0) ? 'text-green-600' : 'text-gray-900'">
+                  ${{ formatCurrency(entry.price) }}
+                </span>
+                <span
+                  v-if="!entry.in_stock"
+                  class="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded"
+                >
+                  Out of stock
+                </span>
+              </div>
+              <span class="text-sm text-gray-500">{{ formatDateTime(entry.checked_at) }}</span>
+            </div>
           </div>
         </div>
 

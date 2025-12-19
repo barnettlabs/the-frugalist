@@ -1,15 +1,17 @@
 import { Env } from '@env';
+// TODO: Uncomment after rebuilding dev client
+// import * as Application from 'expo-application';
+import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React, { useState } from 'react';
+import { Platform, Share } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useProfile } from '@/api/auth/use-profile';
 import { Item } from '@/components/settings/item';
 import { ItemsContainer } from '@/components/settings/items-container';
-import { LanguageItem } from '@/components/settings/language-item';
-import { ThemeItem } from '@/components/settings/theme-item';
 import {
   Button,
   colors,
@@ -20,8 +22,9 @@ import {
   Text,
   View,
 } from '@/components/ui';
-import { Bell, Bug, Logout, Rate, Share, Support, User, Website } from '@/components/ui/icons';
-import { translate, useAuth } from '@/lib';
+import { Bug, Rate, Share as ShareIcon, Support, User, Website } from '@/components/ui/icons';
+import { useAuth, useSelectedTheme } from '@/lib';
+import type { ColorSchemeType } from '@/lib';
 import { openLinkInBrowser } from '@/lib/utils';
 
 // Developer emails that can access debug features
@@ -30,10 +33,7 @@ const DEV_EMAILS = ['jason.barnett@jaytech.io'];
 function isDevUser(email: string | undefined): boolean {
   if (!email) return false;
   const normalizedEmail = email.toLowerCase().trim();
-
-  // Strip out +alias from email (e.g., jason.barnett+test@jaytech.io -> jason.barnett@jaytech.io)
   const baseEmail = normalizedEmail.replace(/\+[^@]*@/, '@');
-
   return DEV_EMAILS.some(devEmail => baseEmail === devEmail.toLowerCase());
 }
 
@@ -45,12 +45,58 @@ export default function Settings() {
 
   const isDark = colorScheme === 'dark';
   const iconColor = isDark ? colors.neutral[400] : colors.neutral[500];
-  const dangerColor = colors.danger[500];
 
   // Account for floating tab bar
   const bottomPadding = Math.max(insets.bottom, 16) + 80;
 
   const showDebug = isDevUser(profile?.email);
+
+  const handleShare = async () => {
+    try {
+      await Share.share({
+        message: Platform.select({
+          ios: 'Check out Sneaky Salesman - the ultimate car finance & lease calculator!',
+          default: 'Check out Sneaky Salesman - the ultimate car finance & lease calculator! https://sneakysalesman.com',
+        }),
+        url: 'https://sneakysalesman.com',
+        title: 'Sneaky Salesman',
+      });
+    } catch {
+      showMessage({
+        message: 'Error',
+        description: 'Failed to share the app',
+        type: 'danger',
+      });
+    }
+  };
+
+  const handleRate = async () => {
+    // TODO: Uncomment after rebuilding dev client
+    // const storeUrl = Platform.select({
+    //   ios: `https://apps.apple.com/app/id${Application.applicationId}`,
+    //   android: `https://play.google.com/store/apps/details?id=${Application.applicationId}`,
+    //   default: 'https://sneakysalesman.com',
+    // });
+    const storeUrl = 'https://sneakysalesman.com';
+    await openLinkInBrowser(storeUrl);
+  };
+
+  const handleContactSupport = async () => {
+    const subject = encodeURIComponent('Sneaky Salesman Support Request');
+    const body = encodeURIComponent(`\n\n---\nApp Version: ${Env.VERSION}\nPlatform: ${Platform.OS}`);
+    const mailUrl = `mailto:jason@tensifi.com?subject=${subject}&body=${body}`;
+
+    const canOpen = await Linking.canOpenURL(mailUrl);
+    if (canOpen) {
+      await Linking.openURL(mailUrl);
+    } else {
+      showMessage({
+        message: 'Error',
+        description: 'Unable to open email client',
+        type: 'danger',
+      });
+    }
+  };
 
   return (
     <ScreenContainer>
@@ -66,31 +112,35 @@ export default function Settings() {
             <Item text="settings.profile" icon={<User color={iconColor} />} onPress={() => router.push('/settings/profile')} />
           </ItemsContainer>
 
-          {/* Preferences Section */}
-          <ItemsContainer title="settings.generale">
-            <LanguageItem />
-            <ThemeItem />
-          </ItemsContainer>
+          {/* Appearance Section */}
+          <Text className="pb-2 pt-4 text-lg text-neutral-900 dark:text-white">Appearance</Text>
+          <ThemeButtonGroup />
 
-          {/* About Section */}
-          <ItemsContainer title="settings.about">
+          {/* App Info Section */}
+          <ItemsContainer title="settings.app_info">
             <Item text="settings.app_name" value={Env.NAME} />
             <Item text="settings.version" value={Env.VERSION} />
+            {/* TODO: Uncomment after rebuilding dev client */}
+            {/* <Item text="settings.build" value={Application.nativeBuildVersion || 'N/A'} /> */}
           </ItemsContainer>
 
           {/* Support Section */}
           <ItemsContainer title="settings.support_us">
-            <Item text="settings.share" icon={<Share color={iconColor} />} onPress={() => {}} />
-            <Item text="settings.rate" icon={<Rate color={iconColor} />} onPress={() => {}} />
-            <Item text="settings.support" icon={<Support color={iconColor} />} onPress={() => {}} />
+            <Item text="settings.share" icon={<ShareIcon color={iconColor} />} onPress={handleShare} />
+            <Item text="settings.rate" icon={<Rate color={iconColor} />} onPress={handleRate} />
+            <Item text="settings.support" icon={<Support color={iconColor} />} onPress={handleContactSupport} />
           </ItemsContainer>
 
           {/* Links Section */}
           <ItemsContainer title="settings.links">
             <Item
-              text="settings.website"
+              text="settings.web_app"
               icon={<Website color={iconColor} />}
               onPress={() => openLinkInBrowser('https://sneakysalesman.com')}
+            />
+            <Item
+              text="settings.company"
+              onPress={() => openLinkInBrowser('https://tensifi.com')}
             />
             <Item text="settings.privacy" onPress={() => openLinkInBrowser('https://sneakysalesman.com/privacy')} />
             <Item text="settings.terms" onPress={() => openLinkInBrowser('https://sneakysalesman.com/terms')} />
@@ -99,15 +149,62 @@ export default function Settings() {
           {/* Debug Section - Only for developers */}
           {showDebug && <DebugSection iconColor={iconColor} />}
 
-          {/* Logout Section */}
-          <View className="my-8">
-            <ItemsContainer>
-              <Item text="settings.logout" icon={<Logout color={dangerColor} />} onPress={signOut} />
-            </ItemsContainer>
+          {/* Sign Out Button */}
+          <View className="mt-8">
+            <Pressable
+              onPress={signOut}
+              className="flex-row items-center justify-center rounded-xl border border-danger-200 bg-danger-50 px-6 py-4 dark:border-danger-800 dark:bg-danger-900/20"
+            >
+              <Text className="text-base font-semibold text-danger-600 dark:text-danger-400">
+                Sign Out
+              </Text>
+            </Pressable>
           </View>
         </View>
       </ScrollView>
     </ScreenContainer>
+  );
+}
+
+function ThemeButtonGroup() {
+  const { selectedTheme, setSelectedTheme } = useSelectedTheme();
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const themes: { value: ColorSchemeType; label: string; icon: string }[] = [
+    { value: 'light', label: 'Light', icon: '☀️' },
+    { value: 'dark', label: 'Dark', icon: '🌙' },
+    { value: 'system', label: 'Auto', icon: '⚙️' },
+  ];
+
+  return (
+    <View className="flex-row rounded-xl bg-neutral-200 p-1 dark:bg-neutral-700">
+      {themes.map((theme) => {
+        const isSelected = selectedTheme === theme.value;
+        return (
+          <Pressable
+            key={theme.value}
+            onPress={() => setSelectedTheme(theme.value)}
+            className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-lg py-2.5 ${
+              isSelected
+                ? 'bg-white shadow-sm dark:bg-neutral-600'
+                : ''
+            }`}
+          >
+            <Text className="text-base">{theme.icon}</Text>
+            <Text
+              className={`text-sm font-medium ${
+                isSelected
+                  ? 'text-neutral-900 dark:text-white'
+                  : 'text-neutral-500 dark:text-neutral-400'
+              }`}
+            >
+              {theme.label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
   );
 }
 
@@ -150,7 +247,6 @@ function DebugSection({ iconColor }: { iconColor: string }) {
   const handleTestNotification = async () => {
     setIsSending(true);
     try {
-      // Simulate a slight delay like a real notification would have
       await new Promise(resolve => setTimeout(resolve, 500));
 
       showMessage({

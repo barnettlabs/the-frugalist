@@ -5,8 +5,11 @@
   "settings": {
     "about": "About",
     "account": "Account",
+    "app_info": "App Info",
     "app_name": "App Name",
     "arabic": "Arabic",
+    "build": "Build",
+    "company": "Tensifi",
     "english": "English",
     "generale": "Preferences",
     "github": "Github",
@@ -29,6 +32,7 @@
     },
     "title": "Settings",
     "version": "Version",
+    "web_app": "Web App",
     "website": "Website"
   },
   "welcome": "Welcome to obytes app site"

@@ -33,30 +33,50 @@ const otherType = computed(() => {
           </div>
         </div>
 
-        <!-- Content Sections -->
-        <div class="space-y-8">
-          <div
-            v-for="(section, index) in content.sections"
-            :key="index"
-            class="bg-white rounded-lg border border-gray-200 shadow-sm p-6"
-          >
-            <h2 class="text-xl font-bold text-gray-900 mb-4">{{ section.title }}</h2>
-            <div class="prose prose-sm max-w-none text-gray-600">
-              <p v-for="(paragraph, pIndex) in section.content" :key="pIndex" class="mb-4">
-                {{ paragraph }}
+        <!-- TLDR Section -->
+        <div v-if="content.keywords && content.keywords.length > 0" class="mb-8 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-6 border border-primary/20">
+          <h2 class="text-lg font-bold text-gray-900 mb-4">TL;DR - Key Concepts</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div
+              v-for="(kw, index) in content.keywords"
+              :key="index"
+              class="flex items-center gap-2 bg-white rounded-lg px-4 py-3 shadow-sm"
+            >
+              <span class="font-semibold text-primary">{{ kw.keyword }}</span>
+              <span v-if="kw.description" class="text-sm text-gray-500">- {{ kw.description }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terms -->
+        <div v-if="content.terms && content.terms.length > 0" class="mb-8">
+          <h2 class="text-xl font-bold text-gray-900 mb-4">Key Terms</h2>
+          <div class="space-y-4">
+            <div
+              v-for="(term, index) in content.terms"
+              :key="index"
+              class="bg-white rounded-lg border border-gray-200 shadow-sm p-4"
+            >
+              <h3 class="font-semibold text-gray-900 mb-2">{{ term.term }}</h3>
+              <p class="text-sm text-gray-600">{{ term.definition }}</p>
+              <p v-if="term.example" class="text-sm text-gray-500 mt-2 italic">
+                Example: {{ term.example }}
               </p>
             </div>
+          </div>
+        </div>
 
-            <!-- Terms if available -->
-            <div v-if="section.terms && section.terms.length > 0" class="mt-6 space-y-4">
-              <div
-                v-for="(term, tIndex) in section.terms"
-                :key="tIndex"
-                class="bg-gray-50 rounded-lg p-4"
-              >
-                <h3 class="font-semibold text-gray-900 mb-2">{{ term.term }}</h3>
-                <p class="text-sm text-gray-600">{{ term.definition }}</p>
-              </div>
+        <!-- Tips -->
+        <div v-if="content.tips && content.tips.length > 0">
+          <h2 class="text-xl font-bold text-gray-900 mb-4">Pro Tips</h2>
+          <div class="space-y-3">
+            <div
+              v-for="(tip, index) in content.tips"
+              :key="index"
+              class="flex items-start gap-3 bg-primary/5 rounded-lg p-4 border border-primary/10"
+            >
+              <span class="text-xl">💡</span>
+              <p class="text-sm text-gray-700">{{ tip }}</p>
             </div>
           </div>
         </div>

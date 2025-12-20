@@ -35,7 +35,3 @@ export interface PageProps {
     errors?: Record<string, string[]>;
 }
 
-// Inertia.js page component props
-export interface InertiaPageProps extends PageProps {
-    [key: string]: any;
-}

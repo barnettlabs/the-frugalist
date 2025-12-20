@@ -2,13 +2,13 @@
 import { computed } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { BookOpenIcon } from '@heroicons/vue/24/outline'
-import { learningContent } from '@/data/learningContent'
+import { learningContentMap } from '@/data/learningContent'
 
 const route = useRoute()
 const type = computed(() => route.params.type as string)
 
 const content = computed(() => {
-  return learningContent[type.value as keyof typeof learningContent] || null
+  return learningContentMap[type.value as keyof typeof learningContentMap] || null
 })
 
 const otherType = computed(() => {

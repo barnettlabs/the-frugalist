@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3'
+import { RouterLink } from 'vue-router'
 import FormField from './FormField.vue'
 import BaseButton from './BaseButton.vue'
 import { FinanceFormData, FormErrors, vehicleTypeOptions } from '@/types'
@@ -224,12 +224,12 @@ defineEmits<{
 
       <!-- Submit Button -->
       <div v-if="!isEdit" class="flex justify-end space-x-3">
-        <Link
-          :href="backUrl"
+        <RouterLink
+          :to="backUrl"
           class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           Cancel
-        </Link>
+        </RouterLink>
         <BaseButton type="submit" :disabled="loading" variant="primary">
           <svg
             v-if="loading"

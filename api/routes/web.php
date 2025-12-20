@@ -3,7 +3,6 @@
 use App\Http\Controllers\BugReportController;
 use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,4 +45,17 @@ Route::get('/.well-known/assetlinks.json', function () {
     );
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
+
+// Catch-all route for Vue SPA - serves the built Vue app for all non-API routes
+Route::get('/{any?}', function () {
+    $indexPath = public_path('web/index.html');
+
+    if (! file_exists($indexPath)) {
+        abort(404, 'Vue app not built. Run "npm run build" in the web directory.');
+    }
+
+    return response()->file($indexPath, [
+        'Content-Type' => 'text/html',
+    ]);
+})->where('any', '^(?!api|sanctum|web).*$');

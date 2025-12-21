@@ -25,7 +25,7 @@ export function LeaseDetail({ sheet, onEdit, onDelete, isDeleting }: LeaseDetail
   const bottomPadding = Math.max(insets.bottom, 16) + 80;
 
   return (
-    <View className="flex-1 bg-neutral-100 dark:bg-neutral-900">
+    <View className="flex-1 bg-neutral-50 dark:bg-charcoal-950">
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
         <PaymentHeader payment={summary.leasePayment} term={sheet.lease_term} residual={sheet.residual_percent} />
         <TermsLink />
@@ -56,7 +56,7 @@ function PaymentHeader({ payment, term, residual }: { payment: number; term: num
 
 function VehicleInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
         {sheet.sheet_name || 'Untitled Estimate'}
       </Text>
@@ -65,7 +65,7 @@ function VehicleInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
         {sheet.vehicle_trim ? ` ${sheet.vehicle_trim}` : ''}
       </Text>
       <View className="mt-2 flex-row gap-2">
-        <View className="rounded-full bg-neutral-100 px-3 py-1 dark:bg-neutral-700">
+        <View className="rounded-full bg-neutral-100 px-3 py-1 dark:bg-charcoal-700">
           <Text className="text-xs font-medium text-neutral-600 dark:text-neutral-300">{sheet.vehicle_type}</Text>
         </View>
         <View className="rounded-full bg-secondary/10 px-3 py-1 dark:bg-secondary/20">
@@ -78,13 +78,13 @@ function VehicleInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
 
 function PaymentBreakdownCard({ summary }: { summary: ReturnType<LeaseCalculator['getSummary']> }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">Payment Breakdown</Text>
       <View className="gap-2">
         <SummaryRow label="Principal Payment" value={formatCurrencyWithSymbol(summary.monthlyPrincipalPayment)} />
         <SummaryRow label="Interest Payment" value={formatCurrencyWithSymbol(summary.residualMonthlyInterestPayment)} />
         <SummaryRow label="Monthly Tax" value={formatCurrencyWithSymbol(summary.monthlySalesTax)} />
-        <View className="my-2 border-t border-neutral-200 dark:border-neutral-700" />
+        <View className="my-2 border-t border-neutral-200 dark:border-charcoal-700" />
         <SummaryRow label="Monthly Payment" value={formatCurrencyWithSymbol(summary.leasePayment)} isBold isHighlight />
       </View>
     </View>
@@ -99,7 +99,7 @@ function FinancialSummaryCard({
   sheet: VehicleLeaseSheet;
 }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">Financial Summary</Text>
       <View className="gap-3">
         <SummaryRow label="MSRP" value={formatCurrencyWithSymbol(sheet.msrp)} />
@@ -117,7 +117,7 @@ function FinancialSummaryCard({
         <SummaryRow label="Gross Cap Cost" value={formatCurrencyWithSymbol(summary.grossCapCost)} />
         <SummaryRow label="Net Cap Cost" value={formatCurrencyWithSymbol(summary.netCapCost)} />
         <SummaryRow label="Residual Amount" value={formatCurrencyWithSymbol(summary.residualAmount)} />
-        <View className="my-2 border-t border-neutral-200 dark:border-neutral-700" />
+        <View className="my-2 border-t border-neutral-200 dark:border-charcoal-700" />
         <SummaryRow label="Cash Due at Signing" value={formatCurrencyWithSymbol(summary.cashDueAtSigning)} isBold />
         <SummaryRow
           label="Total Lease Cost"
@@ -138,7 +138,7 @@ function LeaseDetailsCard({
   summary: ReturnType<LeaseCalculator['getSummary']>;
 }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">Lease Details</Text>
       <View className="gap-2">
         <SummaryRow label="Money Factor" value={String(sheet.money_factor)} />
@@ -154,7 +154,7 @@ function LeaseDetailsCard({
 function ContactInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
   if (!sheet.dealership_name && !sheet.sales_consultant && !sheet.contact_email) return null;
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">Contact Information</Text>
       {sheet.dealership_name && <Text className="text-neutral-600 dark:text-neutral-400">{sheet.dealership_name}</Text>}
       {sheet.sales_consultant && (
@@ -168,7 +168,7 @@ function ContactInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
 
 function NotesCard({ notes }: { notes: string }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
       <Text className="mb-2 text-lg font-semibold text-neutral-900 dark:text-white">Notes</Text>
       <Text className="text-neutral-600 dark:text-neutral-400">{notes}</Text>
     </View>
@@ -221,7 +221,7 @@ function ActionBar({
 }) {
   return (
     <View
-      className="border-t border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800"
+      className="border-t border-neutral-200 bg-white p-4 dark:border-charcoal-700 dark:bg-charcoal-800"
       style={{ paddingBottom: bottomPadding }}
     >
       <View className="flex-row gap-3">

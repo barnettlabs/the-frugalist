@@ -65,7 +65,7 @@ export function FormSection({
       </Pressable>
 
       {!isCollapsed && (
-        <View className="rounded-lg bg-white p-4 dark:bg-neutral-800">
+        <View className="rounded-lg bg-white p-4 dark:bg-charcoal-800">
           {children}
         </View>
       )}

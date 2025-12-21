@@ -176,7 +176,7 @@ function ThemeButtonGroup() {
   ];
 
   return (
-    <View className="flex-row rounded-xl bg-neutral-200 p-1 dark:bg-neutral-700">
+    <View className="flex-row rounded-xl bg-neutral-200 p-1 dark:bg-charcoal-700">
       {themes.map(theme => {
         const isSelected = selectedTheme === theme.value;
         return (
@@ -184,7 +184,7 @@ function ThemeButtonGroup() {
             key={theme.value}
             onPress={() => setSelectedTheme(theme.value)}
             className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-lg py-2.5 ${
-              isSelected ? 'bg-white dark:bg-neutral-600' : ''
+              isSelected ? 'bg-white dark:bg-charcoal-600' : ''
             }`}
           >
             <Text className="text-base">{theme.icon}</Text>
@@ -214,7 +214,7 @@ function ProfileCard({
   return (
     <Pressable
       onPress={() => router.push('/settings/profile')}
-      className="mb-4 flex-row items-center rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800"
+      className="mb-4 flex-row items-center rounded-xl border border-neutral-200 bg-white p-4 dark:border-charcoal-700 dark:bg-charcoal-800"
     >
       {/* Avatar */}
       <View

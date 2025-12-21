@@ -63,7 +63,7 @@ export default function TrackerListScreen() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        className="max-h-14 border-b border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-800"
+        className="max-h-14 border-b border-neutral-200 bg-white dark:border-charcoal-700 dark:bg-charcoal-800"
         contentContainerStyle={{
           paddingHorizontal: 16,
           paddingVertical: 8,
@@ -75,7 +75,7 @@ export default function TrackerListScreen() {
             key={f.key}
             onPress={() => setFilter(f.key)}
             className={`rounded-full px-4 py-2 ${
-              filter === f.key ? 'bg-primary' : 'bg-neutral-200 dark:bg-neutral-700'
+              filter === f.key ? 'bg-primary' : 'bg-neutral-200 dark:bg-charcoal-700'
             }`}
           >
             <Text

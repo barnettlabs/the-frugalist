@@ -33,7 +33,7 @@ export function FinanceDetail({
   const bottomPadding = Math.max(insets.bottom, 16) + 80;
 
   return (
-    <View className="flex-1 bg-neutral-100 dark:bg-neutral-900">
+    <View className="flex-1 bg-neutral-50 dark:bg-charcoal-950">
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
         <PaymentHeader
           payment={summary.monthlyPayment}
@@ -84,7 +84,7 @@ function PaymentHeader({
 
 function VehicleInfoCard({ sheet }: { sheet: VehicleFinanceSheet }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
         {sheet.sheet_name || 'Untitled Estimate'}
       </Text>
@@ -92,7 +92,7 @@ function VehicleInfoCard({ sheet }: { sheet: VehicleFinanceSheet }) {
         {sheet.vehicle_year} {sheet.vehicle_make} {sheet.vehicle_model}
         {sheet.vehicle_trim ? ` ${sheet.vehicle_trim}` : ''}
       </Text>
-      <View className="mt-2 self-start rounded-full bg-neutral-100 px-3 py-1 dark:bg-neutral-700">
+      <View className="mt-2 self-start rounded-full bg-neutral-100 px-3 py-1 dark:bg-charcoal-700">
         <Text className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
           {sheet.vehicle_type}
         </Text>
@@ -109,7 +109,7 @@ function FinancialSummaryCard({
   sheet: VehicleFinanceSheet;
 }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
         Financial Summary
       </Text>
@@ -151,7 +151,7 @@ function FinancialSummaryCard({
             isNegative
           />
         )}
-        <View className="my-2 border-t border-neutral-200 dark:border-neutral-700" />
+        <View className="my-2 border-t border-neutral-200 dark:border-charcoal-700" />
         <SummaryRow
           label="Loan Amount"
           value={formatCurrencyWithSymbol(summary.loanAmount)}
@@ -186,7 +186,7 @@ function AmortizationCard({
   amortization: AmortizationType;
 }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
         Amortization Summary
       </Text>
@@ -219,7 +219,7 @@ function ContactInfoCard({ sheet }: { sheet: VehicleFinanceSheet }) {
   if (!sheet.dealership_name && !sheet.sales_consultant && !sheet.contact_email)
     return null;
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
         Contact Information
       </Text>
@@ -247,7 +247,7 @@ function ContactInfoCard({ sheet }: { sheet: VehicleFinanceSheet }) {
 
 function NotesCard({ notes }: { notes: string }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
       <Text className="mb-2 text-lg font-semibold text-neutral-900 dark:text-white">
         Notes
       </Text>
@@ -302,7 +302,7 @@ function ActionBar({
 }) {
   return (
     <View
-      className="border-t border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800"
+      className="border-t border-neutral-200 bg-white p-4 dark:border-charcoal-700 dark:bg-charcoal-800"
       style={{ paddingBottom: bottomPadding }}
     >
       <View className="flex-row gap-3">

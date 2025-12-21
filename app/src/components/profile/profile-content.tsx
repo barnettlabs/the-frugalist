@@ -187,7 +187,7 @@ function AccountStats({ profile }: { profile: User }) {
   );
 
   return (
-    <View className="mt-6 rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mt-6 rounded-xl bg-white p-4 dark:bg-charcoal-800">
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
         Account Info
       </Text>

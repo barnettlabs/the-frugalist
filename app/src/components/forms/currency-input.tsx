@@ -18,7 +18,7 @@ const inputTv = tv({
     container: 'mb-2',
     label: 'text-grey-100 mb-1 text-lg dark:text-neutral-100',
     inputContainer:
-      'mt-0 flex-row items-center rounded-xl border-[0.5px] border-neutral-300 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800',
+      'mt-0 flex-row items-center rounded-xl border-[0.5px] border-neutral-300 bg-neutral-100 dark:border-charcoal-700 dark:bg-charcoal-800',
     prefix:
       'pl-4 pr-2 text-base font-medium text-neutral-500 dark:text-neutral-400',
     input:

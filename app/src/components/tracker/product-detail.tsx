@@ -36,7 +36,7 @@ export function ProductDetail({
   const bottomPadding = Math.max(insets.bottom, 16) + 80;
 
   return (
-    <View className="flex-1 bg-neutral-100 dark:bg-neutral-900">
+    <View className="flex-1 bg-neutral-50 dark:bg-charcoal-950">
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
         <ProductHeader product={product} targetReached={targetReached} />
         <PriceTimelineCard product={product} targetReached={targetReached} />
@@ -74,7 +74,7 @@ function ProductHeader({
   targetReached: boolean;
 }) {
   return (
-    <View className="mb-4 items-center rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mb-4 items-center rounded-xl bg-white p-4 dark:bg-charcoal-800">
       {product.product_image_url ? (
         <Image
           source={{ uri: product.product_image_url }}
@@ -82,7 +82,7 @@ function ProductHeader({
           contentFit="contain"
         />
       ) : (
-        <View className="mb-4 size-40 items-center justify-center rounded-lg bg-neutral-100 dark:bg-neutral-700">
+        <View className="mb-4 size-40 items-center justify-center rounded-lg bg-neutral-100 dark:bg-charcoal-700">
           <Text className="text-6xl">📦</Text>
         </View>
       )}
@@ -154,7 +154,7 @@ function PriceTimelineCard({
   );
 
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
       <Text className="mb-4 font-semibold text-neutral-900 dark:text-white">
         Price Progress
       </Text>
@@ -181,7 +181,7 @@ function PriceTimelineCard({
 
       {/* Progress bar */}
       <View className="relative mb-2">
-        <View className="h-4 rounded-full bg-neutral-200 dark:bg-neutral-700">
+        <View className="h-4 rounded-full bg-neutral-200 dark:bg-charcoal-700">
           <View
             className={`h-4 rounded-full ${targetReached ? 'bg-green-500' : 'bg-primary'}`}
             style={{ width: `${progress}%` }}
@@ -225,7 +225,7 @@ function TrackingInfoCard({
   product: PriceTrackerItem['tracked_product'];
 }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
       <Text className="mb-3 font-semibold text-neutral-900 dark:text-white">
         Tracking Info
       </Text>
@@ -260,7 +260,7 @@ function PriceHistoryCard({
   targetPrice?: number;
 }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
       <Text className="mb-3 font-semibold text-neutral-900 dark:text-white">
         Price History
       </Text>
@@ -352,7 +352,7 @@ function ActionBar({
 }: ActionBarProps) {
   return (
     <View
-      className="border-t border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800"
+      className="border-t border-neutral-200 bg-white p-4 dark:border-charcoal-700 dark:bg-charcoal-800"
       style={{ paddingBottom: bottomPadding }}
     >
       <View className="flex-row gap-3">

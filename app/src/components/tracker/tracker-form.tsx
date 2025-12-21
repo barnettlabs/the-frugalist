@@ -54,7 +54,7 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
   const bottomPadding = Math.max(insets.bottom, 16) + 80;
 
   return (
-    <View className="flex-1 bg-neutral-100 dark:bg-neutral-900">
+    <View className="flex-1 bg-neutral-50 dark:bg-charcoal-950">
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
         {/* Instructions */}
         <View className="mb-6 rounded-xl bg-blue-50 p-4 dark:bg-blue-900/20">
@@ -70,7 +70,7 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
         </View>
 
         {/* Form */}
-        <View className="rounded-xl bg-white p-4 dark:bg-neutral-800">
+        <View className="rounded-xl bg-white p-4 dark:bg-charcoal-800">
           <Select
             label="Retailer"
             options={RETAILER_OPTIONS}
@@ -103,7 +103,7 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
         </View>
 
         {/* Tips */}
-        <View className="mt-6 rounded-xl bg-neutral-200 p-4 dark:bg-neutral-700">
+        <View className="mt-6 rounded-xl bg-neutral-200 p-4 dark:bg-charcoal-700">
           <Text className="font-medium text-neutral-700 dark:text-neutral-300">
             Tips for finding SKU/UPC:
           </Text>
@@ -117,7 +117,7 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
 
       {/* Action Buttons */}
       <View
-        className="border-t border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800"
+        className="border-t border-neutral-200 bg-white p-4 dark:border-charcoal-700 dark:bg-charcoal-800"
         style={{ paddingBottom: bottomPadding }}
       >
         <View className="flex-row gap-3">

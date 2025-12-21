@@ -40,7 +40,7 @@ export function ProfileForm({
         Personal Information
       </Text>
 
-      <View className="rounded-xl bg-white p-4 dark:bg-neutral-800">
+      <View className="rounded-xl bg-white p-4 dark:bg-charcoal-800">
         <View className="flex-row gap-4">
           <View className="flex-1">
             <ControlledInput
@@ -81,7 +81,7 @@ export function ProfileForm({
       </View>
 
       {/* Email Verification Status */}
-      <View className="mt-4 rounded-xl bg-white p-4 dark:bg-neutral-800">
+      <View className="mt-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
         <Text className="mb-2 font-semibold text-neutral-900 dark:text-white">
           Email Verification
         </Text>

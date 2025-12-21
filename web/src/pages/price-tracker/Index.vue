@@ -2,13 +2,17 @@
 import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import PageHeader from '@/components/PageHeader.vue'
-import { TagIcon, PlusIcon, TrashIcon, EyeIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
+import Card from '@/components/Card.vue'
+import Badge from '@/components/Badge.vue'
+import Spinner from '@/components/Spinner.vue'
+import { TagIcon, PlusIcon, TrashIcon, EyeIcon, ArrowPathIcon, EnvelopeIcon, DevicePhoneMobileIcon } from '@heroicons/vue/24/outline'
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime } from '@/utils/time'
-import { priceTrackerApi, type TrackedProduct } from '@/api/price-tracker'
+import { priceTrackerApi, RETAILERS, type TrackedProduct } from '@/api/price-tracker'
 
 const products = ref<TrackedProduct[]>([])
 const loading = ref(true)
+const refreshingId = ref<number | null>(null)
 
 const fetchProducts = async () => {
   try {
@@ -33,12 +37,21 @@ const deleteProduct = async (id: number) => {
 }
 
 const refreshProduct = async (id: number) => {
+  refreshingId.value = id
   try {
     await priceTrackerApi.refresh(id)
     await fetchProducts()
   } catch (error) {
     console.error('Error refreshing product:', error)
+  } finally {
+    refreshingId.value = null
   }
+}
+
+const getRetailerName = (product: TrackedProduct): string => {
+  if (product.retailer?.name) return product.retailer.name
+  const retailer = RETAILERS.find(r => r.id === product.retailer_id)
+  return retailer?.name || 'Unknown'
 }
 
 onMounted(() => {
@@ -68,11 +81,11 @@ onMounted(() => {
 
       <!-- Loading -->
       <div v-if="loading" class="flex items-center justify-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
+        <Spinner size="lg" color="accent" />
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="!products.length" class="bg-white rounded-lg border border-gray-200 shadow-sm p-12 text-center">
+      <Card v-else-if="!products.length" class="text-center" padding="lg">
         <div class="p-4 rounded-xl bg-accent/10 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
           <TagIcon class="h-8 w-8 text-accent-dark" />
         </div>
@@ -84,71 +97,105 @@ onMounted(() => {
             <span>Track First Product</span>
           </button>
         </RouterLink>
-      </div>
+      </Card>
 
       <!-- Products List -->
       <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div
+        <Card
           v-for="product in products"
           :key="product.id"
-          class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-all"
+          variant="interactive"
+          padding="none"
+          class="overflow-hidden"
         >
-          <div class="flex items-start justify-between mb-3">
-            <div class="flex-1 min-w-0">
-              <h3 class="font-bold text-gray-900 truncate">{{ product.product_name }}</h3>
-              <p class="text-xs text-gray-500">{{ product.retailer?.name || 'Unknown' }}</p>
+          <!-- Product Header -->
+          <div class="p-4 border-b border-gray-100">
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex-1 min-w-0">
+                <h3 class="font-bold text-gray-900 truncate">
+                  {{ product.product_name || 'Pending lookup...' }}
+                </h3>
+                <p class="text-xs text-gray-500 mt-0.5">
+                  {{ getRetailerName(product) }} &middot; {{ product.sku_upc }}
+                </p>
+              </div>
+              <Badge v-if="product.is_active" variant="success" size="sm">Active</Badge>
+              <Badge v-else variant="neutral" size="sm">Paused</Badge>
             </div>
-            <span v-if="product.last_checked_at" class="text-xs text-gray-400">
-              {{ formatRelativeTime(product.last_checked_at) }}
-            </span>
+
+            <!-- Notification Methods -->
+            <div class="flex items-center gap-2 mt-2">
+              <span class="text-xs text-gray-400">Alerts:</span>
+              <div class="flex items-center gap-1">
+                <EnvelopeIcon
+                  v-if="product.notification_method?.includes('email')"
+                  class="h-4 w-4 text-primary"
+                  title="Email notifications"
+                />
+                <DevicePhoneMobileIcon
+                  v-if="product.notification_method?.includes('push')"
+                  class="h-4 w-4 text-primary"
+                  title="Push notifications"
+                />
+              </div>
+            </div>
           </div>
 
-          <div class="bg-gray-50 rounded-lg p-3 mb-3">
+          <!-- Price Info -->
+          <div class="bg-gray-50 p-4">
             <div class="flex items-center justify-between">
-              <span class="text-gray-500 text-xs">Current Price</span>
-              <span class="font-bold text-green-600 text-lg">${{ formatCurrency(product.current_price) }}</span>
+              <span class="text-gray-500 text-sm">Current Price</span>
+              <span class="font-bold text-xl text-success">
+                {{ product.current_price ? `$${formatCurrency(product.current_price)}` : '—' }}
+              </span>
             </div>
-            <div v-if="product.target_price" class="flex items-center justify-between mt-1">
-              <span class="text-gray-500 text-xs">Target Price</span>
+            <div v-if="product.target_price" class="flex items-center justify-between mt-2">
+              <span class="text-gray-500 text-sm">Target Price</span>
               <span class="font-medium text-gray-900">${{ formatCurrency(product.target_price) }}</span>
             </div>
+            <div v-if="product.last_checked_at" class="text-xs text-gray-400 mt-2 text-right">
+              Last checked {{ formatRelativeTime(product.last_checked_at) }}
+            </div>
+            <div v-else class="text-xs text-gray-400 mt-2 text-right">
+              Not yet checked
+            </div>
           </div>
 
-          <div class="grid grid-cols-3 gap-2">
-            <RouterLink :to="`/price-tracker/${product.id}`">
-              <button class="w-full bg-accent hover:bg-accent-dark text-white px-2 py-2 rounded-lg text-xs font-medium flex items-center justify-center space-x-1">
-                <EyeIcon class="h-3.5 w-3.5" />
-                <span>View</span>
+          <!-- Actions -->
+          <div class="grid grid-cols-3 gap-px bg-gray-100">
+            <RouterLink :to="`/price-tracker/${product.id}`" class="block">
+              <button class="w-full bg-white hover:bg-gray-50 text-gray-700 px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors">
+                <EyeIcon class="h-4 w-4" />
+                <span>Details</span>
               </button>
             </RouterLink>
             <button
               @click="refreshProduct(product.id)"
-              class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-2 rounded-lg text-xs font-medium flex items-center justify-center space-x-1"
+              :disabled="refreshingId === product.id"
+              class="w-full bg-white hover:bg-gray-50 text-gray-700 px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
             >
-              <ArrowPathIcon class="h-3.5 w-3.5" />
-              <span>Refresh</span>
+              <ArrowPathIcon :class="['h-4 w-4', refreshingId === product.id && 'animate-spin']" />
+              <span>{{ refreshingId === product.id ? 'Checking...' : 'Refresh' }}</span>
             </button>
             <button
               @click="deleteProduct(product.id)"
-              class="w-full bg-red-600 hover:bg-red-700 text-white px-2 py-2 rounded-lg text-xs font-medium flex items-center justify-center space-x-1"
+              class="w-full bg-white hover:bg-red-50 text-red-600 px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
             >
-              <TrashIcon class="h-3.5 w-3.5" />
+              <TrashIcon class="h-4 w-4" />
               <span>Delete</span>
             </button>
           </div>
-        </div>
+        </Card>
 
-        <!-- Add new -->
+        <!-- Add New Card -->
         <RouterLink to="/price-tracker/create">
-          <div class="bg-white rounded-lg p-8 text-center border-2 border-dashed border-accent/30 hover:border-accent transition-colors cursor-pointer group h-full flex flex-col items-center justify-center">
-            <div class="p-3 rounded-xl bg-accent/10 w-fit mx-auto mb-4 group-hover:bg-accent/20 transition-colors">
+          <Card variant="interactive" class="h-full flex flex-col items-center justify-center text-center border-2 border-dashed border-accent/30 hover:border-accent bg-transparent" padding="lg">
+            <div class="p-3 rounded-xl bg-accent/10 w-fit mx-auto mb-4">
               <PlusIcon class="h-8 w-8 text-accent-dark" />
             </div>
-            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-accent-dark transition-colors">
-              Track New Product
-            </h3>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Track New Product</h3>
             <p class="text-gray-600 text-sm">Add a product to monitor its price</p>
-          </div>
+          </Card>
         </RouterLink>
       </div>
     </div>

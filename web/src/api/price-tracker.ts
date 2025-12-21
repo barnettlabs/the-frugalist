@@ -9,34 +9,68 @@ export interface PriceHistoryEntry {
   created_at: string
 }
 
+export interface Retailer {
+  id: number
+  name: string
+  slug: string
+  is_active: boolean
+}
+
+export type NotificationMethod = 'email' | 'push'
+
 export interface TrackedProduct {
   id: number
   user_id: number
   retailer_id: number
-  product_url: string
+  sku_upc: string
   product_name: string
+  product_variant?: string
+  product_description?: string
+  product_image_url?: string
   retail_price: number
   current_price: number
   target_price: number | null
-  last_checked_at: string
+  is_active: boolean
+  notification_method: NotificationMethod[]
+  last_checked_at: string | null
   created_at: string
   updated_at: string
-  retailer: {
-    id: number
-    name: string
-    domain: string
-  }
+  retailer?: Retailer
   price_history?: PriceHistoryEntry[]
 }
 
 export interface CreateTrackedProductData {
-  product_url: string
+  retailer_id: number
+  sku_upc: string
   target_price?: number
+  notification_method: NotificationMethod[]
 }
 
 export interface UpdateTrackedProductData {
   target_price?: number
+  notification_method?: NotificationMethod[]
 }
+
+export interface ValidateProductResponse {
+  valid: boolean
+  product_name?: string
+  product_description?: string
+  product_image_url?: string
+  current_price?: number
+  retail_price?: number
+  in_stock?: boolean
+  error?: string
+}
+
+// Hardcoded retailers matching the mobile app and seeder
+export const RETAILERS: Retailer[] = [
+  { id: 1, name: 'Best Buy', slug: 'bestbuy', is_active: true },
+  { id: 2, name: 'Home Depot', slug: 'homedepot', is_active: true },
+  { id: 3, name: "Lowe's", slug: 'lowes', is_active: true },
+  { id: 4, name: 'Amazon', slug: 'amazon', is_active: true },
+  { id: 5, name: 'Walmart', slug: 'walmart', is_active: true },
+  { id: 6, name: 'Target', slug: 'target', is_active: true },
+]
 
 export const priceTrackerApi = {
   async getAll(): Promise<TrackedProduct[]> {
@@ -49,8 +83,11 @@ export const priceTrackerApi = {
     return data.tracked_product
   },
 
-  async validateProduct(productUrl: string): Promise<{ valid: boolean; product_name?: string; price?: number; error?: string }> {
-    const { data } = await apiClient.post('/price-tracker/validate-product', { product_url: productUrl })
+  async validateProduct(retailerId: number, skuUpc: string): Promise<ValidateProductResponse> {
+    const { data } = await apiClient.post<ValidateProductResponse>('/price-tracker/validate-product', {
+      retailer_id: retailerId,
+      sku_upc: skuUpc,
+    })
     return data
   },
 

@@ -28,7 +28,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: 'sneaky-salesman',
   version: Env.VERSION.toString(),
   orientation: 'portrait',
-  icon: './assets/icon-light.png',
+  icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   updates: {

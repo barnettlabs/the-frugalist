@@ -56,7 +56,8 @@ export default function Settings() {
       await Share.share({
         message: Platform.select({
           ios: 'Check out Sneaky Salesman - the ultimate car finance & lease calculator!',
-          default: 'Check out Sneaky Salesman - the ultimate car finance & lease calculator! https://sneakysalesman.com',
+          default:
+            'Check out Sneaky Salesman - the ultimate car finance & lease calculator! https://sneakysalesman.com',
         }),
         url: 'https://sneakysalesman.com',
         title: 'Sneaky Salesman',
@@ -109,7 +110,11 @@ export default function Settings() {
 
           {/* Account Section */}
           <ItemsContainer title="settings.account">
-            <Item text="settings.profile" icon={<User color={iconColor} />} onPress={() => router.push('/settings/profile')} />
+            <Item
+              text="settings.profile"
+              icon={<User color={iconColor} />}
+              onPress={() => router.push('/settings/profile')}
+            />
           </ItemsContainer>
 
           {/* Appearance Section */}
@@ -138,10 +143,7 @@ export default function Settings() {
               icon={<Website color={iconColor} />}
               onPress={() => openLinkInBrowser('https://sneakysalesman.com')}
             />
-            <Item
-              text="settings.company"
-              onPress={() => openLinkInBrowser('https://tensifi.com')}
-            />
+            <Item text="settings.company" onPress={() => openLinkInBrowser('https://tensifi.com')} />
             <Item text="settings.privacy" onPress={() => openLinkInBrowser('https://sneakysalesman.com/privacy')} />
             <Item text="settings.terms" onPress={() => openLinkInBrowser('https://sneakysalesman.com/terms')} />
           </ItemsContainer>
@@ -155,9 +157,7 @@ export default function Settings() {
               onPress={signOut}
               className="flex-row items-center justify-center rounded-xl border border-danger-200 bg-danger-50 px-6 py-4 dark:border-danger-800 dark:bg-danger-900/20"
             >
-              <Text className="text-base font-semibold text-danger-600 dark:text-danger-400">
-                Sign Out
-              </Text>
+              <Text className="text-base font-semibold text-danger-600 dark:text-danger-400">Sign Out</Text>
             </Pressable>
           </View>
         </View>
@@ -168,8 +168,6 @@ export default function Settings() {
 
 function ThemeButtonGroup() {
   const { selectedTheme, setSelectedTheme } = useSelectedTheme();
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === 'dark';
 
   const themes: { value: ColorSchemeType; label: string; icon: string }[] = [
     { value: 'light', label: 'Light', icon: '☀️' },
@@ -179,24 +177,20 @@ function ThemeButtonGroup() {
 
   return (
     <View className="flex-row rounded-xl bg-neutral-200 p-1 dark:bg-neutral-700">
-      {themes.map((theme) => {
+      {themes.map(theme => {
         const isSelected = selectedTheme === theme.value;
         return (
           <Pressable
             key={theme.value}
             onPress={() => setSelectedTheme(theme.value)}
             className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-lg py-2.5 ${
-              isSelected
-                ? 'bg-white shadow-sm dark:bg-neutral-600'
-                : ''
+              isSelected ? 'bg-white dark:bg-neutral-600' : ''
             }`}
           >
             <Text className="text-base">{theme.icon}</Text>
             <Text
               className={`text-sm font-medium ${
-                isSelected
-                  ? 'text-neutral-900 dark:text-white'
-                  : 'text-neutral-500 dark:text-neutral-400'
+                isSelected ? 'text-neutral-900 dark:text-white' : 'text-neutral-500 dark:text-neutral-400'
               }`}
             >
               {theme.label}

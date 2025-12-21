@@ -28,7 +28,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: 'obytesapp',
   version: Env.VERSION.toString(),
   orientation: 'portrait',
-  icon: './assets/icon.png',
+  icon: './assets/icon-light.png',
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   updates: {
@@ -77,7 +77,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'expo-splash-screen',
       {
         backgroundColor: '#2E3C4B',
-        image: './assets/splash-icon.png',
+        image: './assets/icon.svg',
         imageWidth: 150,
       },
     ],

@@ -108,26 +108,31 @@ const routes: RouteRecordRaw[] = [
         path: 'dashboard',
         name: 'dashboard',
         component: Dashboard,
+        meta: { breadcrumb: 'Dashboard' },
       },
       {
         path: 'profile',
         name: 'profile.edit',
         component: Profile,
+        meta: { breadcrumb: 'Profile' },
       },
       {
         path: 'verify-email',
         name: 'verification.notice',
         component: VerifyEmail,
+        meta: { breadcrumb: 'Verify Email' },
       },
       {
         path: 'coming-soon',
         name: 'coming-soon',
         component: ComingSoon,
+        meta: { breadcrumb: 'Coming Soon' },
       },
       {
         path: 'disclaimers',
         name: 'disclaimers',
         component: Disclaimers,
+        meta: { breadcrumb: 'Disclaimers' },
       },
 
       // Estimates - Finance
@@ -135,22 +140,26 @@ const routes: RouteRecordRaw[] = [
         path: 'estimates/financing',
         name: 'estimates.financing.index',
         component: FinanceIndex,
+        meta: { breadcrumb: 'Finance Calculator' },
       },
       {
         path: 'estimates/financing/create',
         name: 'estimates.financing.create',
         component: FinanceDetails,
+        meta: { breadcrumb: 'Create', parent: 'estimates.financing.index' },
       },
       {
         path: 'estimates/financing/:id/edit',
         name: 'estimates.financing.edit',
         component: FinanceDetails,
         props: true,
+        meta: { breadcrumb: 'Edit', parent: 'estimates.financing.index' },
       },
       {
         path: 'estimates/financing/compare',
         name: 'estimates.financing.compare',
         component: FinanceCompare,
+        meta: { breadcrumb: 'Compare', parent: 'estimates.financing.index' },
       },
 
       // Estimates - Lease
@@ -158,22 +167,26 @@ const routes: RouteRecordRaw[] = [
         path: 'estimates/leasing',
         name: 'estimates.leasing.index',
         component: LeaseIndex,
+        meta: { breadcrumb: 'Lease Calculator' },
       },
       {
         path: 'estimates/leasing/create',
         name: 'estimates.leasing.create',
         component: LeaseDetails,
+        meta: { breadcrumb: 'Create', parent: 'estimates.leasing.index' },
       },
       {
         path: 'estimates/leasing/:id/edit',
         name: 'estimates.leasing.edit',
         component: LeaseDetails,
         props: true,
+        meta: { breadcrumb: 'Edit', parent: 'estimates.leasing.index' },
       },
       {
         path: 'estimates/leasing/compare',
         name: 'estimates.leasing.compare',
         component: LeaseCompare,
+        meta: { breadcrumb: 'Compare', parent: 'estimates.leasing.index' },
       },
 
       // Learning
@@ -182,6 +195,7 @@ const routes: RouteRecordRaw[] = [
         name: 'learning.show',
         component: LearningShow,
         props: true,
+        meta: { breadcrumb: (route: any) => `Learn ${route.params.type === 'financing' ? 'Financing' : 'Leasing'}` },
       },
 
       // Price Tracker
@@ -189,17 +203,20 @@ const routes: RouteRecordRaw[] = [
         path: 'price-tracker',
         name: 'price-tracker.index',
         component: PriceTrackerIndex,
+        meta: { breadcrumb: 'Price Tracker' },
       },
       {
         path: 'price-tracker/create',
         name: 'price-tracker.create',
         component: PriceTrackerCreate,
+        meta: { breadcrumb: 'Create', parent: 'price-tracker.index' },
       },
       {
         path: 'price-tracker/:id',
         name: 'price-tracker.show',
         component: PriceTrackerDetails,
         props: true,
+        meta: { breadcrumb: 'Details', parent: 'price-tracker.index' },
       },
     ],
   },

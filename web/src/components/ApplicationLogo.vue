@@ -2,7 +2,7 @@
 import FoxLogo from '@/../assets/logos/sneaky-salesman/fox-logo.svg'
 
 interface Props {
-  variant?: 'white' | 'black'
+  variant?: 'white' | 'black' | 'primary'
   class?: string
 }
 
@@ -10,9 +10,14 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'black',
   class: 'h-8 w-auto',
 })
+
+const fillClass = {
+  white: 'fill-white',
+  black: 'fill-black',
+  primary: 'fill-primary',
+}
 </script>
 
 <template>
-  <!-- <img :src="logoSrc" :class="props.class" alt="Sneaky Salesman Logo" loading="lazy" /> -->
-  <FoxLogo :class="[props.variant === 'white' ? 'fill-white' : 'fill-black', props.class]" />
+  <FoxLogo :class="[fillClass[props.variant], props.class]" />
 </template>

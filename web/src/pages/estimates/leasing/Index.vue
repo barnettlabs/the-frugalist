@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
+import PageHeader from '@/components/PageHeader.vue'
 import {
   CurrencyDollarIcon,
   PlusIcon,
@@ -111,42 +112,41 @@ onMounted(() => {
   <main class="py-12 flex-1">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
       <!-- Header -->
-      <div class="mb-8">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900">Vehicle Lease Calculator</h1>
-            <p class="mt-2 text-gray-600">
-              Compare lease terms, residual values, and money factors to get the best deal
-            </p>
-            <RouterLink
-              to="/learning/leasing"
-              class="inline-flex items-center gap-2 mt-3 text-secondary hover:text-secondary-shade-1 transition-colors text-sm font-medium"
-            >
-              <BookOpenIcon class="h-4 w-4" />
-              <span>Learn about leasing terms</span>
-            </RouterLink>
-          </div>
-          <div class="flex items-center gap-2">
-            <button
-              v-if="selectedSheets.size >= 2"
-              @click="startComparison"
-              class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2"
-            >
-              <ScaleIcon class="h-5 w-5" />
-              <span>Compare</span>
-            </button>
+      <PageHeader
+        title="Vehicle Lease Calculator"
+        description="Compare lease terms, residual values, and money factors to get the best deal"
+        back-link="/dashboard"
+        back-label="Dashboard"
+      >
+        <template #subtitle>
+          <RouterLink
+            to="/learning/leasing"
+            class="inline-flex items-center gap-2 mt-3 text-secondary hover:text-secondary-dark transition-colors text-sm font-medium"
+          >
+            <BookOpenIcon class="h-4 w-4" />
+            <span>Learn about leasing terms</span>
+          </RouterLink>
+        </template>
+        <template #actions>
+          <button
+            v-if="selectedSheets.size >= 2"
+            @click="startComparison"
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2"
+          >
+            <ScaleIcon class="h-5 w-5" />
+            <span>Compare</span>
+          </button>
 
-            <RouterLink to="/estimates/leasing/create">
-              <button
-                class="bg-secondary hover:bg-secondary-shade-1 text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2"
-              >
-                <PlusIcon class="h-5 w-5" />
-                <span>New Estimate</span>
-              </button>
-            </RouterLink>
-          </div>
-        </div>
-      </div>
+          <RouterLink to="/estimates/leasing/create">
+            <button
+              class="bg-secondary hover:bg-secondary-dark text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2"
+            >
+              <PlusIcon class="h-5 w-5" />
+              <span>New Estimate</span>
+            </button>
+          </RouterLink>
+        </template>
+      </PageHeader>
 
       <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-6">
         <div class="grid grid-cols-1 gap-2 lg:col-span-2">
@@ -168,7 +168,7 @@ onMounted(() => {
                   <h3 class="text-lg font-bold text-gray-900 mb-2">No lease estimates yet</h3>
                   <p class="text-gray-600 mb-6">Start your first vehicle leasing calculation</p>
                   <RouterLink to="/estimates/leasing/create">
-                    <button class="bg-secondary hover:bg-secondary-shade-1 text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2 mx-auto">
+                    <button class="bg-secondary hover:bg-secondary-dark text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2 mx-auto">
                       <PlusIcon class="h-5 w-5" />
                       <span>Create First Estimate</span>
                     </button>
@@ -219,7 +219,7 @@ onMounted(() => {
                     <!-- Action Buttons -->
                     <div class="grid grid-cols-3 gap-2">
                       <RouterLink :to="`/estimates/leasing/${sheet.id}/edit`">
-                        <button class="w-full bg-secondary hover:bg-secondary-shade-1 text-white px-2 py-2 rounded-lg text-xs font-medium transition-all duration-150 flex items-center justify-center space-x-1">
+                        <button class="w-full bg-secondary hover:bg-secondary-dark text-white px-2 py-2 rounded-lg text-xs font-medium transition-all duration-150 flex items-center justify-center space-x-1">
                           <EyeIcon class="h-3.5 w-3.5" />
                           <span>View</span>
                         </button>
@@ -272,7 +272,7 @@ onMounted(() => {
                 <!-- Add new sheet -->
                 <li class="list-none">
                   <RouterLink to="/estimates/leasing/create">
-                    <div class="bg-white rounded-lg p-8 text-center border-2 border-dashed border-secondary/20 hover:border-secondary/40 transition-colors cursor-pointer group">
+                    <div class="bg-white rounded-lg p-8 text-center border-2 border-dashed border-secondary/30 hover:border-secondary transition-colors cursor-pointer group">
                       <div class="p-3 rounded-xl bg-secondary/10 w-fit mx-auto mb-4 group-hover:bg-secondary/20 transition-colors">
                         <PlusIcon class="h-8 w-8 text-secondary" />
                       </div>

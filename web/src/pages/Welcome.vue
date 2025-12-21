@@ -48,8 +48,8 @@ const actions: ActionItem[] = [
     description:
       'Never miss a deal again. Monitor prices and get alerted when they drop below your threshold. Intelligent tracking saves you time and money.',
     href: '/price-tracker',
-    iconForeground: 'text-warning',
-    iconBackground: 'bg-gradient-to-br from-warning/10 to-warning/20',
+    iconForeground: 'text-accent-dark',
+    iconBackground: 'bg-gradient-to-br from-accent/10 to-accent/20',
     status: 'Available',
   },
 ]

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
+import PageHeader from '@/components/PageHeader.vue'
 import InputError from '@/components/InputError.vue'
 import InputLabel from '@/components/InputLabel.vue'
 import TextInput from '@/components/TextInput.vue'
@@ -67,10 +68,12 @@ const submitForm = async () => {
   <main class="py-12 flex-1">
     <div class="mx-auto max-w-xl px-4 sm:px-6 lg:px-8">
       <!-- Header -->
-      <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Track New Product</h1>
-        <p class="mt-2 text-gray-600">Enter a product URL to start tracking its price</p>
-      </div>
+      <PageHeader
+        title="Track New Product"
+        description="Enter a product URL to start tracking its price"
+        back-link="/price-tracker"
+        back-label="Price Tracker"
+      />
 
       <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
         <form @submit.prevent="submitForm" class="space-y-6">

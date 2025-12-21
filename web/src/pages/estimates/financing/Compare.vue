@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRoute, RouterLink } from 'vue-router'
+import { useRoute } from 'vue-router'
+import PageHeader from '@/components/PageHeader.vue'
 import { financeApi } from '@/api/finance'
 import { FinanceCalculator } from '@/utils/financeCalculator'
 import { formatCurrency } from '@/utils/formatters'
@@ -55,19 +56,12 @@ onMounted(() => {
   <main class="py-12 flex-1">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
       <!-- Header -->
-      <div class="mb-8">
-        <div class="flex items-center justify-between">
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900">Compare Finance Estimates</h1>
-            <p class="mt-2 text-gray-600">Side-by-side comparison of your financing options</p>
-          </div>
-          <RouterLink to="/estimates/financing">
-            <button class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-150">
-              Back to List
-            </button>
-          </RouterLink>
-        </div>
-      </div>
+      <PageHeader
+        title="Compare Finance Estimates"
+        description="Side-by-side comparison of your financing options"
+        back-link="/estimates/financing"
+        back-label="Finance Calculator"
+      />
 
       <!-- Loading -->
       <div v-if="loading" class="flex items-center justify-center py-12">

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
+import PageHeader from '@/components/PageHeader.vue'
 import { BookOpenIcon } from '@heroicons/vue/24/outline'
 import { learningContentMap } from '@/data/learningContent'
 
@@ -21,17 +22,12 @@ const otherType = computed(() => {
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
       <template v-if="content">
         <!-- Header -->
-        <div class="mb-8">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="p-3 rounded-xl bg-primary/10">
-              <BookOpenIcon class="h-8 w-8 text-primary" />
-            </div>
-            <div>
-              <h1 class="text-3xl font-bold text-gray-900">{{ content.title }}</h1>
-              <p class="text-gray-600">{{ content.description }}</p>
-            </div>
-          </div>
-        </div>
+        <PageHeader
+          :title="content.title"
+          :description="content.description"
+          back-link="/dashboard"
+          back-label="Dashboard"
+        />
 
         <!-- TLDR Section -->
         <div v-if="content.keywords && content.keywords.length > 0" class="mb-8 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-6 border border-primary/20">

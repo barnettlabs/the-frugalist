@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
+import PageHeader from '@/components/PageHeader.vue'
 import {
   BanknotesIcon,
   PlusIcon,
@@ -133,42 +134,41 @@ onMounted(() => {
   <main class="py-12 flex-1">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
       <!-- Header -->
-      <div class="mb-8">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900">Vehicle Finance Calculator</h1>
-            <p class="mt-2 text-gray-600">
-              Track interest rates, rebates, dealer fees, and incentives to get the best deal
-            </p>
-            <RouterLink
-              to="/learning/financing"
-              class="inline-flex items-center gap-2 mt-3 text-primary hover:text-primary-shade-1 transition-colors text-sm font-medium"
-            >
-              <BookOpenIcon class="h-4 w-4" />
-              <span>Learn about financing terms</span>
-            </RouterLink>
-          </div>
-          <div class="flex items-center gap-2">
-            <button
-              v-if="selectedSheets.size >= 2"
-              @click="startComparison"
-              class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2"
-            >
-              <ScaleIcon class="h-5 w-5" />
-              <span>Compare</span>
-            </button>
+      <PageHeader
+        title="Vehicle Finance Calculator"
+        description="Track interest rates, rebates, dealer fees, and incentives to get the best deal"
+        back-link="/dashboard"
+        back-label="Dashboard"
+      >
+        <template #subtitle>
+          <RouterLink
+            to="/learning/financing"
+            class="inline-flex items-center gap-2 mt-3 text-primary hover:text-primary-shade-1 transition-colors text-sm font-medium"
+          >
+            <BookOpenIcon class="h-4 w-4" />
+            <span>Learn about financing terms</span>
+          </RouterLink>
+        </template>
+        <template #actions>
+          <button
+            v-if="selectedSheets.size >= 2"
+            @click="startComparison"
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2"
+          >
+            <ScaleIcon class="h-5 w-5" />
+            <span>Compare</span>
+          </button>
 
-            <RouterLink to="/estimates/financing/create">
-              <button
-                class="bg-primary hover:bg-primary-shade-1 text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2"
-              >
-                <PlusIcon class="h-5 w-5" />
-                <span>New Estimate</span>
-              </button>
-            </RouterLink>
-          </div>
-        </div>
-      </div>
+          <RouterLink to="/estimates/financing/create">
+            <button
+              class="bg-primary hover:bg-primary-shade-1 text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2"
+            >
+              <PlusIcon class="h-5 w-5" />
+              <span>New Estimate</span>
+            </button>
+          </RouterLink>
+        </template>
+      </PageHeader>
 
       <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-6">
         <div class="grid grid-cols-1 gap-2 lg:col-span-2">

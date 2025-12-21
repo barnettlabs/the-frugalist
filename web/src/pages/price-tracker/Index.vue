@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
+import PageHeader from '@/components/PageHeader.vue'
 import { TagIcon, PlusIcon, TrashIcon, EyeIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime } from '@/utils/time'
@@ -49,37 +50,36 @@ onMounted(() => {
   <main class="py-12 flex-1">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
       <!-- Header -->
-      <div class="mb-8">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900">Smart Price Tracker</h1>
-            <p class="mt-2 text-gray-600">
-              Track product prices and get notified when they drop
-            </p>
-          </div>
+      <PageHeader
+        title="Smart Price Tracker"
+        description="Track product prices and get notified when they drop"
+        back-link="/dashboard"
+        back-label="Dashboard"
+      >
+        <template #actions>
           <RouterLink to="/price-tracker/create">
-            <button class="bg-warning hover:bg-warning-shade-1 text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2">
+            <button class="bg-accent hover:bg-accent-dark text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2">
               <PlusIcon class="h-5 w-5" />
               <span>Track New Product</span>
             </button>
           </RouterLink>
-        </div>
-      </div>
+        </template>
+      </PageHeader>
 
       <!-- Loading -->
       <div v-if="loading" class="flex items-center justify-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-warning"></div>
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
       </div>
 
       <!-- Empty State -->
       <div v-else-if="!products.length" class="bg-white rounded-lg border border-gray-200 shadow-sm p-12 text-center">
-        <div class="p-4 rounded-xl bg-warning/10 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-          <TagIcon class="h-8 w-8 text-warning" />
+        <div class="p-4 rounded-xl bg-accent/10 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+          <TagIcon class="h-8 w-8 text-accent-dark" />
         </div>
         <h3 class="text-lg font-bold text-gray-900 mb-2">No products being tracked</h3>
         <p class="text-gray-600 mb-6">Start tracking products to get price drop alerts</p>
         <RouterLink to="/price-tracker/create">
-          <button class="bg-warning hover:bg-warning-shade-1 text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2 mx-auto">
+          <button class="bg-accent hover:bg-accent-dark text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2 mx-auto">
             <PlusIcon class="h-5 w-5" />
             <span>Track First Product</span>
           </button>
@@ -116,7 +116,7 @@ onMounted(() => {
 
           <div class="grid grid-cols-3 gap-2">
             <RouterLink :to="`/price-tracker/${product.id}`">
-              <button class="w-full bg-warning hover:bg-warning-shade-1 text-white px-2 py-2 rounded-lg text-xs font-medium flex items-center justify-center space-x-1">
+              <button class="w-full bg-accent hover:bg-accent-dark text-white px-2 py-2 rounded-lg text-xs font-medium flex items-center justify-center space-x-1">
                 <EyeIcon class="h-3.5 w-3.5" />
                 <span>View</span>
               </button>
@@ -140,11 +140,11 @@ onMounted(() => {
 
         <!-- Add new -->
         <RouterLink to="/price-tracker/create">
-          <div class="bg-white rounded-lg p-8 text-center border-2 border-dashed border-warning/20 hover:border-warning/40 transition-colors cursor-pointer group h-full flex flex-col items-center justify-center">
-            <div class="p-3 rounded-xl bg-warning/10 w-fit mx-auto mb-4 group-hover:bg-warning/20 transition-colors">
-              <PlusIcon class="h-8 w-8 text-warning" />
+          <div class="bg-white rounded-lg p-8 text-center border-2 border-dashed border-accent/30 hover:border-accent transition-colors cursor-pointer group h-full flex flex-col items-center justify-center">
+            <div class="p-3 rounded-xl bg-accent/10 w-fit mx-auto mb-4 group-hover:bg-accent/20 transition-colors">
+              <PlusIcon class="h-8 w-8 text-accent-dark" />
             </div>
-            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-warning transition-colors">
+            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-accent-dark transition-colors">
               Track New Product
             </h3>
             <p class="text-gray-600 text-sm">Add a product to monitor its price</p>

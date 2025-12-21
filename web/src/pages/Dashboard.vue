@@ -73,8 +73,8 @@ const smartApps: SmartApp[] = [
       'Track product prices and get alerts when they drop. Never miss a deal on the products you want.',
     href: '/price-tracker',
     createHref: '/price-tracker/create',
-    iconForeground: 'text-warning',
-    iconBackground: 'bg-gradient-to-br from-warning/10 to-warning/20',
+    iconForeground: 'text-accent-dark',
+    iconBackground: 'bg-gradient-to-br from-accent/10 to-accent/20',
     status: 'Available',
   },
 ]
@@ -191,20 +191,28 @@ const navigateTo = (path: string) => {
             </div>
 
             <!-- Stats Card -->
-            <div class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-              <h3 class="text-sm font-bold text-gray-900 mb-3">Overview</h3>
+            <div class="bg-gradient-to-br from-primary to-primary-shade-2 rounded-lg p-4 shadow-sm text-white">
+              <h3 class="text-sm font-bold mb-3 opacity-90">Overview</h3>
               <div class="space-y-3">
                 <div class="flex items-center justify-between">
-                  <span class="text-xs text-gray-600">Finance Sheets</span>
-                  <span class="text-sm font-bold text-primary">{{
+                  <span class="text-xs opacity-80">Finance Sheets</span>
+                  <span class="text-lg font-bold">{{
                     stats?.finance_sheets_count ?? 0
                   }}</span>
                 </div>
                 <div class="flex items-center justify-between">
-                  <span class="text-xs text-gray-600">Lease Sheets</span>
-                  <span class="text-sm font-bold text-secondary">{{
+                  <span class="text-xs opacity-80">Lease Sheets</span>
+                  <span class="text-lg font-bold">{{
                     stats?.lease_sheets_count ?? 0
                   }}</span>
+                </div>
+                <div class="pt-2 border-t border-white/20">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs opacity-80">Total</span>
+                    <span class="text-xl font-bold">{{
+                      (stats?.finance_sheets_count ?? 0) + (stats?.lease_sheets_count ?? 0)
+                    }}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -325,7 +333,7 @@ const navigateTo = (path: string) => {
                   v-if="vehicleLeaseSheets?.length > 0"
                   v-for="sheet in vehicleLeaseSheets.slice(0, 3)"
                   :key="'lease-' + sheet.id"
-                  class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md hover:border-gray-300 transition-all"
+                  class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md hover:border-secondary/30 transition-all"
                 >
                   <div class="flex items-start justify-between gap-3">
                     <div class="flex items-start gap-3 flex-1 min-w-0">
@@ -339,7 +347,7 @@ const navigateTo = (path: string) => {
                             {{ sheet.vehicle_model }}
                           </h3>
                           <span
-                            class="flex-shrink-0 bg-secondary/10 text-secondary text-xs px-2 py-0.5 rounded-full"
+                            class="flex-shrink-0 bg-secondary/10 text-secondary-dark text-xs px-2 py-0.5 rounded-full"
                           >
                             Lease
                           </span>
@@ -352,7 +360,7 @@ const navigateTo = (path: string) => {
                     </div>
                     <RouterLink :to="`/estimates/leasing/${sheet.id}/edit`">
                       <button
-                        class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-md font-medium transition-colors flex-shrink-0"
+                        class="text-xs bg-secondary/10 hover:bg-secondary/20 text-secondary-dark px-3 py-1.5 rounded-md font-medium transition-colors flex-shrink-0"
                       >
                         Edit
                       </button>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import PageHeader from '@/components/PageHeader.vue'
 import InputError from '@/components/InputError.vue'
 import InputLabel from '@/components/InputLabel.vue'
 import TextInput from '@/components/TextInput.vue'
@@ -120,10 +121,12 @@ onMounted(() => {
 <template>
   <main class="py-12 flex-1">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-      <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Profile Settings</h1>
-        <p class="mt-2 text-gray-600">Manage your account settings and preferences</p>
-      </div>
+      <PageHeader
+        title="Profile Settings"
+        description="Manage your account settings and preferences"
+        back-link="/dashboard"
+        back-label="Dashboard"
+      />
 
       <div class="space-y-6">
         <!-- Profile Information -->

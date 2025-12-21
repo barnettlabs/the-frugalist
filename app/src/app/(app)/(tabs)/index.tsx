@@ -77,7 +77,7 @@ export default function Dashboard() {
           <RefreshControl
             refreshing={isRefetching}
             onRefresh={refetch}
-            tintColor={colors.primary[400]}
+            tintColor={colors.primary.light}
           />
         }
       >
@@ -95,8 +95,8 @@ export default function Dashboard() {
               style={[
                 styles.avatar,
                 {
-                  borderColor: colors.primary[500],
-                  shadowColor: colors.primary[500],
+                  borderColor: colors.primary.DEFAULT,
+                  shadowColor: colors.primary.DEFAULT,
                   shadowOffset: { width: 0, height: 4 },
                   shadowOpacity: 0.3,
                   shadowRadius: 8,
@@ -107,7 +107,7 @@ export default function Dashboard() {
               {user?.avatar_url ? (
                 <Image source={{ uri: user.avatar_url }} style={styles.avatarImage} />
               ) : (
-                <Text style={[styles.avatarText, { color: colors.primary[500] }]}>
+                <Text style={[styles.avatarText, { color: colors.primary.DEFAULT }]}>
                   {firstName[0]?.toUpperCase() || 'U'}
                 </Text>
               )}

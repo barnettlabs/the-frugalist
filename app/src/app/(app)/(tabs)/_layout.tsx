@@ -258,8 +258,8 @@ function CustomTabBar({
             return (
               <View key={route.key} style={[tabBarStyles.maskTab, { width: tabWidth }]}>
                 <View style={tabBarStyles.tabContent}>
-                  <Icon color={colors.primary[500]} size={22} />
-                  <Text style={[tabBarStyles.label, { color: colors.primary[500] }]}>{label}</Text>
+                  <Icon color={colors.primary.DEFAULT} size={22} />
+                  <Text style={[tabBarStyles.label, { color: colors.primary.DEFAULT }]}>{label}</Text>
                 </View>
               </View>
             );

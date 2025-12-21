@@ -24,7 +24,7 @@ export default function TrackerListScreen() {
   if (isLoading) {
     return (
       <ScreenContainer className="items-center justify-center">
-        <ActivityIndicator size="large" color={colors.accent.violet} />
+        <ActivityIndicator size="large" color={colors.accent.DEFAULT} />
         <Text className="mt-4 text-neutral-600 dark:text-neutral-400">Loading products...</Text>
       </ScreenContainer>
     );
@@ -122,7 +122,7 @@ export default function TrackerListScreen() {
       {/* Floating Add Button */}
       <FloatingAddButton
         onPress={() => router.push('/(app)/tracker/create')}
-        color={colors.accent.violet}
+        color={colors.accent.DEFAULT}
         accessibilityLabel="Track new product"
       />
     </ScreenContainer>

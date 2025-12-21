@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Plus } from './icons';
+import { Text } from './text';
 
 const TAB_BAR_HEIGHT = 64;
 const FAB_SIZE = 56;

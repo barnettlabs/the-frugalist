@@ -15,7 +15,7 @@ export default function LeaseListScreen() {
   if (isLoading) {
     return (
       <ScreenContainer className="items-center justify-center">
-        <ActivityIndicator size="large" color={colors.secondary[500]} />
+        <ActivityIndicator size="large" color={colors.secondary.DEFAULT} />
         <Text className="mt-4 text-neutral-600 dark:text-neutral-400">Loading estimates...</Text>
       </ScreenContainer>
     );
@@ -43,7 +43,7 @@ export default function LeaseListScreen() {
         <Link href="/(app)/(tabs)/lease/learn" asChild>
           <Pressable style={styles.termsLink}>
             <View style={styles.termsIconContainer}>
-              <Book color={colors.secondary[500]} size={18} />
+              <Book color={colors.secondary.DEFAULT} size={18} />
             </View>
             <Text style={styles.termsText}>Learn Leasing Terms</Text>
           </Pressable>
@@ -73,7 +73,7 @@ export default function LeaseListScreen() {
       {/* Floating Add Button */}
       <FloatingAddButton
         onPress={() => router.push('/(app)/lease/create')}
-        color={colors.secondary[500]}
+        color={colors.secondary.DEFAULT}
         accessibilityLabel="Create new lease estimate"
       />
     </ScreenContainer>

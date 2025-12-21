@@ -15,7 +15,7 @@ export default function FinanceListScreen() {
   if (isLoading) {
     return (
       <ScreenContainer className="items-center justify-center">
-        <ActivityIndicator size="large" color={colors.primary[500]} />
+        <ActivityIndicator size="large" color={colors.primary.DEFAULT} />
         <Text className="mt-4 text-neutral-600 dark:text-neutral-400">Loading estimates...</Text>
       </ScreenContainer>
     );
@@ -43,7 +43,7 @@ export default function FinanceListScreen() {
         <Link href="/(app)/(tabs)/finance/learn" asChild>
           <Pressable style={styles.termsLink}>
             <View style={styles.termsIconContainer}>
-              <Book color={colors.primary[500]} size={18} />
+              <Book color={colors.primary.DEFAULT} size={18} />
             </View>
             <Text style={styles.termsText}>Learn Financing Terms</Text>
           </Pressable>
@@ -73,7 +73,7 @@ export default function FinanceListScreen() {
       {/* Floating Add Button */}
       <FloatingAddButton
         onPress={() => router.push('/(app)/finance/create')}
-        color={colors.primary[500]}
+        color={colors.primary.DEFAULT}
         accessibilityLabel="Create new finance estimate"
       />
     </ScreenContainer>

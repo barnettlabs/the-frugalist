@@ -40,16 +40,16 @@ export function ProductCard({ product }: ProductCardProps) {
               </Text>
               {/* Status Badge */}
               {targetReached ? (
-                <View className="ml-2 rounded-md bg-secondary-100 px-2 py-0.5 dark:bg-secondary-900/30">
-                  <Text className="text-xs font-semibold text-secondary-600 dark:text-secondary-400">Target</Text>
+                <View className="ml-2 rounded-md bg-secondary/10 px-2 py-0.5 dark:bg-secondary/20">
+                  <Text className="text-xs font-semibold text-secondary dark:text-secondary-light">Target</Text>
                 </View>
               ) : !product.is_active ? (
                 <View className="ml-2 rounded-md bg-charcoal-200 px-2 py-0.5 dark:bg-charcoal-700">
                   <Text className="text-xs font-semibold text-charcoal-600 dark:text-charcoal-400">Paused</Text>
                 </View>
               ) : product.price_drop_percentage > 0 ? (
-                <View className="ml-2 rounded-md bg-primary-100 px-2 py-0.5 dark:bg-primary-900/30">
-                  <Text className="text-xs font-semibold text-primary-600 dark:text-primary-400">
+                <View className="ml-2 rounded-md bg-primary/10 px-2 py-0.5 dark:bg-primary/20">
+                  <Text className="text-xs font-semibold text-primary dark:text-primary-light">
                     -{product.price_drop_percentage.toFixed(0)}%
                   </Text>
                 </View>
@@ -60,7 +60,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
             {/* Prices */}
             <View className="mt-2 flex-row items-baseline gap-2">
-              <Text className="text-lg font-bold text-primary-600 dark:text-primary-400">
+              <Text className="text-lg font-bold text-primary dark:text-primary-light">
                 {formatCurrencyWithSymbol(product.current_price)}
               </Text>
               {product.current_price < product.retail_price && (
@@ -82,7 +82,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <View className="mt-3">
             <View className="h-1.5 rounded-full bg-charcoal-100 dark:bg-charcoal-700">
               <View
-                className="h-1.5 rounded-full bg-primary-500"
+                className="h-1.5 rounded-full bg-primary"
                 style={{ width: `${Math.min(Math.max(progress, 0), 100)}%` }}
               />
             </View>

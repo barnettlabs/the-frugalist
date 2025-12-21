@@ -81,7 +81,7 @@ export default function ForgotPasswordScreen() {
         {/* Back Button */}
         <Link href="/(auth)/login" asChild>
           <Pressable className="mb-4">
-            <Text className="text-primary-600">← Back to Login</Text>
+            <Text className="text-primary">← Back to Login</Text>
           </Pressable>
         </Link>
 

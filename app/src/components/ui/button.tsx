@@ -18,29 +18,29 @@ const button = tv({
     variant: {
       default: {
         // Primary blue button
-        container: 'bg-primary-600 active:bg-primary-700',
+        container: 'bg-primary active:bg-primary-dark',
         label: 'text-white',
         indicator: 'text-white',
       },
       secondary: {
         // Secondary green variant
-        container: 'bg-secondary-600 active:bg-secondary-700',
+        container: 'bg-secondary active:bg-secondary-dark',
         label: 'text-white',
         indicator: 'text-white',
       },
       outline: {
         // Bordered button with transparent background
         container:
-          'border border-primary-500 bg-transparent active:bg-primary-50 dark:border-primary-400 dark:active:bg-primary-900/20',
-        label: 'text-primary-600 dark:text-primary-400',
-        indicator: 'text-primary-600 dark:text-primary-400',
+          'border border-primary bg-transparent active:bg-primary/10 dark:border-primary-light dark:active:bg-primary/20',
+        label: 'text-primary dark:text-primary-light',
+        indicator: 'text-primary dark:text-primary-light',
       },
       'outline-secondary': {
         // Secondary outline
         container:
-          'border border-secondary-500 bg-transparent active:bg-secondary-50 dark:border-secondary-400 dark:active:bg-secondary-900/20',
-        label: 'text-secondary-600 dark:text-secondary-400',
-        indicator: 'text-secondary-600 dark:text-secondary-400',
+          'border border-secondary bg-transparent active:bg-secondary/10 dark:border-secondary-light dark:active:bg-secondary/20',
+        label: 'text-secondary dark:text-secondary-light',
+        indicator: 'text-secondary dark:text-secondary-light',
       },
       destructive: {
         container: 'bg-danger-600 active:bg-danger-700',
@@ -54,8 +54,8 @@ const button = tv({
       },
       link: {
         container: 'bg-transparent',
-        label: 'text-primary-600 dark:text-primary-400',
-        indicator: 'text-primary-600',
+        label: 'text-primary dark:text-primary-light',
+        indicator: 'text-primary',
       },
       // Glassy button for dark backgrounds
       glass: {

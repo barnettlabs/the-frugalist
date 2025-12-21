@@ -29,15 +29,15 @@ export function FinanceCard({ sheet }: FinanceCardProps) {
             </Text>
           </View>
           {/* Status badge with accent color */}
-          <View className="rounded-full bg-primary-100 px-3 py-1 dark:bg-primary-900/30">
-            <Text className="text-xs font-medium text-primary-600 dark:text-primary-300">{sheet.vehicle_type}</Text>
+          <View className="rounded-full bg-primary/10 px-3 py-1 dark:bg-primary/20">
+            <Text className="text-xs font-medium text-primary dark:text-primary-tint-3">{sheet.vehicle_type}</Text>
           </View>
         </View>
 
         {/* Monthly Payment - subtle glass effect */}
         <View className="mb-3 rounded-lg bg-neutral-50 p-3 dark:bg-charcoal-800/60">
           <Text className="text-sm text-neutral-500 dark:text-neutral-400">Monthly Payment</Text>
-          <Text className="text-2xl font-bold text-primary-600 dark:text-primary-400">
+          <Text className="text-2xl font-bold text-primary dark:text-primary-light">
             {formatCurrencyWithSymbol(monthlyPayment)}
           </Text>
           <Text className="text-xs text-neutral-500 dark:text-neutral-400">

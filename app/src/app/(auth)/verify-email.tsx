@@ -30,7 +30,7 @@ export default function VerifyEmailScreen() {
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-neutral-900">
       <View className="flex-1 items-center justify-center p-6">
-        <View className="mb-6 rounded-full bg-primary-100 p-4 dark:bg-primary-900">
+        <View className="mb-6 rounded-full bg-primary/10 p-4 dark:bg-primary/20">
           <Text className="text-4xl">📧</Text>
         </View>
 

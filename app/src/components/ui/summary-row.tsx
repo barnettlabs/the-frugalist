@@ -29,9 +29,9 @@ export function SummaryRow({
       <Text
         className={`${isBold ? 'font-bold' : 'font-medium'} ${
           isNegative
-            ? 'text-secondary-600 dark:text-secondary-400'
+            ? 'text-secondary dark:text-secondary-light'
             : isHighlight
-              ? 'text-primary-600 dark:text-primary-400'
+              ? 'text-primary dark:text-primary-light'
               : 'text-charcoal-900 dark:text-white'
         }`}
       >

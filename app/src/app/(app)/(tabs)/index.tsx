@@ -248,7 +248,7 @@ function AnimatedCounter({
   );
 }
 
-// Glass Card Component
+// Card Component
 function GlassCard({
   children,
   isDark,
@@ -258,6 +258,9 @@ function GlassCard({
   isDark: boolean;
   style?: any;
 }) {
+  const backgroundColor = isDark ? colors.charcoal[800] : '#FFFFFF';
+  const borderColor = isDark ? colors.charcoal[700] : colors.neutral[200];
+
   return (
     <View
       style={[
@@ -265,19 +268,12 @@ function GlassCard({
           borderRadius: 16,
           overflow: 'hidden',
           borderWidth: 1,
-          borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+          borderColor,
+          backgroundColor,
         },
         style,
       ]}
     >
-      <BlurView
-        intensity={isDark ? 40 : 60}
-        tint={isDark ? 'dark' : 'light'}
-        style={[
-          StyleSheet.absoluteFill,
-          { backgroundColor: isDark ? 'rgba(30,30,40,0.5)' : 'rgba(255,255,255,0.7)' },
-        ]}
-      />
       {children}
     </View>
   );

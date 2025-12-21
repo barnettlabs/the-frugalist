@@ -131,7 +131,7 @@ function SummaryCard({
   summary: ReturnType<LeaseCalculator['getSummary']>;
 }) {
   return (
-    <View className="mb-6 rounded-xl bg-secondary-600 p-4">
+    <View className="mb-6 rounded-xl bg-secondary p-4">
       <Text className="mb-2 text-white opacity-80">Monthly Payment</Text>
       <Text className="text-3xl font-bold text-white">
         {formatCurrencyWithSymbol(summary.leasePayment)}

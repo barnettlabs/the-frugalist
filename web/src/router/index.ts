@@ -42,6 +42,9 @@ const Terms = () => import('@/pages/Terms.vue')
 const Disclaimers = () => import('@/pages/Disclaimers.vue')
 const ComingSoon = () => import('@/pages/ComingSoon.vue')
 
+// Debug
+const UiDebug = () => import('@/pages/debug/Ui.vue')
+
 const routes: RouteRecordRaw[] = [
   // Welcome page (standalone - has its own header/footer)
   {
@@ -219,6 +222,17 @@ const routes: RouteRecordRaw[] = [
         meta: { breadcrumb: 'Details', parent: 'price-tracker.index' },
       },
     ],
+  },
+
+  // Debug UI page (excluded from sitemap)
+  {
+    path: '/__ui',
+    name: 'debug.ui',
+    component: UiDebug,
+    meta: {
+      excludeFromSitemap: true,
+      robots: 'noindex, nofollow',
+    },
   },
 
   // Catch all - redirect to dashboard or welcome

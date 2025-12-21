@@ -30,12 +30,12 @@ export function LearningContent({
 
   const colorClasses = variant === 'finance'
     ? {
-        introBg: 'bg-primary-50 dark:bg-primary-900/20',
-        introTitle: 'text-primary-700 dark:text-primary-300',
+        introBg: 'bg-primary/5 dark:bg-primary/10',
+        introTitle: 'text-primary-dark dark:text-primary-tint-3',
       }
     : {
-        introBg: 'bg-secondary-50 dark:bg-secondary-900/20',
-        introTitle: 'text-secondary-700 dark:text-secondary-300',
+        introBg: 'bg-secondary/5 dark:bg-secondary/10',
+        introTitle: 'text-secondary-dark dark:text-secondary-light',
       };
 
   return (

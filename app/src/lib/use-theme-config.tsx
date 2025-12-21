@@ -30,12 +30,12 @@ const DarkTheme: Theme = {
   ..._DarkTheme,
   colors: {
     ..._DarkTheme.colors,
-    primary: colors.primary[400], // Blue-400
+    primary: colors.primary.light, // Primary tint for dark mode
     background: colors.charcoal[950],
     text: colors.charcoal[50],
     border: colors.charcoal[700],
     card: colors.charcoal[900],
-    notification: colors.primary[500],
+    notification: colors.primary.DEFAULT,
   },
   fonts,
 };
@@ -44,12 +44,12 @@ const LightTheme: Theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: colors.primary[600], // Blue-600
+    primary: colors.primary.DEFAULT, // Deep Blue
     background: colors.neutral[50],
     text: colors.charcoal[900],
     border: colors.neutral[200],
     card: colors.white,
-    notification: colors.primary[500],
+    notification: colors.primary.DEFAULT,
   },
   fonts,
 };

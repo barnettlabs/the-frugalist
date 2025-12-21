@@ -70,7 +70,7 @@ function PaymentHeader({
   rate: number;
 }) {
   return (
-    <View className="mb-4 rounded-xl bg-primary-600 p-4">
+    <View className="mb-4 rounded-xl bg-primary p-4">
       <Text className="text-white opacity-80">Monthly Payment</Text>
       <Text className="text-4xl font-bold text-white">
         {formatCurrencyWithSymbol(payment)}
@@ -234,7 +234,7 @@ function ContactInfoCard({ sheet }: { sheet: VehicleFinanceSheet }) {
         </Text>
       )}
       {sheet.contact_email && (
-        <Text className="text-primary-600">{sheet.contact_email}</Text>
+        <Text className="text-primary">{sheet.contact_email}</Text>
       )}
       {sheet.contact_phone && (
         <Text className="text-neutral-600 dark:text-neutral-400">

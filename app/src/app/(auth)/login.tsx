@@ -94,7 +94,7 @@ export default function LoginScreen() {
           <Text className="text-neutral-600 dark:text-neutral-400">Don{"'"}t have an account? </Text>
           <Link href="/(auth)/register" asChild>
             <Pressable>
-              <Text className="font-semibold text-primary-600">Sign Up</Text>
+              <Text className="font-semibold text-primary">Sign Up</Text>
             </Pressable>
           </Link>
         </View>
@@ -103,7 +103,7 @@ export default function LoginScreen() {
         <View className="mt-4 items-center">
           <Link href="/(auth)/forgot-password" asChild>
             <Pressable>
-              <Text className="text-sm font-medium text-primary-600 dark:text-primary-400">Forgot Password?</Text>
+              <Text className="text-sm font-medium text-primary dark:text-primary-light">Forgot Password?</Text>
             </Pressable>
           </Link>
         </View>

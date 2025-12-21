@@ -220,13 +220,13 @@ function ProfileCard({
   return (
     <Pressable
       onPress={() => router.push('/settings/profile')}
-      className="mb-4 flex-row items-center rounded-xl bg-white p-4 dark:bg-neutral-800"
+      className="mb-4 flex-row items-center rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800"
     >
       {/* Avatar */}
       <View
-        className={`size-16 items-center justify-center rounded-full ${isDark ? 'bg-primary-700' : 'bg-primary-100'}`}
+        className={`size-16 items-center justify-center rounded-full ${isDark ? 'bg-primary-dark' : 'bg-primary/10'}`}
       >
-        <Text className={`text-xl font-bold ${isDark ? 'text-primary-200' : 'text-primary-700'}`}>{initials}</Text>
+        <Text className={`text-xl font-bold ${isDark ? 'text-primary-tint-5' : 'text-primary-dark'}`}>{initials}</Text>
       </View>
 
       {/* Info */}
@@ -235,7 +235,7 @@ function ProfileCard({
           {profile ? `${profile.first_name} ${profile.last_name}` : 'Loading...'}
         </Text>
         <Text className="text-sm text-neutral-500 dark:text-neutral-400">{profile?.email || ''}</Text>
-        <Text className="mt-1 text-xs text-primary-600 dark:text-primary-400">View Profile</Text>
+        <Text className="mt-1 text-xs text-primary dark:text-primary-light">View Profile</Text>
       </View>
     </Pressable>
   );

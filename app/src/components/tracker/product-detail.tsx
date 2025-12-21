@@ -183,7 +183,7 @@ function PriceTimelineCard({
       <View className="relative mb-2">
         <View className="h-4 rounded-full bg-neutral-200 dark:bg-neutral-700">
           <View
-            className={`h-4 rounded-full ${targetReached ? 'bg-green-500' : 'bg-primary-500'}`}
+            className={`h-4 rounded-full ${targetReached ? 'bg-green-500' : 'bg-primary'}`}
             style={{ width: `${progress}%` }}
           />
         </View>

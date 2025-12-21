@@ -34,6 +34,10 @@ export default function LeaseLayout() {
         options={{
           title: 'New Lease Estimate',
           presentation: 'modal',
+          headerStyle: {
+            backgroundColor: headerColors.background,
+          },
+          headerTintColor: headerColors.text,
         }}
       />
       <Stack.Screen
@@ -41,6 +45,10 @@ export default function LeaseLayout() {
         options={{
           title: 'Lease Details',
           headerBackTitle: 'Back',
+          headerStyle: {
+            backgroundColor: headerColors.background,
+          },
+          headerTintColor: headerColors.text,
         }}
       />
       <Stack.Screen
@@ -48,6 +56,10 @@ export default function LeaseLayout() {
         options={{
           title: 'Compare Estimates',
           headerBackTitle: 'Back',
+          headerStyle: {
+            backgroundColor: headerColors.background,
+          },
+          headerTintColor: headerColors.text,
         }}
       />
       <Stack.Screen
@@ -55,6 +67,10 @@ export default function LeaseLayout() {
         options={{
           title: 'Learning Center',
           headerBackTitle: 'Back',
+          headerStyle: {
+            backgroundColor: headerColors.background,
+          },
+          headerTintColor: headerColors.text,
         }}
       />
     </Stack>

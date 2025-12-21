@@ -37,7 +37,7 @@ require('dotenv').config({
 
 const BUNDLE_ID = 'com.tensifi.sneakysalesman'; // ios bundle id
 const PACKAGE = 'com.tensifi.sneakysalesman'; // android package name
-const NAME = 'sneaky-salesman'; // app name
+const NAME = 'Sneaky Salesman'; // app name
 const EXPO_ACCOUNT_OWNER = 'expo-owner'; // expo account owner
 const EAS_PROJECT_ID = 'c3e1075b-6fe7-4686-aa49-35b46a229044'; // eas project id
 const SCHEME = 'sneaky-salesman'; // app scheme

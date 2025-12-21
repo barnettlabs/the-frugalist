@@ -21,7 +21,7 @@ const inputTv = tv({
     focused: {
       true: {
         // Blue focus ring
-        input: 'border-primary-500 dark:border-primary-400',
+        input: 'border-primary dark:border-primary-light',
       },
     },
     error: {

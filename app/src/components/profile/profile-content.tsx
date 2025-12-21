@@ -30,7 +30,7 @@ export function ProfileContent() {
   if (isLoading) {
     return (
       <ScreenContainer className="items-center justify-center">
-        <ActivityIndicator size="large" color={colors.primary[500]} />
+        <ActivityIndicator size="large" color={colors.primary.DEFAULT} />
       </ScreenContainer>
     );
   }
@@ -148,12 +148,12 @@ function ProfileHeader({
       {/* Avatar */}
       <View
         className={`size-24 items-center justify-center rounded-full ${
-          isDark ? 'bg-primary-700' : 'bg-primary-100'
+          isDark ? 'bg-primary-dark' : 'bg-primary/10'
         }`}
       >
         <Text
           className={`text-3xl font-bold ${
-            isDark ? 'text-primary-200' : 'text-primary-700'
+            isDark ? 'text-primary-tint-5' : 'text-primary-dark'
           }`}
         >
           {initials}
@@ -193,7 +193,7 @@ function AccountStats({ profile }: { profile: User }) {
       </Text>
       <View className="flex-row justify-around">
         <View className="items-center">
-          <Text className="text-2xl font-bold text-primary-600">
+          <Text className="text-2xl font-bold text-primary">
             {memberDays}
           </Text>
           <Text className="text-sm text-neutral-500 dark:text-neutral-400">
@@ -201,7 +201,7 @@ function AccountStats({ profile }: { profile: User }) {
           </Text>
         </View>
         <View className="items-center">
-          <Text className="text-2xl font-bold text-primary-600">
+          <Text className="text-2xl font-bold text-primary">
             {profile.email_verified_at ? 'Yes' : 'No'}
           </Text>
           <Text className="text-sm text-neutral-500 dark:text-neutral-400">

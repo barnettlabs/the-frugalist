@@ -34,6 +34,10 @@ export default function FinanceLayout() {
         options={{
           title: 'New Finance Estimate',
           presentation: 'modal',
+          headerStyle: {
+            backgroundColor: headerColors.background,
+          },
+          headerTintColor: headerColors.text,
         }}
       />
       <Stack.Screen
@@ -41,12 +45,20 @@ export default function FinanceLayout() {
         options={{
           title: 'Finance Details',
           headerBackTitle: 'Back',
+          headerStyle: {
+            backgroundColor: headerColors.background,
+          },
+          headerTintColor: headerColors.text,
         }}
       />
       <Stack.Screen
         name="compare"
         options={{
           title: 'Compare Estimates',
+          headerStyle: {
+            backgroundColor: headerColors.background,
+          },
+          headerTintColor: headerColors.text,
         }}
       />
       <Stack.Screen
@@ -54,6 +66,10 @@ export default function FinanceLayout() {
         options={{
           title: 'Learning Center',
           headerBackTitle: 'Back',
+          headerStyle: {
+            backgroundColor: headerColors.background,
+          },
+          headerTintColor: headerColors.text,
         }}
       />
     </Stack>

@@ -150,7 +150,7 @@ export default function RegisterScreen() {
           </Text>
           <Link href="/(auth)/login" asChild>
             <Pressable>
-              <Text className="font-semibold text-primary-600">Sign In</Text>
+              <Text className="font-semibold text-primary">Sign In</Text>
             </Pressable>
           </Link>
         </View>

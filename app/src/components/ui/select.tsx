@@ -30,7 +30,7 @@ const selectTv = tv({
   variants: {
     focused: {
       true: {
-        input: 'border-primary-400 dark:border-primary-500',
+        input: 'border-primary-light dark:border-primary',
       },
     },
     error: {
@@ -152,7 +152,7 @@ const Option = React.memo(({ option, selected = false, onPress, testID, isLast }
     <Pressable
       className={`mx-3 flex-row items-center rounded-xl px-4 ${hasExtendedContent ? 'py-3' : 'py-3.5'} ${
         selected
-          ? 'bg-primary-50 dark:bg-primary-900/30'
+          ? 'bg-primary/10 dark:bg-primary/20'
           : 'active:bg-neutral-50 dark:active:bg-charcoal-700'
       } ${!isLast ? 'mb-1' : ''}`}
       onPress={onPress}
@@ -178,7 +178,7 @@ const Option = React.memo(({ option, selected = false, onPress, testID, isLast }
         <Text
           className={`text-base ${
             selected
-              ? 'font-medium text-primary-700 dark:text-primary-300'
+              ? 'font-medium text-primary-dark dark:text-primary-tint-3'
               : 'text-neutral-900 dark:text-neutral-100'
           }`}
         >
@@ -192,7 +192,7 @@ const Option = React.memo(({ option, selected = false, onPress, testID, isLast }
       </View>
 
       {selected && (
-        <View className="ml-3 size-6 items-center justify-center rounded-full bg-primary-600 dark:bg-primary-500">
+        <View className="ml-3 size-6 items-center justify-center rounded-full bg-primary dark:bg-primary-light">
           <Check />
         </View>
       )}

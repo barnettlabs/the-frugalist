@@ -1,46 +1,43 @@
 /**
- * App Color Palette
- * Based on the web portal's brand colors for consistency
+ * TheFrugalist Color Palette
+ * A calm, analytical, and trustworthy color system
  */
 
 module.exports = {
   white: '#FFFFFF',
   black: '#000000',
 
-  // Primary: Deep Blue (brand color)
+  // Primary: Text color (swaps based on theme)
   primary: {
-    DEFAULT: '#235892',
-    light: '#3B75B8',
-    dark: '#193E66',
-    'shade-1': '#1F4F83',
-    'shade-2': '#1C4675',
-    'shade-3': '#193E66',
-    'shade-4': '#153558',
-    'shade-5': '#122C49',
-    'shade-6': '#0E233A',
-    'tint-1': '#3B75B8',
-    'tint-2': '#5D88B2',
-    'tint-3': '#7AA0C2',
-    'tint-4': '#97B8D2',
-    'tint-5': '#B4D0E2',
-    'tint-6': '#D1E8F2',
+    DEFAULT: '#1F1F1F',
+    light: '#3D3D3D',
+    dark: '#0A0A0A',
   },
 
-  // Secondary: Teal (brand color)
-  secondary: {
-    DEFAULT: '#2FA4A9',
-    light: '#40BABF',
-    dark: '#268387',
-  },
-
-  // Accent: Warm Amber (brand color)
+  // Accent: Classic Blue (links, active states, highlights)
   accent: {
-    DEFAULT: '#F2A541',
-    soft: '#F7C97A',
-    dark: '#D98B29',
+    DEFAULT: '#235892',
+    light: '#5A7DAB',
+    dark: '#1A4675',
+    muted: '#A3B5CC',
   },
 
-  // Charcoal - slate-tinted for depth (dark mode backgrounds)
+  // Slate scale for backgrounds
+  slate: {
+    50: '#F8FAFC',
+    100: '#F1F5F9',
+    200: '#E2E8F0',
+    300: '#CBD5E1',
+    400: '#94A3B8',
+    500: '#64748B',
+    600: '#475569',
+    700: '#334155',
+    800: '#1E293B',
+    900: '#0F172A',
+    950: '#020617',
+  },
+
+  // Charcoal scale (legacy, maps to slate)
   charcoal: {
     50: '#F8FAFC',
     100: '#F1F5F9',
@@ -58,99 +55,99 @@ module.exports = {
 
   // Neutral grays
   neutral: {
-    50: '#FAFAFA',
-    100: '#F5F5F5',
-    200: '#E5E5E5',
-    300: '#D4D4D4',
-    400: '#A3A3A3',
-    500: '#737373',
-    600: '#525252',
-    700: '#404040',
-    800: '#262626',
-    900: '#171717',
+    50: '#FAFAF9',
+    100: '#F7F6F3',
+    200: '#EFEEEB',
+    300: '#E5E4E1',
+    400: '#A8A7A4',
+    500: '#6B6B6B',
+    600: '#4A4A4A',
+    700: '#3D3D3D',
+    800: '#2A2A2A',
+    900: '#1F1F1F',
   },
 
-  // Success - green tones
+  // Success - muted green
   success: {
-    DEFAULT: '#2EAD7D',
-    50: '#F0FDF4',
-    100: '#DCFCE7',
-    200: '#BBF7D0',
-    300: '#86EFAC',
-    400: '#4ADE80',
-    500: '#2EAD7D',
-    600: '#16A34A',
-    700: '#15803D',
-    800: '#166534',
-    900: '#14532D',
+    DEFAULT: '#4A7C59',
+    50: '#F2F7F4',
+    100: '#E5EFE8',
+    200: '#C7DED0',
+    300: '#9CC5AA',
+    400: '#6BA57E',
+    500: '#4A7C59',
+    600: '#3A6347',
+    700: '#2F5039',
+    800: '#27402F',
+    900: '#1F3326',
   },
 
-  // Warning - amber tones
+  // Warning - muted amber
   warning: {
-    DEFAULT: '#E6A23C',
-    50: '#FFFBEB',
-    100: '#FEF3C7',
-    200: '#FDE68A',
-    300: '#FCD34D',
-    400: '#FBBF24',
-    500: '#E6A23C',
-    600: '#D97706',
-    700: '#B45309',
-    800: '#92400E',
-    900: '#78350F',
+    DEFAULT: '#B8860B',
+    50: '#FBF8F0',
+    100: '#F6EDD8',
+    200: '#EDD9AF',
+    300: '#DFBE7A',
+    400: '#CFA445',
+    500: '#B8860B',
+    600: '#996E09',
+    700: '#7A5807',
+    800: '#614606',
+    900: '#4D3805',
   },
 
-  // Danger - red tones
+  // Danger - muted red
   danger: {
-    DEFAULT: '#D64545',
-    50: '#FEF2F2',
-    100: '#FEE2E2',
-    200: '#FECACA',
-    300: '#FCA5A5',
-    400: '#F87171',
-    500: '#D64545',
-    600: '#DC2626',
-    700: '#B91C1C',
-    800: '#991B1B',
-    900: '#7F1D1D',
+    DEFAULT: '#9B3D3D',
+    50: '#FAF2F2',
+    100: '#F5E5E5',
+    200: '#E8C7C7',
+    300: '#D69A9A',
+    400: '#BF6969',
+    500: '#9B3D3D',
+    600: '#7C3131',
+    700: '#642828',
+    800: '#502020',
+    900: '#401A1A',
   },
 
-  // Info - blue tones
+  // Info - muted blue
   info: {
-    DEFAULT: '#4A90E2',
-    50: '#EFF6FF',
-    100: '#DBEAFE',
-    200: '#BFDBFE',
-    300: '#93C5FD',
-    400: '#60A5FA',
-    500: '#4A90E2',
-    600: '#2563EB',
-    700: '#1D4ED8',
-    800: '#1E40AF',
-    900: '#1E3A8A',
+    DEFAULT: '#4A6FA5',
+    50: '#F2F5F9',
+    100: '#E5EBF3',
+    200: '#C7D5E5',
+    300: '#9CB5D0',
+    400: '#6B90B8',
+    500: '#4A6FA5',
+    600: '#3A5984',
+    700: '#2F476A',
+    800: '#273A56',
+    900: '#1F2F45',
   },
 
   // Theme-aware UI colors
   background: {
-    light: '#EFF2F7',
-    dark: '#0F1C2E',
+    light: '#F8FAFC',
+    dark: '#1E293B',
   },
   surface: {
     light: '#FFFFFF',
-    dark: '#162A44',
+    dark: '#334155',
   },
   border: {
-    light: '#D6DEE8',
-    dark: '#2C405C',
+    light: '#E2E8F0',
+    dark: '#475569',
   },
   text: {
     primary: {
-      light: '#1F2933',
-      dark: '#E6ECF3',
+      light: '#1F1F1F',
+      dark: '#F8FAFC',
     },
     muted: {
-      light: '#6B7C93',
-      dark: '#9FB2C8',
+      light: '#64748B',
+      dark: '#94A3B8',
     },
   },
 
@@ -158,14 +155,14 @@ module.exports = {
   tabBar: {
     light: {
       background: '#FFFFFF',
-      border: '#E5E5E5',
+      border: '#E2E8F0',
       active: '#235892',
-      inactive: '#64748B',
+      inactive: '#94A3B8',
     },
     dark: {
-      background: '#0F172A',
-      border: '#1E293B',
-      active: '#3B75B8',
+      background: '#334155',
+      border: '#475569',
+      active: '#5A7DAB',
       inactive: '#64748B',
     },
   },
@@ -174,13 +171,13 @@ module.exports = {
   header: {
     light: {
       background: '#FFFFFF',
-      text: '#0F172A',
-      border: '#E5E5E5',
+      text: '#1F1F1F',
+      border: '#E2E8F0',
     },
     dark: {
-      background: '#0F172A',
+      background: '#334155',
       text: '#F8FAFC',
-      border: '#1E293B',
+      border: '#475569',
     },
   },
 };

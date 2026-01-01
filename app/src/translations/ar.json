@@ -1,12 +1,15 @@
 {
   "onboarding": {
-    "message": "مرحبا بكم في موقع تطبيق obytes"
+    "message": "أنفق بوعي."
   },
   "settings": {
     "about": "حول التطبيق",
     "account": "الحساب",
-    "app_name": "اسم التطبيق",
+    "app_info": "معلومات التطبيق",
+    "app_name": "TheFrugalist",
     "arabic": "عربي",
+    "build": "بناء",
+    "company": "JayTech LLC",
     "english": "إنجليزي",
     "generale": "التفضيلات",
     "github": "جيثب",
@@ -24,12 +27,25 @@
     "theme": {
       "dark": "مظلم",
       "light": "خفيفة",
-      "system": "System",
+      "system": "النظام",
       "title": "سمة"
     },
-    "title": "إعدادات",
+    "title": "الحساب",
     "version": "إصدار",
+    "web_app": "تطبيق الويب",
     "website": "موقع الكتروني"
   },
-  "welcome": "test arabic"
+  "welcome": "أنفق بوعي.",
+  "navigation": {
+    "home": "الرئيسية",
+    "watch": "مراقبة",
+    "compute": "حساب",
+    "guides": "أدلة",
+    "account": "الحساب"
+  },
+  "brand": {
+    "name": "TheFrugalist",
+    "tagline": "أنفق بوعي.",
+    "description": "نساعدك على تجنب الدفع الزائد من خلال تتبع حركة الأسعار وشرح أساليب التسعير."
+  }
 }

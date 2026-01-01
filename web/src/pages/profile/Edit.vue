@@ -130,11 +130,11 @@ onMounted(() => {
 
       <div class="space-y-6">
         <!-- Profile Information -->
-        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-          <h2 class="text-lg font-bold text-gray-900 mb-4">Profile Information</h2>
-          <p class="text-sm text-gray-600 mb-6">Update your account's profile information and email address.</p>
+        <div class="bg-surface/80 backdrop-blur-sm rounded-lg border border-border p-6">
+          <h2 class="text-lg font-medium text-primary mb-4">Profile Information</h2>
+          <p class="text-sm text-text-muted mb-6">Update your account's profile information and email address.</p>
 
-          <div v-if="profileSuccess" class="mb-4 p-3 bg-green-50 text-green-700 rounded-lg text-sm">
+          <div v-if="profileSuccess" class="mb-4 p-3 bg-success/10 text-success rounded-lg text-sm">
             Profile updated successfully.
           </div>
 
@@ -197,11 +197,11 @@ onMounted(() => {
         </div>
 
         <!-- Update Password -->
-        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-          <h2 class="text-lg font-bold text-gray-900 mb-4">Update Password</h2>
-          <p class="text-sm text-gray-600 mb-6">Ensure your account is using a long, random password to stay secure.</p>
+        <div class="bg-surface/80 backdrop-blur-sm rounded-lg border border-border p-6">
+          <h2 class="text-lg font-medium text-primary mb-4">Update Password</h2>
+          <p class="text-sm text-text-muted mb-6">Use a strong password to keep your account secure.</p>
 
-          <div v-if="passwordSuccess" class="mb-4 p-3 bg-green-50 text-green-700 rounded-lg text-sm">
+          <div v-if="passwordSuccess" class="mb-4 p-3 bg-success/10 text-success rounded-lg text-sm">
             Password updated successfully.
           </div>
 
@@ -251,9 +251,9 @@ onMounted(() => {
         </div>
 
         <!-- Delete Account -->
-        <div class="bg-white rounded-lg border border-red-200 shadow-sm p-6">
-          <h2 class="text-lg font-bold text-red-600 mb-4">Delete Account</h2>
-          <p class="text-sm text-gray-600 mb-6">
+        <div class="bg-surface/80 backdrop-blur-sm rounded-lg border border-danger/20 p-6">
+          <h2 class="text-lg font-medium text-danger mb-4">Delete Account</h2>
+          <p class="text-sm text-text-muted mb-6">
             Once your account is deleted, all of its resources and data will be permanently deleted.
           </p>
 
@@ -263,9 +263,9 @@ onMounted(() => {
 
           <!-- Delete Confirmation Modal -->
           <div v-if="showDeleteConfirm" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-              <h3 class="text-lg font-bold text-gray-900 mb-4">Are you sure?</h3>
-              <p class="text-sm text-gray-600 mb-4">
+            <div class="bg-surface rounded-lg p-6 max-w-md w-full mx-4 border border-border">
+              <h3 class="text-lg font-medium text-primary mb-4">Are you sure?</h3>
+              <p class="text-sm text-text-muted mb-4">
                 This action cannot be undone. Please enter your password to confirm.
               </p>
 
@@ -286,7 +286,7 @@ onMounted(() => {
                   <button
                     type="button"
                     @click="showDeleteConfirm = false"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg"
+                    class="px-4 py-2 text-sm font-medium text-text-muted bg-background hover:bg-border rounded-lg"
                   >
                     Cancel
                   </button>

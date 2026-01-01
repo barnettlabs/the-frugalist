@@ -75,7 +75,7 @@ export default function TrackerListScreen() {
             key={f.key}
             onPress={() => setFilter(f.key)}
             className={`rounded-full px-4 py-2 ${
-              filter === f.key ? 'bg-primary' : 'bg-neutral-200 dark:bg-charcoal-700'
+              filter === f.key ? 'bg-accent' : 'bg-neutral-200 dark:bg-charcoal-700'
             }`}
           >
             <Text

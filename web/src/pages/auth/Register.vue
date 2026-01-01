@@ -45,18 +45,18 @@ const errors = computed(() => authStore.errors)
 <template>
   <div>
     <div class="text-center mb-6">
-      <h2 class="text-2xl font-bold text-gray-900 mb-2">Start Smart Shopping</h2>
-      <p class="text-gray-600">Create your account and start saving time and money when shopping</p>
+      <h2 class="text-2xl font-medium text-primary mb-2">Create an account</h2>
+      <p class="text-text-muted">Track prices and calculate costs before you commit</p>
     </div>
 
     <form @submit.prevent="submit" class="space-y-5">
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <InputLabel for="first_name" value="First Name" class="text-gray-900 font-medium" />
+          <InputLabel for="first_name" value="First Name" class="text-primary font-medium" />
           <TextInput
             id="first_name"
             type="text"
-            class="mt-2 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
+            class="mt-2 block w-full rounded-lg border-border focus:border-accent focus:ring-accent"
             v-model="form.first_name"
             required
             autofocus
@@ -66,11 +66,11 @@ const errors = computed(() => authStore.errors)
           <InputError class="mt-2" :message="errors.first_name?.[0]" />
         </div>
         <div>
-          <InputLabel for="last_name" value="Last Name" class="text-gray-900 font-medium" />
+          <InputLabel for="last_name" value="Last Name" class="text-primary font-medium" />
           <TextInput
             id="last_name"
             type="text"
-            class="mt-2 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
+            class="mt-2 block w-full rounded-lg border-border focus:border-accent focus:ring-accent"
             v-model="form.last_name"
             required
             autocomplete="family-name"
@@ -81,11 +81,11 @@ const errors = computed(() => authStore.errors)
       </div>
 
       <div>
-        <InputLabel for="email" value="Email Address" class="text-gray-900 font-medium" />
+        <InputLabel for="email" value="Email Address" class="text-primary font-medium" />
         <TextInput
           id="email"
           type="email"
-          class="mt-2 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
+          class="mt-2 block w-full rounded-lg border-border focus:border-accent focus:ring-accent"
           v-model="form.email"
           required
           autocomplete="username"
@@ -95,11 +95,11 @@ const errors = computed(() => authStore.errors)
       </div>
 
       <div>
-        <InputLabel for="password" value="Password" class="text-gray-900 font-medium" />
+        <InputLabel for="password" value="Password" class="text-primary font-medium" />
         <TextInput
           id="password"
           type="password"
-          class="mt-2 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
+          class="mt-2 block w-full rounded-lg border-border focus:border-accent focus:ring-accent"
           v-model="form.password"
           required
           autocomplete="new-password"
@@ -112,12 +112,12 @@ const errors = computed(() => authStore.errors)
         <InputLabel
           for="password_confirmation"
           value="Confirm Password"
-          class="text-gray-900 font-medium"
+          class="text-primary font-medium"
         />
         <TextInput
           id="password_confirmation"
           type="password"
-          class="mt-2 block w-full rounded-lg border-gray-300 focus:border-primary focus:ring-primary"
+          class="mt-2 block w-full rounded-lg border-border focus:border-accent focus:ring-accent"
           v-model="form.password_confirmation"
           required
           autocomplete="new-password"
@@ -128,23 +128,23 @@ const errors = computed(() => authStore.errors)
 
       <div>
         <PrimaryButton
-          class="w-full bg-primary hover:bg-primary-shade-1 text-white flex flex-row justify-center py-3 rounded-lg font-medium transition-all duration-150 hover:neon-glow"
+          class="w-full bg-accent hover:bg-accent-dark text-white flex flex-row justify-center py-3 rounded-lg font-medium transition-all duration-150"
           :class="{ 'opacity-50 cursor-not-allowed': processing }"
           :disabled="processing"
         >
           <span v-if="processing">Creating Account...</span>
-          <span v-else>Start Smart Shopping</span>
+          <span v-else>Create Account</span>
         </PrimaryButton>
       </div>
 
-      <div class="text-center pt-4 border-t border-gray-200">
-        <p class="text-sm text-gray-600">
+      <div class="text-center pt-4 border-t border-border">
+        <p class="text-sm text-text-muted">
           Already have an account?
           <RouterLink
             to="/login"
-            class="text-primary hover:text-primary-shade-1 font-medium transition-colors"
+            class="text-accent hover:text-accent-dark font-medium transition-colors"
           >
-            Sign in here
+            Sign in
           </RouterLink>
         </p>
       </div>

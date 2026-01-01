@@ -7,6 +7,7 @@ export * from './car';
 export * from './caret-down';
 export * from './chevron';
 export * from './dashboard';
+export * from './eye';
 export * from './feed';
 export * from './github';
 export * from './home';

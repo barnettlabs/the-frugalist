@@ -9,6 +9,7 @@ export * from './focus-aware-status-bar';
 export * from './image';
 export * from './input';
 export * from './list';
+export * from './logo';
 export * from './modal';
 export * from './progress-bar';
 export * from './screen-container';

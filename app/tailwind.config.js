@@ -28,29 +28,23 @@ module.exports = {
         '3xl': '16px',
         full: '9999px',
       },
-      // Modern shadows for depth and glassy effects
+      // Modern shadows for depth - calm and minimal
       boxShadow: {
         sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
         DEFAULT: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
         md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
         lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
         xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
-        // Glass shadow - subtle primary tint
-        glass: '0 8px 32px 0 rgba(35, 88, 146, 0.08)',
         // Card shadow - clean and minimal
         card: '0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px 0 rgba(0, 0, 0, 0.04)',
         // Elevated card
         'card-hover': '0 4px 12px 0 rgba(0, 0, 0, 0.08)',
-        // Inner glow for glassy effect
+        // Inner glow for subtle depth
         'inner-glow': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.1)',
-        // Primary accent shadow
-        'primary-glow': '0 4px 14px 0 rgba(35, 88, 146, 0.25)',
-        // Secondary accent shadow
-        'secondary-glow': '0 4px 14px 0 rgba(47, 164, 169, 0.25)',
-        // Accent glow
-        'accent-glow': '0 4px 14px 0 rgba(242, 165, 65, 0.25)',
+        // Accent glow - olive gray
+        'accent-glow': '0 4px 14px 0 rgba(110, 114, 104, 0.2)',
       },
-      // Background opacity for glassmorphism
+      // Background opacity for subtle effects
       backdropBlur: {
         xs: '2px',
         sm: '4px',

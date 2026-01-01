@@ -18,6 +18,9 @@ const Dashboard = () => import('@/pages/Dashboard.vue')
 const Welcome = () => import('@/pages/Welcome.vue')
 const Profile = () => import('@/pages/profile/Edit.vue')
 
+// Estimates
+const EstimatesIndex = () => import('@/pages/estimates/Index.vue')
+
 // Estimates - Finance
 const FinanceIndex = () => import('@/pages/estimates/financing/Index.vue')
 const FinanceDetails = () => import('@/pages/estimates/financing/Details.vue')
@@ -29,6 +32,7 @@ const LeaseDetails = () => import('@/pages/estimates/leasing/Details.vue')
 const LeaseCompare = () => import('@/pages/estimates/leasing/Compare.vue')
 
 // Learning
+const LearningIndex = () => import('@/pages/learning/Index.vue')
 const LearningShow = () => import('@/pages/learning/Show.vue')
 
 // Price Tracker
@@ -41,6 +45,7 @@ const Privacy = () => import('@/pages/Privacy.vue')
 const Terms = () => import('@/pages/Terms.vue')
 const Disclaimers = () => import('@/pages/Disclaimers.vue')
 const ComingSoon = () => import('@/pages/ComingSoon.vue')
+const Review = () => import('@/pages/Review.vue')
 
 // Debug
 const UiDebug = () => import('@/pages/debug/Ui.vue')
@@ -138,12 +143,20 @@ const routes: RouteRecordRaw[] = [
         meta: { breadcrumb: 'Disclaimers' },
       },
 
-      // Estimates - Finance
+      // Compute Landing
+      {
+        path: 'estimates',
+        name: 'estimates.index',
+        component: EstimatesIndex,
+        meta: { breadcrumb: 'Compute' },
+      },
+
+      // Compute - Finance
       {
         path: 'estimates/financing',
         name: 'estimates.financing.index',
         component: FinanceIndex,
-        meta: { breadcrumb: 'Finance Calculator' },
+        meta: { breadcrumb: 'Financing', parent: 'estimates.index' },
       },
       {
         path: 'estimates/financing/create',
@@ -165,12 +178,12 @@ const routes: RouteRecordRaw[] = [
         meta: { breadcrumb: 'Compare', parent: 'estimates.financing.index' },
       },
 
-      // Estimates - Lease
+      // Compute - Lease
       {
         path: 'estimates/leasing',
         name: 'estimates.leasing.index',
         component: LeaseIndex,
-        meta: { breadcrumb: 'Lease Calculator' },
+        meta: { breadcrumb: 'Leasing', parent: 'estimates.index' },
       },
       {
         path: 'estimates/leasing/create',
@@ -192,27 +205,35 @@ const routes: RouteRecordRaw[] = [
         meta: { breadcrumb: 'Compare', parent: 'estimates.leasing.index' },
       },
 
-      // Learning
+      // Guides Landing
+      {
+        path: 'learning',
+        name: 'learning.index',
+        component: LearningIndex,
+        meta: { breadcrumb: 'Guides' },
+      },
+
+      // Guides
       {
         path: 'learning/:type',
         name: 'learning.show',
         component: LearningShow,
         props: true,
-        meta: { breadcrumb: (route: any) => `Learn ${route.params.type === 'financing' ? 'Financing' : 'Leasing'}` },
+        meta: { breadcrumb: (route: any) => route.params.type === 'financing' ? 'Financing' : 'Leasing', parent: 'learning.index' },
       },
 
-      // Price Tracker
+      // Price Tracker (Watch)
       {
         path: 'price-tracker',
         name: 'price-tracker.index',
         component: PriceTrackerIndex,
-        meta: { breadcrumb: 'Price Tracker' },
+        meta: { breadcrumb: 'Watch' },
       },
       {
         path: 'price-tracker/create',
         name: 'price-tracker.create',
         component: PriceTrackerCreate,
-        meta: { breadcrumb: 'Create', parent: 'price-tracker.index' },
+        meta: { breadcrumb: 'Add Item', parent: 'price-tracker.index' },
       },
       {
         path: 'price-tracker/:id',
@@ -220,6 +241,14 @@ const routes: RouteRecordRaw[] = [
         component: PriceTrackerDetails,
         props: true,
         meta: { breadcrumb: 'Details', parent: 'price-tracker.index' },
+      },
+
+      // Review (Coming Soon)
+      {
+        path: 'review',
+        name: 'review',
+        component: Review,
+        meta: { breadcrumb: 'Review' },
       },
     ],
   },

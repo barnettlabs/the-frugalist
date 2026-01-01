@@ -10,20 +10,19 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@/components/ui';
 import colors from '@/components/ui/colors';
 import {
+  Book as BookIcon,
   Calculator as CalculatorIcon,
-  Car as CarIcon,
   Dashboard as DashboardIcon,
+  Eye as EyeIcon,
   Settings as SettingsIcon,
-  Tag as TagIcon,
 } from '@/components/ui/icons';
 import { useAuth, useIsFirstTime } from '@/lib';
 
 const TAB_CONFIG = [
   { name: 'index', label: 'Home', Icon: DashboardIcon },
-  { name: 'finance', label: 'Finance', Icon: CalculatorIcon },
-  { name: 'lease', label: 'Lease', Icon: CarIcon },
-  { name: 'tracker', label: 'Tracker', Icon: TagIcon },
-  { name: 'settings', label: 'Settings', Icon: SettingsIcon },
+  { name: 'tracker', label: 'Watch', Icon: EyeIcon },
+  { name: 'finance', label: 'Compute', Icon: CalculatorIcon },
+  { name: 'settings', label: 'Account', Icon: SettingsIcon },
 ];
 
 const TAB_BAR_HEIGHT = 64;
@@ -258,8 +257,8 @@ function CustomTabBar({
             return (
               <View key={route.key} style={[tabBarStyles.maskTab, { width: tabWidth }]}>
                 <View style={tabBarStyles.tabContent}>
-                  <Icon color={colors.primary.DEFAULT} size={22} />
-                  <Text style={[tabBarStyles.label, { color: colors.primary.DEFAULT }]}>{label}</Text>
+                  <Icon color={colors.accent.DEFAULT} size={22} />
+                  <Text style={[tabBarStyles.label, { color: colors.accent.DEFAULT }]}>{label}</Text>
                 </View>
               </View>
             );
@@ -386,25 +385,17 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="finance"
-        options={{
-          title: 'Finance',
-          headerShown: false,
-        }}
-      />
-
-      <Tabs.Screen
-        name="lease"
-        options={{
-          title: 'Lease',
-          headerShown: false,
-        }}
-      />
-
-      <Tabs.Screen
         name="tracker"
         options={{
-          title: 'Tracker',
+          title: 'Watch',
+          headerShown: false,
+        }}
+      />
+
+      <Tabs.Screen
+        name="finance"
+        options={{
+          title: 'Compute',
           headerShown: false,
         }}
       />
@@ -412,12 +403,18 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
+          title: 'Account',
           headerShown: false,
         }}
       />
 
-      {/* Hide the old style screen */}
+      {/* Hide screens not in main nav */}
+      <Tabs.Screen
+        name="lease"
+        options={{
+          href: null,
+        }}
+      />
       <Tabs.Screen
         name="style"
         options={{

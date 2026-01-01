@@ -40,31 +40,17 @@ const navigation = computed((): NavigationItem[] => [
   <div class="flex-1 flex flex-col">
     <Popover
       as="header"
-      class="bg-animated-gradient dotted-background-light pb-24 relative overflow-hidden"
+      class="bg-surface/80 backdrop-blur-sm border-b border-border pb-24 relative overflow-hidden"
       v-slot="{ open }"
     >
       <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8 z-10">
-        <div class="relative flex items-center justify-center py-3 lg:justify-between">
-          <!-- Logo and Breadcrumbs -->
+        <div class="relative flex items-center justify-center py-4 lg:justify-between">
+          <!-- Logo -->
           <div class="absolute left-0 flex-shrink-0 lg:static">
             <div class="flex items-center space-x-6">
               <RouterLink to="/" class="flex flex-row items-center">
-                <span class="sr-only">SneakySalesman by JayTech LLC</span>
-
-                <ApplicationLogo variant="white" class="h-8 w-auto mr-2" />
-
-                <div class="flex flex-col">
-                  <span class="text-white font-bold hidden lg:inline-block"> Sneaky Salesman </span>
-                  <span class="text-white opacity-80 hidden lg:inline-block text-xs font-medium">
-                    Your smart shopping companion
-                  </span>
-
-                  <span class="text-white font-bold text-sm lg:hidden text-wrap">
-                    Sneaky
-                    <br />
-                    Salesman
-                  </span>
-                </div>
+                <span class="sr-only">TheFrugalist by JayTech LLC</span>
+                <ApplicationLogo variant="primary" size="xl" />
               </RouterLink>
             </div>
           </div>
@@ -74,13 +60,13 @@ const navigation = computed((): NavigationItem[] => [
             <div class="flex space-x-4">
               <RouterLink
                 to="/login"
-                class="text-white/80 hover:text-white px-3 py-2 text-sm font-medium transition-colors"
+                class="text-text-muted hover:text-primary px-3 py-2 text-sm font-medium transition-colors"
               >
                 Login
               </RouterLink>
               <RouterLink
                 to="/register"
-                class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                class="bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
               >
                 Register
               </RouterLink>
@@ -91,7 +77,7 @@ const navigation = computed((): NavigationItem[] => [
           <div class="absolute right-0 flex-shrink-0 lg:hidden">
             <!-- Mobile menu button -->
             <PopoverButton
-              class="relative inline-flex items-center justify-center rounded-md bg-transparent p-2 text-indigo-200 hover:bg-white hover:bg-opacity-10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+              class="relative inline-flex items-center justify-center rounded-md bg-transparent p-2 text-text-muted hover:bg-border hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent"
             >
               <span class="absolute -inset-0.5" />
               <span class="sr-only">Open main menu</span>
@@ -100,7 +86,7 @@ const navigation = computed((): NavigationItem[] => [
             </PopoverButton>
           </div>
         </div>
-        <div class="hidden border- border-white border-opacity-20 pt-2 pb-5 lg:block">
+        <div class="hidden border-border pt-2 pb-5 lg:block">
           <!-- Breadcrumbs -->
           <nav
             v-if="breadcrumbs && breadcrumbs.length > 0"
@@ -111,22 +97,22 @@ const navigation = computed((): NavigationItem[] => [
               <li>
                 <RouterLink
                   to="/"
-                  class="flex items-center text-white/70 hover:text-white transition-colors text-sm"
+                  class="flex items-center text-text-muted hover:text-primary transition-colors text-sm"
                 >
                   <HomeIcon class="h-4 w-4 mr-1" />
                   Home
                 </RouterLink>
               </li>
               <li v-for="(breadcrumb, index) in breadcrumbs" :key="index" class="flex items-center">
-                <ChevronRightIcon class="h-4 w-4 text-white/50 mx-2" />
+                <ChevronRightIcon class="h-4 w-4 text-text-muted mx-2" />
                 <RouterLink
                   v-if="breadcrumb.href && !breadcrumb.current"
                   :to="breadcrumb.href"
-                  class="text-white/70 hover:text-white transition-colors text-sm"
+                  class="text-text-muted hover:text-primary transition-colors text-sm"
                 >
                   {{ breadcrumb.name }}
                 </RouterLink>
-                <span v-else class="text-white font-medium text-sm">
+                <span v-else class="text-primary font-medium text-sm">
                   {{ breadcrumb.name }}
                 </span>
               </li>
@@ -142,8 +128,8 @@ const navigation = computed((): NavigationItem[] => [
                   :to="item.href"
                   :class="[
                     item.current
-                      ? 'bg-white bg-opacity-20 text-white'
-                      : 'text-white hover:bg-white hover:bg-opacity-10',
+                      ? 'bg-accent/10 text-accent'
+                      : 'text-text-muted hover:bg-border',
                     'rounded-md px-3 py-2 text-sm font-medium',
                   ]"
                 >
@@ -166,7 +152,7 @@ const navigation = computed((): NavigationItem[] => [
             leave-from="opacity-100"
             leave-to="opacity-0"
           >
-            <PopoverOverlay class="fixed inset-0 z-20 bg-black bg-opacity-25" />
+            <PopoverOverlay class="fixed inset-0 z-20 bg-black/25" />
           </TransitionChild>
 
           <TransitionChild
@@ -183,14 +169,14 @@ const navigation = computed((): NavigationItem[] => [
               class="absolute inset-x-0 top-0 z-30 mx-auto w-full max-w-3xl origin-top transform p-2 transition"
             >
               <div
-                class="divide-y divide-gray-200 rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5"
+                class="divide-y divide-border rounded-lg bg-surface shadow-lg ring-1 ring-black/5"
               >
                 <div class="pb-2 pt-3">
                   <div class="flex items-center justify-between px-4">
                     <div></div>
                     <div class="-mr-2">
                       <PopoverButton
-                        class="relative inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                        class="relative inline-flex items-center justify-center rounded-md bg-surface p-2 text-text-muted hover:bg-neutral-100 hover:text-primary focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent"
                       >
                         <span class="absolute -inset-0.5" />
                         <span class="sr-only">Close menu</span>
@@ -203,7 +189,7 @@ const navigation = computed((): NavigationItem[] => [
                       v-for="item in navigation"
                       :key="item.name"
                       :to="item.href"
-                      class="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-100 hover:text-gray-800"
+                      class="block rounded-md px-3 py-2 text-base font-medium text-primary hover:bg-neutral-100"
                     >
                       {{ item.name }}
                     </RouterLink>
@@ -213,13 +199,13 @@ const navigation = computed((): NavigationItem[] => [
                   <div class="mt-3 space-y-1 px-2">
                     <RouterLink
                       to="/login"
-                      class="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-100 hover:text-gray-800"
+                      class="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-primary hover:bg-neutral-100"
                     >
                       Login
                     </RouterLink>
                     <RouterLink
                       to="/register"
-                      class="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-100 hover:text-gray-800"
+                      class="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-primary hover:bg-neutral-100"
                     >
                       Register
                     </RouterLink>
@@ -232,54 +218,59 @@ const navigation = computed((): NavigationItem[] => [
       </TransitionRoot>
     </Popover>
 
-    <div class="flex-1 dotted-background-dark">
+    <div class="flex-1">
       <RouterView />
     </div>
 
-    <footer class="bg-gray-100 relative dotted-background py-12 border-t border-gray-200">
+    <footer class="bg-surface/80 backdrop-blur-sm border-t border-border py-12">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <div class="flex items-center space-x-3 mb-4">
-              <ApplicationLogo variant="black" class="h-8 w-auto" />
-              <h3 class="text-xl font-bold text-gray-900">Sneaky Salesman</h3>
+              <ApplicationLogo variant="primary" size="lg" />
             </div>
-            <p class="text-gray-600">
-              Empowering consumers with transparent financing tools and expert insights.
+            <p class="text-text-muted text-sm leading-relaxed">
+              Helping you avoid overpaying by tracking price movement, explaining pricing tactics,
+              and alerting you when buying actually makes sense.
             </p>
           </div>
           <div>
-            <h4 class="text-lg font-semibold mb-4 text-gray-900">Quick Links</h4>
-            <ul class="space-y-2 text-gray-600">
+            <h4 class="text-sm font-medium mb-4 text-primary">Quick Links</h4>
+            <ul class="space-y-2 text-sm text-text-muted">
               <li>
-                <RouterLink to="/estimates/financing" class="hover:text-primary transition-colors">
-                  Vehicle Finance Calculator
+                <RouterLink to="/price-tracker" class="hover:text-accent transition-colors">
+                  Watch
                 </RouterLink>
               </li>
               <li>
-                <RouterLink to="/estimates/leasing" class="hover:text-primary transition-colors">
-                  Vehicle Lease Calculator
+                <RouterLink to="/estimates" class="hover:text-accent transition-colors">
+                  Compute
                 </RouterLink>
               </li>
               <li>
-                <RouterLink to="/price-tracker" class="hover:text-primary transition-colors">
-                  Smart Price Tracker
+                <RouterLink to="/learning" class="hover:text-accent transition-colors">
+                  Guides
+                </RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/privacy" class="hover:text-accent transition-colors">
+                  Privacy Policy
                 </RouterLink>
               </li>
             </ul>
           </div>
           <div>
-            <h4 class="text-lg font-semibold mb-4 text-gray-900">Contact</h4>
-            <p class="text-gray-600">
+            <h4 class="text-sm font-medium mb-4 text-primary">Contact</h4>
+            <p class="text-text-muted text-sm">
               <a
                 href="mailto:jason.barnett@jaytech.io"
-                class="hover:text-primary transition-colors flex items-center"
+                class="hover:text-accent transition-colors flex items-center"
               >
-                <span class="">jason.barnett@jaytech.io</span>
+                <span>jason.barnett@jaytech.io</span>
                 <EnvelopeIcon class="h-4 w-4 ml-2" aria-hidden="true" />
               </a>
             </p>
-            <p class="text-gray-500 mt-4 text-sm">
+            <p class="text-text-muted mt-4 text-xs">
               &copy; {{ new Date().getFullYear() }} JayTech LLC. All rights reserved.
             </p>
           </div>

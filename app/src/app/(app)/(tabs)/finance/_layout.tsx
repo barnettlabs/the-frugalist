@@ -64,7 +64,7 @@ export default function FinanceLayout() {
       <Stack.Screen
         name="learn"
         options={{
-          title: 'Learning Center',
+          title: 'Guides',
           headerBackTitle: 'Back',
           headerStyle: {
             backgroundColor: headerColors.background,

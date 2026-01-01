@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import PageHeader from '@/components/PageHeader.vue'
-import { BookOpenIcon } from '@heroicons/vue/24/outline'
+import { BookOpenIcon, LightBulbIcon } from '@heroicons/vue/24/outline'
 import { learningContentMap } from '@/data/learningContent'
 
 const route = useRoute()
@@ -29,33 +29,33 @@ const otherType = computed(() => {
           back-label="Dashboard"
         />
 
-        <!-- TLDR Section -->
-        <div v-if="content.keywords && content.keywords.length > 0" class="mb-8 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-6 border border-primary/20">
-          <h2 class="text-lg font-bold text-gray-900 mb-4">TL;DR - Key Concepts</h2>
+        <!-- Key Concepts Section -->
+        <div v-if="content.keywords && content.keywords.length > 0" class="mb-8 bg-surface/80 backdrop-blur-sm rounded-xl p-6 border border-border">
+          <h2 class="text-lg font-medium text-primary mb-4">Key Concepts</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             <div
               v-for="(kw, index) in content.keywords"
               :key="index"
-              class="flex items-center gap-2 bg-white rounded-lg px-4 py-3 shadow-sm"
+              class="flex items-center gap-2 bg-background rounded-lg px-4 py-3"
             >
-              <span class="font-semibold text-primary">{{ kw.keyword }}</span>
-              <span v-if="kw.description" class="text-sm text-gray-500">- {{ kw.description }}</span>
+              <span class="font-medium text-accent">{{ kw.keyword }}</span>
+              <span v-if="kw.description" class="text-sm text-text-muted">- {{ kw.description }}</span>
             </div>
           </div>
         </div>
 
         <!-- Terms -->
         <div v-if="content.terms && content.terms.length > 0" class="mb-8">
-          <h2 class="text-xl font-bold text-gray-900 mb-4">Key Terms</h2>
+          <h2 class="text-lg font-medium text-primary mb-4">Terms</h2>
           <div class="space-y-4">
             <div
               v-for="(term, index) in content.terms"
               :key="index"
-              class="bg-white rounded-lg border border-gray-200 shadow-sm p-4"
+              class="bg-surface/80 backdrop-blur-sm rounded-lg border border-border p-4"
             >
-              <h3 class="font-semibold text-gray-900 mb-2">{{ term.term }}</h3>
-              <p class="text-sm text-gray-600">{{ term.definition }}</p>
-              <p v-if="term.example" class="text-sm text-gray-500 mt-2 italic">
+              <h3 class="font-medium text-primary mb-2">{{ term.term }}</h3>
+              <p class="text-sm text-text-muted">{{ term.definition }}</p>
+              <p v-if="term.example" class="text-sm text-text-muted mt-2 italic">
                 Example: {{ term.example }}
               </p>
             </div>
@@ -64,15 +64,15 @@ const otherType = computed(() => {
 
         <!-- Tips -->
         <div v-if="content.tips && content.tips.length > 0">
-          <h2 class="text-xl font-bold text-gray-900 mb-4">Pro Tips</h2>
+          <h2 class="text-lg font-medium text-primary mb-4">Tips</h2>
           <div class="space-y-3">
             <div
               v-for="(tip, index) in content.tips"
               :key="index"
-              class="flex items-start gap-3 bg-primary/5 rounded-lg p-4 border border-primary/10"
+              class="flex items-start gap-3 bg-surface/80 backdrop-blur-sm rounded-lg p-4 border border-border"
             >
-              <span class="text-xl">💡</span>
-              <p class="text-sm text-gray-700">{{ tip }}</p>
+              <LightBulbIcon class="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
+              <p class="text-sm text-text-muted">{{ tip }}</p>
             </div>
           </div>
         </div>
@@ -81,14 +81,14 @@ const otherType = computed(() => {
         <div class="mt-8 flex items-center justify-between">
           <RouterLink
             :to="`/estimates/${type}`"
-            class="bg-primary hover:bg-primary-shade-1 text-white px-6 py-3 rounded-lg font-medium transition-all"
+            class="bg-accent hover:bg-accent-dark text-white px-6 py-3 rounded-lg font-medium transition-all"
           >
             Go to {{ type === 'financing' ? 'Finance' : 'Lease' }} Calculator
           </RouterLink>
 
           <RouterLink
             :to="`/learning/${otherType}`"
-            class="text-primary hover:text-primary-shade-1 font-medium"
+            class="text-accent hover:text-accent-dark font-medium"
           >
             Learn about {{ otherType }} →
           </RouterLink>
@@ -97,12 +97,12 @@ const otherType = computed(() => {
 
       <!-- Not Found -->
       <div v-else class="text-center py-12">
-        <BookOpenIcon class="h-16 w-16 text-gray-400 mx-auto mb-4" />
-        <h2 class="text-2xl font-bold text-gray-900 mb-2">Content Not Found</h2>
-        <p class="text-gray-600 mb-6">The learning content you're looking for doesn't exist.</p>
+        <BookOpenIcon class="h-16 w-16 text-text-muted mx-auto mb-4" />
+        <h2 class="text-2xl font-medium text-primary mb-2">Content Not Found</h2>
+        <p class="text-text-muted mb-6">The content you're looking for doesn't exist.</p>
         <RouterLink
           to="/dashboard"
-          class="bg-primary hover:bg-primary-shade-1 text-white px-6 py-3 rounded-lg font-medium transition-all"
+          class="bg-accent hover:bg-accent-dark text-white px-6 py-3 rounded-lg font-medium transition-all"
         >
           Back to Dashboard
         </RouterLink>

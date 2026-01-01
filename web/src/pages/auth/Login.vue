@@ -62,13 +62,13 @@ const errors = computed(() => authStore.errors)
 
       <div class="flex items-center">
         <Checkbox name="remember" v-model:checked="form.remember" />
-        <span class="ms-2 text-sm text-gray-600">Remember me</span>
+        <span class="ms-2 text-sm text-text-muted">Remember me</span>
       </div>
 
       <div class="flex items-center justify-end">
         <RouterLink
           to="/forgot-password"
-          class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          class="rounded-md text-sm text-text-muted underline hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
         >
           Forgot your password?
         </RouterLink>
@@ -78,14 +78,14 @@ const errors = computed(() => authStore.errors)
         </BaseButton>
       </div>
 
-      <div class="mt-6 pt-8 text-center border-t border-gray-200">
-        <p class="text-sm text-gray-600">
+      <div class="mt-6 pt-8 text-center border-t border-border">
+        <p class="text-sm text-text-muted">
           Don't have an account?
           <RouterLink
             to="/register"
-            class="text-primary hover:text-primary-shade-1 font-medium transition-colors underline"
+            class="text-accent hover:text-accent-dark font-medium transition-colors underline"
           >
-            Start smart shopping
+            Create an account
           </RouterLink>
         </p>
       </div>

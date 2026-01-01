@@ -64,8 +64,8 @@ onMounted(() => {
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
       <!-- Header -->
       <PageHeader
-        title="Smart Price Tracker"
-        description="Track product prices and get notified when they drop"
+        title="Watch"
+        description="Track price movement and get notified when they drop"
         back-link="/dashboard"
         back-label="Dashboard"
       >
@@ -89,8 +89,8 @@ onMounted(() => {
         <div class="p-4 rounded-xl bg-accent/10 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
           <TagIcon class="h-8 w-8 text-accent-dark" />
         </div>
-        <h3 class="text-lg font-bold text-gray-900 mb-2">No products being tracked</h3>
-        <p class="text-gray-600 mb-6">Start tracking products to get price drop alerts</p>
+        <h3 class="text-lg font-medium text-primary mb-2">No products being tracked</h3>
+        <p class="text-text-muted mb-6">Track product prices to understand price movement before you buy</p>
         <RouterLink to="/price-tracker/create">
           <button class="bg-accent hover:bg-accent-dark text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2 mx-auto">
             <PlusIcon class="h-5 w-5" />
@@ -109,13 +109,13 @@ onMounted(() => {
           class="overflow-hidden"
         >
           <!-- Product Header -->
-          <div class="p-4 border-b border-gray-100">
+          <div class="p-4 border-b border-border">
             <div class="flex items-start justify-between mb-2">
               <div class="flex-1 min-w-0">
-                <h3 class="font-bold text-gray-900 truncate">
+                <h3 class="font-medium text-primary truncate">
                   {{ product.product_name || 'Pending lookup...' }}
                 </h3>
-                <p class="text-xs text-gray-500 mt-0.5">
+                <p class="text-xs text-text-muted mt-0.5">
                   {{ getRetailerName(product) }} &middot; {{ product.sku_upc }}
                 </p>
               </div>
@@ -125,16 +125,16 @@ onMounted(() => {
 
             <!-- Notification Methods -->
             <div class="flex items-center gap-2 mt-2">
-              <span class="text-xs text-gray-400">Alerts:</span>
+              <span class="text-xs text-text-muted">Alerts:</span>
               <div class="flex items-center gap-1">
                 <EnvelopeIcon
                   v-if="product.notification_method?.includes('email')"
-                  class="h-4 w-4 text-primary"
+                  class="h-4 w-4 text-accent"
                   title="Email notifications"
                 />
                 <DevicePhoneMobileIcon
                   v-if="product.notification_method?.includes('push')"
-                  class="h-4 w-4 text-primary"
+                  class="h-4 w-4 text-accent"
                   title="Push notifications"
                 />
               </div>
@@ -142,29 +142,29 @@ onMounted(() => {
           </div>
 
           <!-- Price Info -->
-          <div class="bg-gray-50 p-4">
+          <div class="bg-background p-4">
             <div class="flex items-center justify-between">
-              <span class="text-gray-500 text-sm">Current Price</span>
-              <span class="font-bold text-xl text-success">
+              <span class="text-text-muted text-sm">Current Price</span>
+              <span class="font-medium text-xl text-success">
                 {{ product.current_price ? `$${formatCurrency(product.current_price)}` : '—' }}
               </span>
             </div>
             <div v-if="product.target_price" class="flex items-center justify-between mt-2">
-              <span class="text-gray-500 text-sm">Target Price</span>
-              <span class="font-medium text-gray-900">${{ formatCurrency(product.target_price) }}</span>
+              <span class="text-text-muted text-sm">Target Price</span>
+              <span class="font-medium text-primary">${{ formatCurrency(product.target_price) }}</span>
             </div>
-            <div v-if="product.last_checked_at" class="text-xs text-gray-400 mt-2 text-right">
+            <div v-if="product.last_checked_at" class="text-xs text-text-muted mt-2 text-right">
               Last checked {{ formatRelativeTime(product.last_checked_at) }}
             </div>
-            <div v-else class="text-xs text-gray-400 mt-2 text-right">
+            <div v-else class="text-xs text-text-muted mt-2 text-right">
               Not yet checked
             </div>
           </div>
 
           <!-- Actions -->
-          <div class="grid grid-cols-3 gap-px bg-gray-100">
+          <div class="grid grid-cols-3 gap-px bg-border">
             <RouterLink :to="`/price-tracker/${product.id}`" class="block">
-              <button class="w-full bg-white hover:bg-gray-50 text-gray-700 px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors">
+              <button class="w-full bg-surface hover:bg-background text-text-muted px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors">
                 <EyeIcon class="h-4 w-4" />
                 <span>Details</span>
               </button>
@@ -172,14 +172,14 @@ onMounted(() => {
             <button
               @click="refreshProduct(product.id)"
               :disabled="refreshingId === product.id"
-              class="w-full bg-white hover:bg-gray-50 text-gray-700 px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
+              class="w-full bg-surface hover:bg-background text-text-muted px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
             >
               <ArrowPathIcon :class="['h-4 w-4', refreshingId === product.id && 'animate-spin']" />
               <span>{{ refreshingId === product.id ? 'Checking...' : 'Refresh' }}</span>
             </button>
             <button
               @click="deleteProduct(product.id)"
-              class="w-full bg-white hover:bg-red-50 text-red-600 px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
+              class="w-full bg-surface hover:bg-danger/5 text-danger px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
             >
               <TrashIcon class="h-4 w-4" />
               <span>Delete</span>
@@ -193,8 +193,8 @@ onMounted(() => {
             <div class="p-3 rounded-xl bg-accent/10 w-fit mx-auto mb-4">
               <PlusIcon class="h-8 w-8 text-accent-dark" />
             </div>
-            <h3 class="text-lg font-bold text-gray-900 mb-2">Track New Product</h3>
-            <p class="text-gray-600 text-sm">Add a product to monitor its price</p>
+            <h3 class="text-lg font-medium text-primary mb-2">Track New Product</h3>
+            <p class="text-text-muted text-sm">Add a product to monitor its price</p>
           </Card>
         </RouterLink>
       </div>

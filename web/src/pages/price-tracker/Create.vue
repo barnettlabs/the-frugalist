@@ -176,10 +176,10 @@ const submitForm = async () => {
       <!-- Step 1: Store Selection -->
       <Card class="mb-4">
         <div class="flex items-center gap-3 mb-4">
-          <div class="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white font-bold text-sm">
+          <div class="flex items-center justify-center w-8 h-8 rounded-full bg-accent text-white font-bold text-sm">
             1
           </div>
-          <h3 class="text-lg font-bold text-gray-900">Select Store</h3>
+          <h3 class="text-lg font-bold text-primary">Select Store</h3>
           <CheckCircleIcon v-if="isStoreSelected" class="h-5 w-5 text-success ml-auto" />
         </div>
 
@@ -192,15 +192,15 @@ const submitForm = async () => {
             :class="[
               'relative flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all',
               form.retailer_id === retailer.id
-                ? 'border-primary bg-primary/5 text-primary'
-                : 'border-gray-200 hover:border-gray-300 text-gray-700 hover:bg-gray-50'
+                ? 'border-accent bg-accent/5 text-accent'
+                : 'border-border hover:border-accent/30 text-text-muted hover:bg-background'
             ]"
           >
             <BuildingStorefrontIcon class="h-6 w-6 mb-2" />
             <span class="text-sm font-medium text-center">{{ retailer.name }}</span>
             <div
               v-if="form.retailer_id === retailer.id"
-              class="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center"
+              class="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full flex items-center justify-center"
             >
               <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
@@ -220,12 +220,12 @@ const submitForm = async () => {
           <div
             :class="[
               'flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm',
-              isStoreSelected ? 'bg-primary text-white' : 'bg-gray-200 text-gray-400'
+              isStoreSelected ? 'bg-accent text-white' : 'bg-border text-text-muted'
             ]"
           >
             2
           </div>
-          <h3 :class="['text-lg font-bold', isStoreSelected ? 'text-gray-900' : 'text-gray-400']">
+          <h3 :class="['text-lg font-bold', isStoreSelected ? 'text-primary' : 'text-text-muted']">
             Enter Product Identifier
           </h3>
           <CheckCircleIcon v-if="isProductValidated" class="h-5 w-5 text-success ml-auto" />
@@ -248,7 +248,7 @@ const submitForm = async () => {
               <Spinner size="sm" color="primary" />
             </div>
           </div>
-          <p class="text-xs text-gray-500 mt-1">
+          <p class="text-xs text-text-muted mt-1">
             Find this on the product page or product packaging
           </p>
           <InputError :message="errors.sku_upc?.[0]" class="mt-2" />
@@ -270,11 +270,11 @@ const submitForm = async () => {
               <img
                 :src="validatedProduct.product_image_url"
                 :alt="validatedProduct.product_name"
-                class="w-20 h-20 object-contain rounded-lg bg-white border border-gray-200"
+                class="w-20 h-20 object-contain rounded-lg bg-surface border border-border"
               />
             </div>
-            <div v-else class="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center">
-              <BuildingStorefrontIcon class="h-8 w-8 text-gray-400" />
+            <div v-else class="flex-shrink-0 w-20 h-20 bg-background rounded-lg flex items-center justify-center">
+              <BuildingStorefrontIcon class="h-8 w-8 text-text-muted" />
             </div>
 
             <!-- Product Info -->
@@ -283,18 +283,18 @@ const submitForm = async () => {
                 <CheckCircleIcon class="h-5 w-5 text-success flex-shrink-0" />
                 <span class="text-sm font-medium text-success">Product Found</span>
               </div>
-              <h4 class="font-bold text-gray-900 line-clamp-2">{{ validatedProduct.product_name }}</h4>
-              <p v-if="validatedProduct.product_description" class="text-sm text-gray-600 mt-1 line-clamp-2">
+              <h4 class="font-bold text-primary line-clamp-2">{{ validatedProduct.product_name }}</h4>
+              <p v-if="validatedProduct.product_description" class="text-sm text-text-muted mt-1 line-clamp-2">
                 {{ validatedProduct.product_description }}
               </p>
               <div class="flex items-center gap-4 mt-2">
                 <div v-if="validatedProduct.current_price">
-                  <span class="text-xs text-gray-500">Current Price</span>
+                  <span class="text-xs text-text-muted">Current Price</span>
                   <p class="text-lg font-bold text-success">${{ formatCurrency(validatedProduct.current_price) }}</p>
                 </div>
                 <div v-if="validatedProduct.retail_price && validatedProduct.retail_price !== validatedProduct.current_price">
-                  <span class="text-xs text-gray-500">Retail Price</span>
-                  <p class="text-lg font-medium text-gray-400 line-through">${{ formatCurrency(validatedProduct.retail_price) }}</p>
+                  <span class="text-xs text-text-muted">Retail Price</span>
+                  <p class="text-lg font-medium text-text-muted line-through">${{ formatCurrency(validatedProduct.retail_price) }}</p>
                 </div>
                 <Badge v-if="validatedProduct.in_stock === false" variant="danger" size="sm">Out of Stock</Badge>
                 <Badge v-else-if="validatedProduct.in_stock === true" variant="success" size="sm">In Stock</Badge>
@@ -304,8 +304,8 @@ const submitForm = async () => {
         </div>
 
         <!-- Tips -->
-        <div v-if="isStoreSelected && !isProductValidated && !validating" class="mt-4 p-3 bg-gray-50 rounded-lg">
-          <p class="text-xs text-gray-600">
+        <div v-if="isStoreSelected && !isProductValidated && !validating" class="mt-4 p-3 bg-background rounded-lg">
+          <p class="text-xs text-text-muted">
             <strong>Tip:</strong>
             <template v-if="selectedRetailer?.slug === 'bestbuy'"> Look for "SKU" on the Best Buy product page.</template>
             <template v-else-if="selectedRetailer?.slug === 'homedepot'"> Look for "Internet #" or "Store SKU" on the Home Depot product page.</template>
@@ -327,12 +327,12 @@ const submitForm = async () => {
           <div
             :class="[
               'flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm',
-              isProductValidated ? 'bg-primary text-white' : 'bg-gray-200 text-gray-400'
+              isProductValidated ? 'bg-accent text-white' : 'bg-border text-text-muted'
             ]"
           >
             3
           </div>
-          <h3 :class="['text-lg font-bold', isProductValidated ? 'text-gray-900' : 'text-gray-400']">
+          <h3 :class="['text-lg font-bold', isProductValidated ? 'text-primary' : 'text-text-muted']">
             Tracking Settings
           </h3>
           <CheckCircleIcon v-if="hasNotificationMethod" class="h-5 w-5 text-success ml-auto" />
@@ -342,7 +342,7 @@ const submitForm = async () => {
         <div class="mb-6">
           <InputLabel for="target_price" value="Target Price (optional)" />
           <div class="relative mt-1">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">$</span>
             <TextInput
               id="target_price"
               v-model="form.target_price"
@@ -354,7 +354,7 @@ const submitForm = async () => {
               :disabled="!isProductValidated"
             />
           </div>
-          <p class="text-xs text-gray-500 mt-1">
+          <p class="text-xs text-text-muted mt-1">
             Get notified when the price drops to or below this amount
           </p>
           <InputError :message="errors.target_price?.[0]" class="mt-2" />
@@ -369,15 +369,15 @@ const submitForm = async () => {
                 'flex items-center gap-3 p-4 rounded-lg border-2 transition-all',
                 !isProductValidated ? 'cursor-not-allowed' : 'cursor-pointer',
                 form.notification_email && isProductValidated
-                  ? 'border-primary bg-primary/5'
-                  : 'border-gray-200 hover:border-gray-300'
+                  ? 'border-accent bg-accent/5'
+                  : 'border-border hover:border-accent/30'
               ]"
             >
               <Checkbox v-model:checked="form.notification_email" :disabled="!isProductValidated" />
-              <EnvelopeIcon class="h-5 w-5 text-gray-600" />
+              <EnvelopeIcon class="h-5 w-5 text-text-muted" />
               <div>
-                <span class="font-medium text-gray-900">Email</span>
-                <p class="text-xs text-gray-500">Receive price drop alerts via email</p>
+                <span class="font-medium text-primary">Email</span>
+                <p class="text-xs text-text-muted">Receive price drop alerts via email</p>
               </div>
             </label>
 
@@ -386,15 +386,15 @@ const submitForm = async () => {
                 'flex items-center gap-3 p-4 rounded-lg border-2 transition-all',
                 !isProductValidated ? 'cursor-not-allowed' : 'cursor-pointer',
                 form.notification_push && isProductValidated
-                  ? 'border-primary bg-primary/5'
-                  : 'border-gray-200 hover:border-gray-300'
+                  ? 'border-accent bg-accent/5'
+                  : 'border-border hover:border-accent/30'
               ]"
             >
               <Checkbox v-model:checked="form.notification_push" :disabled="!isProductValidated" />
-              <DevicePhoneMobileIcon class="h-5 w-5 text-gray-600" />
+              <DevicePhoneMobileIcon class="h-5 w-5 text-text-muted" />
               <div>
-                <span class="font-medium text-gray-900">Push Notification</span>
-                <p class="text-xs text-gray-500">Receive instant alerts on your device</p>
+                <span class="font-medium text-primary">Push Notification</span>
+                <p class="text-xs text-text-muted">Receive instant alerts on your device</p>
               </div>
             </label>
           </div>
@@ -410,7 +410,7 @@ const submitForm = async () => {
         <RouterLink to="/price-tracker">
           <button
             type="button"
-            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium transition-colors"
+            class="bg-background hover:bg-border text-text-muted px-6 py-3 rounded-lg font-medium transition-colors"
           >
             Cancel
           </button>

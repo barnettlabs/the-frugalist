@@ -1,6 +1,5 @@
 import { BlurView } from 'expo-blur';
 import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Link, useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React, { useEffect } from 'react';
@@ -11,7 +10,6 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Circle, Defs, Pattern, Rect } from 'react-native-svg';
 
 import { useProfile } from '@/api/auth/use-profile';
 import { useDashboardStats } from '@/api/dashboard/use-dashboard-stats';
@@ -21,8 +19,8 @@ import {
   Calculator as CalculatorIcon,
   Car as CarIcon,
   Chevron,
+  Eye as EyeIcon,
   Plus,
-  Tag as TagIcon,
 } from '@/components/ui/icons';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -46,27 +44,10 @@ export default function Dashboard() {
 
   const firstName = user?.first_name || 'User';
 
-  const gradientColors = isDark
-    ? [colors.charcoal[950], colors.charcoal[900], colors.charcoal[950]]
-    : [colors.neutral[50], colors.neutral[100], colors.neutral[50]];
-
-  const dotColor = isDark ? 'rgba(148, 163, 184, 0.05)' : 'rgba(148, 163, 184, 0.1)';
+  const backgroundColor = isDark ? colors.charcoal[950] : colors.neutral[50];
 
   return (
-    <LinearGradient
-      colors={gradientColors}
-      style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-    >
-      <Svg style={StyleSheet.absoluteFill} pointerEvents="none">
-        <Defs>
-          <Pattern id="dotPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-            <Circle cx="2" cy="2" r="1" fill={dotColor} />
-          </Pattern>
-        </Defs>
-        <Rect x="0" y="0" width="100%" height="100%" fill="url(#dotPattern)" />
-      </Svg>
+    <View style={[styles.container, { backgroundColor }]}>
       <FocusAwareStatusBar />
 
       <ScrollView
@@ -77,7 +58,7 @@ export default function Dashboard() {
           <RefreshControl
             refreshing={isRefetching}
             onRefresh={refetch}
-            tintColor={colors.primary.light}
+            tintColor={colors.accent.DEFAULT}
           />
         }
       >
@@ -95,19 +76,15 @@ export default function Dashboard() {
               style={[
                 styles.avatar,
                 {
-                  borderColor: colors.primary.DEFAULT,
-                  shadowColor: colors.primary.DEFAULT,
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 8,
-                  elevation: 8,
+                  borderColor: colors.accent.DEFAULT,
+                  backgroundColor: isDark ? colors.charcoal[800] : colors.neutral[100],
                 },
               ]}
             >
               {user?.avatar_url ? (
                 <Image source={{ uri: user.avatar_url }} style={styles.avatarImage} />
               ) : (
-                <Text style={[styles.avatarText, { color: colors.primary.DEFAULT }]}>
+                <Text style={[styles.avatarText, { color: colors.accent.DEFAULT }]}>
                   {firstName[0]?.toUpperCase() || 'U'}
                 </Text>
               )}
@@ -115,57 +92,57 @@ export default function Dashboard() {
           </Link>
         </Animated.View>
 
-        {/* Finance Section */}
+        {/* Watch Section */}
         <GlassEntitySection
-          title="Finance Estimates"
-          icon={<CalculatorIcon color="#3B82F6" size={20} />}
-          accentColor="#3B82F6"
-          count={stats?.financeCount ?? 0}
+          title="Watch"
+          icon={<EyeIcon color={colors.accent.DEFAULT} size={20} />}
+          accentColor={colors.accent.DEFAULT}
+          count={stats?.trackerCount ?? 0}
           isLoading={isLoading}
           theme={theme}
           isDark={isDark}
           delay={300}
+          onViewAll={() => router.push('/(app)/tracker')}
+          onCreateNew={() => router.push('/(app)/tracker/create')}
+        />
+
+        {/* Finance Section */}
+        <GlassEntitySection
+          title="Finance"
+          icon={<CalculatorIcon color={colors.info} size={20} />}
+          accentColor={colors.info}
+          count={stats?.financeCount ?? 0}
+          isLoading={isLoading}
+          theme={theme}
+          isDark={isDark}
+          delay={400}
           onViewAll={() => router.push('/(app)/finance')}
           onCreateNew={() => router.push('/(app)/finance/create')}
         />
 
         {/* Lease Section */}
         <GlassEntitySection
-          title="Lease Estimates"
-          icon={<CarIcon color="#10B981" size={20} />}
-          accentColor="#10B981"
+          title="Lease"
+          icon={<CarIcon color={colors.success} size={20} />}
+          accentColor={colors.success}
           count={stats?.leaseCount ?? 0}
           isLoading={isLoading}
           theme={theme}
           isDark={isDark}
-          delay={400}
+          delay={500}
           onViewAll={() => router.push('/(app)/lease')}
           onCreateNew={() => router.push('/(app)/lease/create')}
         />
 
-        {/* Tracker Section */}
-        <GlassEntitySection
-          title="Product Tracker"
-          icon={<TagIcon color="#8B5CF6" size={20} />}
-          accentColor="#8B5CF6"
-          count={stats?.trackerCount ?? 0}
-          isLoading={isLoading}
-          theme={theme}
-          isDark={isDark}
-          delay={500}
-          onViewAll={() => router.push('/(app)/tracker')}
-          onCreateNew={() => router.push('/(app)/tracker/create')}
-        />
-
-        {/* Learning Resources */}
+        {/* Guides */}
         <Animated.View entering={FadeInDown.duration(600).delay(600)} style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>Learn</Text>
+          <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>Guides</Text>
           <View style={styles.resourcesRow}>
             <Link href="/(app)/learning/financing" asChild>
               <Pressable>
                 <GlassCard isDark={isDark} style={styles.resourceCard}>
-                  <View style={[styles.resourceIcon, { backgroundColor: '#3B82F620' }]}>
-                    <CalculatorIcon color="#3B82F6" size={18} />
+                  <View style={[styles.resourceIcon, { backgroundColor: `${colors.info}20` }]}>
+                    <CalculatorIcon color={colors.info} size={18} />
                   </View>
                   <Text style={[styles.resourceTitle, { color: theme.textPrimary }]}>
                     Financing
@@ -177,8 +154,8 @@ export default function Dashboard() {
             <Link href="/(app)/learning/leasing" asChild>
               <Pressable>
                 <GlassCard isDark={isDark} style={styles.resourceCard}>
-                  <View style={[styles.resourceIcon, { backgroundColor: '#10B98120' }]}>
-                    <CarIcon color="#10B981" size={18} />
+                  <View style={[styles.resourceIcon, { backgroundColor: `${colors.success}20` }]}>
+                    <CarIcon color={colors.success} size={18} />
                   </View>
                   <Text style={[styles.resourceTitle, { color: theme.textPrimary }]}>Leasing</Text>
                   <Text style={[styles.resourceSubtitle, { color: theme.textMuted }]}>Terms</Text>
@@ -197,7 +174,7 @@ export default function Dashboard() {
         tint={isDark ? 'dark' : 'light'}
         style={[styles.statusBarBlur, { height: insets.top }]}
       />
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -427,7 +404,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
-    backgroundColor: 'rgba(59, 130, 246, 0.1)',
   },
   avatarImage: {
     width: '100%',

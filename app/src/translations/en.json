@@ -1,15 +1,15 @@
 {
   "onboarding": {
-    "message": "Welcome to obytes app site"
+    "message": "Spend intentionally."
   },
   "settings": {
     "about": "About",
     "account": "Account",
     "app_info": "App Info",
-    "app_name": "App Name",
+    "app_name": "TheFrugalist",
     "arabic": "Arabic",
     "build": "Build",
-    "company": "Tensifi",
+    "company": "JayTech LLC",
     "english": "English",
     "generale": "Preferences",
     "github": "Github",
@@ -30,10 +30,22 @@
       "system": "System",
       "title": "Theme"
     },
-    "title": "Settings",
+    "title": "Account",
     "version": "Version",
     "web_app": "Web App",
     "website": "Website"
   },
-  "welcome": "Welcome to obytes app site"
+  "welcome": "Spend intentionally.",
+  "navigation": {
+    "home": "Home",
+    "watch": "Watch",
+    "compute": "Compute",
+    "guides": "Guides",
+    "account": "Account"
+  },
+  "brand": {
+    "name": "TheFrugalist",
+    "tagline": "Spend intentionally.",
+    "description": "Helping you avoid overpaying by tracking price movement and explaining pricing tactics."
+  }
 }

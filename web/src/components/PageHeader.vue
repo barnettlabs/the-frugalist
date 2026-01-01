@@ -46,7 +46,7 @@ const showBackLink = computed(() => {
     <div v-if="showBackLink" class="lg:hidden mb-3">
       <RouterLink
         :to="parentRoute"
-        class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 transition-colors"
+        class="inline-flex items-center text-sm text-text-muted hover:text-primary transition-colors"
       >
         <ChevronLeftIcon class="h-5 w-5 mr-1" />
         {{ backLabel }}
@@ -56,8 +56,8 @@ const showBackLink = computed(() => {
     <!-- Header content -->
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
       <div>
-        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900">{{ title }}</h1>
-        <p v-if="description" class="mt-1 lg:mt-2 text-sm lg:text-base text-gray-600">
+        <h1 class="text-2xl lg:text-3xl font-bold text-primary">{{ title }}</h1>
+        <p v-if="description" class="mt-1 lg:mt-2 text-sm lg:text-base text-text-muted">
           {{ description }}
         </p>
         <slot name="subtitle"></slot>

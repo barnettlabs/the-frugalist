@@ -2,92 +2,113 @@
 import { RouterLink } from 'vue-router'
 import ApplicationLogo from '@/components/ApplicationLogo.vue'
 import {
-  BanknotesIcon,
-  CurrencyDollarIcon,
+  EyeIcon,
+  CalculatorIcon,
+  BookOpenIcon,
+  EnvelopeIcon,
+  ChartBarIcon,
+  BellAlertIcon,
+  ArrowPathIcon,
+  ShieldCheckIcon,
 } from '@heroicons/vue/24/outline'
-import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 import type { Component } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 
 const authStore = useAuthStore()
 
-interface ActionItem {
+interface FeatureItem {
   icon: Component
   name: string
   description: string
   href: string
-  iconForeground: string
-  iconBackground: string
-  status: string
 }
 
-const actions: ActionItem[] = [
+interface ValueProp {
+  icon: Component
+  title: string
+  description: string
+}
+
+const features: FeatureItem[] = [
   {
-    icon: BanknotesIcon,
-    name: 'Vehicle Finance Calculator',
+    icon: EyeIcon,
+    name: 'Watch',
     description:
-      'Save time and money with advanced financing calculations. Real-time rates and comprehensive payment analysis to help you get the best deal.',
-    href: '/estimates/financing',
-    iconForeground: 'text-primary',
-    iconBackground: 'bg-gradient-to-br from-primary/10 to-primary/20',
-    status: 'Available',
-  },
-  {
-    icon: CurrencyDollarIcon,
-    name: 'Vehicle Lease Calculator',
-    description:
-      'Maximize your savings with intelligent lease calculations. Tax benefits and residual value optimization to find the best lease deals.',
-    href: '/estimates/leasing',
-    iconForeground: 'text-secondary',
-    iconBackground: 'bg-gradient-to-br from-secondary/10 to-secondary/20',
-    status: 'Available',
-  },
-  {
-    icon: MagnifyingGlassIcon,
-    name: 'Smart Price Tracker',
-    description:
-      'Never miss a deal again. Monitor prices and get alerted when they drop below your threshold. Intelligent tracking saves you time and money.',
+      'Track price movement over time. Get alerts when prices drop or hit your target. Use return windows to reclaim the difference when prices fall.',
     href: '/price-tracker',
-    iconForeground: 'text-accent-dark',
-    iconBackground: 'bg-gradient-to-br from-accent/10 to-accent/20',
-    status: 'Available',
+  },
+  {
+    icon: CalculatorIcon,
+    name: 'Compute',
+    description:
+      'Understand the true cost of financing and leasing. See how rates, terms, and fees affect your payments. Make decisions with clarity.',
+    href: '/estimates/financing',
+  },
+  {
+    icon: BookOpenIcon,
+    name: 'Guides',
+    description:
+      'Learn the tactics behind markups, fees, and pressure. Understand pricing strategies so you can recognize them and respond rationally.',
+    href: '/learning/financing',
+  },
+]
+
+const valueProps: ValueProp[] = [
+  {
+    icon: ChartBarIcon,
+    title: 'Track Movement',
+    description: 'Monitor price changes over time with visual charts and history.',
+  },
+  {
+    icon: BellAlertIcon,
+    title: 'Smart Alerts',
+    description: 'Get notified when prices drop or hit your target.',
+  },
+  {
+    icon: ArrowPathIcon,
+    title: 'Reclaim Value',
+    description: 'Use return windows to get refunds when prices fall.',
+  },
+  {
+    icon: ShieldCheckIcon,
+    title: 'Stay Informed',
+    description: 'Learn pricing tactics so you can respond rationally.',
   },
 ]
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 dotted-background-dark">
-    <!-- Header -->
-    <header class="z-10 bg-animated-gradient dotted-background-light relative overflow-hidden">
-      <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <div class="min-h-screen">
+    <!-- Hero Section with gradient background -->
+    <header class="relative overflow-hidden">
+      <!-- Gradient background -->
+      <div class="absolute inset-0 bg-gradient-to-br from-accent via-accent-dark to-blue-900"></div>
+
+      <div class="dotted-background-light relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <!-- Navigation -->
         <nav class="flex items-center justify-between py-6">
-          <div class="flex items-center space-x-3">
-            <ApplicationLogo variant="white" class="h-10 w-auto" />
-            <div class="flex flex-col">
-              <span class="text-2xl font-bold text-white neon-text"> Sneaky Salesman </span>
-              <span class="text-white/80 text-sm font-medium"> Your smart shopping companion </span>
-            </div>
-          </div>
+          <RouterLink to="/" class="flex items-center">
+            <ApplicationLogo variant="white" size="xl" />
+          </RouterLink>
 
           <div class="flex items-center space-x-4">
             <RouterLink
               v-if="authStore.isAuthenticated"
               to="/dashboard"
-              class="bg-white/20 hover:bg-white/30 text-white px-6 py-2 rounded-lg font-medium transition-all duration-150"
+              class="bg-white/20 hover:bg-white/30 text-white px-5 py-2 rounded-lg font-medium transition-colors backdrop-blur-sm"
             >
               Dashboard
             </RouterLink>
             <template v-else>
               <RouterLink
                 to="/login"
-                class="text-white hover:text-white/80 px-4 py-2 font-medium"
+                class="text-white/80 hover:text-white px-4 py-2 font-medium transition-colors"
               >
                 Log in
               </RouterLink>
               <RouterLink
                 to="/register"
-                class="bg-white/20 hover:bg-white/30 text-white px-6 py-2 rounded-lg font-medium transition-all duration-150"
+                class="bg-white text-accent-dark hover:bg-white/90 px-5 py-2 rounded-lg font-medium transition-colors"
               >
                 Register
               </RouterLink>
@@ -95,157 +116,194 @@ const actions: ActionItem[] = [
           </div>
         </nav>
 
-        <!-- Hero Section -->
-        <div class="py-20 text-center">
-          <h1 class="text-5xl font-bold text-white mb-6">
-            Welcome to the
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300">
-              Smart Shopping Suite
-            </span>
-          </h1>
-          <div
-            class="mb-6 p-6 bg-white/10 backdrop-blur-sm rounded-xl max-w-2xl mx-auto border border-white/20"
-          >
-            <p class="text-lg text-white/90 mb-2 font-semibold">Smart & Sneaky</p>
-            <p class="text-sm text-white/80 italic">
-              Like a clever fox - intelligent, strategic, and always finding the best path forward
+        <!-- Hero Content -->
+        <div class="py-20 lg:py-28">
+          <div class="max-w-3xl">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-medium text-white mb-6 tracking-tight">
+              Spend intentionally.
+            </h1>
+            <p class="text-lg sm:text-xl text-white/80 mb-8 leading-relaxed max-w-2xl">
+              TheFrugalist helps you avoid overpaying by tracking price movement,
+              explaining pricing tactics, and alerting you when buying actually makes sense.
             </p>
-          </div>
-          <p class="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
-            Make informed decisions with intelligent calculators. Track interest rates, rebates,
-            fees, and get the best deal every time.
-          </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <RouterLink
-              :to="authStore.isAuthenticated ? '/dashboard' : '/login'"
-              class="bg-white text-gray-900 px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition-all duration-150 hover:neon-glow"
-            >
-              Start Saving
-            </RouterLink>
-            <a
-              href="#applications"
-              class="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-xl font-bold transition-all duration-150"
-            >
-              Learn More
-            </a>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <RouterLink
+                :to="authStore.isAuthenticated ? '/price-tracker' : '/register'"
+                class="bg-white text-accent-dark hover:bg-white/90 px-6 py-3 rounded-lg font-medium transition-colors text-center shadow-lg"
+              >
+                Start tracking
+              </RouterLink>
+              <RouterLink
+                to="/learning/financing"
+                class="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-lg font-medium transition-colors text-center border border-white/30 backdrop-blur-sm"
+              >
+                Learn how pricing works
+              </RouterLink>
+            </div>
           </div>
         </div>
       </div>
     </header>
 
     <!-- Main Content -->
-    <main class="py-16 z-10">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <!-- Applications Section -->
-        <section id="applications" class="mb-16">
-          <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">Smart Shopping Tools</h2>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-              Intelligent applications designed to save you time and money. Each tool gives you the
-              insights and calculations needed to make smart purchasing decisions.
+    <main>
+      <!-- Value Props Section -->
+      <section class="py-16 lg:py-24 relative overflow-hidden">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div
+              v-for="(prop, index) in valueProps"
+              :key="index"
+              class="group relative bg-surface/80 backdrop-blur-sm border border-border rounded-2xl p-6 hover:border-accent/50 hover:shadow-soft transition-all duration-300"
+            >
+              <!-- Accent line -->
+              <div class="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+              <!-- Icon -->
+              <div class="mb-4 p-3 bg-accent/10 rounded-xl w-fit group-hover:bg-accent/20 transition-colors">
+                <component :is="prop.icon" class="h-6 w-6 text-accent" />
+              </div>
+
+              <!-- Content -->
+              <h3 class="text-base font-medium text-primary mb-2">{{ prop.title }}</h3>
+              <p class="text-sm text-text-muted leading-relaxed">{{ prop.description }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="py-16 lg:py-20">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="max-w-2xl mb-12">
+            <h2 class="text-2xl sm:text-3xl font-medium text-primary mb-4">
+              Tools for smarter decisions
+            </h2>
+            <p class="text-text-muted leading-relaxed">
+              Each tool is designed to give you clarity, not pressure. No flashy sales tactics,
+              just the information you need to make informed choices.
             </p>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div v-for="action in actions" :key="action.name" class="group relative">
-              <RouterLink :to="action.href">
-                <div
-                  class="futuristic-card p-8 cursor-pointer transition-all duration-150 hover:neon-glow"
-                >
-                  <!-- Icon Section -->
-                  <div class="flex items-center justify-between mb-6">
-                    <div class="p-4 rounded-xl" :class="[action.iconBackground]">
-                      <component
-                        :is="action.icon"
-                        class="h-8 w-8"
-                        :class="[action.iconForeground]"
-                        aria-hidden="true"
-                      />
-                    </div>
-                    <div class="opacity-50 group-hover:opacity-100 transition-opacity">
-                      <svg
-                        class="w-6 h-6 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M13 7l5 5m0 0l-5 5m5-5H6"
-                        ></path>
-                      </svg>
-                    </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <RouterLink
+              v-for="feature in features"
+              :key="feature.name"
+              :to="feature.href"
+              class="group"
+            >
+              <div class="bg-surface/80 backdrop-blur-sm border border-border rounded-xl p-6 h-full hover:border-accent hover:shadow-soft transition-all duration-200">
+                <div class="flex items-center mb-4">
+                  <div class="p-2.5 bg-accent/10 rounded-xl mr-3 group-hover:bg-accent/20 transition-colors">
+                    <component
+                      :is="feature.icon"
+                      class="h-5 w-5 text-accent"
+                      aria-hidden="true"
+                    />
                   </div>
-
-                  <!-- Content -->
-                  <h3
-                    class="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors"
-                  >
-                    {{ action.name }}
+                  <h3 class="text-lg font-medium text-primary group-hover:text-accent transition-colors">
+                    {{ feature.name }}
                   </h3>
-                  <p class="text-gray-600 text-sm leading-relaxed mb-4">
-                    {{ action.description }}
-                  </p>
-
-                  <!-- Status indicator -->
-                  <div class="flex items-center text-xs">
-                    <div
-                      class="w-2 h-2 rounded-full mr-2 animate-pulse"
-                      :class="action.status === 'Available' ? 'bg-success' : 'bg-warning'"
-                    ></div>
-                    <span class="text-gray-500">{{ action.status }}</span>
-                  </div>
                 </div>
-              </RouterLink>
+                <p class="text-text-muted text-sm leading-relaxed">
+                  {{ feature.description }}
+                </p>
+              </div>
+            </RouterLink>
+          </div>
+        </div>
+      </section>
+
+      <!-- Why TheFrugalist Section -->
+      <section class="py-16 lg:py-24 border-t border-border">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="max-w-3xl mx-auto">
+            <h2 class="text-2xl sm:text-3xl font-medium text-primary mb-8 text-center">
+              Why TheFrugalist
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <!-- The Problem -->
+              <div class="bg-danger/5 border border-danger/20 rounded-2xl p-6">
+                <div class="flex items-center mb-4">
+                  <div class="p-2 bg-danger/10 rounded-lg mr-3">
+                    <ShieldCheckIcon class="h-5 w-5 text-danger" />
+                  </div>
+                  <h3 class="text-lg font-medium text-primary">The Problem</h3>
+                </div>
+                <p class="text-text-muted leading-relaxed text-sm">
+                  Pricing is designed to pressure you. Sales tactics, artificial urgency,
+                  hidden fees, and confusing terms are meant to make you act fast and pay more.
+                </p>
+              </div>
+              <!-- The Solution -->
+              <div class="bg-accent/5 border border-accent/20 rounded-2xl p-6">
+                <div class="flex items-center mb-4">
+                  <div class="p-2 bg-accent/10 rounded-lg mr-3">
+                    <EyeIcon class="h-5 w-5 text-accent" />
+                  </div>
+                  <h3 class="text-lg font-medium text-primary">Our Approach</h3>
+                </div>
+                <p class="text-text-muted leading-relaxed text-sm">
+                  TheFrugalist slows that down. We give you tools to track prices,
+                  understand costs, and make decisions on your own timeline. No hype, no pressure,
+                  just clarity.
+                </p>
+              </div>
             </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12 relative dotted-background-dark">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <footer class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-accent via-accent-dark to-blue-900"></div>
+      <div class="dotted-background-light relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <div class="flex items-center space-x-3 mb-4">
-              <ApplicationLogo variant="white" class="h-8 w-auto" />
-              <h3 class="text-xl font-bold neon-text">Sneaky Salesman</h3>
-            </div>
-            <p class="text-gray-400">
-              Empowering consumers with transparent financing tools and expert insights.
+            <ApplicationLogo variant="white" size="lg" class="mb-4" />
+            <p class="text-white/70 text-sm leading-relaxed">
+              Helping you avoid overpaying by tracking price movement
+              and explaining pricing tactics.
             </p>
           </div>
           <div>
-            <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
-            <ul class="space-y-2 text-gray-400">
-              <li>
-                <RouterLink to="/estimates/financing" class="hover:text-white transition-colors">
-                  Vehicle Finance Calculator
-                </RouterLink>
-              </li>
-              <li>
-                <RouterLink to="/estimates/leasing" class="hover:text-white transition-colors">
-                  Vehicle Lease Calculator
-                </RouterLink>
-              </li>
+            <h4 class="text-sm font-medium text-white mb-4">Quick Links</h4>
+            <ul class="space-y-2 text-sm text-white/70">
               <li>
                 <RouterLink to="/price-tracker" class="hover:text-white transition-colors">
-                  Smart Price Tracker
+                  Watch
+                </RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/estimates" class="hover:text-white transition-colors">
+                  Compute
+                </RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/learning" class="hover:text-white transition-colors">
+                  Guides
+                </RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/privacy" class="hover:text-white transition-colors">
+                  Privacy Policy
                 </RouterLink>
               </li>
             </ul>
           </div>
           <div>
-            <h4 class="text-lg font-semibold mb-4">Contact</h4>
-            <p class="text-gray-400">
-              <a href="mailto:jason.barnett@jaytech.io" class="hover:text-white transition-colors">
-                jason.barnett@jaytech.io
+            <h4 class="text-sm font-medium text-white mb-4">Contact</h4>
+            <p class="text-white/70 text-sm">
+              <a
+                href="mailto:jason.barnett@jaytech.io"
+                class="hover:text-white transition-colors flex items-center"
+              >
+                <span>jason.barnett@jaytech.io</span>
+                <EnvelopeIcon class="h-4 w-4 ml-2" />
               </a>
             </p>
-            <p class="text-gray-400 mt-2">
+            <p class="text-white/50 mt-4 text-xs">
               &copy; {{ new Date().getFullYear() }} JayTech LLC. All rights reserved.
             </p>
           </div>

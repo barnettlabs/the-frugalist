@@ -1,23 +1,40 @@
 <script setup lang="ts">
-import FoxLogo from '@/../assets/logos/sneaky-salesman/fox-logo.svg'
-
 interface Props {
-  variant?: 'white' | 'black' | 'primary'
+  variant?: 'white' | 'black' | 'primary' | 'accent'
+  size?: 'sm' | 'md' | 'lg' | 'xl'
   class?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  variant: 'black',
-  class: 'h-8 w-auto',
+  variant: 'primary',
+  size: 'md',
+  class: '',
 })
 
-const fillClass = {
-  white: 'fill-white',
-  black: 'fill-black',
-  primary: 'fill-primary',
+const colorClass = {
+  white: 'text-white',
+  black: 'text-black',
+  primary: 'text-primary',
+  accent: 'text-accent',
+}
+
+const sizeClass = {
+  sm: 'text-lg',
+  md: 'text-xl',
+  lg: 'text-2xl',
+  xl: 'text-3xl',
 }
 </script>
 
 <template>
-  <FoxLogo :class="[fillClass[props.variant], props.class]" />
+  <span
+    :class="[
+      'font-medium tracking-tight select-none',
+      colorClass[props.variant],
+      sizeClass[props.size],
+      props.class
+    ]"
+  >
+    thefrugalist
+  </span>
 </template>

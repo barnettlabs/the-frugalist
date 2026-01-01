@@ -15,36 +15,21 @@ export default {
                 sans: ["Rubik", ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                brand: {
-                    red: "#FF2D20",
-                },
-
-                // Primary: Deep Blue (#235892)
+                // Primary: Charcoal (text and headings)
                 primary: 'rgb(var(--color-primary) / <alpha-value>)',
                 "primary-light": "rgb(var(--color-primary-light) / <alpha-value>)",
                 "primary-dark": "rgb(var(--color-primary-dark) / <alpha-value>)",
-                "primary-shade-1": "rgb(var(--color-primary-shade-1) / <alpha-value>)",
-                "primary-shade-2": "rgb(var(--color-primary-shade-2) / <alpha-value>)",
-                "primary-shade-3": "rgb(var(--color-primary-shade-3) / <alpha-value>)",
-                "primary-shade-4": "rgb(var(--color-primary-shade-4) / <alpha-value>)",
-                "primary-shade-5": "rgb(var(--color-primary-shade-5) / <alpha-value>)",
-                "primary-shade-6": "rgb(var(--color-primary-shade-6) / <alpha-value>)",
-                "primary-tint-1": "rgb(var(--color-primary-tint-1) / <alpha-value>)",
-                "primary-tint-2": "rgb(var(--color-primary-tint-2) / <alpha-value>)",
-                "primary-tint-3": "rgb(var(--color-primary-tint-3) / <alpha-value>)",
-                "primary-tint-4": "rgb(var(--color-primary-tint-4) / <alpha-value>)",
-                "primary-tint-5": "rgb(var(--color-primary-tint-5) / <alpha-value>)",
-                "primary-tint-6": "rgb(var(--color-primary-tint-6) / <alpha-value>)",
 
-                // Secondary: Teal (#2FA4A9)
+                // Accent: Olive Gray (links, active states, highlights)
+                accent: "rgb(var(--color-accent) / <alpha-value>)",
+                "accent-light": "rgb(var(--color-accent-light) / <alpha-value>)",
+                "accent-dark": "rgb(var(--color-accent-dark) / <alpha-value>)",
+                "accent-muted": "rgb(var(--color-accent-muted) / <alpha-value>)",
+
+                // Secondary (alias to accent for backward compatibility)
                 secondary: "rgb(var(--color-secondary) / <alpha-value>)",
                 "secondary-light": "rgb(var(--color-secondary-light) / <alpha-value>)",
                 "secondary-dark": "rgb(var(--color-secondary-dark) / <alpha-value>)",
-
-                // Accent: Warm Amber (#F2A541)
-                accent: "rgb(var(--color-accent) / <alpha-value>)",
-                "accent-soft": "rgb(var(--color-accent-soft) / <alpha-value>)",
-                "accent-dark": "rgb(var(--color-accent-dark) / <alpha-value>)",
 
                 // Neutrals
                 background: "rgb(var(--color-background) / <alpha-value>)",
@@ -62,6 +47,20 @@ export default {
                 // Legacy
                 light: "rgb(var(--color-light) / <alpha-value>)",
                 dark: "rgb(var(--color-dark) / <alpha-value>)",
+
+                // Neutral scale
+                neutral: {
+                    50: '#FAFAF9',
+                    100: '#F7F6F3',
+                    200: '#EFEEEB',
+                    300: '#E5E4E1',
+                    400: '#A8A7A4',
+                    500: '#6B6B6B',
+                    600: '#4A4A4A',
+                    700: '#3D3D3D',
+                    800: '#2A2A2A',
+                    900: '#1F1F1F',
+                },
             },
         },
     },
@@ -71,22 +70,16 @@ export default {
     safelist: [
         {
             pattern:
-                /bg-(primary|primary-light|primary-dark|secondary|secondary-light|secondary-dark|accent|accent-soft|accent-dark|success|info|warning|danger|light|dark|background|surface)/,
+                /bg-(primary|primary-light|primary-dark|accent|accent-light|accent-dark|secondary|secondary-light|secondary-dark|success|info|warning|danger|light|dark|background|surface)/,
             variants: ["hover", "focus", "active"],
         },
         {
-            pattern: /text-(primary|primary-light|primary-dark|secondary|secondary-light|secondary-dark|accent|accent-soft|accent-dark|success|info|warning|danger|light|dark|text-muted|text-primary)/,
+            pattern: /text-(primary|primary-light|primary-dark|accent|accent-light|accent-dark|secondary|secondary-light|secondary-dark|success|info|warning|danger|light|dark|text-muted|text-primary)/,
             variants: ["hover", "focus", "active"],
         },
         {
-            pattern: /border-(primary|primary-light|primary-dark|secondary|secondary-light|secondary-dark|accent|accent-soft|accent-dark|success|info|warning|danger|light|dark|border)/,
+            pattern: /border-(primary|primary-light|primary-dark|accent|accent-light|accent-dark|secondary|secondary-light|secondary-dark|success|info|warning|danger|light|dark|border)/,
             variants: ["hover", "focus", "active"],
-        },
-        {
-            pattern: /from-(primary|primary-light|primary-dark|secondary|accent|success|info|warning|danger)\/\d+/,
-        },
-        {
-            pattern: /to-(primary|primary-light|primary-dark|secondary|accent|success|info|warning|danger)\/\d+/,
         },
         {
             pattern: /rounded-(.*)/,

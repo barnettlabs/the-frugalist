@@ -26,7 +26,7 @@ export default function TrackerLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Price Tracker',
+          title: 'Watch',
         }}
       />
       <Stack.Screen

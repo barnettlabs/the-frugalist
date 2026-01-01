@@ -14,8 +14,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const variantClasses = {
-  default: 'bg-white rounded-lg border border-gray-200 shadow-sm',
-  interactive: 'bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md hover:border-gray-300 transition-all cursor-pointer',
+  default: 'bg-surface/80 backdrop-blur-sm rounded-lg border border-border shadow-sm',
+  interactive: 'bg-surface/80 backdrop-blur-sm rounded-lg border border-border shadow-sm hover:shadow-md hover:border-accent/30 transition-all cursor-pointer',
   futuristic: 'futuristic-card', // Uses CSS class from app.css
   'gradient-primary': 'bg-gradient-to-br from-primary to-primary-dark rounded-lg text-white',
   'gradient-secondary': 'bg-gradient-to-br from-secondary to-secondary-dark rounded-lg text-white',

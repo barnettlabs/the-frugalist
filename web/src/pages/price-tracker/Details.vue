@@ -128,32 +128,32 @@ onMounted(() => {
           <div class="flex items-start justify-between">
             <div>
               <div class="flex items-center gap-3 mb-2">
-                <h1 class="text-3xl font-bold text-gray-900">
+                <h1 class="text-3xl font-bold text-primary">
                   {{ product.product_name || 'Pending lookup...' }}
                 </h1>
                 <Badge v-if="product.is_active" variant="success">Active</Badge>
                 <Badge v-else variant="neutral">Paused</Badge>
               </div>
-              <p class="text-gray-600">
+              <p class="text-text-muted">
                 {{ getRetailerName(product) }} &middot; {{ product.sku_upc }}
               </p>
               <div class="flex items-center gap-2 mt-2">
-                <span class="text-sm text-gray-400">Alerts:</span>
+                <span class="text-sm text-text-muted">Alerts:</span>
                 <EnvelopeIcon
                   v-if="product.notification_method?.includes('email')"
-                  class="h-5 w-5 text-primary"
+                  class="h-5 w-5 text-accent"
                   title="Email notifications enabled"
                 />
                 <DevicePhoneMobileIcon
                   v-if="product.notification_method?.includes('push')"
-                  class="h-5 w-5 text-primary"
+                  class="h-5 w-5 text-accent"
                   title="Push notifications enabled"
                 />
               </div>
             </div>
             <div class="flex items-center gap-2">
               <RouterLink to="/price-tracker">
-                <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium transition-all">
+                <button class="bg-background hover:bg-border text-text-muted px-6 py-3 rounded-lg font-medium transition-all">
                   Back to List
                 </button>
               </RouterLink>
@@ -164,11 +164,11 @@ onMounted(() => {
         <!-- Price Timeline -->
         <Card class="mb-6">
           <div class="flex items-center justify-between mb-6">
-            <h2 class="text-lg font-bold text-gray-900">Price Progress</h2>
+            <h2 class="text-lg font-bold text-primary">Price Progress</h2>
             <button
               @click="refreshPrice"
               :disabled="refreshing"
-              class="flex items-center gap-2 text-accent-dark hover:text-accent font-medium disabled:opacity-50"
+              class="flex items-center gap-2 text-accent hover:text-accent-dark font-medium disabled:opacity-50"
             >
               <ArrowPathIcon class="h-5 w-5" :class="{ 'animate-spin': refreshing }" />
               <span>{{ refreshing ? 'Refreshing...' : 'Refresh Price' }}</span>
@@ -186,19 +186,19 @@ onMounted(() => {
               <!-- Labels above bar -->
               <div class="flex justify-between mb-2">
                 <div class="text-left">
-                  <span class="text-xs text-gray-500 block">Retail</span>
-                  <span class="text-lg font-semibold text-gray-600">
+                  <span class="text-xs text-text-muted block">Retail</span>
+                  <span class="text-lg font-semibold text-text-muted">
                     {{ product.retail_price ? `$${formatCurrency(product.retail_price)}` : '—' }}
                   </span>
                 </div>
                 <div class="text-center" v-if="product.target_price">
-                  <span class="text-xs text-gray-500 block">Target</span>
+                  <span class="text-xs text-text-muted block">Target</span>
                   <span class="text-lg font-semibold text-success">${{ formatCurrency(product.target_price) }}</span>
                 </div>
               </div>
 
               <!-- Progress bar -->
-              <div v-if="product.target_price && product.retail_price" class="relative h-4 bg-gray-200 rounded-full overflow-hidden">
+              <div v-if="product.target_price && product.retail_price" class="relative h-4 bg-border rounded-full overflow-hidden">
                 <div
                   class="absolute left-0 top-0 h-full bg-gradient-to-r from-accent to-success rounded-full transition-all duration-500"
                   :style="{ width: progressPercent + '%' }"
@@ -211,25 +211,25 @@ onMounted(() => {
                 class="absolute -bottom-8 transition-all duration-500"
                 :style="{ left: `calc(${progressPercent}% - 40px)` }"
               >
-                <div class="bg-gray-900 text-white px-3 py-1 rounded-lg text-sm font-semibold whitespace-nowrap">
+                <div class="bg-primary text-white px-3 py-1 rounded-lg text-sm font-semibold whitespace-nowrap">
                   ${{ formatCurrency(product.current_price) }}
                 </div>
               </div>
 
               <!-- Simple current price display when no target -->
               <div v-else class="text-center py-4">
-                <span class="text-xs text-gray-500 block">Current Price</span>
+                <span class="text-xs text-text-muted block">Current Price</span>
                 <span class="text-3xl font-bold text-success">${{ formatCurrency(product.current_price) }}</span>
               </div>
             </div>
 
-            <div v-if="product.target_price && product.retail_price" class="mt-12 flex items-center justify-between text-sm text-gray-500">
+            <div v-if="product.target_price && product.retail_price" class="mt-12 flex items-center justify-between text-sm text-text-muted">
               <span>Last checked: {{ product.last_checked_at ? formatRelativeTime(product.last_checked_at) : 'Never' }}</span>
-              <span class="font-medium" :class="progressPercent >= 100 ? 'text-success' : 'text-gray-600'">
+              <span class="font-medium" :class="progressPercent >= 100 ? 'text-success' : 'text-primary'">
                 {{ progressPercent >= 100 ? 'Target reached!' : `${progressPercent.toFixed(0)}% to target` }}
               </span>
             </div>
-            <div v-else class="text-center text-sm text-gray-500">
+            <div v-else class="text-center text-sm text-text-muted">
               Last checked: {{ product.last_checked_at ? formatRelativeTime(product.last_checked_at) : 'Never' }}
             </div>
           </template>
@@ -237,32 +237,32 @@ onMounted(() => {
 
         <!-- Price History -->
         <Card v-if="product.price_history && product.price_history.length > 0" class="mb-6">
-          <h2 class="text-lg font-bold text-gray-900 mb-4">Price History</h2>
+          <h2 class="text-lg font-bold text-primary mb-4">Price History</h2>
           <div class="space-y-3 max-h-64 overflow-y-auto">
             <div
               v-for="entry in product.price_history"
               :key="entry.id"
-              class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0"
+              class="flex items-center justify-between py-2 border-b border-border last:border-0"
             >
               <div class="flex items-center gap-3">
-                <span class="text-lg font-semibold" :class="entry.price <= (product.target_price || 0) ? 'text-success' : 'text-gray-900'">
+                <span class="text-lg font-semibold" :class="entry.price <= (product.target_price || 0) ? 'text-success' : 'text-primary'">
                   ${{ formatCurrency(entry.price) }}
                 </span>
                 <Badge v-if="!entry.in_stock" variant="danger" size="sm">Out of stock</Badge>
               </div>
-              <span class="text-sm text-gray-500">{{ formatDateTime(entry.checked_at) }}</span>
+              <span class="text-sm text-text-muted">{{ formatDateTime(entry.checked_at) }}</span>
             </div>
           </div>
         </Card>
 
         <!-- Edit Settings -->
         <Card class="mb-6">
-          <h2 class="text-lg font-bold text-gray-900 mb-4">Tracking Settings</h2>
+          <h2 class="text-lg font-bold text-primary mb-4">Tracking Settings</h2>
           <div class="space-y-4">
             <div>
               <InputLabel for="target_price" value="Target Price" />
               <div class="relative mt-1">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">$</span>
                 <TextInput
                   id="target_price"
                   v-model="editForm.target_price"
@@ -273,22 +273,22 @@ onMounted(() => {
                   placeholder="0.00"
                 />
               </div>
-              <p class="text-xs text-gray-500 mt-1">Get notified when the price drops to or below this amount</p>
+              <p class="text-xs text-text-muted mt-1">Get notified when the price drops to or below this amount</p>
             </div>
 
             <div>
               <InputLabel value="Notification Preferences" class="mb-3" />
               <div class="space-y-3">
-                <label class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+                <label class="flex items-center gap-3 p-3 rounded-lg border border-border cursor-pointer hover:bg-background">
                   <Checkbox v-model:checked="editForm.notification_email" />
-                  <EnvelopeIcon class="h-5 w-5 text-gray-600" />
-                  <span class="text-sm text-gray-900">Email notifications</span>
+                  <EnvelopeIcon class="h-5 w-5 text-text-muted" />
+                  <span class="text-sm text-primary">Email notifications</span>
                 </label>
 
-                <label class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-50">
+                <label class="flex items-center gap-3 p-3 rounded-lg border border-border cursor-pointer hover:bg-background">
                   <Checkbox v-model:checked="editForm.notification_push" />
-                  <DevicePhoneMobileIcon class="h-5 w-5 text-gray-600" />
-                  <span class="text-sm text-gray-900">Push notifications</span>
+                  <DevicePhoneMobileIcon class="h-5 w-5 text-text-muted" />
+                  <span class="text-sm text-primary">Push notifications</span>
                 </label>
               </div>
             </div>
@@ -303,32 +303,32 @@ onMounted(() => {
 
         <!-- Product Info -->
         <Card class="mb-6" padding="sm">
-          <h2 class="text-sm font-bold text-gray-900 mb-2">Product Details</h2>
+          <h2 class="text-sm font-bold text-primary mb-2">Product Details</h2>
           <dl class="text-sm space-y-1">
             <div class="flex justify-between">
-              <dt class="text-gray-500">SKU/UPC:</dt>
-              <dd class="font-mono text-gray-900">{{ product.sku_upc }}</dd>
+              <dt class="text-text-muted">SKU/UPC:</dt>
+              <dd class="font-mono text-primary">{{ product.sku_upc }}</dd>
             </div>
             <div class="flex justify-between">
-              <dt class="text-gray-500">Retailer:</dt>
-              <dd class="text-gray-900">{{ getRetailerName(product) }}</dd>
+              <dt class="text-text-muted">Retailer:</dt>
+              <dd class="text-primary">{{ getRetailerName(product) }}</dd>
             </div>
             <div class="flex justify-between">
-              <dt class="text-gray-500">Tracking since:</dt>
-              <dd class="text-gray-900">{{ formatDateTime(product.created_at) }}</dd>
+              <dt class="text-text-muted">Tracking since:</dt>
+              <dd class="text-primary">{{ formatDateTime(product.created_at) }}</dd>
             </div>
           </dl>
         </Card>
 
         <!-- Danger Zone -->
-        <Card class="border-red-200">
-          <h2 class="text-lg font-bold text-red-600 mb-2">Stop Tracking</h2>
-          <p class="text-sm text-gray-600 mb-4">
+        <Card class="border-danger/30">
+          <h2 class="text-lg font-bold text-danger mb-2">Stop Tracking</h2>
+          <p class="text-sm text-text-muted mb-4">
             Remove this product from your tracking list. This action cannot be undone.
           </p>
           <button
             @click="deleteProduct"
-            class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition-all"
+            class="bg-danger hover:bg-danger/80 text-white px-6 py-3 rounded-lg font-medium transition-all"
           >
             Stop Tracking
           </button>

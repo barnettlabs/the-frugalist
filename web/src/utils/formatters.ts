@@ -33,7 +33,8 @@ export const formatPercentage = (
  * @param {string|number} value - The value to parse
  * @returns {number} - Parsed number or 0
  */
-export const parseOrZero = (value: number | string) => {
+export const parseOrZero = (value: number | string | undefined | null) => {
+    if (value === undefined || value === null) return 0;
     const parsed = parseFloat(value.toString()) || 0;
     return isNaN(parsed) ? 0 : parsed;
 };

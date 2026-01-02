@@ -1,6 +1,6 @@
 {
     "$schema": "https://json.schemastore.org/package.json",
-    "name": "sneaky-salesman-web",
+    "name": "thefrugalist-web",
     "private": true,
     "type": "module",
     "scripts": {

@@ -86,6 +86,26 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(TrackedProduct::class);
     }
 
+    public function devices()
+    {
+        return $this->hasMany(UserDevice::class);
+    }
+
+    public function activeDevices()
+    {
+        return $this->devices()->active();
+    }
+
+    public function hasPushToken(): bool
+    {
+        return $this->devices()->active()->exists();
+    }
+
+    public function activePushTokens(): array
+    {
+        return $this->devices()->active()->pluck('push_token')->toArray();
+    }
+
     public function hasVerifiedPhone(): bool
     {
         return $this->phone_verified_at !== null;

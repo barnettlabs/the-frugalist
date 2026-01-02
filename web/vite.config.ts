@@ -45,7 +45,7 @@ export default defineConfig(({ mode }) => {
             },
         },
         server: {
-            allowedHosts: ["localhost", "127.0.0.1", "sneakysalesman.local"],
+            allowedHosts: ["localhost", "127.0.0.1", "thefrugalist.local"],
         },
     };
 });

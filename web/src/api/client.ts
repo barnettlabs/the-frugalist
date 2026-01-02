@@ -13,6 +13,9 @@ const apiClient: AxiosInstance = axios.create({
     'X-Requested-With': 'XMLHttpRequest',
   },
   withCredentials: true, // Important for Sanctum SPA authentication
+  withXSRFToken: true, // Ensure XSRF token is sent
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
 })
 
 // Request interceptor to add auth token
@@ -43,7 +46,10 @@ apiClient.interceptors.response.use(
 // CSRF token fetching for Sanctum SPA mode
 export const getCsrfToken = async (): Promise<void> => {
   const baseUrl = API_BASE_URL.replace(/\/api$/, '')
-  await axios.get(`${baseUrl}/sanctum/csrf-cookie`, { withCredentials: true })
+  await axios.get(`${baseUrl}/sanctum/csrf-cookie`, {
+    withCredentials: true,
+    withXSRFToken: true,
+  })
 }
 
 export default apiClient

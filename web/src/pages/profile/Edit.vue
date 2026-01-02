@@ -46,10 +46,9 @@ const loadProfile = async () => {
   try {
     const data = await profileApi.getProfile()
     profileForm.value = {
-      first_name: (data.user as any).first_name || '',
-      last_name: (data.user as any).last_name || '',
-      email: data.user.email || '',
-      phone: data.profile?.phone || '',
+      first_name: data.first_name || '',
+      last_name: data.last_name || '',
+      email: data.email || '',
     }
   } catch (error) {
     console.error('Error loading profile:', error)
@@ -177,17 +176,6 @@ onMounted(() => {
               <InputError :message="profileErrors.email?.[0]" class="mt-2" />
             </div>
 
-            <div>
-              <InputLabel for="phone" value="Phone (optional)" />
-              <TextInput
-                id="phone"
-                v-model="profileForm.phone"
-                type="tel"
-                class="mt-1 block w-full"
-              />
-              <InputError :message="profileErrors.phone?.[0]" class="mt-2" />
-            </div>
-
             <div class="flex justify-end">
               <PrimaryButton :disabled="profileLoading">
                 {{ profileLoading ? 'Saving...' : 'Save' }}
@@ -262,41 +250,43 @@ onMounted(() => {
           </DangerButton>
 
           <!-- Delete Confirmation Modal -->
-          <div v-if="showDeleteConfirm" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div class="bg-surface rounded-lg p-6 max-w-md w-full mx-4 border border-border">
-              <h3 class="text-lg font-medium text-primary mb-4">Are you sure?</h3>
-              <p class="text-sm text-text-muted mb-4">
-                This action cannot be undone. Please enter your password to confirm.
-              </p>
+          <Teleport to="body">
+            <div v-if="showDeleteConfirm" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+              <div class="bg-surface rounded-lg p-6 max-w-md w-full mx-4 border border-border">
+                <h3 class="text-lg font-medium text-primary mb-4">Are you sure?</h3>
+                <p class="text-sm text-text-muted mb-4">
+                  This action cannot be undone. Please enter your password to confirm.
+                </p>
 
-              <form @submit.prevent="deleteAccount">
-                <div class="mb-4">
-                  <InputLabel for="delete_password" value="Password" />
-                  <TextInput
-                    id="delete_password"
-                    v-model="deletePassword"
-                    type="password"
-                    class="mt-1 block w-full"
-                    required
-                  />
-                  <InputError :message="deleteErrors.password?.[0]" class="mt-2" />
-                </div>
+                <form @submit.prevent="deleteAccount">
+                  <div class="mb-4">
+                    <InputLabel for="delete_password" value="Password" />
+                    <TextInput
+                      id="delete_password"
+                      v-model="deletePassword"
+                      type="password"
+                      class="mt-1 block w-full"
+                      required
+                    />
+                    <InputError :message="deleteErrors.password?.[0]" class="mt-2" />
+                  </div>
 
-                <div class="flex justify-end gap-3">
-                  <button
-                    type="button"
-                    @click="showDeleteConfirm = false"
-                    class="px-4 py-2 text-sm font-medium text-text-muted bg-background hover:bg-border rounded-lg"
-                  >
-                    Cancel
-                  </button>
-                  <DangerButton :disabled="deleteLoading">
-                    {{ deleteLoading ? 'Deleting...' : 'Delete Account' }}
-                  </DangerButton>
-                </div>
-              </form>
+                  <div class="flex justify-end gap-3">
+                    <button
+                      type="button"
+                      @click="showDeleteConfirm = false"
+                      class="px-4 py-2 text-sm font-medium text-text-muted bg-background hover:bg-border rounded-lg"
+                    >
+                      Cancel
+                    </button>
+                    <DangerButton :disabled="deleteLoading">
+                      {{ deleteLoading ? 'Deleting...' : 'Delete Account' }}
+                    </DangerButton>
+                  </div>
+                </form>
+              </div>
             </div>
-          </div>
+          </Teleport>
         </div>
       </div>
     </div>

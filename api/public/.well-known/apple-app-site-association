@@ -3,24 +3,24 @@
     "apps": [],
     "details": [
       {
-        "appID": "44BTVU6QAF.com.tensifi.sneakysalesman",
+        "appID": "44BTVU6QAF.com.tensifi.thefrugalist",
         "paths": ["*"]
       },
       {
-        "appID": "44BTVU6QAF.com.tensifi.sneakysalesman.staging",
+        "appID": "44BTVU6QAF.com.tensifi.thefrugalist.staging",
         "paths": ["*"]
       },
       {
-        "appID": "44BTVU6QAF.com.tensifi.sneakysalesman.development",
+        "appID": "44BTVU6QAF.com.tensifi.thefrugalist.development",
         "paths": ["*"]
       }
     ]
   },
   "webcredentials": {
     "apps": [
-      "44BTVU6QAF.com.tensifi.sneakysalesman",
-      "44BTVU6QAF.com.tensifi.sneakysalesman.staging",
-      "44BTVU6QAF.com.tensifi.sneakysalesman.development"
+      "44BTVU6QAF.com.tensifi.thefrugalist",
+      "44BTVU6QAF.com.tensifi.thefrugalist.staging",
+      "44BTVU6QAF.com.tensifi.thefrugalist.development"
     ]
   }
 }

@@ -10,7 +10,7 @@ class BestBuyService extends BaseRetailerService
     {
         $this->headers = [
             'Accept' => 'application/json',
-            'User-Agent' => 'SneakySalesman/1.0',
+            'User-Agent' => 'TheFrugalist/1.0',
         ];
 
         if ($this->retailer->api_key) {

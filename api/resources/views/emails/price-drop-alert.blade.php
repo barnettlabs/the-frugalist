@@ -154,7 +154,7 @@
         @endif
 
         <div class="footer">
-            <p>You're receiving this email because you're tracking this product on Sneaky Salesman.</p>
+            <p>You're receiving this email because you're tracking this product on TheFrugalist.</p>
             <p>Visit your <a href="{{ url('/price-tracker') }}">Price Tracker Dashboard</a> to manage your tracked products.</p>
         </div>
     </div>

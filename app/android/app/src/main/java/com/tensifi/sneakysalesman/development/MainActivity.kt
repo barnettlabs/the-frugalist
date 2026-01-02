@@ -1,4 +1,4 @@
-package com.tensifi.sneakysalesman.development
+package com.tensifi.thefrugalist.development
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

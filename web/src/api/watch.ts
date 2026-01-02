@@ -9,11 +9,14 @@ export interface PriceHistoryEntry {
   created_at: string
 }
 
+export type RetailerStatus = 'active' | 'coming_soon'
+
 export interface Retailer {
   id: number
   name: string
   slug: string
   is_active: boolean
+  status: RetailerStatus
 }
 
 export type NotificationMethod = 'email' | 'push'
@@ -62,29 +65,29 @@ export interface ValidateProductResponse {
   error?: string
 }
 
-// Hardcoded retailers matching the mobile app and seeder
+// Retailers with status - Best Buy is active, others are coming soon
 export const RETAILERS: Retailer[] = [
-  { id: 1, name: 'Best Buy', slug: 'bestbuy', is_active: true },
-  { id: 2, name: 'Home Depot', slug: 'homedepot', is_active: true },
-  { id: 3, name: "Lowe's", slug: 'lowes', is_active: true },
-  { id: 4, name: 'Amazon', slug: 'amazon', is_active: true },
-  { id: 5, name: 'Walmart', slug: 'walmart', is_active: true },
-  { id: 6, name: 'Target', slug: 'target', is_active: true },
+  { id: 1, name: 'Best Buy', slug: 'bestbuy', is_active: true, status: 'active' },
+  { id: 2, name: 'Home Depot', slug: 'homedepot', is_active: true, status: 'coming_soon' },
+  { id: 3, name: "Lowe's", slug: 'lowes', is_active: true, status: 'coming_soon' },
+  { id: 4, name: 'Amazon', slug: 'amazon', is_active: true, status: 'coming_soon' },
+  { id: 5, name: 'Walmart', slug: 'walmart', is_active: true, status: 'coming_soon' },
+  { id: 6, name: 'Target', slug: 'target', is_active: true, status: 'coming_soon' },
 ]
 
-export const priceTrackerApi = {
+export const watchApi = {
   async getAll(): Promise<TrackedProduct[]> {
-    const { data } = await apiClient.get<{ tracked_products: TrackedProduct[] }>('/price-tracker')
+    const { data } = await apiClient.get<{ tracked_products: TrackedProduct[] }>('/watch')
     return data.tracked_products
   },
 
   async get(id: number | string): Promise<TrackedProduct> {
-    const { data } = await apiClient.get<{ tracked_product: TrackedProduct }>(`/price-tracker/${id}`)
+    const { data } = await apiClient.get<{ tracked_product: TrackedProduct }>(`/watch/${id}`)
     return data.tracked_product
   },
 
   async validateProduct(retailerId: number, skuUpc: string): Promise<ValidateProductResponse> {
-    const { data } = await apiClient.post<ValidateProductResponse>('/price-tracker/validate-product', {
+    const { data } = await apiClient.post<ValidateProductResponse>('/watch/validate-product', {
       retailer_id: retailerId,
       sku_upc: skuUpc,
     })
@@ -92,21 +95,21 @@ export const priceTrackerApi = {
   },
 
   async create(productData: CreateTrackedProductData): Promise<TrackedProduct> {
-    const { data } = await apiClient.post<{ tracked_product: TrackedProduct }>('/price-tracker', productData)
+    const { data } = await apiClient.post<{ tracked_product: TrackedProduct }>('/watch', productData)
     return data.tracked_product
   },
 
   async update(id: number | string, productData: UpdateTrackedProductData): Promise<TrackedProduct> {
-    const { data } = await apiClient.patch<{ tracked_product: TrackedProduct }>(`/price-tracker/${id}`, productData)
+    const { data } = await apiClient.patch<{ tracked_product: TrackedProduct }>(`/watch/${id}`, productData)
     return data.tracked_product
   },
 
   async delete(id: number | string): Promise<void> {
-    await apiClient.delete(`/price-tracker/${id}`)
+    await apiClient.delete(`/watch/${id}`)
   },
 
   async refresh(id: number | string): Promise<TrackedProduct> {
-    const { data } = await apiClient.post<{ tracked_product: TrackedProduct }>(`/price-tracker/${id}/refresh`)
+    const { data } = await apiClient.post<{ tracked_product: TrackedProduct }>(`/watch/${id}/refresh`)
     return data.tracked_product
   },
 }

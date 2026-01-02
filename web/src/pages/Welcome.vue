@@ -35,7 +35,7 @@ const features: FeatureItem[] = [
     name: 'Watch',
     description:
       'Track price movement over time. Get alerts when prices drop or hit your target. Use return windows to reclaim the difference when prices fall.',
-    href: '/price-tracker',
+    href: '/watch',
   },
   {
     icon: CalculatorIcon,
@@ -84,7 +84,7 @@ const valueProps: ValueProp[] = [
       <!-- Gradient background -->
       <div class="absolute inset-0 bg-gradient-to-br from-accent via-accent-dark to-blue-900"></div>
 
-      <div class="dotted-background-light relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="dotted-background relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <!-- Navigation -->
         <nav class="flex items-center justify-between py-6">
           <RouterLink to="/" class="flex items-center">
@@ -128,7 +128,7 @@ const valueProps: ValueProp[] = [
             </p>
             <div class="flex flex-col sm:flex-row gap-4">
               <RouterLink
-                :to="authStore.isAuthenticated ? '/price-tracker' : '/register'"
+                :to="authStore.isAuthenticated ? '/watch' : '/register'"
                 class="bg-white text-accent-dark hover:bg-white/90 px-6 py-3 rounded-lg font-medium transition-colors text-center shadow-lg"
               >
                 Start tracking
@@ -271,7 +271,7 @@ const valueProps: ValueProp[] = [
             <h4 class="text-sm font-medium text-white mb-4">Quick Links</h4>
             <ul class="space-y-2 text-sm text-white/70">
               <li>
-                <RouterLink to="/price-tracker" class="hover:text-white transition-colors">
+                <RouterLink to="/watch" class="hover:text-white transition-colors">
                   Watch
                 </RouterLink>
               </li>

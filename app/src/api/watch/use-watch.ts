@@ -5,15 +5,11 @@ import type { PriceTracker } from '@/lib/types/models';
 
 import { client } from '../common';
 
-export const usePriceTracker = createQuery<
-  PriceTracker | null,
-  void,
-  AxiosError
->({
-  queryKey: ['price-tracker'],
+export const useWatch = createQuery<PriceTracker | null, void, AxiosError>({
+  queryKey: ['watch'],
   fetcher: async (): Promise<PriceTracker | null> => {
     try {
-      const response = await client.get<PriceTracker>('/api/price-tracker');
+      const response = await client.get<PriceTracker>('/api/watch');
       return (
         response.data ?? {
           retailers: [],

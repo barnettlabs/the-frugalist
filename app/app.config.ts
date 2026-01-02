@@ -25,7 +25,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   description: `${Env.NAME} Mobile App`,
   owner: Env.EXPO_ACCOUNT_OWNER,
   scheme: Env.SCHEME,
-  slug: 'sneaky-salesman',
+  slug: 'thefrugalist',
   version: Env.VERSION.toString(),
   orientation: 'portrait',
   icon: './assets/icon.png',
@@ -39,7 +39,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     supportsTablet: true,
     bundleIdentifier: Env.BUNDLE_ID,
     appleTeamId: Env.APPLE_TEAM_ID,
-    associatedDomains: ['applinks:sneakysalesman.com'],
+    associatedDomains: ['applinks:thefrugalist.com'],
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
     },
@@ -60,7 +60,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         data: [
           {
             scheme: 'https',
-            host: 'sneakysalesman.com',
+            host: 'thefrugalist.com',
             pathPrefix: '/',
           },
         ],
@@ -91,6 +91,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           './assets/fonts/Rubik-SemiBold.ttf',
           './assets/fonts/Rubik-Bold.ttf',
         ],
+      },
+    ],
+    [
+      'expo-notifications',
+      {
+        icon: './assets/notification-icon.png',
+        color: '#235892',
       },
     ],
     'expo-localization',

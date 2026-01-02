@@ -4,11 +4,11 @@ import { ActivityIndicator, Alert } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
 
 import {
-  useDeletePriceTrackerItem,
-  usePriceTrackerItem,
-  useRefreshPriceTrackerItem,
-  useUpdatePriceTrackerItem,
-} from '@/api/tracker';
+  useDeleteWatchItem,
+  useWatchItem,
+  useRefreshWatchItem,
+  useUpdateWatchItem,
+} from '@/api/watch';
 import { ProductDetail } from '@/components/tracker/product-detail';
 import { Button, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
@@ -21,16 +21,16 @@ export default function TrackerDetailScreen() {
     isLoading,
     isError,
     refetch,
-  } = usePriceTrackerItem({
+  } = useWatchItem({
     variables: { id: id! },
   });
 
   const { mutate: refreshProduct, isPending: isRefreshing } =
-    useRefreshPriceTrackerItem();
+    useRefreshWatchItem();
   const { mutate: updateProduct, isPending: isUpdating } =
-    useUpdatePriceTrackerItem();
+    useUpdateWatchItem();
   const { mutate: deleteProduct, isPending: isDeleting } =
-    useDeletePriceTrackerItem();
+    useDeleteWatchItem();
 
   if (isLoading) {
     return (

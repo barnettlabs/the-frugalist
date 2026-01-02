@@ -1,10 +1,10 @@
-export interface CreatePriceTrackerRequest {
+export interface CreateWatchRequest {
   sku_upc: string;
   retailer_id: number;
   target_price: number;
 }
 
-export interface UpdatePriceTrackerRequest {
+export interface UpdateWatchRequest {
   id: number;
   data: {
     target_price?: number;
@@ -12,10 +12,10 @@ export interface UpdatePriceTrackerRequest {
   };
 }
 
-export interface DeletePriceTrackerRequest {
+export interface DeleteWatchRequest {
   id: number;
 }
 
-export interface RefreshPriceTrackerRequest {
+export interface RefreshWatchRequest {
   id: number;
 }

@@ -55,12 +55,12 @@ export default function Settings() {
     try {
       await Share.share({
         message: Platform.select({
-          ios: 'Check out Sneaky Salesman - the ultimate car finance & lease calculator!',
+          ios: 'Check out TheFrugalist - the ultimate car finance & lease calculator!',
           default:
-            'Check out Sneaky Salesman - the ultimate car finance & lease calculator! https://sneakysalesman.com',
+            'Check out TheFrugalist - the ultimate car finance & lease calculator! https://thefrugalist.com',
         }),
-        url: 'https://sneakysalesman.com',
-        title: 'Sneaky Salesman',
+        url: 'https://thefrugalist.com',
+        title: 'TheFrugalist',
       });
     } catch {
       showMessage({
@@ -76,14 +76,14 @@ export default function Settings() {
     // const storeUrl = Platform.select({
     //   ios: `https://apps.apple.com/app/id${Application.applicationId}`,
     //   android: `https://play.google.com/store/apps/details?id=${Application.applicationId}`,
-    //   default: 'https://sneakysalesman.com',
+    //   default: 'https://thefrugalist.com',
     // });
-    const storeUrl = 'https://sneakysalesman.com';
+    const storeUrl = 'https://thefrugalist.com';
     await openLinkInBrowser(storeUrl);
   };
 
   const handleContactSupport = async () => {
-    const subject = encodeURIComponent('Sneaky Salesman Support Request');
+    const subject = encodeURIComponent('TheFrugalist Support Request');
     const body = encodeURIComponent(`\n\n---\nApp Version: ${Env.VERSION}\nPlatform: ${Platform.OS}`);
     const mailUrl = `mailto:jason@tensifi.com?subject=${subject}&body=${body}`;
 
@@ -141,11 +141,11 @@ export default function Settings() {
             <Item
               text="settings.web_app"
               icon={<Website color={iconColor} />}
-              onPress={() => openLinkInBrowser('https://sneakysalesman.com')}
+              onPress={() => openLinkInBrowser('https://thefrugalist.com')}
             />
             <Item text="settings.company" onPress={() => openLinkInBrowser('https://tensifi.com')} />
-            <Item text="settings.privacy" onPress={() => openLinkInBrowser('https://sneakysalesman.com/privacy')} />
-            <Item text="settings.terms" onPress={() => openLinkInBrowser('https://sneakysalesman.com/terms')} />
+            <Item text="settings.privacy" onPress={() => openLinkInBrowser('https://thefrugalist.com/privacy')} />
+            <Item text="settings.terms" onPress={() => openLinkInBrowser('https://thefrugalist.com/terms')} />
           </ItemsContainer>
 
           {/* Debug Section - Only for developers */}

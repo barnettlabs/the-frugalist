@@ -4,7 +4,7 @@ import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { ArrowPathIcon, EnvelopeIcon, DevicePhoneMobileIcon } from '@heroicons/vue/24/outline'
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime, formatDateTime } from '@/utils/time'
-import { priceTrackerApi, RETAILERS, type TrackedProduct, type NotificationMethod } from '@/api/price-tracker'
+import { watchApi, RETAILERS, type TrackedProduct, type NotificationMethod } from '@/api/watch'
 import Card from '@/components/Card.vue'
 import Badge from '@/components/Badge.vue'
 import Spinner from '@/components/Spinner.vue'
@@ -31,7 +31,7 @@ const editForm = ref({
 
 const loadProduct = async () => {
   try {
-    const data = await priceTrackerApi.get(route.params.id as string)
+    const data = await watchApi.get(route.params.id as string)
     product.value = data
     // Populate edit form
     editForm.value.target_price = data.target_price?.toString() || ''
@@ -39,7 +39,7 @@ const loadProduct = async () => {
     editForm.value.notification_push = data.notification_method?.includes('push') || false
   } catch (error) {
     console.error('Error loading product:', error)
-    router.push('/price-tracker')
+    router.push('/watch')
   } finally {
     loading.value = false
   }
@@ -50,7 +50,7 @@ const refreshPrice = async () => {
 
   refreshing.value = true
   try {
-    const updated = await priceTrackerApi.refresh(product.value.id)
+    const updated = await watchApi.refresh(product.value.id)
     product.value = updated
   } catch (error) {
     console.error('Error refreshing price:', error)
@@ -68,7 +68,7 @@ const saveSettings = async () => {
     if (editForm.value.notification_email) notificationMethods.push('email')
     if (editForm.value.notification_push) notificationMethods.push('push')
 
-    const updated = await priceTrackerApi.update(product.value.id, {
+    const updated = await watchApi.update(product.value.id, {
       target_price: editForm.value.target_price ? parseFloat(editForm.value.target_price) : undefined,
       notification_method: notificationMethods,
     })
@@ -84,8 +84,8 @@ const deleteProduct = async () => {
   if (!product.value) return
   if (confirm('Are you sure you want to stop tracking this product?')) {
     try {
-      await priceTrackerApi.delete(product.value.id)
-      router.push('/price-tracker')
+      await watchApi.delete(product.value.id)
+      router.push('/watch')
     } catch (error) {
       console.error('Error deleting product:', error)
     }
@@ -152,7 +152,7 @@ onMounted(() => {
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <RouterLink to="/price-tracker">
+              <RouterLink to="/watch">
                 <button class="bg-background hover:bg-border text-text-muted px-6 py-3 rounded-lg font-medium transition-all">
                   Back to List
                 </button>

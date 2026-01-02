@@ -19,12 +19,12 @@ class VerifyEmailNotification extends VerifyEmail implements ShouldQueue
         $verificationUrl = $this->verificationUrl($notifiable);
 
         return (new MailMessage)
-            ->subject('Verify Your Email Address - Sneaky Salesman')
-            ->greeting('Welcome to Sneaky Salesman!')
+            ->subject('Verify Your Email Address - TheFrugalist')
+            ->greeting('Welcome to TheFrugalist!')
             ->line('Thank you for creating an account. Please click the button below to verify your email address.')
             ->action('Verify Email Address', $verificationUrl)
             ->line('This verification link will expire in 60 minutes.')
             ->line('If you did not create an account, no further action is required.')
-            ->salutation('Thanks, The Sneaky Salesman Team');
+            ->salutation('Thanks, The TheFrugalist Team');
     }
 }

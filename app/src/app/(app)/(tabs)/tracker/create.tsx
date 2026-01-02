@@ -3,11 +3,11 @@ import { router } from 'expo-router';
 import React from 'react';
 import { showMessage } from 'react-native-flash-message';
 
-import { useAddPriceTrackerItem } from '@/api/tracker';
+import { useAddWatchItem } from '@/api/watch';
 import { TrackerForm } from '@/components/tracker/tracker-form';
 
 export default function TrackerCreateScreen() {
-  const { mutate: createProduct, isPending } = useAddPriceTrackerItem();
+  const { mutate: createProduct, isPending } = useAddWatchItem();
 
   const handleSubmit = (data: {
     sku_upc: string;

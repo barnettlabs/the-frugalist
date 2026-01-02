@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PlaygroundController;
 use App\Http\Controllers\PriceTrackerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserDeviceController;
 use App\Http\Controllers\VehicleFinanceSheetController;
 use App\Http\Controllers\VehicleLeaseSheetController;
 use App\Models\User;
@@ -156,6 +158,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
+    Route::delete('/profile', [ProfileController::class, 'destroy']);
 
     // Password update
     Route::put('/password', function (Request $request) {
@@ -196,8 +199,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Vehicle Lease Sheets
     Route::apiResource('vehicle-lease-sheets', VehicleLeaseSheetController::class);
 
-    // Price Tracker
-    Route::prefix('price-tracker')->group(function () {
+    // Watch (Price Tracker)
+    Route::prefix('watch')->group(function () {
         Route::get('/', [PriceTrackerController::class, 'apiIndex']);
         Route::post('/validate-product', [PriceTrackerController::class, 'validateProduct']);
         Route::post('/', [PriceTrackerController::class, 'apiStore']);
@@ -211,6 +214,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::get('/notifications/{notification}', [NotificationController::class, 'show']);
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
+
+    // User Devices (Push Notifications)
+    Route::apiResource('devices', UserDeviceController::class)->except(['show']);
+
+    // Playground (Email Testing) - Local dev or admin only
+    Route::prefix('playground')->group(function () {
+        Route::get('/email-templates', [PlaygroundController::class, 'emailTemplates']);
+        Route::post('/send-test-email', [PlaygroundController::class, 'sendTestEmail']);
+        Route::post('/preview-email', [PlaygroundController::class, 'previewEmail']);
+    })->middleware('can:access-playground');
 });
 
 // Public routes (no auth required)

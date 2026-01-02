@@ -95,7 +95,7 @@ class SampleDataSeeder extends Seeder
 
         // Create sample announcements
         Announcement::create([
-            'title' => 'Welcome to Sneaky Salesman!',
+            'title' => 'Welcome to TheFrugalist!',
             'message' => 'We\'re excited to help you find the best vehicle deals. Start by creating your first estimate.',
         ]);
 

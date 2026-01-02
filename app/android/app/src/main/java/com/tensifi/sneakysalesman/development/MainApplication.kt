@@ -1,4 +1,4 @@
-package com.tensifi.sneakysalesman.development
+package com.tensifi.thefrugalist.development
 import com.facebook.react.common.assets.ReactFontManager
 
 import android.app.Application

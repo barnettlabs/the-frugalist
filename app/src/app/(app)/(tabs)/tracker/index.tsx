@@ -2,7 +2,7 @@ import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 
-import { usePriceTracker } from '@/api/tracker';
+import { useWatch } from '@/api/watch';
 import { ProductCard } from '@/components/tracker/product-card';
 import { Button, FloatingAddButton, Pressable, ScreenContainer, ScrollView, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
@@ -19,7 +19,7 @@ const FILTERS: { key: PriceTrackerFilter; label: string }[] = [
 export default function TrackerListScreen() {
   const router = useRouter();
   const [filter, setFilter] = useState<PriceTrackerFilter>('all');
-  const { data, isLoading, isError, refetch, isRefetching } = usePriceTracker();
+  const { data, isLoading, isError, refetch, isRefetching } = useWatch();
 
   if (isLoading) {
     return (

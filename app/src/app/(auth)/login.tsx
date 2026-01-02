@@ -52,7 +52,7 @@ export default function LoginScreen() {
         {/* Header */}
         <View className="mb-8 items-center">
           <Text className="text-center text-3xl font-bold text-neutral-900 dark:text-white">
-            Welcome to Sneaky Salesman
+            Welcome to TheFrugalist
           </Text>
           <Text className="mt-2 text-lg text-neutral-600 dark:text-neutral-400">Login</Text>
         </View>

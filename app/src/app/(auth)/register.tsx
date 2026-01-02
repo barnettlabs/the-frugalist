@@ -78,7 +78,7 @@ export default function RegisterScreen() {
             Create Account
           </Text>
           <Text className="mt-2 text-neutral-600 dark:text-neutral-400">
-            Sign up to get started with Sneaky Salesman
+            Sign up to get started with TheFrugalist
           </Text>
         </View>
 

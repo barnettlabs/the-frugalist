@@ -11,7 +11,7 @@ import { RouterLink } from 'vue-router'
         <div class="prose prose-gray max-w-none">
           <h2 class="text-xl font-bold text-gray-900 mt-8 mb-4">Calculator Disclaimer</h2>
           <p class="text-gray-600 mb-4">
-            The vehicle finance and lease calculators provided by Sneaky Salesman are for
+            The vehicle finance and lease calculators provided by TheFrugalist are for
             informational and educational purposes only. The results should not be considered
             financial advice or a guarantee of actual loan or lease terms.
           </p>

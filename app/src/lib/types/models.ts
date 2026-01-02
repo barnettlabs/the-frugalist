@@ -1,5 +1,5 @@
 /**
- * Shared type definitions for the Sneaky Salesman mobile app
+ * Shared type definitions for the TheFrugalist mobile app
  */
 
 export enum VehicleType {

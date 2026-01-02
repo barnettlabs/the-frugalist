@@ -8,7 +8,7 @@ import Spinner from '@/components/Spinner.vue'
 import { TagIcon, PlusIcon, TrashIcon, EyeIcon, ArrowPathIcon, EnvelopeIcon, DevicePhoneMobileIcon } from '@heroicons/vue/24/outline'
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime } from '@/utils/time'
-import { priceTrackerApi, RETAILERS, type TrackedProduct } from '@/api/price-tracker'
+import { watchApi, RETAILERS, type TrackedProduct } from '@/api/watch'
 
 const products = ref<TrackedProduct[]>([])
 const loading = ref(true)
@@ -16,7 +16,7 @@ const refreshingId = ref<number | null>(null)
 
 const fetchProducts = async () => {
   try {
-    const data = await priceTrackerApi.getAll()
+    const data = await watchApi.getAll()
     products.value = data
   } catch (error) {
     console.error('Error fetching tracked products:', error)
@@ -28,7 +28,7 @@ const fetchProducts = async () => {
 const deleteProduct = async (id: number) => {
   if (confirm('Are you sure you want to stop tracking this product?')) {
     try {
-      await priceTrackerApi.delete(id)
+      await watchApi.delete(id)
       await fetchProducts()
     } catch (error) {
       console.error('Error deleting product:', error)
@@ -39,7 +39,7 @@ const deleteProduct = async (id: number) => {
 const refreshProduct = async (id: number) => {
   refreshingId.value = id
   try {
-    await priceTrackerApi.refresh(id)
+    await watchApi.refresh(id)
     await fetchProducts()
   } catch (error) {
     console.error('Error refreshing product:', error)
@@ -70,7 +70,7 @@ onMounted(() => {
         back-label="Dashboard"
       >
         <template #actions>
-          <RouterLink to="/price-tracker/create">
+          <RouterLink to="/watch/create">
             <button class="bg-accent hover:bg-accent-dark text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2">
               <PlusIcon class="h-5 w-5" />
               <span>Track New Product</span>
@@ -91,7 +91,7 @@ onMounted(() => {
         </div>
         <h3 class="text-lg font-medium text-primary mb-2">No products being tracked</h3>
         <p class="text-text-muted mb-6">Track product prices to understand price movement before you buy</p>
-        <RouterLink to="/price-tracker/create">
+        <RouterLink to="/watch/create">
           <button class="bg-accent hover:bg-accent-dark text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2 mx-auto">
             <PlusIcon class="h-5 w-5" />
             <span>Track First Product</span>
@@ -162,8 +162,8 @@ onMounted(() => {
           </div>
 
           <!-- Actions -->
-          <div class="grid grid-cols-3 gap-px bg-border">
-            <RouterLink :to="`/price-tracker/${product.id}`" class="block">
+          <div class="grid grid-cols-3 gap-px bg-border border-t border-border"">
+            <RouterLink :to="`/watch/${product.id}`" class="block">
               <button class="w-full bg-surface hover:bg-background text-text-muted px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors">
                 <EyeIcon class="h-4 w-4" />
                 <span>Details</span>
@@ -179,7 +179,7 @@ onMounted(() => {
             </button>
             <button
               @click="deleteProduct(product.id)"
-              class="w-full bg-surface hover:bg-danger/5 text-danger px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
+              class="w-full bg-surface hover:bg-danger text-danger hover:text-white px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
             >
               <TrashIcon class="h-4 w-4" />
               <span>Delete</span>
@@ -188,7 +188,7 @@ onMounted(() => {
         </Card>
 
         <!-- Add New Card -->
-        <RouterLink to="/price-tracker/create">
+        <RouterLink to="/watch/create">
           <Card variant="interactive" class="h-full flex flex-col items-center justify-center text-center border-2 border-dashed border-accent/30 hover:border-accent bg-transparent" padding="lg">
             <div class="p-3 rounded-xl bg-accent/10 w-fit mx-auto mb-4">
               <PlusIcon class="h-8 w-8 text-accent-dark" />

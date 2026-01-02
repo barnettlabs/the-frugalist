@@ -11,7 +11,7 @@ import Card from '@/components/Card.vue'
 import Alert from '@/components/Alert.vue'
 import Badge from '@/components/Badge.vue'
 import Spinner from '@/components/Spinner.vue'
-import { priceTrackerApi, RETAILERS, type NotificationMethod, type ValidateProductResponse } from '@/api/price-tracker'
+import { watchApi, RETAILERS, type NotificationMethod, type ValidateProductResponse } from '@/api/watch'
 import { formatCurrency } from '@/utils/formatters'
 import {
   BuildingStorefrontIcon,
@@ -105,7 +105,7 @@ const validateProduct = async () => {
   validatedProduct.value = null
 
   try {
-    const result = await priceTrackerApi.validateProduct(form.value.retailer_id, sku)
+    const result = await watchApi.validateProduct(form.value.retailer_id, sku)
     lastValidatedSku.value = sku
 
     if (result.valid) {
@@ -138,13 +138,13 @@ const submitForm = async () => {
   errors.value = {}
 
   try {
-    await priceTrackerApi.create({
+    await watchApi.create({
       retailer_id: form.value.retailer_id,
       sku_upc: form.value.sku_upc.trim(),
       target_price: form.value.target_price ? parseFloat(form.value.target_price) : undefined,
       notification_method: notificationMethods.value,
     })
-    router.push('/price-tracker')
+    router.push('/watch')
   } catch (error: any) {
     if (error.response?.data?.errors) {
       errors.value = error.response.data.errors
@@ -164,8 +164,8 @@ const submitForm = async () => {
       <PageHeader
         title="Track New Product"
         description="Set up price tracking for a product"
-        back-link="/price-tracker"
-        back-label="Price Tracker"
+        back-link="/watch"
+        back-label="Watch"
       />
 
       <!-- General Error -->
@@ -188,16 +188,29 @@ const submitForm = async () => {
             v-for="retailer in RETAILERS"
             :key="retailer.id"
             type="button"
-            @click="form.retailer_id = retailer.id"
+            @click="retailer.status === 'active' ? form.retailer_id = retailer.id : null"
+            :disabled="retailer.status !== 'active'"
             :class="[
               'relative flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all',
-              form.retailer_id === retailer.id
-                ? 'border-accent bg-accent/5 text-accent'
-                : 'border-border hover:border-accent/30 text-text-muted hover:bg-background'
+              retailer.status !== 'active'
+                ? 'border-border bg-background cursor-not-allowed opacity-60'
+                : form.retailer_id === retailer.id
+                  ? 'border-accent bg-accent/5 text-accent'
+                  : 'border-border hover:border-accent/30 text-text-muted hover:bg-background cursor-pointer'
             ]"
           >
             <BuildingStorefrontIcon class="h-6 w-6 mb-2" />
             <span class="text-sm font-medium text-center">{{ retailer.name }}</span>
+            <!-- Coming Soon Badge -->
+            <Badge
+              v-if="retailer.status !== 'active'"
+              variant="neutral"
+              size="sm"
+              class="absolute -top-2 -right-2"
+            >
+              Soon
+            </Badge>
+            <!-- Selected Checkmark -->
             <div
               v-if="form.retailer_id === retailer.id"
               class="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full flex items-center justify-center"
@@ -407,7 +420,7 @@ const submitForm = async () => {
 
       <!-- Actions -->
       <div class="flex items-center justify-end gap-3">
-        <RouterLink to="/price-tracker">
+        <RouterLink to="/watch">
           <button
             type="button"
             class="bg-background hover:bg-border text-text-muted px-6 py-3 rounded-lg font-medium transition-colors"

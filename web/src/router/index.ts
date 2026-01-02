@@ -35,10 +35,13 @@ const LeaseCompare = () => import('@/pages/estimates/leasing/Compare.vue')
 const LearningIndex = () => import('@/pages/learning/Index.vue')
 const LearningShow = () => import('@/pages/learning/Show.vue')
 
-// Price Tracker
-const PriceTrackerIndex = () => import('@/pages/price-tracker/Index.vue')
-const PriceTrackerCreate = () => import('@/pages/price-tracker/Create.vue')
-const PriceTrackerDetails = () => import('@/pages/price-tracker/Details.vue')
+// Watch (Price Tracker)
+const WatchIndex = () => import('@/pages/watch/Index.vue')
+const WatchCreate = () => import('@/pages/watch/Create.vue')
+const WatchDetails = () => import('@/pages/watch/Details.vue')
+
+// Playground (Dev/Admin only)
+const PlaygroundEmail = () => import('@/pages/playground/Email.vue')
 
 // Legal & Other
 const Privacy = () => import('@/pages/Privacy.vue')
@@ -222,25 +225,25 @@ const routes: RouteRecordRaw[] = [
         meta: { breadcrumb: (route: any) => route.params.type === 'financing' ? 'Financing' : 'Leasing', parent: 'learning.index' },
       },
 
-      // Price Tracker (Watch)
+      // Watch
       {
-        path: 'price-tracker',
-        name: 'price-tracker.index',
-        component: PriceTrackerIndex,
+        path: 'watch',
+        name: 'watch.index',
+        component: WatchIndex,
         meta: { breadcrumb: 'Watch' },
       },
       {
-        path: 'price-tracker/create',
-        name: 'price-tracker.create',
-        component: PriceTrackerCreate,
-        meta: { breadcrumb: 'Add Item', parent: 'price-tracker.index' },
+        path: 'watch/create',
+        name: 'watch.create',
+        component: WatchCreate,
+        meta: { breadcrumb: 'Add Item', parent: 'watch.index' },
       },
       {
-        path: 'price-tracker/:id',
-        name: 'price-tracker.show',
-        component: PriceTrackerDetails,
+        path: 'watch/:id',
+        name: 'watch.show',
+        component: WatchDetails,
         props: true,
-        meta: { breadcrumb: 'Details', parent: 'price-tracker.index' },
+        meta: { breadcrumb: 'Details', parent: 'watch.index' },
       },
 
       // Review (Coming Soon)
@@ -249,6 +252,14 @@ const routes: RouteRecordRaw[] = [
         name: 'review',
         component: Review,
         meta: { breadcrumb: 'Review' },
+      },
+
+      // Playground (Dev/Admin only)
+      {
+        path: 'playground/email',
+        name: 'playground.email',
+        component: PlaygroundEmail,
+        meta: { breadcrumb: 'Email Playground' },
       },
     ],
   },

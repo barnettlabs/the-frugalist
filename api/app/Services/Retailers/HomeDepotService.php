@@ -8,7 +8,7 @@ class HomeDepotService extends BaseRetailerService
     {
         $this->headers = [
             'Accept' => 'application/json',
-            'User-Agent' => 'SneakySalesman/1.0',
+            'User-Agent' => 'TheFrugalist/1.0',
             'Content-Type' => 'application/json',
         ];
 
@@ -34,7 +34,7 @@ class HomeDepotService extends BaseRetailerService
         }
 
         $response = $this->makeRequest($endpoint, $params);
-        
+
         if (!$response) {
             return null;
         }
@@ -56,7 +56,7 @@ class HomeDepotService extends BaseRetailerService
     {
         $pricing = $apiResponse['pricing'] ?? [];
         $price = $pricing['value'] ?? $pricing['special'] ?? 0;
-        
+
         $data = [
             'name' => $apiResponse['itemLabel'] ?? $apiResponse['productLabel'] ?? 'Unknown Product',
             'variant' => $apiResponse['modelNumber'] ?? $apiResponse['brandName'] ?? null,

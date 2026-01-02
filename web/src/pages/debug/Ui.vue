@@ -94,7 +94,7 @@ const legacyColors = [
       <!-- Header -->
       <div class="mb-12">
         <h1 class="text-4xl font-bold text-gray-900 mb-2">UI Debug Page</h1>
-        <p class="text-gray-600">Design system reference for Sneaky Salesman</p>
+        <p class="text-gray-600">Design system reference for TheFrugalist</p>
         <p class="text-xs text-gray-400 mt-2">This page is excluded from sitemaps and search indexing.</p>
       </div>
 
@@ -107,21 +107,21 @@ const legacyColors = [
             <p class="text-sm text-gray-500 mb-4">variant="black"</p>
             <div class="flex items-center gap-3">
               <ApplicationLogo variant="black" class="h-12 w-auto" />
-              <span class="text-lg font-bold">Sneaky Salesman</span>
+              <span class="text-lg font-bold">TheFrugalist</span>
             </div>
           </Card>
           <Card>
             <p class="text-sm text-gray-500 mb-4">variant="primary"</p>
             <div class="flex items-center gap-3">
               <ApplicationLogo variant="primary" class="h-12 w-auto" />
-              <span class="text-lg font-bold text-primary">Sneaky Salesman</span>
+              <span class="text-lg font-bold text-primary">TheFrugalist</span>
             </div>
           </Card>
           <Card variant="gradient-primary">
             <p class="text-sm text-white/70 mb-4">variant="white"</p>
             <div class="flex items-center gap-3">
               <ApplicationLogo variant="white" class="h-12 w-auto" />
-              <span class="text-lg font-bold text-white">Sneaky Salesman</span>
+              <span class="text-lg font-bold text-white">TheFrugalist</span>
             </div>
           </Card>
         </div>

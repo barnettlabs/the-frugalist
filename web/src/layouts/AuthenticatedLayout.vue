@@ -19,9 +19,23 @@ import {
   UserIcon,
   ArrowRightOnRectangleIcon,
   ChevronRightIcon,
-  Cog6ToothIcon,
+  BanknotesIcon,
+  CurrencyDollarIcon,
 } from '@heroicons/vue/24/outline'
 import { useAuthStore } from '@/stores/auth'
+
+interface NavChild {
+  name: string
+  href: string
+  icon: any
+}
+
+interface NavItem {
+  name: string
+  href: string
+  icon: any
+  children?: NavChild[]
+}
 
 const router = useRouter()
 const route = useRoute()
@@ -32,11 +46,27 @@ const sidebarOpen = ref(false)
 const user = computed(() => authStore.user)
 const fullName = computed(() => authStore.fullName)
 
-const navigation = [
+const navigation: NavItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
-  { name: 'Watch', href: '/price-tracker', icon: EyeIcon },
-  { name: 'Compute', href: '/estimates', icon: CalculatorIcon },
-  { name: 'Guides', href: '/learning', icon: BookOpenIcon },
+  { name: 'Watch', href: '/watch', icon: EyeIcon },
+  {
+    name: 'Compute',
+    href: '/estimates',
+    icon: CalculatorIcon,
+    children: [
+      { name: 'Financing', href: '/estimates/financing', icon: BanknotesIcon },
+      { name: 'Leasing', href: '/estimates/leasing', icon: CurrencyDollarIcon },
+    ],
+  },
+  {
+    name: 'Guides',
+    href: '/learning',
+    icon: BookOpenIcon,
+    children: [
+      { name: 'Financing', href: '/learning/financing', icon: BanknotesIcon },
+      { name: 'Leasing', href: '/learning/leasing', icon: CurrencyDollarIcon },
+    ],
+  },
   { name: 'Review', href: '/review', icon: ClipboardDocumentCheckIcon },
 ]
 
@@ -44,6 +74,20 @@ const isActive = (href: string) => {
   if (href === '/dashboard') {
     return route.path === '/dashboard'
   }
+  if (href === '/estimates') {
+    return route.path === '/estimates'
+  }
+  if (href === '/learning') {
+    return route.path === '/learning'
+  }
+  return route.path.startsWith(href)
+}
+
+const isChildActive = (href: string) => {
+  return route.path.startsWith(href)
+}
+
+const isInSection = (href: string) => {
   return route.path.startsWith(href)
 }
 
@@ -95,8 +139,10 @@ const breadcrumbs = computed(() => {
   // Always start with Dashboard
   crumbs.push({ name: 'Dashboard', href: '/dashboard' })
 
-  // Build the chain from current route
-  crumbs.push(...buildChain(route.name, route))
+  // Build the chain from current route (skip if we're on dashboard to avoid duplication)
+  if (route.name !== 'dashboard') {
+    crumbs.push(...buildChain(route.name, route))
+  }
 
   return crumbs
 })
@@ -165,7 +211,69 @@ const handleSignOut = async () => {
                     <li>
                       <ul role="list" class="-mx-2 space-y-1">
                         <li v-for="item in navigation" :key="item.name">
+                          <!-- Item with always-visible children -->
+                          <template v-if="item.children">
+                            <RouterLink
+                              :to="item.href"
+                              @click="sidebarOpen = false"
+                              :class="[
+                                isActive(item.href)
+                                  ? 'bg-accent/10 text-accent-dark'
+                                  : isInSection(item.href)
+                                    ? 'text-primary'
+                                    : 'text-text-muted hover:bg-neutral-100 hover:text-primary',
+                                'group flex w-full items-center gap-x-3 rounded-lg p-2.5 text-sm leading-6 font-medium transition-all',
+                              ]"
+                            >
+                              <component
+                                :is="item.icon"
+                                :class="[
+                                  isActive(item.href) || isInSection(item.href) ? 'text-accent' : 'text-text-muted group-hover:text-primary',
+                                  'h-5 w-5 shrink-0 transition-colors',
+                                ]"
+                                aria-hidden="true"
+                              />
+                              <span>{{ item.name }}</span>
+                            </RouterLink>
+                            <!-- Always visible children with tree lines -->
+                            <ul class="mt-1 ml-[18px]">
+                              <li
+                                v-for="(child, index) in item.children"
+                                :key="child.name"
+                                class="relative"
+                              >
+                                <!-- Tree connector: vertical line + horizontal branch -->
+                                <div
+                                  class="absolute left-0 top-0 border-l border-border"
+                                  :class="index === item.children.length - 1 ? 'h-[18px] rounded-bl' : 'h-full'"
+                                ></div>
+                                <div class="absolute left-0 top-[18px] w-4 border-t border-border"></div>
+                                <RouterLink
+                                  :to="child.href"
+                                  @click="sidebarOpen = false"
+                                  :class="[
+                                    isChildActive(child.href)
+                                      ? 'bg-accent/10 text-accent-dark'
+                                      : 'text-text-muted hover:bg-neutral-100 hover:text-primary',
+                                    'group flex items-center gap-x-2 rounded-lg py-2 px-2.5 ml-4 text-sm leading-6 font-medium transition-all',
+                                  ]"
+                                >
+                                  <component
+                                    :is="child.icon"
+                                    :class="[
+                                      isChildActive(child.href) ? 'text-accent' : 'text-text-muted group-hover:text-primary',
+                                      'h-4 w-4 shrink-0 transition-colors',
+                                    ]"
+                                    aria-hidden="true"
+                                  />
+                                  <span>{{ child.name }}</span>
+                                </RouterLink>
+                              </li>
+                            </ul>
+                          </template>
+                          <!-- Simple item without children -->
                           <RouterLink
+                            v-else
                             :to="item.href"
                             @click="sidebarOpen = false"
                             :class="[
@@ -190,32 +298,21 @@ const handleSignOut = async () => {
                     </li>
 
                     <li class="mt-auto">
-                      <!-- User card -->
-                      <div class="rounded-lg bg-neutral-100 border border-border p-3 mb-3">
-                        <div class="flex items-center gap-x-3">
-                          <div class="h-10 w-10 rounded-full overflow-hidden bg-neutral-200 flex items-center justify-center flex-shrink-0">
-                            <img
-                              v-if="(user as any)?.avatar_url"
-                              class="h-full w-full object-cover"
-                              :src="(user as any)?.avatar_url"
-                              :alt="fullName"
-                            />
-                            <UserIcon v-else class="h-5 w-5 text-text-muted" />
-                          </div>
-                          <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-primary truncate">{{ fullName }}</p>
-                            <p class="text-xs text-text-muted truncate">{{ user?.email }}</p>
-                          </div>
-                        </div>
-                      </div>
-
                       <RouterLink
                         to="/profile"
                         @click="sidebarOpen = false"
-                        class="group -mx-2 flex gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-text-muted hover:bg-neutral-100 hover:text-primary transition-all"
+                        class="group -mx-2 flex items-center gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-text-muted hover:bg-neutral-100 hover:text-primary transition-all"
                       >
-                        <Cog6ToothIcon class="h-5 w-5 shrink-0 group-hover:text-primary transition-colors" />
-                        <span>Settings</span>
+                        <div class="h-8 w-8 rounded-full overflow-hidden bg-neutral-200 flex items-center justify-center flex-shrink-0">
+                          <img
+                            v-if="(user as any)?.avatar_url"
+                            class="h-full w-full object-cover"
+                            :src="(user as any)?.avatar_url"
+                            :alt="fullName"
+                          />
+                          <UserIcon v-else class="h-4 w-4 text-text-muted" />
+                        </div>
+                        <span class="truncate">{{ fullName }}</span>
                       </RouterLink>
 
                       <button
@@ -250,7 +347,67 @@ const handleSignOut = async () => {
             <li>
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="item in navigation" :key="item.name">
+                  <!-- Item with always-visible children -->
+                  <template v-if="item.children">
+                    <RouterLink
+                      :to="item.href"
+                      :class="[
+                        isActive(item.href)
+                          ? 'bg-accent/10 text-accent-dark'
+                          : isInSection(item.href)
+                            ? 'text-primary'
+                            : 'text-text-muted hover:bg-neutral-100 hover:text-primary',
+                        'group flex w-full items-center gap-x-3 rounded-lg p-2.5 text-sm leading-6 font-medium transition-all',
+                      ]"
+                    >
+                      <component
+                        :is="item.icon"
+                        :class="[
+                          isActive(item.href) || isInSection(item.href) ? 'text-accent' : 'text-text-muted group-hover:text-primary',
+                          'h-5 w-5 shrink-0 transition-colors',
+                        ]"
+                        aria-hidden="true"
+                      />
+                      <span>{{ item.name }}</span>
+                    </RouterLink>
+                    <!-- Always visible children with tree lines -->
+                    <ul class="mt-1 ml-[18px]">
+                      <li
+                        v-for="(child, index) in item.children"
+                        :key="child.name"
+                        class="relative"
+                      >
+                        <!-- Tree connector: vertical line + horizontal branch -->
+                        <div
+                          class="absolute left-0 top-0 border-l border-border"
+                          :class="index === item.children.length - 1 ? 'h-[18px] rounded-bl' : 'h-full'"
+                        ></div>
+                        <div class="absolute left-0 top-[18px] w-4 border-t border-border"></div>
+                        <RouterLink
+                          :to="child.href"
+                          :class="[
+                            isChildActive(child.href)
+                              ? 'bg-accent/10 text-accent-dark'
+                              : 'text-text-muted hover:bg-neutral-100 hover:text-primary',
+                            'group flex items-center gap-x-2 rounded-lg py-2 px-2.5 ml-4 text-sm leading-6 font-medium transition-all',
+                          ]"
+                        >
+                          <component
+                            :is="child.icon"
+                            :class="[
+                              isChildActive(child.href) ? 'text-accent' : 'text-text-muted group-hover:text-primary',
+                              'h-4 w-4 shrink-0 transition-colors',
+                            ]"
+                            aria-hidden="true"
+                          />
+                          <span>{{ child.name }}</span>
+                        </RouterLink>
+                      </li>
+                    </ul>
+                  </template>
+                  <!-- Simple item without children -->
                   <RouterLink
+                    v-else
                     :to="item.href"
                     :class="[
                       isActive(item.href)
@@ -274,31 +431,20 @@ const handleSignOut = async () => {
             </li>
 
             <li class="mt-auto">
-              <!-- User card -->
-              <div class="rounded-lg bg-neutral-100 border border-border p-3 mb-3">
-                <div class="flex items-center gap-x-3">
-                  <div class="h-10 w-10 rounded-full overflow-hidden bg-neutral-200 flex items-center justify-center flex-shrink-0">
-                    <img
-                      v-if="(user as any)?.avatar_url"
-                      class="h-full w-full object-cover"
-                      :src="(user as any)?.avatar_url"
-                      :alt="fullName"
-                    />
-                    <UserIcon v-else class="h-5 w-5 text-text-muted" />
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-primary truncate">{{ fullName }}</p>
-                    <p class="text-xs text-text-muted truncate">{{ user?.email }}</p>
-                  </div>
-                </div>
-              </div>
-
               <RouterLink
                 to="/profile"
-                class="group -mx-2 flex gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-text-muted hover:bg-neutral-100 hover:text-primary transition-all"
+                class="group -mx-2 flex items-center gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-text-muted hover:bg-neutral-100 hover:text-primary transition-all"
               >
-                <Cog6ToothIcon class="h-5 w-5 shrink-0 group-hover:text-primary transition-colors" />
-                <span>Settings</span>
+                <div class="h-8 w-8 rounded-full overflow-hidden bg-neutral-200 flex items-center justify-center flex-shrink-0">
+                  <img
+                    v-if="(user as any)?.avatar_url"
+                    class="h-full w-full object-cover"
+                    :src="(user as any)?.avatar_url"
+                    :alt="fullName"
+                  />
+                  <UserIcon v-else class="h-4 w-4 text-text-muted" />
+                </div>
+                <span class="truncate">{{ fullName }}</span>
               </RouterLink>
 
               <button
@@ -352,9 +498,20 @@ const handleSignOut = async () => {
       </div>
 
       <!-- Page content -->
-      <main>
+      <main class="min-h-[calc(100vh-3.5rem-4rem)]">
         <RouterView />
       </main>
+
+      <!-- Footer -->
+      <footer class="border-t border-border bg-surface/50 px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-text-muted">
+          <p>&copy; {{ new Date().getFullYear() }} TheFrugalist. All rights reserved.</p>
+          <nav class="flex items-center gap-4">
+            <RouterLink to="/privacy" class="hover:text-primary transition-colors">Privacy Policy</RouterLink>
+            <RouterLink to="/terms" class="hover:text-primary transition-colors">Terms of Service</RouterLink>
+          </nav>
+        </div>
+      </footer>
     </div>
   </div>
 </template>

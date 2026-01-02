@@ -62,7 +62,7 @@ class ProfileController extends Controller
     /**
      * Delete the user's account.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request): RedirectResponse|JsonResponse
     {
         $request->validate([
             'password' => ['required', 'current_password'],
@@ -70,6 +70,15 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
+        // Handle API requests
+        if ($request->expectsJson() || $request->is('api/*')) {
+            $user->currentAccessToken()->delete();
+            $user->delete();
+
+            return response()->json(['message' => 'Account deleted successfully.']);
+        }
+
+        // Handle web requests
         Auth::logout();
 
         $user->delete();

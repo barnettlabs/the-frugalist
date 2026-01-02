@@ -39,7 +39,7 @@ class TwilioService
 
     public function sendVerificationCode(string $to, string $code): bool
     {
-        $message = "Your Sneaky Salesman verification code is: {$code}. This code expires in 10 minutes.";
+        $message = "Your verification code for TheFrugalist is: {$code}. This code expires in 10 minutes.";
 
         return $this->sendSms($to, $message);
     }

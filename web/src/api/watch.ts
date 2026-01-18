@@ -45,7 +45,9 @@ export interface TrackedProduct {
 export interface CreateTrackedProductData {
   retailer_id: number
   sku_upc: string
-  target_price?: number
+  target_price: number
+  start_date?: string
+  end_date?: string
   notification_method: NotificationMethod[]
 }
 
@@ -54,15 +56,29 @@ export interface UpdateTrackedProductData {
   notification_method?: NotificationMethod[]
 }
 
+export interface ProductMetadata {
+  on_sale?: boolean
+  model_number?: string
+  retailer_url?: string
+}
+
+export interface ValidatedProduct {
+  name: string
+  variant?: string
+  description?: string
+  image_url?: string
+  retail_price: number
+  current_price: number
+  in_stock: boolean
+  sku_upc?: string
+  retailer_url?: string
+  metadata: ProductMetadata
+}
+
 export interface ValidateProductResponse {
   valid: boolean
-  product_name?: string
-  product_description?: string
-  product_image_url?: string
-  current_price?: number
-  retail_price?: number
-  in_stock?: boolean
-  error?: string
+  product?: ValidatedProduct
+  message?: string
 }
 
 // Retailers with status - Best Buy is active, others are coming soon

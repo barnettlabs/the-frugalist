@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import PageHeader from '@/components/PageHeader.vue'
 import Card from '@/components/Card.vue'
@@ -10,9 +10,24 @@ import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime } from '@/utils/time'
 import { watchApi, RETAILERS, type TrackedProduct } from '@/api/watch'
 
+type FilterType = 'all' | 'active' | 'paused'
+
 const products = ref<TrackedProduct[]>([])
 const loading = ref(true)
 const refreshingId = ref<number | null>(null)
+const activeFilter = ref<FilterType>('all')
+
+const filteredProducts = computed(() => {
+  if (activeFilter.value === 'all') return products.value
+  if (activeFilter.value === 'active') return products.value.filter(p => p.is_active)
+  return products.value.filter(p => !p.is_active)
+})
+
+const filterCounts = computed(() => ({
+  all: products.value.length,
+  active: products.value.filter(p => p.is_active).length,
+  paused: products.value.filter(p => !p.is_active).length,
+}))
 
 const fetchProducts = async () => {
   try {
@@ -79,6 +94,24 @@ onMounted(() => {
         </template>
       </PageHeader>
 
+      <!-- Quick Filters -->
+      <div v-if="!loading && products.length" class="flex items-center gap-2 mb-6">
+        <button
+          v-for="filter in (['all', 'active', 'paused'] as FilterType[])"
+          :key="filter"
+          @click="activeFilter = filter"
+          :class="[
+            'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+            activeFilter === filter
+              ? 'bg-accent text-white'
+              : 'bg-surface text-text-muted hover:bg-background'
+          ]"
+        >
+          {{ filter === 'all' ? 'All' : filter === 'active' ? 'Active' : 'Paused' }}
+          <span class="ml-1.5 text-xs opacity-75">({{ filterCounts[filter] }})</span>
+        </button>
+      </div>
+
       <!-- Loading -->
       <div v-if="loading" class="flex items-center justify-center py-12">
         <Spinner size="lg" color="accent" />
@@ -99,10 +132,18 @@ onMounted(() => {
         </RouterLink>
       </Card>
 
+      <!-- Empty Filter State -->
+      <Card v-else-if="products.length && !filteredProducts.length" class="text-center" padding="lg">
+        <p class="text-text-muted">
+          No {{ activeFilter === 'active' ? 'active' : 'paused' }} products.
+          <button @click="activeFilter = 'all'" class="text-accent hover:underline">View all</button>
+        </p>
+      </Card>
+
       <!-- Products List -->
       <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Card
-          v-for="product in products"
+          v-for="product in filteredProducts"
           :key="product.id"
           variant="interactive"
           padding="none"

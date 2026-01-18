@@ -11,7 +11,7 @@ import Card from '@/components/Card.vue'
 import Alert from '@/components/Alert.vue'
 import Badge from '@/components/Badge.vue'
 import Spinner from '@/components/Spinner.vue'
-import { watchApi, RETAILERS, type NotificationMethod, type ValidateProductResponse } from '@/api/watch'
+import { watchApi, RETAILERS, type NotificationMethod, type ValidateProductResponse, type ValidatedProduct } from '@/api/watch'
 import { formatCurrency } from '@/utils/formatters'
 import {
   BuildingStorefrontIcon,
@@ -20,14 +20,21 @@ import {
   DevicePhoneMobileIcon,
   CheckCircleIcon,
   XCircleIcon,
+  TagIcon,
+  ArrowTopRightOnSquareIcon,
 } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
+
+// Get today's date in YYYY-MM-DD format
+const today = new Date().toISOString().split('T')[0]
 
 const form = ref({
   retailer_id: 0,
   sku_upc: '',
   target_price: '',
+  start_date: today,
+  end_date: '',
   notification_email: true,
   notification_push: false,
 })
@@ -55,13 +62,47 @@ const notificationMethods = computed((): NotificationMethod[] => {
 // Step completion checks
 const isStoreSelected = computed(() => form.value.retailer_id > 0)
 const isSkuEntered = computed(() => form.value.sku_upc.trim().length > 0)
-const isProductValidated = computed(() => validatedProduct.value?.valid === true)
+const isProductValidated = computed(() => validatedProduct.value?.valid === true && validatedProduct.value?.product != null)
 const hasNotificationMethod = computed(() => notificationMethods.value.length > 0)
+
+// Convenience accessor for the validated product data
+const product = computed((): ValidatedProduct | null => {
+  return validatedProduct.value?.product ?? null
+})
+
+const targetPriceValue = computed(() => {
+  const val = parseFloat(form.value.target_price)
+  return isNaN(val) ? null : val
+})
+
+const isTargetPriceValid = computed(() => {
+  if (targetPriceValue.value === null) return false
+  if (targetPriceValue.value <= 0) return false
+  if (!product.value?.current_price) return true
+  return targetPriceValue.value < product.value.current_price
+})
+
+const targetPriceError = computed(() => {
+  if (!form.value.target_price) return 'Target price is required'
+  if (targetPriceValue.value === null || targetPriceValue.value <= 0) return 'Enter a valid price'
+  if (product.value?.current_price && targetPriceValue.value >= product.value.current_price) {
+    return `Target price must be less than current price ($${formatCurrency(product.value.current_price)})`
+  }
+  return ''
+})
+
+// Calculate savings percentage
+const savingsPercent = computed(() => {
+  if (!product.value?.retail_price || !product.value?.current_price) return null
+  if (product.value.retail_price <= product.value.current_price) return null
+  return Math.round((1 - product.value.current_price / product.value.retail_price) * 100)
+})
 
 const isFormValid = computed(() => {
   return isStoreSelected.value &&
     isSkuEntered.value &&
     isProductValidated.value &&
+    isTargetPriceValid.value &&
     hasNotificationMethod.value
 })
 
@@ -108,10 +149,10 @@ const validateProduct = async () => {
     const result = await watchApi.validateProduct(form.value.retailer_id, sku)
     lastValidatedSku.value = sku
 
-    if (result.valid) {
+    if (result.valid && result.product) {
       validatedProduct.value = result
     } else {
-      validationError.value = result.error || 'Product not found. Please check the SKU/UPC and try again.'
+      validationError.value = result.message || 'Product not found. Please check the SKU/UPC and try again.'
     }
   } catch (error: any) {
     validationError.value = error.response?.data?.message || 'Failed to validate product. Please try again.'
@@ -138,10 +179,15 @@ const submitForm = async () => {
   errors.value = {}
 
   try {
+    // Use today if start_date is empty
+    const startDate = form.value.start_date || today
+
     await watchApi.create({
       retailer_id: form.value.retailer_id,
       sku_upc: form.value.sku_upc.trim(),
-      target_price: form.value.target_price ? parseFloat(form.value.target_price) : undefined,
+      target_price: targetPriceValue.value!,
+      start_date: startDate,
+      end_date: form.value.end_date || undefined,
       notification_method: notificationMethods.value,
     })
     router.push('/watch')
@@ -159,7 +205,7 @@ const submitForm = async () => {
 
 <template>
   <main class="py-12 flex-1">
-    <div class="mx-auto max-w-xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
       <!-- Header -->
       <PageHeader
         title="Track New Product"
@@ -204,7 +250,7 @@ const submitForm = async () => {
             <!-- Coming Soon Badge -->
             <Badge
               v-if="retailer.status !== 'active'"
-              variant="neutral"
+              variant="warning"
               size="sm"
               class="absolute -top-2 -right-2"
             >
@@ -276,41 +322,83 @@ const submitForm = async () => {
         </Alert>
 
         <!-- Product Preview -->
-        <div v-if="isProductValidated && validatedProduct" class="mt-4 p-4 bg-success/5 border border-success/20 rounded-lg">
-          <div class="flex items-start gap-4">
-            <!-- Product Image -->
-            <div v-if="validatedProduct.product_image_url" class="flex-shrink-0">
-              <img
-                :src="validatedProduct.product_image_url"
-                :alt="validatedProduct.product_name"
-                class="w-20 h-20 object-contain rounded-lg bg-surface border border-border"
-              />
+        <div v-if="isProductValidated && product" class="mt-4 p-5 bg-success/5 border border-success/20 rounded-xl">
+          <!-- Success Header -->
+          <div class="flex items-center gap-2 mb-4 pb-3 border-b border-success/20">
+            <CheckCircleIcon class="h-5 w-5 text-success flex-shrink-0" />
+            <span class="text-sm font-medium text-success">Product Found</span>
+            <div class="flex items-center gap-2 ml-auto">
+              <Badge v-if="product.metadata?.on_sale" variant="accent" size="sm">On Sale</Badge>
+              <Badge v-if="product.in_stock === false" variant="danger" size="sm">Out of Stock</Badge>
+              <Badge v-else-if="product.in_stock === true" variant="success" size="sm">In Stock</Badge>
             </div>
-            <div v-else class="flex-shrink-0 w-20 h-20 bg-background rounded-lg flex items-center justify-center">
-              <BuildingStorefrontIcon class="h-8 w-8 text-text-muted" />
+          </div>
+
+          <div class="flex gap-5">
+            <!-- Product Image -->
+            <div class="flex-shrink-0">
+              <div v-if="product.image_url" class="w-40 h-40 rounded-lg bg-white border border-border overflow-hidden">
+                <img
+                  :src="product.image_url"
+                  :alt="product.name"
+                  class="w-full h-full object-contain p-2"
+                />
+              </div>
+              <div v-else class="w-40 h-40 bg-background rounded-lg flex items-center justify-center border border-border">
+                <BuildingStorefrontIcon class="h-16 w-16 text-text-muted" />
+              </div>
             </div>
 
-            <!-- Product Info -->
+            <!-- Product Details -->
             <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-1">
-                <CheckCircleIcon class="h-5 w-5 text-success flex-shrink-0" />
-                <span class="text-sm font-medium text-success">Product Found</span>
-              </div>
-              <h4 class="font-bold text-primary line-clamp-2">{{ validatedProduct.product_name }}</h4>
-              <p v-if="validatedProduct.product_description" class="text-sm text-text-muted mt-1 line-clamp-2">
-                {{ validatedProduct.product_description }}
+              <!-- Product Name -->
+              <h4 class="text-lg font-bold text-primary leading-tight">{{ product.name }}</h4>
+
+              <!-- Model / Variant -->
+              <p v-if="product.variant || product.metadata?.model_number" class="text-sm text-text-muted mt-1">
+                Model: {{ product.variant || product.metadata?.model_number }}
               </p>
-              <div class="flex items-center gap-4 mt-2">
-                <div v-if="validatedProduct.current_price">
-                  <span class="text-xs text-text-muted">Current Price</span>
-                  <p class="text-lg font-bold text-success">${{ formatCurrency(validatedProduct.current_price) }}</p>
+
+              <!-- Description -->
+              <p v-if="product.description" class="text-sm text-text-muted mt-2 line-clamp-3">
+                {{ product.description }}
+              </p>
+
+              <!-- Product Identifiers -->
+              <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-xs text-text-muted">
+                <span class="flex items-center gap-1">
+                  <BuildingStorefrontIcon class="h-3.5 w-3.5" />
+                  {{ selectedRetailer?.name }}
+                </span>
+                <span class="flex items-center gap-1">
+                  <TagIcon class="h-3.5 w-3.5" />
+                  SKU: {{ product.sku_upc || form.sku_upc }}
+                </span>
+                <a
+                  v-if="product.retailer_url || product.metadata?.retailer_url"
+                  :href="product.retailer_url || product.metadata?.retailer_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center gap-1 text-accent hover:underline"
+                >
+                  <ArrowTopRightOnSquareIcon class="h-3.5 w-3.5" />
+                  View on {{ selectedRetailer?.name }}
+                </a>
+              </div>
+
+              <!-- Pricing -->
+              <div class="flex items-end gap-4 mt-4 pt-3 border-t border-success/20">
+                <div v-if="product.current_price">
+                  <span class="text-xs text-text-muted block">Current Price</span>
+                  <span class="text-2xl font-bold text-success">${{ formatCurrency(product.current_price) }}</span>
                 </div>
-                <div v-if="validatedProduct.retail_price && validatedProduct.retail_price !== validatedProduct.current_price">
-                  <span class="text-xs text-text-muted">Retail Price</span>
-                  <p class="text-lg font-medium text-text-muted line-through">${{ formatCurrency(validatedProduct.retail_price) }}</p>
+                <div v-if="product.retail_price && product.retail_price !== product.current_price">
+                  <span class="text-xs text-text-muted block">Retail Price</span>
+                  <span class="text-lg text-text-muted line-through">${{ formatCurrency(product.retail_price) }}</span>
                 </div>
-                <Badge v-if="validatedProduct.in_stock === false" variant="danger" size="sm">Out of Stock</Badge>
-                <Badge v-else-if="validatedProduct.in_stock === true" variant="success" size="sm">In Stock</Badge>
+                <Badge v-if="savingsPercent" variant="success" size="sm">
+                  Save {{ savingsPercent }}%
+                </Badge>
               </div>
             </div>
           </div>
@@ -348,29 +436,67 @@ const submitForm = async () => {
           <h3 :class="['text-lg font-bold', isProductValidated ? 'text-primary' : 'text-text-muted']">
             Tracking Settings
           </h3>
-          <CheckCircleIcon v-if="hasNotificationMethod" class="h-5 w-5 text-success ml-auto" />
+          <CheckCircleIcon v-if="isTargetPriceValid && hasNotificationMethod" class="h-5 w-5 text-success ml-auto" />
         </div>
 
-        <!-- Target Price -->
-        <div class="mb-6">
-          <InputLabel for="target_price" value="Target Price (optional)" />
-          <div class="relative mt-1">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">$</span>
+        <!-- Target Price & Dates -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <div>
+            <InputLabel for="target_price">
+              Target Price <span class="text-danger">*</span>
+            </InputLabel>
+            <div class="relative mt-1">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">$</span>
+              <TextInput
+                id="target_price"
+                v-model="form.target_price"
+                type="number"
+                step="0.01"
+                min="0"
+                class="block w-full pl-7"
+                :placeholder="product?.current_price ? `Less than $${formatCurrency(product.current_price)}` : '0.00'"
+                :disabled="!isProductValidated"
+              />
+            </div>
+            <p class="text-xs text-text-muted mt-1">
+              We'll notify you when the price drops to this amount
+            </p>
+            <p v-if="isProductValidated && form.target_price && targetPriceError" class="text-xs text-danger mt-1">
+              {{ targetPriceError }}
+            </p>
+            <InputError :message="errors.target_price?.[0]" class="mt-2" />
+          </div>
+
+          <div>
+            <InputLabel for="start_date" value="Start Date" />
             <TextInput
-              id="target_price"
-              v-model="form.target_price"
-              type="number"
-              step="0.01"
-              min="0"
-              class="block w-full pl-7"
-              placeholder="0.00"
+              id="start_date"
+              v-model="form.start_date"
+              type="date"
+              class="block w-full mt-1"
               :disabled="!isProductValidated"
             />
+            <p class="text-xs text-text-muted mt-1">
+              When to begin
+            </p>
+            <InputError :message="errors.start_date?.[0]" class="mt-2" />
           </div>
-          <p class="text-xs text-text-muted mt-1">
-            Get notified when the price drops to or below this amount
-          </p>
-          <InputError :message="errors.target_price?.[0]" class="mt-2" />
+
+          <div>
+            <InputLabel for="end_date" value="End Date (optional)" />
+            <TextInput
+              id="end_date"
+              v-model="form.end_date"
+              type="date"
+              class="block w-full mt-1"
+              :min="form.start_date"
+              :disabled="!isProductValidated"
+            />
+            <p class="text-xs text-text-muted mt-1">
+              Auto-stop tracking
+            </p>
+            <InputError :message="errors.end_date?.[0]" class="mt-2" />
+          </div>
         </div>
 
         <!-- Notification Preferences -->
@@ -444,6 +570,12 @@ const submitForm = async () => {
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

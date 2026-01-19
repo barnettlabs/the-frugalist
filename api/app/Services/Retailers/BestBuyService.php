@@ -25,7 +25,43 @@ class BestBuyService extends BaseRetailerService
         $params = [
             'apiKey' => $this->retailer->api_key,
             'format' => 'json',
-            'show' => 'sku,name,salePrice,regularPrice,onSale,url,image,longDescription,modelNumber',
+            'show' => implode(',', [
+                // Core product info
+                'sku',
+                'upc',
+                'name',
+                'modelNumber',
+                'manufacturer',
+                'condition',
+                'type',
+                // Pricing
+                'regularPrice',
+                'salePrice',
+                'onSale',
+                'clearance',
+                'dollarSavings',
+                'percentSavings',
+                'priceUpdateDate',
+                // Availability
+                'active',
+                'orderable',
+                'inStoreAvailability',
+                'onlineAvailability',
+                'inStorePickup',
+                'homeDelivery',
+                'freeShipping',
+                'freeShippingEligible',
+                'quantityLimit',
+                // Content
+                'url',
+                'image',
+                'longDescription',
+                'shortDescription',
+                'color',
+                // Reviews
+                'customerReviewAverage',
+                'customerReviewCount',
+            ]),
             'pageSize' => 1,
         ];
 
@@ -71,21 +107,59 @@ class BestBuyService extends BaseRetailerService
         $retailPrice = $apiResponse['regularPrice'] ?? 0;
         $currentPrice = $apiResponse['salePrice'] ?? 0;
 
+        // Determine stock status using multiple indicators
+        $orderable = $apiResponse['orderable'] ?? null;
+        $onlineAvailable = $apiResponse['onlineAvailability'] ?? false;
+        $inStoreAvailable = $apiResponse['inStoreAvailability'] ?? false;
+        $isActive = $apiResponse['active'] ?? true;
+
+        // Product is in stock if it's orderable (not sold out) AND available somewhere
+        $inStock = $isActive
+            && $orderable !== 'SoldOut'
+            && ($onlineAvailable || $inStoreAvailable);
+
         $data = [
             'name' => $apiResponse['name'] ?? 'Unknown Product',
             'variant' => $apiResponse['modelNumber'] ?? null,
-            'description' => $apiResponse['longDescription'] ?? null,
+            'description' => $apiResponse['longDescription'] ?? $apiResponse['shortDescription'] ?? null,
             'image_url' => $apiResponse['image'] ?? null,
             'retail_price' => (float) $retailPrice,
             'current_price' => (float) $currentPrice,
-            'in_stock' => isset($apiResponse['onSale']) ? true : false, // Best Buy doesn't always provide stock info
-            'sku_upc' => $apiResponse['sku'] ?? null,
+            'in_stock' => $inStock,
+            'sku_upc' => (string) ($apiResponse['sku'] ?? null),
             'retailer_url' => $apiResponse['url'] ?? null,
             'metadata' => [
-                // 'retail_price' => $apiResponse['regularPrice'] ?? null,
-                // 'current_price' => $apiResponse['salePrice'] ?? null,
-                'on_sale' => $apiResponse['onSale'] ?? false,
+                // Product identifiers
+                'upc' => $apiResponse['upc'] ?? null,
                 'model_number' => $apiResponse['modelNumber'] ?? null,
+                'manufacturer' => $apiResponse['manufacturer'] ?? null,
+                'condition' => $apiResponse['condition'] ?? null,
+                'type' => $apiResponse['type'] ?? null,
+                'color' => $apiResponse['color'] ?? null,
+
+                // Pricing details
+                'on_sale' => $apiResponse['onSale'] ?? false,
+                'clearance' => $apiResponse['clearance'] ?? false,
+                'dollar_savings' => $apiResponse['dollarSavings'] ?? null,
+                'percent_savings' => $apiResponse['percentSavings'] ?? null,
+                'price_update_date' => $apiResponse['priceUpdateDate'] ?? null,
+
+                // Availability details
+                'active' => $isActive,
+                'orderable' => $orderable,
+                'online_availability' => $onlineAvailable,
+                'in_store_availability' => $inStoreAvailable,
+                'in_store_pickup' => $apiResponse['inStorePickup'] ?? false,
+                'home_delivery' => $apiResponse['homeDelivery'] ?? false,
+                'free_shipping' => $apiResponse['freeShipping'] ?? false,
+                'free_shipping_eligible' => $apiResponse['freeShippingEligible'] ?? false,
+                'quantity_limit' => $apiResponse['quantityLimit'] ?? null,
+
+                // Reviews
+                'customer_review_average' => $apiResponse['customerReviewAverage'] ?? null,
+                'customer_review_count' => $apiResponse['customerReviewCount'] ?? null,
+
+                // URL
                 'retailer_url' => $apiResponse['url'] ?? null,
             ],
         ];

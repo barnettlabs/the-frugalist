@@ -369,6 +369,7 @@ onMounted(async () => {
             <CheckCircleIcon class="h-5 w-5 text-success flex-shrink-0" />
             <span class="text-sm font-medium text-success">Product Found</span>
             <div class="flex items-center gap-2 ml-auto">
+              <Badge v-if="product.metadata?.clearance" variant="warning" size="sm">Clearance</Badge>
               <Badge v-if="product.metadata?.on_sale" variant="accent" size="sm">On Sale</Badge>
               <Badge v-if="product.in_stock === false" variant="danger" size="sm">Out of Stock</Badge>
               <Badge v-else-if="product.in_stock === true" variant="success" size="sm">In Stock</Badge>

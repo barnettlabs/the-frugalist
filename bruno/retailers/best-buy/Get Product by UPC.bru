@@ -13,12 +13,12 @@ get {
 params:query {
   apiKey: {{bestbuy_api_key}}
   format: json
-  show: sku,name,salePrice,regularPrice,onSale,url,image,longDescription,modelNumber
+  show: sku,upc,name,modelNumber,manufacturer,condition,type,regularPrice,salePrice,onSale,clearance,dollarSavings,percentSavings,priceUpdateDate,active,orderable,inStoreAvailability,onlineAvailability,inStorePickup,homeDelivery,freeShipping,freeShippingEligible,quantityLimit,url,image,longDescription,shortDescription,color,customerReviewAverage,customerReviewCount
   pageSize: 1
 }
 
 vars:pre-request {
-  upc: 0887276707129
+  upc: 848604047140
 }
 
 docs {
@@ -30,20 +30,16 @@ docs {
 
   The UPC is typically a 12-digit barcode number found on product packaging.
 
+  ## Example UPCs
+
+  - `848604047140` - iBUYPOWER Y40 Gaming Desktop
+
   ## Notes
 
   - UPC searches work best for products with standard retail packaging
   - Some products may not have UPC data in Best Buy's system
 
-  ## Response Fields
+  ## Key Response Fields
 
-  - `sku` - Product SKU
-  - `name` - Product name
-  - `salePrice` - Current sale price
-  - `regularPrice` - Regular/retail price
-  - `onSale` - Whether product is on sale
-  - `url` - Product page URL
-  - `image` - Product image URL
-  - `longDescription` - Product description
-  - `modelNumber` - Manufacturer model number
+  Same as SKU lookup - see "Get Product by SKU" for full field documentation.
 }

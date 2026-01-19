@@ -13,37 +13,54 @@ get {
 params:query {
   apiKey: {{bestbuy_api_key}}
   format: json
-  show: sku,name,salePrice,regularPrice,onSale,url,image,longDescription,modelNumber
+  show: sku,upc,name,modelNumber,manufacturer,condition,type,regularPrice,salePrice,onSale,clearance,dollarSavings,percentSavings,priceUpdateDate,active,orderable,inStoreAvailability,onlineAvailability,inStorePickup,homeDelivery,freeShipping,freeShippingEligible,quantityLimit,url,image,longDescription,shortDescription,color,customerReviewAverage,customerReviewCount
   pageSize: 1
 }
 
 vars:pre-request {
-  sku: 6505727
+  sku: 6576689
 }
 
 docs {
   # Get Best Buy Product by SKU
-  
+
   Fetches product details from Best Buy using the product SKU.
-  
+
   ## Finding the SKU
-  
+
   The SKU can be found on any Best Buy product page, typically labeled as "SKU" in the product details section.
-  
+
   ## Example SKUs
-  
+
+  - `6576689` - iBUYPOWER Y40 Gaming Desktop (Sold Out example)
   - `6505727` - Samsung 65" Class OLED S90D Series Smart TV
   - `6525425` - Apple MacBook Air 13.6"
-  
-  ## Response Fields
-  
-  - `sku` - Product SKU
-  - `name` - Product name
+
+  ## Key Response Fields
+
+  ### Pricing
+  - `regularPrice` - Original/retail price
   - `salePrice` - Current sale price
-  - `regularPrice` - Regular/retail price
   - `onSale` - Whether product is on sale
-  - `url` - Product page URL
-  - `image` - Product image URL
-  - `longDescription` - Product description
-  - `modelNumber` - Manufacturer model number
+  - `clearance` - Whether it's a clearance item
+  - `dollarSavings` - Amount saved in dollars
+  - `percentSavings` - Percentage discount
+
+  ### Availability (Critical for stock detection)
+  - `orderable` - "SoldOut" or "Available"
+  - `onlineAvailability` - Can purchase online
+  - `inStoreAvailability` - Can purchase in store
+  - `active` - Product is still listed
+
+  ### Product Info
+  - `sku` - Product SKU
+  - `upc` - Universal Product Code
+  - `name` - Product name
+  - `manufacturer` - Brand name
+  - `modelNumber` - Model number
+  - `condition` - New, Refurbished, etc.
+
+  ### Reviews
+  - `customerReviewAverage` - Average rating (1-5)
+  - `customerReviewCount` - Number of reviews
 }

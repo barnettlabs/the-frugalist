@@ -201,95 +201,47 @@ onMounted(async () => {
             Back to Watch
           </RouterLink>
 
-          <!-- Mobile Layout -->
-          <div class="sm:hidden">
-            <!-- Status Badge -->
-            <div class="mb-2">
-              <Badge v-if="product.is_active" variant="success">Active</Badge>
-              <Badge v-else variant="neutral">Paused</Badge>
-            </div>
-
-            <!-- Product Name -->
-            <h1 class="text-xl font-bold text-primary mb-2">
-              {{ product.product_name || 'Pending lookup...' }}
-            </h1>
-
-            <!-- Retailer -->
-            <div class="flex items-center gap-2 text-accent mb-4">
-              <BuildingStorefrontIcon class="h-5 w-5" />
-              <span class="font-medium">{{ product.retailer?.name || 'Unknown' }}</span>
-            </div>
-
-            <!-- Actions -->
-            <div class="flex items-center gap-2">
-              <button
-                v-if="canDebug"
-                @click="debugEnabled = !debugEnabled"
-                :class="[
-                  'flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-colors text-sm',
-                  debugEnabled
-                    ? 'bg-amber-500 hover:bg-amber-600 text-white'
-                    : 'bg-border hover:bg-border/80 text-text-muted'
-                ]"
-                title="Toggle debug mode"
-              >
-                <BugAntIcon class="h-4 w-4" />
-                <span>{{ debugEnabled ? 'Debug On' : 'Debug' }}</span>
-              </button>
-              <button
-                @click="refreshPrice"
-                :disabled="refreshing"
-                class="flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 text-sm"
-              >
-                <ArrowPathIcon class="h-4 w-4" :class="{ 'animate-spin': refreshing }" />
-                <span>{{ refreshing ? 'Refreshing...' : 'Refresh Price' }}</span>
-              </button>
-            </div>
+          <!-- Status Badge -->
+          <div class="mb-2">
+            <Badge v-if="product.is_active" variant="success">Active</Badge>
+            <Badge v-else variant="neutral">Paused</Badge>
           </div>
 
-          <!-- Desktop Layout -->
-          <div class="hidden sm:block">
-            <div class="flex items-start justify-between">
-              <div>
-                <div class="flex items-center gap-3 mb-2">
-                  <h1 class="text-2xl font-bold text-primary">
-                    {{ product.product_name || 'Pending lookup...' }}
-                  </h1>
-                  <Badge v-if="product.is_active" variant="success">Active</Badge>
-                  <Badge v-else variant="neutral">Paused</Badge>
-                </div>
-                <!-- Retailer -->
-                <div class="flex items-center gap-2 text-accent">
-                  <BuildingStorefrontIcon class="h-5 w-5" />
-                  <span class="font-medium text-lg">{{ product.retailer?.name || 'Unknown' }}</span>
-                </div>
-              </div>
-              <div class="flex items-center gap-2">
-                <!-- Debug Mode Toggle (only visible to authorized users) -->
-                <button
-                  v-if="canDebug"
-                  @click="debugEnabled = !debugEnabled"
-                  :class="[
-                    'flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors',
-                    debugEnabled
-                      ? 'bg-amber-500 hover:bg-amber-600 text-white'
-                      : 'bg-border hover:bg-border/80 text-text-muted'
-                  ]"
-                  title="Toggle debug mode"
-                >
-                  <BugAntIcon class="h-5 w-5" />
-                  <span>{{ debugEnabled ? 'Debug On' : 'Debug' }}</span>
-                </button>
-                <button
-                  @click="refreshPrice"
-                  :disabled="refreshing"
-                  class="flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
-                >
-                  <ArrowPathIcon class="h-5 w-5" :class="{ 'animate-spin': refreshing }" />
-                  <span>{{ refreshing ? 'Refreshing...' : 'Refresh Price' }}</span>
-                </button>
-              </div>
-            </div>
+          <!-- Product Name -->
+          <h1 class="text-xl sm:text-2xl font-bold text-primary mb-2">
+            {{ product.product_name || 'Pending lookup...' }}
+          </h1>
+
+          <!-- Retailer -->
+          <div class="flex items-center gap-2 text-accent mb-4">
+            <BuildingStorefrontIcon class="h-5 w-5" />
+            <span class="font-medium sm:text-lg">{{ product.retailer?.name || 'Unknown' }}</span>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-2">
+            <button
+              v-if="canDebug"
+              @click="debugEnabled = !debugEnabled"
+              :class="[
+                'flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-sm',
+                debugEnabled
+                  ? 'bg-amber-500 hover:bg-amber-600 text-white'
+                  : 'bg-border hover:bg-border/80 text-text-muted'
+              ]"
+              title="Toggle debug mode"
+            >
+              <BugAntIcon class="h-4 w-4 sm:h-5 sm:w-5" />
+              <span>{{ debugEnabled ? 'Debug On' : 'Debug' }}</span>
+            </button>
+            <button
+              @click="refreshPrice"
+              :disabled="refreshing"
+              class="flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 text-sm"
+            >
+              <ArrowPathIcon class="h-4 w-4 sm:h-5 sm:w-5" :class="{ 'animate-spin': refreshing }" />
+              <span>{{ refreshing ? 'Refreshing...' : 'Refresh Price' }}</span>
+            </button>
           </div>
         </div>
 

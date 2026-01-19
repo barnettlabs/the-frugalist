@@ -32,9 +32,9 @@ class TrackedProduct extends Model
     ];
 
     protected $casts = [
-        'retail_price' => 'decimal:2',
-        'current_price' => 'decimal:2',
-        'target_price' => 'decimal:2',
+        'retail_price' => 'float',
+        'current_price' => 'float',
+        'target_price' => 'float',
         'tracking_start_date' => 'datetime',
         'tracking_end_date' => 'datetime',
         'last_checked_at' => 'datetime',

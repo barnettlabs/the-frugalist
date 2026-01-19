@@ -18,7 +18,7 @@ class PriceHistory extends Model
     ];
 
     protected $casts = [
-        'price' => 'decimal:2',
+        'price' => 'float',
         'in_stock' => 'boolean',
         'api_response' => 'array',
         'checked_at' => 'datetime',

@@ -351,7 +351,7 @@ onMounted(async () => {
                 <div v-if="product.target_price && product.retail_price" class="mt-12 flex items-center justify-between text-sm text-text-muted">
                   <span>Last checked: {{ product.last_checked_at ? formatRelativeTime(product.last_checked_at) : 'Never' }}</span>
                   <span class="font-medium" :class="isTargetReached ? 'text-success' : 'text-primary'">
-                    {{ isTargetReached ? 'Target reached!' : `${progressPercent.toFixed(0)}% to target` }}
+                    {{ isTargetReached ? 'Target reached!' : `${Math.floor(progressPercent)}% to target` }}
                   </span>
                 </div>
                 <div v-else class="text-center text-sm text-text-muted">

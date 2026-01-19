@@ -44,9 +44,9 @@ export interface CreateTrackedProductData {
   retailer_id: number
   sku_upc: string
   target_price: number
-  start_date?: string
-  end_date?: string
-  notification_method: NotificationMethod[]
+  tracking_start_date: string
+  tracking_end_date?: string
+  notification_methods: NotificationMethod[]
 }
 
 export interface UpdateTrackedProductData {

@@ -8,7 +8,7 @@ import Spinner from '@/components/Spinner.vue'
 import { TagIcon, PlusIcon, TrashIcon, EyeIcon, ArrowPathIcon, EnvelopeIcon, DevicePhoneMobileIcon } from '@heroicons/vue/24/outline'
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime } from '@/utils/time'
-import { watchApi, RETAILERS, type TrackedProduct } from '@/api/watch'
+import { watchApi, type TrackedProduct } from '@/api/watch'
 
 type FilterType = 'all' | 'active' | 'paused'
 
@@ -64,9 +64,7 @@ const refreshProduct = async (id: number) => {
 }
 
 const getRetailerName = (product: TrackedProduct): string => {
-  if (product.retailer?.name) return product.retailer.name
-  const retailer = RETAILERS.find(r => r.id === product.retailer_id)
-  return retailer?.name || 'Unknown'
+  return product.retailer?.name || 'Unknown'
 }
 
 onMounted(() => {

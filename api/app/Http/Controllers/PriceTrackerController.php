@@ -69,7 +69,7 @@ class PriceTrackerController extends Controller
             'sku_upc' => 'required|string',
             'target_price' => 'required|numeric|min:0.01',
             'notification_methods' => 'required|array|min:1',
-            'notification_methods.*' => 'in:email,sms',
+            'notification_methods.*' => 'in:email,push',
             'tracking_start_date' => 'required|date|after_or_equal:today',
             'tracking_end_date' => 'nullable|date|after:tracking_start_date',
         ]);

@@ -72,6 +72,9 @@ const props = defineProps({
     default: 'md',
     validator: (value) => ['sm', 'md', 'lg'].includes(value),
   },
+  class: {
+    type: String
+  }
 })
 
 const input = ref(null)
@@ -91,7 +94,7 @@ const inputClasses = computed(() => {
   const paddingClass = getPaddingClass()
   const errorClass = props.error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
 
-  return `${baseClasses} ${sizeClass} ${paddingClass} ${errorClass}`
+  return `${baseClasses} ${sizeClass} ${paddingClass} ${errorClass} ${props.class}`
 })
 
 // Dynamic padding based on prefix/suffix

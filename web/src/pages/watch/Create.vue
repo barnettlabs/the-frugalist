@@ -12,6 +12,7 @@ import Alert from '@/components/Alert.vue'
 import Badge from '@/components/Badge.vue'
 import Spinner from '@/components/Spinner.vue'
 import { watchApi, watchDebugApi, getRetailers, type Retailer, type NotificationMethod, type ValidateProductResponse, type ValidatedProduct, type DebugInfo } from '@/api/watch'
+import { devicesApi } from '@/api/devices'
 import { formatCurrency } from '@/utils/formatters'
 import {
   BuildingStorefrontIcon,
@@ -23,6 +24,7 @@ import {
   TagIcon,
   ArrowTopRightOnSquareIcon,
   BugAntIcon,
+  MagnifyingGlassIcon,
 } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
@@ -54,6 +56,9 @@ const debugInfo = ref<DebugInfo | null>(null)
 // Retailers fetched from the database
 const retailers = ref<Retailer[]>([])
 const retailersLoading = ref(true)
+
+// Device registration status for push notifications
+const hasActiveDevices = ref(false)
 
 // Only show retailers that are active or coming soon
 const visibleRetailers = computed(() => {
@@ -212,15 +217,15 @@ const submitForm = async () => {
     // Use today if start_date is empty
     const startDate = form.value.start_date || today
 
-    await watchApi.create({
+    const newProduct = await watchApi.create({
       retailer_id: form.value.retailer_id,
       sku_upc: form.value.sku_upc.trim(),
       target_price: targetPriceValue.value!,
-      start_date: startDate,
-      end_date: form.value.end_date || undefined,
-      notification_method: notificationMethods.value,
+      tracking_start_date: startDate,
+      tracking_end_date: form.value.end_date || undefined,
+      notification_methods: notificationMethods.value,
     })
-    router.push('/watch')
+    router.push(`/watch/${newProduct.id}`)
   } catch (error: any) {
     if (error.response?.data?.errors) {
       errors.value = error.response.data.errors
@@ -232,17 +237,19 @@ const submitForm = async () => {
   }
 }
 
-// Fetch retailers and check debug access on mount
+// Fetch retailers, debug access, and device status on mount
 onMounted(async () => {
   try {
-    const [fetchedRetailers, hasDebugAccess] = await Promise.all([
+    const [fetchedRetailers, hasDebugAccess, hasDevices] = await Promise.all([
       getRetailers(),
       watchDebugApi.canDebug(),
+      devicesApi.hasActiveDevices(),
     ])
     retailers.value = fetchedRetailers
     canDebug.value = hasDebugAccess
+    hasActiveDevices.value = hasDevices
   } catch (error) {
-    console.error('Failed to load retailers:', error)
+    console.error('Failed to load initial data:', error)
   } finally {
     retailersLoading.value = false
   }
@@ -253,12 +260,8 @@ onMounted(async () => {
   <main class="py-12 flex-1">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
       <!-- Header -->
-      <PageHeader
-        title="Track New Product"
-        description="Set up price tracking for a product"
-        back-link="/watch"
-        back-label="Watch"
-      />
+      <PageHeader title="Track New Product" description="Set up price tracking for a product" back-link="/watch"
+        back-label="Watch" />
 
       <!-- General Error -->
       <Alert v-if="errors.general" variant="danger" class="mb-6">
@@ -281,39 +284,29 @@ onMounted(async () => {
         </div>
 
         <div v-else class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          <button
-            v-for="retailer in visibleRetailers"
-            :key="retailer.id"
-            type="button"
+          <button v-for="retailer in visibleRetailers" :key="retailer.id" type="button"
             @click="retailer.is_active && !retailer.coming_soon ? form.retailer_id = retailer.id : null"
-            :disabled="!retailer.is_active || retailer.coming_soon"
-            :class="[
+            :disabled="!retailer.is_active || retailer.coming_soon" :class="[
               'relative flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all',
               !retailer.is_active || retailer.coming_soon
                 ? 'border-border bg-background cursor-not-allowed opacity-60'
                 : form.retailer_id === retailer.id
                   ? 'border-accent bg-accent/5 text-accent'
                   : 'border-border hover:border-accent/30 text-text-muted hover:bg-background cursor-pointer'
-            ]"
-          >
+            ]">
             <BuildingStorefrontIcon class="h-6 w-6 mb-2" />
             <span class="text-sm font-medium text-center">{{ retailer.name }}</span>
             <!-- Coming Soon Badge -->
-            <Badge
-              v-if="retailer.coming_soon"
-              variant="warning"
-              size="sm"
-              class="absolute -top-2 -right-2"
-            >
+            <Badge v-if="retailer.coming_soon" variant="warning" size="sm" class="absolute -top-2 -right-2">
               Soon
             </Badge>
             <!-- Selected Checkmark -->
-            <div
-              v-if="form.retailer_id === retailer.id"
-              class="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full flex items-center justify-center"
-            >
+            <div v-if="form.retailer_id === retailer.id"
+              class="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full flex items-center justify-center">
               <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
               </svg>
             </div>
           </button>
@@ -322,70 +315,56 @@ onMounted(async () => {
       </Card>
 
       <!-- Step 2: SKU/UPC Input -->
-      <Card
-        class="mb-4 transition-opacity duration-200"
-        :class="{ 'opacity-50 pointer-events-none': !isStoreSelected }"
-      >
+      <Card class="mb-4 transition-opacity duration-200"
+        :class="{ 'opacity-50 pointer-events-none': !isStoreSelected }">
         <div class="flex items-center gap-3 mb-4">
-          <div
-            :class="[
-              'flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm',
-              isStoreSelected ? 'bg-accent text-white' : 'bg-border text-text-muted'
-            ]"
-          >
+          <div :class="[
+            'flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm',
+            isStoreSelected ? 'bg-accent text-white' : 'bg-border text-text-muted'
+          ]">
             2
           </div>
           <h3 :class="['text-lg font-bold', isStoreSelected ? 'text-primary' : 'text-text-muted']">
             Enter Product Identifier
           </h3>
           <!-- Debug Toggle (only visible to authorized users) -->
-          <button
-            v-if="canDebug && isStoreSelected"
-            @click="debugEnabled = !debugEnabled"
-            :class="[
-              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ml-auto',
-              debugEnabled
-                ? 'bg-amber-500 hover:bg-amber-600 text-white'
-                : 'bg-border hover:bg-border/80 text-text-muted'
-            ]"
-            title="Toggle debug mode"
-          >
+          <button v-if="canDebug && isStoreSelected" @click="debugEnabled = !debugEnabled" :class="[
+            'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ml-auto',
+            debugEnabled
+              ? 'bg-amber-500 hover:bg-amber-600 text-white'
+              : 'bg-border hover:bg-border/80 text-text-muted'
+          ]" title="Toggle debug mode">
             <BugAntIcon class="h-4 w-4" />
             <span>{{ debugEnabled ? 'Debug On' : 'Debug' }}</span>
           </button>
-          <CheckCircleIcon v-if="isProductValidated" class="h-5 w-5 text-success" :class="{ 'ml-auto': !canDebug || !isStoreSelected }" />
+          <CheckCircleIcon v-if="isProductValidated" class="h-5 w-5 text-success"
+            :class="{ 'ml-auto': !canDebug || !isStoreSelected }" />
         </div>
 
         <div>
           <InputLabel for="sku_upc" value="SKU / UPC / Item Number" />
-          <div class="relative mt-1">
-            <TextInput
-              id="sku_upc"
-              v-model="form.sku_upc"
-              type="text"
-              class="block w-full pr-10"
-              :placeholder="skuPlaceholder"
-              :disabled="!isStoreSelected"
-              @blur="validateProduct"
-              @keyup.enter="validateProduct"
-            />
-            <div v-if="validating" class="absolute right-3 top-1/2 -translate-y-1/2">
-              <Spinner size="sm" color="primary" />
+          <div class="flex gap-2 mt-1">
+            <div class="relative flex-1">
+              <TextInput id="sku_upc" v-model="form.sku_upc" type="text" class="block w-full"
+                :placeholder="skuPlaceholder" :disabled="!isStoreSelected" @keyup.enter="validateProduct" />
             </div>
+            <button type="button" @click="validateProduct"
+              :disabled="!isStoreSelected || !form.sku_upc.trim() || validating" :class="[
+                'flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors',
+                !isStoreSelected || !form.sku_upc.trim() || validating
+                  ? 'bg-border text-text-muted cursor-not-allowed'
+                  : 'bg-accent hover:bg-accent-dark text-white'
+              ]">
+              <Spinner v-if="validating" size="sm" color="white" />
+              <MagnifyingGlassIcon v-else class="h-5 w-5" />
+              <span class="hidden sm:inline">{{ validating ? 'Searching...' : 'Search' }}</span>
+            </button>
           </div>
-          <p class="text-xs text-text-muted mt-1">
-            Find this on the product page or product packaging
-          </p>
           <InputError :message="errors.sku_upc?.[0]" class="mt-2" />
         </div>
 
         <!-- Validation Error -->
-        <Alert v-if="validationError" variant="danger" class="mt-4">
-          <div class="flex items-center gap-2">
-            <XCircleIcon class="h-5 w-5 flex-shrink-0" />
-            <span>{{ validationError }}</span>
-          </div>
-        </Alert>
+        <Alert v-if="validationError" variant="danger" class="mt-4" :title="validationError" />
 
         <!-- Product Preview -->
         <div v-if="isProductValidated && product" class="mt-4 p-5 bg-success/5 border border-success/20 rounded-xl">
@@ -405,13 +384,10 @@ onMounted(async () => {
             <!-- Product Image -->
             <div class="flex-shrink-0">
               <div v-if="product.image_url" class="w-40 h-40 rounded-lg bg-white border border-border overflow-hidden">
-                <img
-                  :src="product.image_url"
-                  :alt="product.name"
-                  class="w-full h-full object-contain p-2"
-                />
+                <img :src="product.image_url" :alt="product.name" class="w-full h-full object-contain p-2" />
               </div>
-              <div v-else class="w-40 h-40 bg-background rounded-lg flex items-center justify-center border border-border">
+              <div v-else
+                class="w-40 h-40 bg-background rounded-lg flex items-center justify-center border border-border">
                 <BuildingStorefrontIcon class="h-16 w-16 text-text-muted" />
               </div>
             </div>
@@ -441,13 +417,9 @@ onMounted(async () => {
                   <TagIcon class="h-3.5 w-3.5" />
                   SKU: {{ product.sku_upc || form.sku_upc }}
                 </span>
-                <a
-                  v-if="product.retailer_url || product.metadata?.retailer_url"
-                  :href="product.retailer_url || product.metadata?.retailer_url"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="flex items-center gap-1 text-accent hover:underline"
-                >
+                <a v-if="product.retailer_url || product.metadata?.retailer_url"
+                  :href="product.retailer_url || product.metadata?.retailer_url" target="_blank"
+                  rel="noopener noreferrer" class="flex items-center gap-1 text-accent hover:underline">
                   <ArrowTopRightOnSquareIcon class="h-3.5 w-3.5" />
                   View on {{ selectedRetailer?.name }}
                 </a>
@@ -475,12 +447,18 @@ onMounted(async () => {
         <div v-if="isStoreSelected && !isProductValidated && !validating" class="mt-4 p-3 bg-background rounded-lg">
           <p class="text-xs text-text-muted">
             <strong>Tip:</strong>
-            <template v-if="selectedRetailer?.slug === 'bestbuy'"> Look for "SKU" on the Best Buy product page.</template>
-            <template v-else-if="selectedRetailer?.slug === 'homedepot'"> Look for "Internet #" or "Store SKU" on the Home Depot product page.</template>
-            <template v-else-if="selectedRetailer?.slug === 'lowes'"> Look for "Item #" on the Lowe's product page.</template>
-            <template v-else-if="selectedRetailer?.slug === 'amazon'"> Use the ASIN from the Amazon product URL (e.g., B08N5WRWNW).</template>
-            <template v-else-if="selectedRetailer?.slug === 'walmart'"> Look for "Item ID" or use the number from the Walmart product URL.</template>
-            <template v-else-if="selectedRetailer?.slug === 'target'"> Look for "TCIN" on the Target product page.</template>
+            <template v-if="selectedRetailer?.slug === 'bestbuy'"> Look for "SKU" on the Best Buy product
+              page.</template>
+            <template v-else-if="selectedRetailer?.slug === 'homedepot'"> Look for "Internet #" or "Store SKU" on the
+              Home Depot product page.</template>
+            <template v-else-if="selectedRetailer?.slug === 'lowes'"> Look for "Item #" on the Lowe's product
+              page.</template>
+            <template v-else-if="selectedRetailer?.slug === 'amazon'"> Use the ASIN from the Amazon product URL (e.g.,
+              B08N5WRWNW).</template>
+            <template v-else-if="selectedRetailer?.slug === 'walmart'"> Look for "Item ID" or use the number from the
+              Walmart product URL.</template>
+            <template v-else-if="selectedRetailer?.slug === 'target'"> Look for "TCIN" on the Target product
+              page.</template>
             <template v-else> Enter the product's SKU, UPC, or item number.</template>
           </p>
         </div>
@@ -501,35 +479,36 @@ onMounted(async () => {
             <div class="text-xs text-text-muted mb-2">
               <span class="font-medium">Endpoint:</span> {{ debugInfo.raw_api_response.endpoint }}
             </div>
-            <pre class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-80 overflow-y-auto">{{ JSON.stringify(debugInfo.raw_api_response.response, null, 2) }}</pre>
+            <pre
+              class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-80 overflow-y-auto">{{
+                JSON.stringify(debugInfo.raw_api_response.response, null, 2) }}</pre>
           </div>
 
           <!-- Parsed Data -->
           <div v-if="debugInfo.parsed_data">
             <h4 class="text-xs font-semibold text-primary mb-2">Parsed Data</h4>
-            <pre class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-48 overflow-y-auto">{{ JSON.stringify(debugInfo.parsed_data, null, 2) }}</pre>
+            <pre
+              class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-48 overflow-y-auto">{{
+                JSON.stringify(debugInfo.parsed_data, null, 2) }}</pre>
           </div>
 
           <!-- Error Info (if any) -->
           <div v-if="debugInfo.error" class="mt-4">
             <h4 class="text-xs font-semibold text-danger mb-2">Error</h4>
-            <pre class="bg-danger/10 p-4 rounded-lg overflow-x-auto text-xs text-danger max-h-48 overflow-y-auto">{{ debugInfo.error }}</pre>
+            <pre class="bg-danger/10 p-4 rounded-lg overflow-x-auto text-xs text-danger max-h-48 overflow-y-auto">{{
+              debugInfo.error }}</pre>
           </div>
         </div>
       </Card>
 
       <!-- Step 3: Tracking Settings -->
-      <Card
-        class="mb-4 transition-opacity duration-200"
-        :class="{ 'opacity-50 pointer-events-none': !isProductValidated }"
-      >
+      <Card class="mb-4 transition-opacity duration-200"
+        :class="{ 'opacity-50 pointer-events-none': !isProductValidated }">
         <div class="flex items-center gap-3 mb-4">
-          <div
-            :class="[
-              'flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm',
-              isProductValidated ? 'bg-accent text-white' : 'bg-border text-text-muted'
-            ]"
-          >
+          <div :class="[
+            'flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm',
+            isProductValidated ? 'bg-accent text-white' : 'bg-border text-text-muted'
+          ]">
             3
           </div>
           <h3 :class="['text-lg font-bold', isProductValidated ? 'text-primary' : 'text-text-muted']">
@@ -545,17 +524,11 @@ onMounted(async () => {
               Target Price <span class="text-danger">*</span>
             </InputLabel>
             <div class="relative mt-1">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">$</span>
-              <TextInput
-                id="target_price"
-                v-model="form.target_price"
-                type="number"
-                step="0.01"
-                min="0"
-                class="block w-full pl-7"
+              <TextInput id="target_price" v-model="form.target_price" type="number" step="0.01" min="0"
+                class="pl-6"
                 :placeholder="product?.current_price ? `Less than $${formatCurrency(product.current_price)}` : '0.00'"
-                :disabled="!isProductValidated"
-              />
+                :disabled="!isProductValidated" />
+              <span class="absolute left-2 top-1/2 -translate-y-1/2 text-text-muted">$</span>
             </div>
             <p class="text-xs text-text-muted mt-1">
               We'll notify you when the price drops to this amount
@@ -568,13 +541,8 @@ onMounted(async () => {
 
           <div>
             <InputLabel for="start_date" value="Start Date" />
-            <TextInput
-              id="start_date"
-              v-model="form.start_date"
-              type="date"
-              class="block w-full mt-1"
-              :disabled="!isProductValidated"
-            />
+            <TextInput id="start_date" v-model="form.start_date" type="date" class="block w-full mt-1"
+              :disabled="!isProductValidated" />
             <p class="text-xs text-text-muted mt-1">
               When to begin
             </p>
@@ -583,14 +551,8 @@ onMounted(async () => {
 
           <div>
             <InputLabel for="end_date" value="End Date (optional)" />
-            <TextInput
-              id="end_date"
-              v-model="form.end_date"
-              type="date"
-              class="block w-full mt-1"
-              :min="form.start_date"
-              :disabled="!isProductValidated"
-            />
+            <TextInput id="end_date" v-model="form.end_date" type="date" class="block w-full mt-1"
+              :min="form.start_date" :disabled="!isProductValidated" />
             <p class="text-xs text-text-muted mt-1">
               Auto-stop tracking
             </p>
@@ -602,15 +564,13 @@ onMounted(async () => {
         <div>
           <InputLabel value="Notification Preferences" class="mb-3" />
           <div class="space-y-3">
-            <label
-              :class="[
-                'flex items-center gap-3 p-4 rounded-lg border-2 transition-all',
-                !isProductValidated ? 'cursor-not-allowed' : 'cursor-pointer',
-                form.notification_email && isProductValidated
-                  ? 'border-accent bg-accent/5'
-                  : 'border-border hover:border-accent/30'
-              ]"
-            >
+            <label :class="[
+              'flex items-center gap-3 p-4 rounded-lg border-2 transition-all',
+              !isProductValidated ? 'cursor-not-allowed' : 'cursor-pointer',
+              form.notification_email && isProductValidated
+                ? 'border-accent bg-accent/5'
+                : 'border-border hover:border-accent/30'
+            ]">
               <Checkbox v-model:checked="form.notification_email" :disabled="!isProductValidated" />
               <EnvelopeIcon class="h-5 w-5 text-text-muted" />
               <div>
@@ -619,20 +579,20 @@ onMounted(async () => {
               </div>
             </label>
 
-            <label
-              :class="[
-                'flex items-center gap-3 p-4 rounded-lg border-2 transition-all',
-                !isProductValidated ? 'cursor-not-allowed' : 'cursor-pointer',
-                form.notification_push && isProductValidated
-                  ? 'border-accent bg-accent/5'
-                  : 'border-border hover:border-accent/30'
-              ]"
-            >
-              <Checkbox v-model:checked="form.notification_push" :disabled="!isProductValidated" />
+            <label :class="[
+              'flex items-center gap-3 p-4 rounded-lg border-2 transition-all',
+              !isProductValidated || !hasActiveDevices ? 'cursor-not-allowed' : 'cursor-pointer',
+              !hasActiveDevices ? 'opacity-60' : '',
+              form.notification_push && isProductValidated && hasActiveDevices
+                ? 'border-accent bg-accent/5'
+                : 'border-border hover:border-accent/30'
+            ]">
+              <Checkbox v-model:checked="form.notification_push" :disabled="!isProductValidated || !hasActiveDevices" />
               <DevicePhoneMobileIcon class="h-5 w-5 text-text-muted" />
-              <div>
+              <div class="flex-1">
                 <span class="font-medium text-primary">Push Notification</span>
-                <p class="text-xs text-text-muted">Receive instant alerts on your device</p>
+                <p v-if="hasActiveDevices" class="text-xs text-text-muted">Receive instant alerts on your device</p>
+                <p v-else class="text-xs text-warning">No devices registered. Use the mobile app to enable push notifications.</p>
               </div>
             </label>
           </div>
@@ -646,17 +606,12 @@ onMounted(async () => {
       <!-- Actions -->
       <div class="flex items-center justify-end gap-3">
         <RouterLink to="/watch">
-          <button
-            type="button"
-            class="bg-background hover:bg-border text-text-muted px-6 py-3 rounded-lg font-medium transition-colors"
-          >
+          <button type="button"
+            class="bg-background hover:bg-border text-text-muted px-6 py-3 rounded-lg font-medium transition-colors">
             Cancel
           </button>
         </RouterLink>
-        <PrimaryButton
-          @click="submitForm"
-          :disabled="loading || !isFormValid"
-        >
+        <PrimaryButton @click="submitForm" :disabled="loading || !isFormValid">
           <BellIcon v-if="!loading" class="h-5 w-5 mr-2" />
           {{ loading ? 'Creating...' : 'Start Tracking' }}
         </PrimaryButton>
@@ -672,6 +627,7 @@ onMounted(async () => {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;

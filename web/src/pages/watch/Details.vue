@@ -7,10 +7,12 @@ import {
   DevicePhoneMobileIcon,
   ChevronLeftIcon,
   BugAntIcon,
+  BuildingStorefrontIcon,
 } from '@heroicons/vue/24/outline'
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime, formatDateTime } from '@/utils/time'
-import { watchApi, watchDebugApi, RETAILERS, type TrackedProduct, type NotificationMethod, type DebugInfo } from '@/api/watch'
+import { watchApi, watchDebugApi, type TrackedProduct, type NotificationMethod, type DebugInfo } from '@/api/watch'
+import { devicesApi } from '@/api/devices'
 import Card from '@/components/Card.vue'
 import Badge from '@/components/Badge.vue'
 import Spinner from '@/components/Spinner.vue'
@@ -32,6 +34,9 @@ const saving = ref(false)
 const canDebug = ref(false)
 const debugEnabled = ref(false)
 const debugInfo = ref<DebugInfo | null>(null)
+
+// Device registration status for push notifications
+const hasActiveDevices = ref(false)
 
 // Edit form state
 const editForm = ref({
@@ -114,11 +119,11 @@ const deleteProduct = async () => {
   }
 }
 
-const getRetailerName = (prod: TrackedProduct): string => {
-  if (prod.retailer?.name) return prod.retailer.name
-  const retailer = RETAILERS.find(r => r.id === prod.retailer_id)
-  return retailer?.name || 'Unknown'
-}
+// Check if target price has been reached (current price is at or below target)
+const isTargetReached = computed(() => {
+  if (!product.value || !product.value.target_price || !product.value.current_price) return false
+  return product.value.current_price <= product.value.target_price
+})
 
 const progressPercent = computed(() => {
   if (!product.value || !product.value.target_price || !product.value.retail_price) return 0
@@ -126,7 +131,14 @@ const progressPercent = computed(() => {
   const target = product.value.target_price
   const current = product.value.current_price
 
+  console.log({
+    retail,
+    target,
+    current
+  })
+
   if (retail <= target) return 100
+  if (current <= target) return 100
   const progress = ((retail - current) / (retail - target)) * 100
   return Math.min(100, Math.max(0, progress))
 })
@@ -160,22 +172,26 @@ const checkDebugAccess = async () => {
   canDebug.value = await watchDebugApi.canDebug()
 }
 
-onMounted(() => {
-  loadProduct()
-  checkDebugAccess()
+onMounted(async () => {
+  const [, , hasDevices] = await Promise.all([
+    loadProduct(),
+    checkDebugAccess(),
+    devicesApi.hasActiveDevices(),
+  ])
+  hasActiveDevices.value = hasDevices
 })
 </script>
 
 <template>
   <main class="py-6 flex-1">
-    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <!-- Loading -->
       <div v-if="loading" class="flex items-center justify-center py-12">
         <Spinner size="lg" color="accent" />
       </div>
 
       <template v-else-if="product">
-        <!-- Breadcrumb Header -->
+        <!-- Header -->
         <div class="mb-6">
           <RouterLink
             to="/watch"
@@ -185,43 +201,94 @@ onMounted(() => {
             Back to Watch
           </RouterLink>
 
-          <div class="flex items-start justify-between">
-            <div>
-              <div class="flex items-center gap-3 mb-2">
-                <h1 class="text-2xl font-bold text-primary">
-                  {{ product.product_name || 'Pending lookup...' }}
-                </h1>
-                <Badge v-if="product.is_active" variant="success">Active</Badge>
-                <Badge v-else variant="neutral">Paused</Badge>
-              </div>
-              <p class="text-text-muted">
-                {{ getRetailerName(product) }} &middot; {{ product.sku_upc }}
-              </p>
+          <!-- Mobile Layout -->
+          <div class="sm:hidden">
+            <!-- Status Badge -->
+            <div class="mb-2">
+              <Badge v-if="product.is_active" variant="success">Active</Badge>
+              <Badge v-else variant="neutral">Paused</Badge>
             </div>
+
+            <!-- Product Name -->
+            <h1 class="text-xl font-bold text-primary mb-2">
+              {{ product.product_name || 'Pending lookup...' }}
+            </h1>
+
+            <!-- Retailer -->
+            <div class="flex items-center gap-2 text-accent mb-4">
+              <BuildingStorefrontIcon class="h-5 w-5" />
+              <span class="font-medium">{{ product.retailer?.name || 'Unknown' }}</span>
+            </div>
+
+            <!-- Actions -->
             <div class="flex items-center gap-2">
-              <!-- Debug Mode Toggle (only visible to authorized users) -->
               <button
                 v-if="canDebug"
                 @click="debugEnabled = !debugEnabled"
                 :class="[
-                  'flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors',
+                  'flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-colors text-sm',
                   debugEnabled
                     ? 'bg-amber-500 hover:bg-amber-600 text-white'
                     : 'bg-border hover:bg-border/80 text-text-muted'
                 ]"
                 title="Toggle debug mode"
               >
-                <BugAntIcon class="h-5 w-5" />
-                <span class="hidden sm:inline">{{ debugEnabled ? 'Debug On' : 'Debug' }}</span>
+                <BugAntIcon class="h-4 w-4" />
+                <span>{{ debugEnabled ? 'Debug On' : 'Debug' }}</span>
               </button>
               <button
                 @click="refreshPrice"
                 :disabled="refreshing"
-                class="flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
+                class="flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 text-sm"
               >
-                <ArrowPathIcon class="h-5 w-5" :class="{ 'animate-spin': refreshing }" />
-                <span>{{ refreshing ? 'Refreshing...' : 'Refresh' }}</span>
+                <ArrowPathIcon class="h-4 w-4" :class="{ 'animate-spin': refreshing }" />
+                <span>{{ refreshing ? 'Refreshing...' : 'Refresh Price' }}</span>
               </button>
+            </div>
+          </div>
+
+          <!-- Desktop Layout -->
+          <div class="hidden sm:block">
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="flex items-center gap-3 mb-2">
+                  <h1 class="text-2xl font-bold text-primary">
+                    {{ product.product_name || 'Pending lookup...' }}
+                  </h1>
+                  <Badge v-if="product.is_active" variant="success">Active</Badge>
+                  <Badge v-else variant="neutral">Paused</Badge>
+                </div>
+                <!-- Retailer -->
+                <div class="flex items-center gap-2 text-accent">
+                  <BuildingStorefrontIcon class="h-5 w-5" />
+                  <span class="font-medium text-lg">{{ product.retailer?.name || 'Unknown' }}</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <!-- Debug Mode Toggle (only visible to authorized users) -->
+                <button
+                  v-if="canDebug"
+                  @click="debugEnabled = !debugEnabled"
+                  :class="[
+                    'flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors',
+                    debugEnabled
+                      ? 'bg-amber-500 hover:bg-amber-600 text-white'
+                      : 'bg-border hover:bg-border/80 text-text-muted'
+                  ]"
+                  title="Toggle debug mode"
+                >
+                  <BugAntIcon class="h-5 w-5" />
+                  <span>{{ debugEnabled ? 'Debug On' : 'Debug' }}</span>
+                </button>
+                <button
+                  @click="refreshPrice"
+                  :disabled="refreshing"
+                  class="flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
+                >
+                  <ArrowPathIcon class="h-5 w-5" :class="{ 'animate-spin': refreshing }" />
+                  <span>{{ refreshing ? 'Refreshing...' : 'Refresh Price' }}</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -235,7 +302,7 @@ onMounted(() => {
 
               <!-- No price yet alert -->
               <Alert v-if="!product.current_price" variant="info" class="mb-4">
-                Price not yet fetched. Click "Refresh" to check the current price.
+                Price not yet fetched. Click "Refresh Price" to check the current price.
               </Alert>
 
               <template v-else>
@@ -267,7 +334,7 @@ onMounted(() => {
                   <div
                     v-if="product.target_price && product.retail_price"
                     class="absolute -bottom-8 transition-all duration-500"
-                    :style="{ left: `calc(${progressPercent}% - 40px)` }"
+                    :style="{ left: `calc(${Math.min(progressPercent, 95)}% - 40px)` }"
                   >
                     <div class="bg-primary text-white px-3 py-1 rounded-lg text-sm font-semibold whitespace-nowrap">
                       ${{ formatCurrency(product.current_price) }}
@@ -283,8 +350,8 @@ onMounted(() => {
 
                 <div v-if="product.target_price && product.retail_price" class="mt-12 flex items-center justify-between text-sm text-text-muted">
                   <span>Last checked: {{ product.last_checked_at ? formatRelativeTime(product.last_checked_at) : 'Never' }}</span>
-                  <span class="font-medium" :class="progressPercent >= 100 ? 'text-success' : 'text-primary'">
-                    {{ progressPercent >= 100 ? 'Target reached!' : `${progressPercent.toFixed(0)}% to target` }}
+                  <span class="font-medium" :class="isTargetReached ? 'text-success' : 'text-primary'">
+                    {{ isTargetReached ? 'Target reached!' : `${progressPercent.toFixed(0)}% to target` }}
                   </span>
                 </div>
                 <div v-else class="text-center text-sm text-text-muted">
@@ -390,8 +457,23 @@ onMounted(() => {
               </div>
             </Card>
 
+            <!-- Single history entry - show as simple list -->
+            <Card v-else-if="product.price_history?.length === 1">
+              <h2 class="text-lg font-bold text-primary mb-4">Price History</h2>
+              <p class="text-text-muted text-sm mb-4">Only one price check recorded so far. More data points will show a chart.</p>
+              <div class="flex items-center justify-between py-2 text-sm border-t border-border">
+                <div class="flex items-center gap-2">
+                  <span class="font-medium text-primary">
+                    ${{ formatCurrency(product.price_history[0].price) }}
+                  </span>
+                  <Badge v-if="!product.price_history[0].in_stock" variant="danger" size="sm">Out of stock</Badge>
+                </div>
+                <span class="text-text-muted">{{ formatDateTime(product.price_history[0].checked_at) }}</span>
+              </div>
+            </Card>
+
             <!-- No history yet -->
-            <Card v-else-if="product.price_history?.length === 0 || !product.price_history">
+            <Card v-else>
               <h2 class="text-lg font-bold text-primary mb-4">Price History</h2>
               <p class="text-text-muted text-sm">No price history yet. Prices will be tracked over time.</p>
             </Card>
@@ -431,12 +513,12 @@ onMounted(() => {
 
           <!-- Sidebar -->
           <div class="space-y-6">
-            <!-- Tracking Settings -->
+            <!-- Edit Settings -->
             <Card>
-              <h2 class="text-lg font-bold text-primary mb-4">Tracking Settings</h2>
+              <h2 class="text-lg font-bold text-primary mb-4">Edit Settings</h2>
               <div class="space-y-4">
                 <div>
-                  <InputLabel for="target_price" value="Target Price (optional)" />
+                  <InputLabel for="target_price" value="Target Price" />
                   <div class="relative mt-1">
                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">$</span>
                     <TextInput
@@ -449,11 +531,11 @@ onMounted(() => {
                       placeholder="0.00"
                     />
                   </div>
-                  <p class="text-xs text-text-muted mt-1">Alert when price drops to this</p>
+                  <p class="text-xs text-text-muted mt-1">We'll notify you when the price drops to this amount</p>
                 </div>
 
                 <div>
-                  <InputLabel value="Notification Preferences" class="mb-3" />
+                  <InputLabel value="Notifications" class="mb-3" />
                   <div class="space-y-3">
                     <label
                       :class="[
@@ -473,43 +555,52 @@ onMounted(() => {
 
                     <label
                       :class="[
-                        'flex items-center gap-3 p-4 rounded-lg border-2 transition-all cursor-pointer',
-                        editForm.notification_push
+                        'flex items-center gap-3 p-4 rounded-lg border-2 transition-all',
+                        !hasActiveDevices ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
+                        editForm.notification_push && hasActiveDevices
                           ? 'border-accent bg-accent/5'
                           : 'border-border hover:border-accent/30'
                       ]"
                     >
-                      <Checkbox v-model:checked="editForm.notification_push" />
+                      <Checkbox v-model:checked="editForm.notification_push" :disabled="!hasActiveDevices" />
                       <DevicePhoneMobileIcon class="h-5 w-5 text-text-muted" />
-                      <div>
+                      <div class="flex-1">
                         <span class="font-medium text-primary">Push Notification</span>
-                        <p class="text-xs text-text-muted">Instant alerts on your device</p>
+                        <p v-if="hasActiveDevices" class="text-xs text-text-muted">Instant alerts on your device</p>
+                        <p v-else class="text-xs text-warning">No devices registered. Use the mobile app to enable push notifications.</p>
                       </div>
                     </label>
                   </div>
                 </div>
 
                 <PrimaryButton @click="saveSettings" :disabled="saving" class="w-full">
-                  {{ saving ? 'Saving...' : 'Save Settings' }}
+                  {{ saving ? 'Saving...' : 'Save Changes' }}
                 </PrimaryButton>
               </div>
             </Card>
 
             <!-- Product Details -->
             <Card>
-              <h2 class="text-sm font-bold text-primary mb-3">Product Details</h2>
-              <dl class="text-sm space-y-2">
+              <h2 class="text-lg font-bold text-primary mb-3">Product Details</h2>
+              <dl class="text-sm space-y-3">
+                <div class="flex justify-between items-center">
+                  <dt class="text-text-muted">Retailer</dt>
+                  <dd class="flex items-center gap-2 text-primary font-medium">
+                    <BuildingStorefrontIcon class="h-4 w-4 text-accent" />
+                    {{ product.retailer?.name || 'Unknown' }}
+                  </dd>
+                </div>
                 <div class="flex justify-between">
-                  <dt class="text-text-muted">SKU/UPC:</dt>
+                  <dt class="text-text-muted">SKU/UPC</dt>
                   <dd class="font-mono text-primary">{{ product.sku_upc }}</dd>
                 </div>
                 <div class="flex justify-between">
-                  <dt class="text-text-muted">Retailer:</dt>
-                  <dd class="text-primary">{{ getRetailerName(product) }}</dd>
-                </div>
-                <div class="flex justify-between">
-                  <dt class="text-text-muted">Tracking since:</dt>
+                  <dt class="text-text-muted">Tracking since</dt>
                   <dd class="text-primary">{{ formatDateTime(product.created_at) }}</dd>
+                </div>
+                <div v-if="product.product_variant" class="flex justify-between">
+                  <dt class="text-text-muted">Variant</dt>
+                  <dd class="text-primary">{{ product.product_variant }}</dd>
                 </div>
               </dl>
             </Card>
@@ -518,7 +609,7 @@ onMounted(() => {
             <Card class="border-danger/30">
               <h2 class="text-sm font-bold text-danger mb-2">Stop Tracking</h2>
               <p class="text-xs text-text-muted mb-3">
-                Remove this product from your tracking list.
+                Remove this product from your tracking list. This action cannot be undone.
               </p>
               <button
                 @click="deleteProduct"

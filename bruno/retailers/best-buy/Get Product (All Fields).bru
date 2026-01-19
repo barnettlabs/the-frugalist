@@ -1,0 +1,45 @@
+meta {
+  name: Get Product (All Fields)
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{bestbuy_base_url}}/v1/products(sku={{sku}})
+  body: none
+  auth: none
+}
+
+params:query {
+  apiKey: {{bestbuy_api_key}}
+  format: json
+  pageSize: 1
+}
+
+vars:pre-request {
+  sku: 6505727
+}
+
+docs {
+  # Get Best Buy Product (All Fields)
+
+  Fetches ALL available product details from Best Buy. Useful for exploring what data is available.
+
+  ## Notes
+
+  This request does not use the `show` parameter, so it returns all available fields for the product.
+
+  Use this to discover additional fields that might be useful for the application.
+
+  ## Common Additional Fields
+
+  - `customerReviewAverage` - Average customer rating
+  - `customerReviewCount` - Number of reviews
+  - `inStoreAvailability` - In-store availability
+  - `onlineAvailability` - Online availability
+  - `manufacturer` - Manufacturer name
+  - `color` - Product color
+  - `condition` - Product condition (new, refurbished, etc.)
+  - `freeShipping` - Free shipping eligible
+  - `shippingCost` - Shipping cost
+}

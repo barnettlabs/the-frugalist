@@ -1,0 +1,46 @@
+meta {
+  name: Search Products
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{bestbuy_base_url}}/v1/products(search={{search_term}})
+  body: none
+  auth: none
+}
+
+params:query {
+  apiKey: {{bestbuy_api_key}}
+  format: json
+  show: sku,name,salePrice,regularPrice,onSale,url,image,modelNumber
+  pageSize: 10
+}
+
+vars:pre-request {
+  search_term: macbook air
+}
+
+docs {
+  # Search Best Buy Products
+
+  Search for products by keyword/term.
+
+  ## Notes
+
+  - Returns up to `pageSize` results (default 10)
+  - Results are sorted by relevance
+  - Use quotes for exact phrase matching: `search="macbook air"`
+
+  ## Search Operators
+
+  - `&` - AND (e.g., `search=apple&categoryPath.name=laptops`)
+  - `|` - OR
+  - Parentheses for grouping
+
+  ## Filtering Examples
+
+  - By category: `(search=tv&categoryPath.name=TVs)`
+  - By price range: `(search=laptop&salePrice>500&salePrice<1000)`
+  - In stock only: `(search=ps5&onlineAvailability=true)`
+}

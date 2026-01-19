@@ -1,0 +1,49 @@
+meta {
+  name: Get Product by SKU
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{bestbuy_base_url}}/v1/products(sku={{sku}})
+  body: none
+  auth: none
+}
+
+params:query {
+  apiKey: {{bestbuy_api_key}}
+  format: json
+  show: sku,name,salePrice,regularPrice,onSale,url,image,longDescription,modelNumber
+  pageSize: 1
+}
+
+vars:pre-request {
+  sku: 6505727
+}
+
+docs {
+  # Get Best Buy Product by SKU
+  
+  Fetches product details from Best Buy using the product SKU.
+  
+  ## Finding the SKU
+  
+  The SKU can be found on any Best Buy product page, typically labeled as "SKU" in the product details section.
+  
+  ## Example SKUs
+  
+  - `6505727` - Samsung 65" Class OLED S90D Series Smart TV
+  - `6525425` - Apple MacBook Air 13.6"
+  
+  ## Response Fields
+  
+  - `sku` - Product SKU
+  - `name` - Product name
+  - `salePrice` - Current sale price
+  - `regularPrice` - Regular/retail price
+  - `onSale` - Whether product is on sale
+  - `url` - Product page URL
+  - `image` - Product image URL
+  - `longDescription` - Product description
+  - `modelNumber` - Manufacturer model number
+}

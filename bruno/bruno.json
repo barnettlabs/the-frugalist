@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "The Frugalist",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

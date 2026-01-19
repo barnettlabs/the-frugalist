@@ -49,6 +49,15 @@ class BestBuyService extends BaseRetailerService
             return null;
         }
 
+        // Store raw response for debug mode
+        if ($this->debugMode) {
+            $this->lastRawResponse = [
+                'retailer' => 'Best Buy',
+                'endpoint' => $this->retailer->api_base_url . $endpoint,
+                'response' => $response->json(),
+            ];
+        }
+
         return $this->parseProductData($products[0]);
     }
 

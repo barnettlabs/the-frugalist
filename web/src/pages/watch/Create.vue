@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import PageHeader from '@/components/PageHeader.vue'
 import InputError from '@/components/InputError.vue'
@@ -11,7 +11,7 @@ import Card from '@/components/Card.vue'
 import Alert from '@/components/Alert.vue'
 import Badge from '@/components/Badge.vue'
 import Spinner from '@/components/Spinner.vue'
-import { watchApi, RETAILERS, type NotificationMethod, type ValidateProductResponse, type ValidatedProduct } from '@/api/watch'
+import { watchApi, watchDebugApi, RETAILERS, type NotificationMethod, type ValidateProductResponse, type ValidatedProduct, type DebugInfo } from '@/api/watch'
 import { formatCurrency } from '@/utils/formatters'
 import {
   BuildingStorefrontIcon,
@@ -22,6 +22,7 @@ import {
   XCircleIcon,
   TagIcon,
   ArrowTopRightOnSquareIcon,
+  BugAntIcon,
 } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
@@ -44,6 +45,11 @@ const validating = ref(false)
 const validatedProduct = ref<ValidateProductResponse | null>(null)
 const validationError = ref('')
 const errors = ref<Record<string, string[]>>({})
+
+// Debug mode state
+const canDebug = ref(false)
+const debugEnabled = ref(false)
+const debugInfo = ref<DebugInfo | null>(null)
 
 // Track the last validated SKU to avoid re-validating the same value
 const lastValidatedSku = ref('')
@@ -144,15 +150,30 @@ const validateProduct = async () => {
   validating.value = true
   validationError.value = ''
   validatedProduct.value = null
+  debugInfo.value = null
 
   try {
-    const result = await watchApi.validateProduct(form.value.retailer_id, sku)
-    lastValidatedSku.value = sku
+    if (debugEnabled.value) {
+      // Use separate debug endpoint
+      const result = await watchDebugApi.validateProduct(form.value.retailer_id, sku)
+      lastValidatedSku.value = sku
+      debugInfo.value = result.debug
 
-    if (result.valid && result.product) {
-      validatedProduct.value = result
+      if (result.valid && result.product) {
+        validatedProduct.value = { valid: true, product: result.product }
+      } else {
+        validationError.value = result.message || 'Product not found. Please check the SKU/UPC and try again.'
+      }
     } else {
-      validationError.value = result.message || 'Product not found. Please check the SKU/UPC and try again.'
+      // Use production endpoint
+      const result = await watchApi.validateProduct(form.value.retailer_id, sku)
+      lastValidatedSku.value = sku
+
+      if (result.valid && result.product) {
+        validatedProduct.value = result
+      } else {
+        validationError.value = result.message || 'Product not found. Please check the SKU/UPC and try again.'
+      }
     }
   } catch (error: any) {
     validationError.value = error.response?.data?.message || 'Failed to validate product. Please try again.'
@@ -201,6 +222,11 @@ const submitForm = async () => {
     loading.value = false
   }
 }
+
+// Check if user has debug access
+onMounted(async () => {
+  canDebug.value = await watchDebugApi.canDebug()
+})
 </script>
 
 <template>
@@ -287,7 +313,22 @@ const submitForm = async () => {
           <h3 :class="['text-lg font-bold', isStoreSelected ? 'text-primary' : 'text-text-muted']">
             Enter Product Identifier
           </h3>
-          <CheckCircleIcon v-if="isProductValidated" class="h-5 w-5 text-success ml-auto" />
+          <!-- Debug Toggle (only visible to authorized users) -->
+          <button
+            v-if="canDebug && isStoreSelected"
+            @click="debugEnabled = !debugEnabled"
+            :class="[
+              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ml-auto',
+              debugEnabled
+                ? 'bg-amber-500 hover:bg-amber-600 text-white'
+                : 'bg-border hover:bg-border/80 text-text-muted'
+            ]"
+            title="Toggle debug mode"
+          >
+            <BugAntIcon class="h-4 w-4" />
+            <span>{{ debugEnabled ? 'Debug On' : 'Debug' }}</span>
+          </button>
+          <CheckCircleIcon v-if="isProductValidated" class="h-5 w-5 text-success" :class="{ 'ml-auto': !canDebug || !isStoreSelected }" />
         </div>
 
         <div>
@@ -416,6 +457,38 @@ const submitForm = async () => {
             <template v-else-if="selectedRetailer?.slug === 'target'"> Look for "TCIN" on the Target product page.</template>
             <template v-else> Enter the product's SKU, UPC, or item number.</template>
           </p>
+        </div>
+
+        <!-- Debug Info Panel -->
+        <div v-if="debugEnabled && debugInfo" class="mt-4 p-5 border-2 border-amber-500/30 rounded-xl bg-amber-50/5">
+          <div class="flex items-center gap-2 mb-4 pb-3 border-b border-amber-500/20">
+            <BugAntIcon class="h-5 w-5 text-amber-500" />
+            <span class="text-sm font-bold text-amber-500">Debug Information</span>
+          </div>
+
+          <!-- Raw API Response -->
+          <div v-if="debugInfo.raw_api_response" class="mb-6">
+            <h4 class="text-xs font-semibold text-primary mb-2">Raw API Response</h4>
+            <div class="text-xs text-text-muted mb-2">
+              <span class="font-medium">Retailer:</span> {{ debugInfo.raw_api_response.retailer }}
+            </div>
+            <div class="text-xs text-text-muted mb-2">
+              <span class="font-medium">Endpoint:</span> {{ debugInfo.raw_api_response.endpoint }}
+            </div>
+            <pre class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-80 overflow-y-auto">{{ JSON.stringify(debugInfo.raw_api_response.response, null, 2) }}</pre>
+          </div>
+
+          <!-- Parsed Data -->
+          <div v-if="debugInfo.parsed_data">
+            <h4 class="text-xs font-semibold text-primary mb-2">Parsed Data</h4>
+            <pre class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-48 overflow-y-auto">{{ JSON.stringify(debugInfo.parsed_data, null, 2) }}</pre>
+          </div>
+
+          <!-- Error Info (if any) -->
+          <div v-if="debugInfo.error" class="mt-4">
+            <h4 class="text-xs font-semibold text-danger mb-2">Error</h4>
+            <pre class="bg-danger/10 p-4 rounded-lg overflow-x-auto text-xs text-danger max-h-48 overflow-y-auto">{{ debugInfo.error }}</pre>
+          </div>
         </div>
       </Card>
 

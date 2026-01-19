@@ -81,6 +81,42 @@ export interface ValidateProductResponse {
   message?: string
 }
 
+// Debug-specific types
+export interface DebugInfo {
+  raw_api_response: {
+    retailer: string
+    endpoint: string
+    response: unknown
+  } | null
+  parsed_data: ValidatedProduct | null
+  saved_to_db?: {
+    current_price: number
+    product_metadata: ProductMetadata
+    last_checked_at: string
+  }
+  price_history_entry?: Record<string, unknown>
+  alert_created?: Record<string, unknown> | null
+  price_changed?: boolean
+  old_price?: number
+  new_price?: number
+  error?: string
+  trace?: string
+}
+
+export interface DebugValidateProductResponse {
+  valid: boolean
+  product?: ValidatedProduct
+  message?: string
+  debug: DebugInfo
+}
+
+export interface DebugRefreshResponse {
+  message?: string
+  error?: string
+  tracked_product?: TrackedProduct
+  debug: DebugInfo
+}
+
 // Retailers with status - Best Buy is active, others are coming soon
 export const RETAILERS: Retailer[] = [
   { id: 1, name: 'Best Buy', slug: 'bestbuy', is_active: true, status: 'active' },
@@ -91,6 +127,7 @@ export const RETAILERS: Retailer[] = [
   { id: 6, name: 'Target', slug: 'target', is_active: true, status: 'coming_soon' },
 ]
 
+// Production API - clean endpoints
 export const watchApi = {
   async getAll(): Promise<TrackedProduct[]> {
     const { data } = await apiClient.get<{ tracked_products: TrackedProduct[] }>('/watch')
@@ -127,5 +164,30 @@ export const watchApi = {
   async refresh(id: number | string): Promise<TrackedProduct> {
     const { data } = await apiClient.post<{ tracked_product: TrackedProduct }>(`/watch/${id}/refresh`)
     return data.tracked_product
+  },
+}
+
+// Debug API - separate endpoints for debugging retailer API calls
+export const watchDebugApi = {
+  async canDebug(): Promise<boolean> {
+    try {
+      const { data } = await apiClient.get<{ can_debug: boolean }>('/watch-debug/can-debug')
+      return data.can_debug
+    } catch {
+      return false
+    }
+  },
+
+  async validateProduct(retailerId: number, skuUpc: string): Promise<DebugValidateProductResponse> {
+    const { data } = await apiClient.post<DebugValidateProductResponse>('/watch-debug/validate-product', {
+      retailer_id: retailerId,
+      sku_upc: skuUpc,
+    })
+    return data
+  },
+
+  async refresh(id: number | string): Promise<DebugRefreshResponse> {
+    const { data } = await apiClient.post<DebugRefreshResponse>(`/watch-debug/${id}/refresh`)
+    return data
   },
 }

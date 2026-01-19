@@ -10,11 +10,24 @@ abstract class BaseRetailerService
 {
     protected Retailer $retailer;
     protected array $headers = [];
+    protected bool $debugMode = false;
+    protected ?array $lastRawResponse = null;
 
     public function __construct(Retailer $retailer)
     {
         $this->retailer = $retailer;
         $this->setupHeaders();
+    }
+
+    public function setDebugMode(bool $enabled): self
+    {
+        $this->debugMode = $enabled;
+        return $this;
+    }
+
+    public function getLastRawResponse(): ?array
+    {
+        return $this->lastRawResponse;
     }
 
     abstract protected function setupHeaders(): void;

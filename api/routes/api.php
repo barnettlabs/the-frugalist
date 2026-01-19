@@ -5,6 +5,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PlaygroundController;
 use App\Http\Controllers\PriceTrackerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WatchDebugController;
 use App\Http\Controllers\UserDeviceController;
 use App\Http\Controllers\VehicleFinanceSheetController;
 use App\Http\Controllers\VehicleLeaseSheetController;
@@ -208,6 +209,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/{trackedProduct}', [PriceTrackerController::class, 'apiUpdate']);
         Route::delete('/{trackedProduct}', [PriceTrackerController::class, 'apiDestroy']);
         Route::post('/{trackedProduct}/refresh', [PriceTrackerController::class, 'apiRefresh']);
+    });
+
+    // Watch Debug (separate endpoints for debugging retailer API calls)
+    Route::prefix('watch-debug')->group(function () {
+        Route::get('/can-debug', [WatchDebugController::class, 'canDebug']);
+        Route::post('/validate-product', [WatchDebugController::class, 'validateProduct']);
+        Route::post('/{trackedProduct}/refresh', [WatchDebugController::class, 'refresh']);
     });
 
     // Notifications

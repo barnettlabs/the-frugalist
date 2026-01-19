@@ -6,10 +6,11 @@ import {
   EnvelopeIcon,
   DevicePhoneMobileIcon,
   ChevronLeftIcon,
+  BugAntIcon,
 } from '@heroicons/vue/24/outline'
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime, formatDateTime } from '@/utils/time'
-import { watchApi, RETAILERS, type TrackedProduct, type NotificationMethod } from '@/api/watch'
+import { watchApi, watchDebugApi, RETAILERS, type TrackedProduct, type NotificationMethod, type DebugInfo } from '@/api/watch'
 import Card from '@/components/Card.vue'
 import Badge from '@/components/Badge.vue'
 import Spinner from '@/components/Spinner.vue'
@@ -26,6 +27,11 @@ const product = ref<TrackedProduct | null>(null)
 const loading = ref(true)
 const refreshing = ref(false)
 const saving = ref(false)
+
+// Debug mode state
+const canDebug = ref(false)
+const debugEnabled = ref(false)
+const debugInfo = ref<DebugInfo | null>(null)
 
 // Edit form state
 const editForm = ref({
@@ -54,9 +60,20 @@ const refreshPrice = async () => {
   if (!product.value) return
 
   refreshing.value = true
+  debugInfo.value = null
   try {
-    const updated = await watchApi.refresh(product.value.id)
-    product.value = updated
+    if (debugEnabled.value) {
+      // Use separate debug endpoint
+      const response = await watchDebugApi.refresh(product.value.id)
+      if (response.tracked_product) {
+        product.value = response.tracked_product
+      }
+      debugInfo.value = response.debug
+    } else {
+      // Use production endpoint
+      const updated = await watchApi.refresh(product.value.id)
+      product.value = updated
+    }
   } catch (error) {
     console.error('Error refreshing price:', error)
   } finally {
@@ -139,8 +156,13 @@ const handlePointHover = (point: typeof hoveredPoint.value) => {
   hoveredPoint.value = point
 }
 
+const checkDebugAccess = async () => {
+  canDebug.value = await watchDebugApi.canDebug()
+}
+
 onMounted(() => {
   loadProduct()
+  checkDebugAccess()
 })
 </script>
 
@@ -176,14 +198,31 @@ onMounted(() => {
                 {{ getRetailerName(product) }} &middot; {{ product.sku_upc }}
               </p>
             </div>
-            <button
-              @click="refreshPrice"
-              :disabled="refreshing"
-              class="flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
-            >
-              <ArrowPathIcon class="h-5 w-5" :class="{ 'animate-spin': refreshing }" />
-              <span>{{ refreshing ? 'Refreshing...' : 'Refresh' }}</span>
-            </button>
+            <div class="flex items-center gap-2">
+              <!-- Debug Mode Toggle (only visible to authorized users) -->
+              <button
+                v-if="canDebug"
+                @click="debugEnabled = !debugEnabled"
+                :class="[
+                  'flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors',
+                  debugEnabled
+                    ? 'bg-amber-500 hover:bg-amber-600 text-white'
+                    : 'bg-border hover:bg-border/80 text-text-muted'
+                ]"
+                title="Toggle debug mode"
+              >
+                <BugAntIcon class="h-5 w-5" />
+                <span class="hidden sm:inline">{{ debugEnabled ? 'Debug On' : 'Debug' }}</span>
+              </button>
+              <button
+                @click="refreshPrice"
+                :disabled="refreshing"
+                class="flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
+              >
+                <ArrowPathIcon class="h-5 w-5" :class="{ 'animate-spin': refreshing }" />
+                <span>{{ refreshing ? 'Refreshing...' : 'Refresh' }}</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -355,6 +394,38 @@ onMounted(() => {
             <Card v-else-if="product.price_history?.length === 0 || !product.price_history">
               <h2 class="text-lg font-bold text-primary mb-4">Price History</h2>
               <p class="text-text-muted text-sm">No price history yet. Prices will be tracked over time.</p>
+            </Card>
+
+            <!-- Debug Info Panel -->
+            <Card v-if="debugEnabled && debugInfo" class="border-amber-500/30">
+              <div class="flex items-center gap-2 mb-4">
+                <BugAntIcon class="h-5 w-5 text-amber-500" />
+                <h2 class="text-lg font-bold text-amber-500">Debug Information</h2>
+              </div>
+
+              <!-- Raw API Response -->
+              <div v-if="debugInfo.raw_api_response" class="mb-6">
+                <h3 class="text-sm font-semibold text-primary mb-2">Raw API Response</h3>
+                <div class="text-xs text-text-muted mb-2">
+                  <span class="font-medium">Retailer:</span> {{ debugInfo.raw_api_response.retailer }}
+                </div>
+                <div class="text-xs text-text-muted mb-2">
+                  <span class="font-medium">Endpoint:</span> {{ debugInfo.raw_api_response.endpoint }}
+                </div>
+                <pre class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-96 overflow-y-auto">{{ JSON.stringify(debugInfo.raw_api_response.response, null, 2) }}</pre>
+              </div>
+
+              <!-- Parsed Data -->
+              <div class="mb-6">
+                <h3 class="text-sm font-semibold text-primary mb-2">Parsed Data</h3>
+                <pre class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-64 overflow-y-auto">{{ JSON.stringify(debugInfo.parsed_data, null, 2) }}</pre>
+              </div>
+
+              <!-- Saved to DB -->
+              <div v-if="debugInfo.saved_to_db">
+                <h3 class="text-sm font-semibold text-primary mb-2">Saved to Database</h3>
+                <pre class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-64 overflow-y-auto">{{ JSON.stringify(debugInfo.saved_to_db, null, 2) }}</pre>
+              </div>
             </Card>
           </div>
 

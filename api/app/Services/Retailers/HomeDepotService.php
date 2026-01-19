@@ -44,6 +44,15 @@ class HomeDepotService extends BaseRetailerService
             return null;
         }
 
+        // Store raw response for debug mode
+        if ($this->debugMode) {
+            $this->lastRawResponse = [
+                'retailer' => 'Home Depot',
+                'endpoint' => $this->retailer->api_base_url . $endpoint,
+                'response' => $data,
+            ];
+        }
+
         return $this->parseProductData($data['products'][0]);
     }
 

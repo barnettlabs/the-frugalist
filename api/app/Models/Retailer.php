@@ -15,12 +15,22 @@ class Retailer extends Model
         'api_key',
         'api_config',
         'is_active',
+        'coming_soon',
         'rate_limit_per_hour',
     ];
 
     protected $casts = [
         'api_config' => 'array',
         'is_active' => 'boolean',
+        'coming_soon' => 'boolean',
+    ];
+
+    // Hide sensitive fields from JSON serialization
+    protected $hidden = [
+        'api_base_url',
+        'api_key',
+        'api_config',
+        'rate_limit_per_hour',
     ];
 
     public function trackedProducts(): HasMany

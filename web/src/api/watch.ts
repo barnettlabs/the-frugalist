@@ -9,14 +9,12 @@ export interface PriceHistoryEntry {
   created_at: string
 }
 
-export type RetailerStatus = 'active' | 'coming_soon'
-
 export interface Retailer {
   id: number
   name: string
   slug: string
   is_active: boolean
-  status: RetailerStatus
+  coming_soon: boolean
 }
 
 export type NotificationMethod = 'email' | 'push'
@@ -117,15 +115,11 @@ export interface DebugRefreshResponse {
   debug: DebugInfo
 }
 
-// Retailers with status - Best Buy is active, others are coming soon
-export const RETAILERS: Retailer[] = [
-  { id: 1, name: 'Best Buy', slug: 'bestbuy', is_active: true, status: 'active' },
-  { id: 2, name: 'Home Depot', slug: 'homedepot', is_active: true, status: 'coming_soon' },
-  { id: 3, name: "Lowe's", slug: 'lowes', is_active: true, status: 'coming_soon' },
-  { id: 4, name: 'Amazon', slug: 'amazon', is_active: true, status: 'coming_soon' },
-  { id: 5, name: 'Walmart', slug: 'walmart', is_active: true, status: 'coming_soon' },
-  { id: 6, name: 'Target', slug: 'target', is_active: true, status: 'coming_soon' },
-]
+// Fetch retailers from database
+export async function getRetailers(): Promise<Retailer[]> {
+  const { data } = await apiClient.get<{ retailers: Retailer[] }>('/retailers')
+  return data.retailers
+}
 
 // Production API - clean endpoints
 export const watchApi = {

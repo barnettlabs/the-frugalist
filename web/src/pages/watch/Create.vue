@@ -11,7 +11,7 @@ import Card from '@/components/Card.vue'
 import Alert from '@/components/Alert.vue'
 import Badge from '@/components/Badge.vue'
 import Spinner from '@/components/Spinner.vue'
-import { watchApi, watchDebugApi, RETAILERS, type NotificationMethod, type ValidateProductResponse, type ValidatedProduct, type DebugInfo } from '@/api/watch'
+import { watchApi, watchDebugApi, getRetailers, type Retailer, type NotificationMethod, type ValidateProductResponse, type ValidatedProduct, type DebugInfo } from '@/api/watch'
 import { formatCurrency } from '@/utils/formatters'
 import {
   BuildingStorefrontIcon,
@@ -51,11 +51,20 @@ const canDebug = ref(false)
 const debugEnabled = ref(false)
 const debugInfo = ref<DebugInfo | null>(null)
 
+// Retailers fetched from the database
+const retailers = ref<Retailer[]>([])
+const retailersLoading = ref(true)
+
+// Only show retailers that are active or coming soon
+const visibleRetailers = computed(() => {
+  return retailers.value.filter(r => r.is_active || r.coming_soon)
+})
+
 // Track the last validated SKU to avoid re-validating the same value
 const lastValidatedSku = ref('')
 
 const selectedRetailer = computed(() => {
-  return RETAILERS.find(r => r.id === form.value.retailer_id)
+  return retailers.value.find(r => r.id === form.value.retailer_id)
 })
 
 const notificationMethods = computed((): NotificationMethod[] => {
@@ -223,9 +232,20 @@ const submitForm = async () => {
   }
 }
 
-// Check if user has debug access
+// Fetch retailers and check debug access on mount
 onMounted(async () => {
-  canDebug.value = await watchDebugApi.canDebug()
+  try {
+    const [fetchedRetailers, hasDebugAccess] = await Promise.all([
+      getRetailers(),
+      watchDebugApi.canDebug(),
+    ])
+    retailers.value = fetchedRetailers
+    canDebug.value = hasDebugAccess
+  } catch (error) {
+    console.error('Failed to load retailers:', error)
+  } finally {
+    retailersLoading.value = false
+  }
 })
 </script>
 
@@ -255,16 +275,21 @@ onMounted(async () => {
           <CheckCircleIcon v-if="isStoreSelected" class="h-5 w-5 text-success ml-auto" />
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <!-- Loading state -->
+        <div v-if="retailersLoading" class="flex items-center justify-center py-8">
+          <Spinner size="md" color="primary" />
+        </div>
+
+        <div v-else class="grid grid-cols-2 sm:grid-cols-3 gap-3">
           <button
-            v-for="retailer in RETAILERS"
+            v-for="retailer in visibleRetailers"
             :key="retailer.id"
             type="button"
-            @click="retailer.status === 'active' ? form.retailer_id = retailer.id : null"
-            :disabled="retailer.status !== 'active'"
+            @click="retailer.is_active && !retailer.coming_soon ? form.retailer_id = retailer.id : null"
+            :disabled="!retailer.is_active || retailer.coming_soon"
             :class="[
               'relative flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all',
-              retailer.status !== 'active'
+              !retailer.is_active || retailer.coming_soon
                 ? 'border-border bg-background cursor-not-allowed opacity-60'
                 : form.retailer_id === retailer.id
                   ? 'border-accent bg-accent/5 text-accent'
@@ -275,7 +300,7 @@ onMounted(async () => {
             <span class="text-sm font-medium text-center">{{ retailer.name }}</span>
             <!-- Coming Soon Badge -->
             <Badge
-              v-if="retailer.status !== 'active'"
+              v-if="retailer.coming_soon"
               variant="warning"
               size="sm"
               class="absolute -top-2 -right-2"

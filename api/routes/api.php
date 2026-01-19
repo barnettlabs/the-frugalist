@@ -237,3 +237,10 @@ Route::middleware('auth:sanctum')->group(function () {
 // Public routes (no auth required)
 Route::get('/announcements', [AnnouncementController::class, 'index']);
 Route::get('/announcements/{announcement}', [AnnouncementController::class, 'show']);
+
+// Retailers (public - for displaying available stores)
+Route::get('/retailers', function () {
+    return response()->json([
+        'retailers' => \App\Models\Retailer::orderBy('name')->get(),
+    ]);
+});

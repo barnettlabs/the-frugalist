@@ -15,14 +15,14 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const variantClasses = {
-  primary: 'bg-primary/10 text-primary',
-  secondary: 'bg-secondary/10 text-secondary-dark',
-  accent: 'bg-accent/10 text-accent-dark',
-  success: 'bg-success/10 text-success',
-  warning: 'bg-warning/10 text-warning',
-  danger: 'bg-danger/10 text-danger',
-  info: 'bg-info/10 text-info',
-  neutral: 'bg-gray-100 text-gray-600',
+  primary: 'bg-primary text-white',
+  secondary: 'bg-secondary text-white',
+  accent: 'bg-accent text-white',
+  success: 'bg-success text-white',
+  warning: 'bg-warning text-white',
+  danger: 'bg-danger text-white',
+  info: 'bg-info text-white',
+  neutral: 'bg-gray-500 text-white',
 }
 
 const sizeClasses = {

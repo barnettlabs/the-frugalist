@@ -2,6 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { FinanceCalculator } from '../../utils/financeCalculator.js'
 import { formatCurrency, parseOrZero } from '@/utils/formatters.js'
+import TextInput from '@/components/TextInput.vue'
 
 const props = defineProps({
   modelValue: {
@@ -138,20 +139,15 @@ const getTimeSavings = () => {
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Payment Amount</label>
-            <div class="relative">
-              <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                >$</span
-              >
-              <input
-                v-model="payment.paymentAmount"
-                type="number"
-                step="0.01"
-                min="0"
-                class="pl-8 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                placeholder="0.00"
-                @input="updateExtraPayments"
-              />
-            </div>
+            <TextInput
+              v-model="payment.paymentAmount"
+              type="number"
+              step="0.01"
+              min="0"
+              prefix="$"
+              placeholder="0.00"
+              @input="updateExtraPayments"
+            />
           </div>
 
           <div>

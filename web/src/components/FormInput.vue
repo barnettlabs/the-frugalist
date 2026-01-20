@@ -188,7 +188,16 @@ const inputSpecificProps = computed(() => {
     }
   }
 
-  if (props.type === 'number' || props.type === 'currency' || props.type === 'percentage') {
+  if (props.type === 'currency' || props.type === 'percentage') {
+    // Don't pass prefix/suffix - these components have their own built-in symbols
+    return {
+      step: props.step,
+      min: props.min,
+      max: props.max,
+    }
+  }
+
+  if (props.type === 'number') {
     return commonProps
   }
 

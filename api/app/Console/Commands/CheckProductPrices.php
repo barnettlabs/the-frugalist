@@ -125,11 +125,14 @@ class CheckProductPrices extends Command
 
             $oldPrice = $product->current_price;
             $newPrice = $productData['current_price'];
+            $oldInStock = $product->in_stock ?? true;
+            $newInStock = $productData['in_stock'] ?? true;
             $alertsCreated = 0;
 
-            // Update product with new price data
+            // Update product with new price and stock data
             $product->update([
                 'current_price' => $newPrice,
+                'in_stock' => $newInStock,
                 'last_checked_at' => now(),
             ]);
 
@@ -144,55 +147,52 @@ class CheckProductPrices extends Command
                 'checked_at' => now(),
             ]);
 
-            // Check for price alerts
-            if ($newPrice != $oldPrice) {
-                // Price changed - check if we need to create alerts
-                if ($newPrice < $oldPrice) {
-                    // Price dropped
-                    $alertType = $newPrice <= $product->target_price ? 'target_reached' : 'price_drop';
+            // Check for price alerts (only if watching for price drops)
+            if ($product->shouldCheckForPriceDrop() && $newPrice < $oldPrice) {
+                // Price dropped
+                $alertType = ($product->target_price && $newPrice <= $product->target_price) ? 'target_reached' : 'price_drop';
 
-                    $alert = $product->priceAlerts()->create([
-                        'old_price' => $oldPrice,
-                        'new_price' => $newPrice,
-                        'alert_type' => $alertType,
-                        'triggered_at' => now(),
-                    ]);
+                $alert = $product->priceAlerts()->create([
+                    'old_price' => $oldPrice,
+                    'new_price' => $newPrice,
+                    'alert_type' => $alertType,
+                    'triggered_at' => now(),
+                ]);
 
-                    $alertsCreated++;
+                $alertsCreated++;
 
-                    $this->line("  💰 {$product->product_name}: {$this->formatCurrency($oldPrice)} → {$this->formatCurrency($newPrice)} ({$alertType})");
+                $this->line("  💰 {$product->product_name}: {$this->formatCurrency($oldPrice)} → {$this->formatCurrency($newPrice)} ({$alertType})");
 
-                    // Send email notification if user has email verified and email is in notification methods
-                    if (in_array('email', $product->notification_method) && $product->user->canReceiveEmailNotifications()) {
-                        Mail::to($product->user->email)->send(new PriceDropAlert($product, $alertType));
-                        $this->line("  📧 Email notification sent to {$product->user->email}");
-                    }
+                // Send email notification if user has email verified and email is in notification methods
+                if (in_array('email', $product->notification_method ?? []) && $product->user->canReceiveEmailNotifications()) {
+                    Mail::to($product->user->email)->send(new PriceDropAlert($product, $alertType));
+                    $this->line("  📧 Email notification sent to {$product->user->email}");
+                }
 
-                    // SMS TEMPORARILY DISABLED - waiting for Twilio approval
-                    // Send SMS notification if user has phone verified and sms is in notification methods
-                    // if (in_array('sms', $product->notification_method) && $product->user->canReceiveSmsNotifications()) {
-                    //     $twilioService = app(TwilioService::class);
-                    //     $twilioService->sendPriceAlert(
-                    //         $product->user->phone_number,
-                    //         $product->product_name,
-                    //         $newPrice,
-                    //         $product->retail_price,
-                    //         $alertType
-                    //     );
-                    //     $this->line("  📱 SMS notification sent to {$product->user->phone_number}");
-                    // }
+                // SMS TEMPORARILY DISABLED - waiting for Twilio approval
+                // Send SMS notification if user has phone verified and sms is in notification methods
+                // if (in_array('sms', $product->notification_method ?? []) && $product->user->canReceiveSmsNotifications()) {
+                //     $twilioService = app(TwilioService::class);
+                //     $twilioService->sendPriceAlert(
+                //         $product->user->phone_number,
+                //         $product->product_name,
+                //         $newPrice,
+                //         $product->retail_price,
+                //         $alertType
+                //     );
+                //     $this->line("  📱 SMS notification sent to {$product->user->phone_number}");
+                // }
 
-                    // Auto-deactivate if target price reached
-                    if ($alertType === 'target_reached') {
-                        $product->update(['is_active' => false]);
-                        $this->line("  🎯 Target price reached - tracking auto-deactivated");
-                    }
+                // Auto-deactivate if target price reached
+                if ($alertType === 'target_reached') {
+                    $product->update(['is_active' => false]);
+                    $this->line("  🎯 Target price reached - tracking auto-deactivated");
+                }
+            }
 
-                } elseif (!$productData['in_stock'] && $product->priceHistory()->where('in_stock', false)->doesntExist()) {
-                    // Just went out of stock
-                    $this->line("  ⚠️  {$product->product_name}: Out of stock");
-
-                } elseif ($productData['in_stock'] && $product->priceHistory()->latest()->first()?->in_stock === false) {
+            // Check for stock alerts (only if watching for stock)
+            if ($product->shouldCheckForStock()) {
+                if (!$oldInStock && $newInStock) {
                     // Back in stock
                     $alert = $product->priceAlerts()->create([
                         'old_price' => $oldPrice,
@@ -202,7 +202,16 @@ class CheckProductPrices extends Command
                     ]);
 
                     $alertsCreated++;
-                    $this->line("  ✅ {$product->product_name}: Back in stock");
+                    $this->line("  ✅ {$product->product_name}: Back in stock!");
+
+                    // Send email notification
+                    if (in_array('email', $product->notification_method ?? []) && $product->user->canReceiveEmailNotifications()) {
+                        Mail::to($product->user->email)->send(new PriceDropAlert($product, 'back_in_stock'));
+                        $this->line("  📧 Email notification sent to {$product->user->email}");
+                    }
+                } elseif ($oldInStock && !$newInStock) {
+                    // Went out of stock (just log, no alert)
+                    $this->line("  ⚠️  {$product->product_name}: Out of stock");
                 }
             }
 

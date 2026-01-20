@@ -18,6 +18,25 @@ export interface Retailer {
 }
 
 export type NotificationMethod = 'email' | 'push'
+export type WatchType = 'price' | 'stock' | 'both'
+export type CheckInterval = 1 | 5 | 15 | 30 | 60 | 360 | 720 | 1440 // minutes
+
+export const CHECK_INTERVAL_OPTIONS = [
+  { value: 1, label: 'Every minute' },
+  { value: 5, label: 'Every 5 minutes' },
+  { value: 15, label: 'Every 15 minutes' },
+  { value: 30, label: 'Every 30 minutes' },
+  { value: 60, label: 'Every hour' },
+  { value: 360, label: 'Every 6 hours' },
+  { value: 720, label: 'Every 12 hours' },
+  { value: 1440, label: 'Once a day' },
+] as const
+
+export const WATCH_TYPE_OPTIONS = [
+  { value: 'price', label: 'Price drop', description: 'Notify when price drops to target' },
+  { value: 'stock', label: 'Back in stock', description: 'Notify when item becomes available' },
+  { value: 'both', label: 'Price or stock', description: 'Notify for either event' },
+] as const
 
 export interface TrackedProduct {
   id: number
@@ -33,6 +52,9 @@ export interface TrackedProduct {
   target_price: number | null
   is_active: boolean
   notification_method: NotificationMethod[]
+  watch_type: WatchType
+  check_interval: CheckInterval
+  in_stock: boolean
   last_checked_at: string | null
   created_at: string
   updated_at: string
@@ -43,16 +65,20 @@ export interface TrackedProduct {
 export interface CreateTrackedProductData {
   retailer_id: number
   sku_upc: string
-  target_price: number
+  target_price?: number
   tracking_start_date: string
   tracking_end_date?: string
   notification_methods: NotificationMethod[]
+  watch_type: WatchType
+  check_interval: CheckInterval
 }
 
 export interface UpdateTrackedProductData {
   target_price?: number
   notification_method?: NotificationMethod[]
   is_active?: boolean
+  watch_type?: WatchType
+  check_interval?: CheckInterval
 }
 
 export interface ProductMetadata {

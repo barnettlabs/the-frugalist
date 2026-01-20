@@ -67,15 +67,20 @@ class PriceTrackerController extends Controller
         $request->validate([
             'retailer_id' => 'required|exists:retailers,id',
             'sku_upc' => 'required|string',
-            'target_price' => 'required|numeric|min:0.01',
+            'target_price' => 'nullable|numeric|min:0.01',
             'notification_methods' => 'required|array|min:1',
             'notification_methods.*' => 'in:email,push',
             'tracking_start_date' => 'required|date|after_or_equal:today',
             'tracking_end_date' => 'nullable|date|after:tracking_start_date',
+            'watch_type' => 'nullable|in:price,stock,both',
+            'check_interval' => 'nullable|integer|min:1|max:1440',
         ]);
 
         $user = Auth::user();
         $retailer = Retailer::findOrFail($request->retailer_id);
+
+        // Determine watch type (default to 'price')
+        $watchType = $request->watch_type ?? 'price';
 
         // Check if user already tracking this product
         $existing = TrackedProduct::where('user_id', $user->id)
@@ -101,11 +106,19 @@ class PriceTrackerController extends Controller
                 ]);
             }
 
-            // Validate target price is not above current price
-            if ($request->target_price >= $productData['current_price']) {
-                throw ValidationException::withMessages([
-                    'target_price' => 'Target price must be lower than current price ($' . number_format($productData['current_price'], 2) . ')'
-                ]);
+            // Validate target price is required and valid for price-based watch types
+            $needsTargetPrice = in_array($watchType, ['price', 'both']);
+            if ($needsTargetPrice) {
+                if (!$request->target_price) {
+                    throw ValidationException::withMessages([
+                        'target_price' => 'Target price is required when watching for price drops'
+                    ]);
+                }
+                if ($request->target_price >= $productData['current_price']) {
+                    throw ValidationException::withMessages([
+                        'target_price' => 'Target price must be lower than current price ($' . number_format($productData['current_price'], 2) . ')'
+                    ]);
+                }
             }
 
             // Create tracked product
@@ -119,7 +132,10 @@ class PriceTrackerController extends Controller
                 'product_image_url' => $productData['image_url'],
                 'retail_price' => $productData['retail_price'],
                 'current_price' => $productData['current_price'],
-                'target_price' => $request->target_price,
+                'target_price' => $needsTargetPrice ? $request->target_price : null,
+                'watch_type' => $watchType,
+                'check_interval' => $request->check_interval ?? 60,
+                'in_stock' => $productData['in_stock'] ?? true,
                 'notification_method' => $request->notification_methods,
                 'tracking_start_date' => $request->tracking_start_date,
                 'tracking_end_date' => $request->tracking_end_date,
@@ -178,19 +194,32 @@ class PriceTrackerController extends Controller
             'target_price' => 'nullable|numeric|min:0.01',
             'tracking_end_date' => 'nullable|date|after:today',
             'is_active' => 'boolean',
+            'watch_type' => 'nullable|in:price,stock,both',
+            'check_interval' => 'nullable|integer|min:1|max:1440',
+            'notification_method' => 'nullable|array',
+            'notification_method.*' => 'in:email,push',
         ]);
 
-        // Custom validation for target price
-        if ($request->target_price >= $trackedProduct->current_price) {
-            throw ValidationException::withMessages([
-                'target_price' => 'Target price must be lower than current price ($' . number_format($trackedProduct->current_price, 2) . ')'
-            ]);
+        // Determine watch type (use request value or keep existing)
+        $watchType = $request->watch_type ?? $trackedProduct->watch_type ?? 'price';
+        $needsTargetPrice = in_array($watchType, ['price', 'both']);
+
+        // Custom validation for target price only if watch type requires it
+        if ($needsTargetPrice && $request->has('target_price') && $request->target_price !== null) {
+            if ($request->target_price >= $trackedProduct->current_price) {
+                throw ValidationException::withMessages([
+                    'target_price' => 'Target price must be lower than current price ($' . number_format($trackedProduct->current_price, 2) . ')'
+                ]);
+            }
         }
 
         $trackedProduct->update($request->only([
             'target_price',
             'tracking_end_date',
-            'is_active'
+            'is_active',
+            'watch_type',
+            'check_interval',
+            'notification_method',
         ]));
 
         $trackedProduct->load(['retailer', 'priceHistory', 'priceAlerts']);
@@ -239,10 +268,13 @@ class PriceTrackerController extends Controller
 
             $oldPrice = $trackedProduct->current_price;
             $newPrice = $productData['current_price'];
+            $oldInStock = $trackedProduct->in_stock;
+            $newInStock = $productData['in_stock'] ?? true;
 
-            // Update current price, metadata, and clear any previous errors
+            // Update current price, stock status, metadata, and clear any previous errors
             $trackedProduct->update([
                 'current_price' => $newPrice,
+                'in_stock' => $newInStock,
                 'product_metadata' => $productData['metadata'],
                 'last_checked_at' => now(),
                 'last_scraper_error' => null,
@@ -257,14 +289,24 @@ class PriceTrackerController extends Controller
                 'checked_at' => now(),
             ]);
 
-            // Check for price alerts
-            if ($newPrice < $oldPrice) {
-                $alertType = $newPrice <= $trackedProduct->target_price ? 'target_reached' : 'price_drop';
+            // Check for price alerts (only if watching for price)
+            if ($trackedProduct->shouldCheckForPriceDrop() && $newPrice < $oldPrice) {
+                $alertType = ($trackedProduct->target_price && $newPrice <= $trackedProduct->target_price) ? 'target_reached' : 'price_drop';
 
                 $trackedProduct->priceAlerts()->create([
                     'old_price' => $oldPrice,
                     'new_price' => $newPrice,
                     'alert_type' => $alertType,
+                    'triggered_at' => now(),
+                ]);
+            }
+
+            // Check for stock alerts (only if watching for stock)
+            if ($trackedProduct->shouldCheckForStock() && !$oldInStock && $newInStock) {
+                $trackedProduct->priceAlerts()->create([
+                    'old_price' => $oldPrice,
+                    'new_price' => $newPrice,
+                    'alert_type' => 'back_in_stock',
                     'triggered_at' => now(),
                 ]);
             }

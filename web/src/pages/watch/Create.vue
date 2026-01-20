@@ -11,7 +11,7 @@ import Card from '@/components/Card.vue'
 import Alert from '@/components/Alert.vue'
 import Badge from '@/components/Badge.vue'
 import Spinner from '@/components/Spinner.vue'
-import { watchApi, watchDebugApi, getRetailers, type Retailer, type NotificationMethod, type ValidateProductResponse, type ValidatedProduct, type DebugInfo } from '@/api/watch'
+import { watchApi, watchDebugApi, getRetailers, type Retailer, type NotificationMethod, type WatchType, type CheckInterval, type ValidateProductResponse, type ValidatedProduct, type DebugInfo, CHECK_INTERVAL_OPTIONS, WATCH_TYPE_OPTIONS } from '@/api/watch'
 import { devicesApi } from '@/api/devices'
 import { formatCurrency } from '@/utils/formatters'
 import {
@@ -40,6 +40,8 @@ const form = ref({
   end_date: '',
   notification_email: true,
   notification_push: false,
+  watch_type: 'price' as WatchType,
+  check_interval: 60 as CheckInterval,
 })
 
 const loading = ref(false)
@@ -102,7 +104,10 @@ const isTargetPriceValid = computed(() => {
   return targetPriceValue.value < product.value.current_price
 })
 
+const needsTargetPrice = computed(() => form.value.watch_type === 'price' || form.value.watch_type === 'both')
+
 const targetPriceError = computed(() => {
+  if (!needsTargetPrice.value) return ''
   if (!form.value.target_price) return 'Target price is required'
   if (targetPriceValue.value === null || targetPriceValue.value <= 0) return 'Enter a valid price'
   if (product.value?.current_price && targetPriceValue.value >= product.value.current_price) {
@@ -119,10 +124,11 @@ const savingsPercent = computed(() => {
 })
 
 const isFormValid = computed(() => {
+  const targetPriceOk = needsTargetPrice.value ? isTargetPriceValid.value : true
   return isStoreSelected.value &&
     isSkuEntered.value &&
     isProductValidated.value &&
-    isTargetPriceValid.value &&
+    targetPriceOk &&
     hasNotificationMethod.value
 })
 
@@ -220,10 +226,12 @@ const submitForm = async () => {
     const newProduct = await watchApi.create({
       retailer_id: form.value.retailer_id,
       sku_upc: form.value.sku_upc.trim(),
-      target_price: targetPriceValue.value!,
+      target_price: needsTargetPrice.value ? targetPriceValue.value! : undefined,
       tracking_start_date: startDate,
       tracking_end_date: form.value.end_date || undefined,
       notification_methods: notificationMethods.value,
+      watch_type: form.value.watch_type,
+      check_interval: form.value.check_interval,
     })
     router.push(`/watch/${newProduct.id}`)
   } catch (error: any) {
@@ -517,9 +525,33 @@ onMounted(async () => {
           <CheckCircleIcon v-if="isTargetPriceValid && hasNotificationMethod" class="h-5 w-5 text-success ml-auto" />
         </div>
 
-        <!-- Target Price & Dates -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <div>
+        <!-- Watch Type -->
+        <div class="mb-6">
+          <InputLabel value="What to watch for" class="mb-3" />
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <button
+              v-for="option in WATCH_TYPE_OPTIONS"
+              :key="option.value"
+              type="button"
+              @click="form.watch_type = option.value"
+              :disabled="!isProductValidated"
+              :class="[
+                'flex flex-col items-start p-4 rounded-lg border-2 transition-all text-left',
+                !isProductValidated ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
+                form.watch_type === option.value
+                  ? 'border-accent bg-accent/5'
+                  : 'border-border hover:border-tan-dark hover:bg-tan-light'
+              ]"
+            >
+              <span class="font-medium text-primary">{{ option.label }}</span>
+              <span class="text-xs text-text-muted mt-1">{{ option.description }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Target Price (conditional) & Check Interval -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div v-if="needsTargetPrice">
             <InputLabel for="target_price">
               Target Price <span class="text-danger">*</span>
             </InputLabel>
@@ -538,11 +570,31 @@ onMounted(async () => {
           </div>
 
           <div>
+            <InputLabel for="check_interval" value="Check frequency" />
+            <select
+              id="check_interval"
+              v-model="form.check_interval"
+              :disabled="!isProductValidated"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed text-sm py-2"
+            >
+              <option v-for="option in CHECK_INTERVAL_OPTIONS" :key="option.value" :value="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+            <p class="text-xs text-text-muted mt-1">
+              How often to check for updates
+            </p>
+          </div>
+        </div>
+
+        <!-- Dates -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div>
             <InputLabel for="start_date" value="Start Date" />
             <TextInput id="start_date" v-model="form.start_date" type="date" class="block w-full mt-1"
               :disabled="!isProductValidated" />
             <p class="text-xs text-text-muted mt-1">
-              When to begin
+              When to begin tracking
             </p>
             <InputError :message="errors.start_date?.[0]" class="mt-2" />
           </div>

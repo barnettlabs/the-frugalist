@@ -5,7 +5,7 @@ import Card from '@/components/Card.vue'
 import Badge from '@/components/Badge.vue'
 import Spinner from '@/components/Spinner.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
-import { TagIcon, PlusIcon, TrashIcon, EyeIcon, ArrowPathIcon, EnvelopeIcon, DevicePhoneMobileIcon, BellAlertIcon, PauseIcon, PlayIcon } from '@heroicons/vue/24/outline'
+import { TagIcon, PlusIcon, TrashIcon, EyeIcon, ArrowPathIcon, EnvelopeIcon, DevicePhoneMobileIcon, BellAlertIcon, PauseIcon, PlayIcon, CurrencyDollarIcon, ArchiveBoxIcon } from '@heroicons/vue/24/outline'
 import CopyText from '@/components/CopyText.vue'
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime } from '@/utils/time'
@@ -103,6 +103,15 @@ const refreshProduct = async (id: number) => {
 
 const getRetailerName = (product: TrackedProduct): string => {
   return product.retailer?.name || 'Unknown'
+}
+
+const getWatchTypeLabel = (watchType?: string): string => {
+  switch (watchType) {
+    case 'price': return 'Price'
+    case 'stock': return 'Stock'
+    case 'both': return 'Price & Stock'
+    default: return 'Price'
+  }
 }
 
 onMounted(() => {
@@ -214,6 +223,16 @@ onMounted(() => {
                     :title="product.is_active ? 'Active' : 'Paused'"
                   />
                   <span class="text-xs text-text-muted">{{ getRetailerName(product) }}</span>
+                  <span class="text-xs text-text-muted">·</span>
+                  <span class="inline-flex items-center gap-1 text-xs text-text-muted">
+                    <CurrencyDollarIcon v-if="product.watch_type === 'price'" class="h-3 w-3" title="Watching for price drop" />
+                    <ArchiveBoxIcon v-else-if="product.watch_type === 'stock'" class="h-3 w-3" title="Watching for stock" />
+                    <template v-else-if="product.watch_type === 'both'">
+                      <CurrencyDollarIcon class="h-3 w-3" />
+                      <ArchiveBoxIcon class="h-3 w-3" />
+                    </template>
+                    <CurrencyDollarIcon v-else class="h-3 w-3" title="Watching for price drop" />
+                  </span>
                 </div>
                 <div class="flex items-center gap-1" @click.prevent>
                   <button
@@ -252,7 +271,13 @@ onMounted(() => {
                 <span class="text-2xl font-semibold text-primary">
                   {{ product.current_price ? `$${formatCurrency(product.current_price)}` : '—' }}
                 </span>
-                <template v-if="product.target_price && product.current_price">
+                <!-- Stock status for stock watchers -->
+                <template v-if="product.watch_type === 'stock' || product.watch_type === 'both'">
+                  <Badge v-if="product.in_stock" variant="success" size="sm">In Stock</Badge>
+                  <Badge v-else variant="danger" size="sm">Out of Stock</Badge>
+                </template>
+                <!-- Price target status for price watchers -->
+                <template v-else-if="product.target_price && product.current_price">
                   <span
                     v-if="product.current_price <= product.target_price"
                     class="text-sm font-medium text-success"

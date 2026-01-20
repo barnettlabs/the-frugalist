@@ -24,6 +24,9 @@ class TrackedProduct extends Model
         'tracking_start_date',
         'tracking_end_date',
         'is_active',
+        'watch_type',
+        'check_interval',
+        'in_stock',
         'notification_method',
         'product_metadata',
         'last_checked_at',
@@ -40,6 +43,8 @@ class TrackedProduct extends Model
         'last_checked_at' => 'datetime',
         'last_error_at' => 'datetime',
         'is_active' => 'boolean',
+        'in_stock' => 'boolean',
+        'check_interval' => 'integer',
         'product_metadata' => 'array',
         'notification_method' => 'array',
     ];
@@ -78,8 +83,24 @@ class TrackedProduct extends Model
     {
         return $query->where(function ($q) {
             $q->whereNull('last_checked_at')
-              ->orWhere('last_checked_at', '<', now()->subHour());
+              ->orWhereRaw('last_checked_at < DATE_SUB(NOW(), INTERVAL check_interval MINUTE)');
         });
+    }
+
+    /**
+     * Check if this product should be monitored for price drops
+     */
+    public function shouldCheckForPriceDrop(): bool
+    {
+        return in_array($this->watch_type, ['price', 'both']);
+    }
+
+    /**
+     * Check if this product should be monitored for stock availability
+     */
+    public function shouldCheckForStock(): bool
+    {
+        return in_array($this->watch_type, ['stock', 'both']);
     }
 
     public function isPriceAtTarget(): bool

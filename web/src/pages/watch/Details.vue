@@ -13,7 +13,7 @@ import {
 } from '@heroicons/vue/24/outline'
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime, formatDateTime, formatShortDate } from '@/utils/time'
-import { watchApi, watchDebugApi, type TrackedProduct, type NotificationMethod, type DebugInfo } from '@/api/watch'
+import { watchApi, watchDebugApi, type TrackedProduct, type NotificationMethod, type WatchType, type CheckInterval, type DebugInfo, CHECK_INTERVAL_OPTIONS, WATCH_TYPE_OPTIONS } from '@/api/watch'
 import { devicesApi } from '@/api/devices'
 import Card from '@/components/Card.vue'
 import Badge from '@/components/Badge.vue'
@@ -48,6 +48,8 @@ const editForm = ref({
   target_price: '',
   notification_email: false,
   notification_push: false,
+  watch_type: 'price' as WatchType,
+  check_interval: 60 as CheckInterval,
 })
 
 // Confirmation dialog state
@@ -63,6 +65,8 @@ const loadProduct = async () => {
     editForm.value.target_price = data.target_price?.toString() || ''
     editForm.value.notification_email = data.notification_method?.includes('email') || false
     editForm.value.notification_push = data.notification_method?.includes('push') || false
+    editForm.value.watch_type = data.watch_type || 'price'
+    editForm.value.check_interval = data.check_interval || 60
   } catch (error) {
     console.error('Error loading product:', error)
     router.push('/watch')
@@ -96,6 +100,9 @@ const refreshPrice = async () => {
   }
 }
 
+// Computed to check if target price is needed based on watch type
+const needsTargetPrice = computed(() => editForm.value.watch_type === 'price' || editForm.value.watch_type === 'both')
+
 const saveSettings = async () => {
   if (!product.value) return
 
@@ -106,8 +113,10 @@ const saveSettings = async () => {
     if (editForm.value.notification_push) notificationMethods.push('push')
 
     const updated = await watchApi.update(product.value.id, {
-      target_price: editForm.value.target_price ? parseFloat(editForm.value.target_price) : undefined,
+      target_price: needsTargetPrice.value && editForm.value.target_price ? parseFloat(editForm.value.target_price) : undefined,
       notification_method: notificationMethods,
+      watch_type: editForm.value.watch_type,
+      check_interval: editForm.value.check_interval,
     })
     product.value = updated
   } catch (error) {
@@ -522,7 +531,30 @@ onMounted(async () => {
             <Card class="!bg-surface">
               <h2 class="text-lg font-bold text-primary mb-4">Edit Settings</h2>
               <div class="space-y-4">
+                <!-- Watch Type -->
                 <div>
+                  <InputLabel value="Watch for" class="mb-2" />
+                  <div class="space-y-2">
+                    <button
+                      v-for="option in WATCH_TYPE_OPTIONS"
+                      :key="option.value"
+                      type="button"
+                      @click="editForm.watch_type = option.value"
+                      :class="[
+                        'w-full flex flex-col items-start p-3 rounded-lg border-2 transition-all text-left',
+                        editForm.watch_type === option.value
+                          ? 'border-accent bg-accent/5'
+                          : 'border-border hover:border-tan-dark hover:bg-tan-light'
+                      ]"
+                    >
+                      <span class="font-medium text-primary text-sm">{{ option.label }}</span>
+                      <span class="text-xs text-text-muted">{{ option.description }}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Target Price (conditional) -->
+                <div v-if="needsTargetPrice">
                   <InputLabel for="target_price" value="Target Price" />
                   <TextInput
                     id="target_price"
@@ -535,6 +567,21 @@ onMounted(async () => {
                     placeholder="0.00"
                   />
                   <p class="text-xs text-text-muted mt-1">We'll notify you when the price drops to this amount</p>
+                </div>
+
+                <!-- Check Interval -->
+                <div>
+                  <InputLabel for="check_interval" value="Check frequency" />
+                  <select
+                    id="check_interval"
+                    v-model="editForm.check_interval"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary text-sm py-2"
+                  >
+                    <option v-for="option in CHECK_INTERVAL_OPTIONS" :key="option.value" :value="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
+                  <p class="text-xs text-text-muted mt-1">How often to check for updates</p>
                 </div>
 
                 <div>

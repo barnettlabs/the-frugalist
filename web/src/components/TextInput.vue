@@ -11,6 +11,10 @@ defineProps({
     type: String,
     default: '',
   },
+  inputClass: {
+    type: String,
+    default: '',
+  },
 })
 
 const model = defineModel({
@@ -24,5 +28,12 @@ defineExpose({ focus: () => input.value?.focus() })
 </script>
 
 <template>
-  <BaseInput v-model="model" :prefix="prefix" :suffix="suffix" v-bind="$attrs" ref="input" />
+  <BaseInput v-model="model" :prefix="prefix" :suffix="suffix" :input-class="inputClass" v-bind="$attrs" ref="input">
+    <template v-if="$slots.prefix" #prefix>
+      <slot name="prefix" />
+    </template>
+    <template v-if="$slots.suffix" #suffix>
+      <slot name="suffix" />
+    </template>
+  </BaseInput>
 </template>

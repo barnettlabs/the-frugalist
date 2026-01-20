@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { watch } from 'vue'
-import { computed, ref } from 'vue'
+import { computed, ref, useSlots } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -72,12 +71,18 @@ const props = defineProps({
     default: 'md',
     validator: (value) => ['sm', 'md', 'lg'].includes(value),
   },
-  class: {
-    type: String
-  }
+  inputClass: {
+    type: String,
+    default: '',
+  },
 })
 
+const slots = useSlots()
 const input = ref(null)
+
+// Check if slots are provided
+const hasPrefix = computed(() => !!slots.prefix || !!props.prefix)
+const hasSuffix = computed(() => !!slots.suffix || !!props.suffix)
 
 // Size classes
 const sizeClasses = {
@@ -94,16 +99,16 @@ const inputClasses = computed(() => {
   const paddingClass = getPaddingClass()
   const errorClass = props.error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
 
-  return `${baseClasses} ${sizeClass} ${paddingClass} ${errorClass} ${props.class}`
+  return `${baseClasses} ${sizeClass} ${paddingClass} ${errorClass} ${props.inputClass}`
 })
 
 // Dynamic padding based on prefix/suffix
 const getPaddingClass = () => {
-  if (props.prefix && props.suffix) {
+  if (hasPrefix.value && hasSuffix.value) {
     return 'pl-8 pr-8'
-  } else if (props.prefix) {
+  } else if (hasPrefix.value) {
     return 'pl-8'
-  } else if (props.suffix) {
+  } else if (hasSuffix.value) {
     return 'pr-8'
   }
   return ''
@@ -133,13 +138,13 @@ defineExpose({
 
 <template>
   <div class="relative">
-    <!-- Prefix for currency/symbols -->
-    <span
-      v-if="prefix"
-      class="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted z-10"
+    <!-- Prefix slot or text -->
+    <div
+      v-if="hasPrefix"
+      class="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted z-10 flex items-center"
     >
-      {{ prefix }}
-    </span>
+      <slot name="prefix">{{ prefix }}</slot>
+    </div>
 
     <!-- Input element -->
     <input
@@ -164,12 +169,12 @@ defineExpose({
       ref="input"
     />
 
-    <!-- Suffix for percentage/units -->
-    <span
-      v-if="suffix"
-      class="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted z-10"
+    <!-- Suffix slot or text -->
+    <div
+      v-if="hasSuffix"
+      class="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted z-10 flex items-center"
     >
-      {{ suffix }}
-    </span>
+      <slot name="suffix">{{ suffix }}</slot>
+    </div>
   </div>
 </template>

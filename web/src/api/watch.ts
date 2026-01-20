@@ -52,6 +52,7 @@ export interface CreateTrackedProductData {
 export interface UpdateTrackedProductData {
   target_price?: number
   notification_method?: NotificationMethod[]
+  is_active?: boolean
 }
 
 export interface ProductMetadata {

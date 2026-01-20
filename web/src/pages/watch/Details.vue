@@ -8,6 +8,8 @@ import {
   ChevronLeftIcon,
   BugAntIcon,
   BuildingStorefrontIcon,
+  PauseIcon,
+  PlayIcon,
 } from '@heroicons/vue/24/outline'
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime, formatDateTime, formatShortDate } from '@/utils/time'
@@ -22,6 +24,8 @@ import InputLabel from '@/components/InputLabel.vue'
 import TextInput from '@/components/TextInput.vue'
 import PrimaryButton from '@/components/PrimaryButton.vue'
 import DangerButton from '@/components/DangerButton.vue'
+import SecondaryButton from '@/components/SecondaryButton.vue'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -45,6 +49,11 @@ const editForm = ref({
   notification_email: false,
   notification_push: false,
 })
+
+// Confirmation dialog state
+const showDeleteDialog = ref(false)
+const showPauseDialog = ref(false)
+const actionLoading = ref(false)
 
 const loadProduct = async () => {
   try {
@@ -108,15 +117,32 @@ const saveSettings = async () => {
   }
 }
 
-const deleteProduct = async () => {
+const confirmDelete = async () => {
   if (!product.value) return
-  if (confirm('Are you sure you want to stop tracking this product?')) {
-    try {
-      await watchApi.delete(product.value.id)
-      router.push('/watch')
-    } catch (error) {
-      console.error('Error deleting product:', error)
-    }
+  actionLoading.value = true
+  try {
+    await watchApi.delete(product.value.id)
+    router.push('/watch')
+  } catch (error) {
+    console.error('Error deleting product:', error)
+  } finally {
+    actionLoading.value = false
+  }
+}
+
+const confirmTogglePause = async () => {
+  if (!product.value) return
+  actionLoading.value = true
+  try {
+    const updated = await watchApi.update(product.value.id, {
+      is_active: !product.value.is_active
+    })
+    product.value = updated
+    showPauseDialog.value = false
+  } catch (error) {
+    console.error('Error toggling pause:', error)
+  } finally {
+    actionLoading.value = false
   }
 }
 
@@ -234,6 +260,14 @@ onMounted(async () => {
             >
               <BugAntIcon class="h-4 w-4 sm:h-5 sm:w-5" />
               <span>{{ debugEnabled ? 'Debug On' : 'Debug' }}</span>
+            </button>
+            <button
+              @click="showPauseDialog = true"
+              class="flex items-center gap-2 bg-border hover:bg-border/80 text-text-muted px-4 py-2 rounded-lg font-medium transition-colors text-sm"
+            >
+              <PlayIcon v-if="!product.is_active" class="h-4 w-4 sm:h-5 sm:w-5" />
+              <PauseIcon v-else class="h-4 w-4 sm:h-5 sm:w-5" />
+              <span>{{ product.is_active ? 'Pause' : 'Resume' }}</span>
             </button>
             <button
               @click="refreshPrice"
@@ -489,18 +523,16 @@ onMounted(async () => {
               <div class="space-y-4">
                 <div>
                   <InputLabel for="target_price" value="Target Price" />
-                  <div class="relative mt-1">
-                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">$</span>
-                    <TextInput
-                      id="target_price"
-                      v-model="editForm.target_price"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      class="block w-full pl-7"
-                      placeholder="0.00"
-                    />
-                  </div>
+                  <TextInput
+                    id="target_price"
+                    v-model="editForm.target_price"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    prefix="$"
+                    class="block w-full mt-1"
+                    placeholder="0.00"
+                  />
                   <p class="text-xs text-text-muted mt-1">We'll notify you when the price drops to this amount</p>
                 </div>
 
@@ -581,7 +613,7 @@ onMounted(async () => {
               <p class="text-xs text-text-muted mb-3">
                 Remove this product from your tracking list. This action cannot be undone.
               </p>
-              <DangerButton @click="deleteProduct" class="w-full">
+              <DangerButton @click="showDeleteDialog = true" class="w-full">
                 Stop Tracking
               </DangerButton>
             </Card>
@@ -589,5 +621,31 @@ onMounted(async () => {
         </div>
       </template>
     </div>
+
+    <!-- Delete Confirmation Dialog -->
+    <ConfirmDialog
+      :show="showDeleteDialog"
+      title="Delete Tracker"
+      :message="`Are you sure you want to stop tracking '${product?.product_name || 'this product'}'? This action cannot be undone.`"
+      confirm-text="Delete"
+      variant="danger"
+      :loading="actionLoading"
+      @confirm="confirmDelete"
+      @close="showDeleteDialog = false"
+    />
+
+    <!-- Pause/Resume Confirmation Dialog -->
+    <ConfirmDialog
+      :show="showPauseDialog"
+      :title="product?.is_active ? 'Pause Tracking' : 'Resume Tracking'"
+      :message="product?.is_active
+        ? `Are you sure you want to pause tracking for '${product?.product_name || 'this product'}'? You won't receive price alerts while paused.`
+        : `Are you sure you want to resume tracking for '${product?.product_name || 'this product'}'? You'll start receiving price alerts again.`"
+      :confirm-text="product?.is_active ? 'Pause' : 'Resume'"
+      variant="primary"
+      :loading="actionLoading"
+      @confirm="confirmTogglePause"
+      @close="showPauseDialog = false"
+    />
   </main>
 </template>

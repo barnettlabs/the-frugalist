@@ -136,7 +136,7 @@ defineExpose({
     <!-- Prefix for currency/symbols -->
     <span
       v-if="prefix"
-      class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 z-10"
+      class="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted z-10"
     >
       {{ prefix }}
     </span>
@@ -167,7 +167,7 @@ defineExpose({
     <!-- Suffix for percentage/units -->
     <span
       v-if="suffix"
-      class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 z-10"
+      class="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted z-10"
     >
       {{ suffix }}
     </span>

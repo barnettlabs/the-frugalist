@@ -4,7 +4,8 @@ import { RouterLink } from 'vue-router'
 import Card from '@/components/Card.vue'
 import Badge from '@/components/Badge.vue'
 import Spinner from '@/components/Spinner.vue'
-import { TagIcon, PlusIcon, TrashIcon, EyeIcon, ArrowPathIcon, EnvelopeIcon, DevicePhoneMobileIcon, BellAlertIcon } from '@heroicons/vue/24/outline'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
+import { TagIcon, PlusIcon, TrashIcon, EyeIcon, ArrowPathIcon, EnvelopeIcon, DevicePhoneMobileIcon, BellAlertIcon, PauseIcon, PlayIcon } from '@heroicons/vue/24/outline'
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime } from '@/utils/time'
 import { watchApi, type TrackedProduct } from '@/api/watch'
@@ -15,6 +16,12 @@ const products = ref<TrackedProduct[]>([])
 const loading = ref(true)
 const refreshingId = ref<number | null>(null)
 const activeFilter = ref<FilterType>('all')
+
+// Confirmation dialog state
+const showDeleteDialog = ref(false)
+const showPauseDialog = ref(false)
+const selectedProduct = ref<TrackedProduct | null>(null)
+const actionLoading = ref(false)
 
 const filteredProducts = computed(() => {
   if (activeFilter.value === 'all') return products.value
@@ -39,14 +46,45 @@ const fetchProducts = async () => {
   }
 }
 
-const deleteProduct = async (id: number) => {
-  if (confirm('Are you sure you want to stop tracking this product?')) {
-    try {
-      await watchApi.delete(id)
-      await fetchProducts()
-    } catch (error) {
-      console.error('Error deleting product:', error)
-    }
+const openDeleteDialog = (product: TrackedProduct) => {
+  selectedProduct.value = product
+  showDeleteDialog.value = true
+}
+
+const confirmDelete = async () => {
+  if (!selectedProduct.value) return
+  actionLoading.value = true
+  try {
+    await watchApi.delete(selectedProduct.value.id)
+    await fetchProducts()
+    showDeleteDialog.value = false
+    selectedProduct.value = null
+  } catch (error) {
+    console.error('Error deleting product:', error)
+  } finally {
+    actionLoading.value = false
+  }
+}
+
+const openPauseDialog = (product: TrackedProduct) => {
+  selectedProduct.value = product
+  showPauseDialog.value = true
+}
+
+const confirmTogglePause = async () => {
+  if (!selectedProduct.value) return
+  actionLoading.value = true
+  try {
+    await watchApi.update(selectedProduct.value.id, {
+      is_active: !selectedProduct.value.is_active
+    })
+    await fetchProducts()
+    showPauseDialog.value = false
+    selectedProduct.value = null
+  } catch (error) {
+    console.error('Error toggling pause:', error)
+  } finally {
+    actionLoading.value = false
   }
 }
 
@@ -217,7 +255,7 @@ onMounted(() => {
           </div>
 
           <!-- Actions -->
-          <div class="grid grid-cols-3 gap-px bg-border border-t border-border"">
+          <div class="grid grid-cols-4 gap-px bg-border border-t border-border">
             <RouterLink :to="`/watch/${product.id}`" class="block">
               <button class="w-full bg-surface hover:bg-background text-text-muted px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors">
                 <EyeIcon class="h-4 w-4" />
@@ -230,10 +268,18 @@ onMounted(() => {
               class="w-full bg-surface hover:bg-background text-text-muted px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
             >
               <ArrowPathIcon :class="['h-4 w-4', refreshingId === product.id && 'animate-spin']" />
-              <span>{{ refreshingId === product.id ? 'Checking...' : 'Refresh' }}</span>
+              <span>{{ refreshingId === product.id ? '...' : 'Refresh' }}</span>
             </button>
             <button
-              @click="deleteProduct(product.id)"
+              @click="openPauseDialog(product)"
+              class="w-full bg-surface hover:bg-background text-text-muted px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
+            >
+              <PlayIcon v-if="!product.is_active" class="h-4 w-4" />
+              <PauseIcon v-else class="h-4 w-4" />
+              <span>{{ product.is_active ? 'Pause' : 'Resume' }}</span>
+            </button>
+            <button
+              @click="openDeleteDialog(product)"
               class="w-full bg-surface hover:bg-danger text-danger hover:text-white px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
             >
               <TrashIcon class="h-4 w-4" />
@@ -255,5 +301,31 @@ onMounted(() => {
       </div>
       </div>
     </main>
+
+    <!-- Delete Confirmation Dialog -->
+    <ConfirmDialog
+      :show="showDeleteDialog"
+      title="Delete Tracker"
+      :message="`Are you sure you want to stop tracking '${selectedProduct?.product_name || 'this product'}'? This action cannot be undone.`"
+      confirm-text="Delete"
+      variant="danger"
+      :loading="actionLoading"
+      @confirm="confirmDelete"
+      @close="showDeleteDialog = false"
+    />
+
+    <!-- Pause/Resume Confirmation Dialog -->
+    <ConfirmDialog
+      :show="showPauseDialog"
+      :title="selectedProduct?.is_active ? 'Pause Tracking' : 'Resume Tracking'"
+      :message="selectedProduct?.is_active
+        ? `Are you sure you want to pause tracking for '${selectedProduct?.product_name || 'this product'}'? You won't receive price alerts while paused.`
+        : `Are you sure you want to resume tracking for '${selectedProduct?.product_name || 'this product'}'? You'll start receiving price alerts again.`"
+      :confirm-text="selectedProduct?.is_active ? 'Pause' : 'Resume'"
+      variant="primary"
+      :loading="actionLoading"
+      @confirm="confirmTogglePause"
+      @close="showPauseDialog = false"
+    />
   </div>
 </template>

@@ -523,13 +523,11 @@ onMounted(async () => {
             <InputLabel for="target_price">
               Target Price <span class="text-danger">*</span>
             </InputLabel>
-            <div class="relative mt-1">
-              <TextInput id="target_price" v-model="form.target_price" type="number" step="0.01" min="0"
-                class="pl-6"
-                :placeholder="product?.current_price ? `Less than $${formatCurrency(product.current_price)}` : '0.00'"
-                :disabled="!isProductValidated" />
-              <span class="absolute left-2 top-1/2 -translate-y-1/2 text-text-muted">$</span>
-            </div>
+            <TextInput id="target_price" v-model="form.target_price" type="number" step="0.01" min="0"
+              prefix="$"
+              class="mt-1"
+              :placeholder="product?.current_price ? `Less than $${formatCurrency(product.current_price)}` : '0.00'"
+              :disabled="!isProductValidated" />
             <p class="text-xs text-text-muted mt-1">
               We'll notify you when the price drops to this amount
             </p>

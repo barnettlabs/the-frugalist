@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
-import PageHeader from '@/components/PageHeader.vue'
 import Card from '@/components/Card.vue'
 import Badge from '@/components/Badge.vue'
 import Spinner from '@/components/Spinner.vue'
-import { TagIcon, PlusIcon, TrashIcon, EyeIcon, ArrowPathIcon, EnvelopeIcon, DevicePhoneMobileIcon } from '@heroicons/vue/24/outline'
+import { TagIcon, PlusIcon, TrashIcon, EyeIcon, ArrowPathIcon, EnvelopeIcon, DevicePhoneMobileIcon, BellAlertIcon } from '@heroicons/vue/24/outline'
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime } from '@/utils/time'
 import { watchApi, type TrackedProduct } from '@/api/watch'
@@ -73,24 +72,41 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="py-12 flex-1">
-    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-      <!-- Header -->
-      <PageHeader
-        title="Watch"
-        description="Track price movement and get notified when they drop"
-        back-link="/dashboard"
-        back-label="Dashboard"
-      >
-        <template #actions>
-          <RouterLink to="/watch/create">
-            <button class="bg-accent hover:bg-accent-dark text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2">
-              <PlusIcon class="h-5 w-5" />
-              <span>Track New Product</span>
-            </button>
-          </RouterLink>
-        </template>
-      </PageHeader>
+  <div class="min-h-screen">
+    <!-- Hero Section -->
+    <header class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-accent via-accent-dark to-blue-900"></div>
+      <div class="dotted-background relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-12">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+          <div class="max-w-2xl">
+            <div class="flex items-center mb-4">
+              <div class="p-2 bg-white/20 rounded-lg mr-3">
+                <BellAlertIcon class="h-6 w-6 text-white" />
+              </div>
+              <span class="text-white/70 text-sm font-medium">Watch</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-medium text-white mb-4 tracking-tight">
+              Track prices, buy smarter
+            </h1>
+            <p class="text-lg text-white/80 leading-relaxed">
+              Monitor product prices and get notified when they drop. Know the right time to buy
+              instead of guessing.
+            </p>
+          </div>
+          <div class="flex-shrink-0">
+            <RouterLink to="/watch/create">
+              <button class="bg-white/10 hover:bg-white/20 backdrop-blur text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2 border border-white/20">
+                <PlusIcon class="h-5 w-5" />
+                <span>Track New Product</span>
+              </button>
+            </RouterLink>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="py-8 lg:py-12 flex-1">
+      <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
 
       <!-- Quick Filters -->
       <div v-if="!loading && products.length" class="flex items-center gap-2 mb-6">
@@ -237,6 +253,7 @@ onMounted(() => {
           </Card>
         </RouterLink>
       </div>
-    </div>
-  </main>
+      </div>
+    </main>
+  </div>
 </template>

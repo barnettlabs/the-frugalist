@@ -54,3 +54,17 @@ export const formatDateTime = (dateString: string): string => {
     hour12: true
   })
 }
+
+/**
+ * Formats a date string into a short format for chart axis labels
+ * @param dateString - ISO date string to format
+ * @returns Formatted short date string (e.g., "Jan 5")
+ */
+export const formatShortDate = (dateString: string): string => {
+  if (!dateString) return ''
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric'
+  })
+}

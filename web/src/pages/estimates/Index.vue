@@ -52,7 +52,7 @@ const benefits = [
     <!-- Hero Section -->
     <header class="relative overflow-hidden">
       <div class="absolute inset-0 bg-gradient-to-br from-accent via-accent-dark to-blue-900"></div>
-      <div class="dotted-background relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+      <div class="dotted-background relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-12">
         <div class="max-w-2xl">
           <div class="flex items-center mb-4">
             <div class="p-2 bg-white/20 rounded-lg mr-3">

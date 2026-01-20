@@ -10,7 +10,7 @@ import {
   BuildingStorefrontIcon,
 } from '@heroicons/vue/24/outline'
 import { formatCurrency } from '@/utils/formatters'
-import { formatRelativeTime, formatDateTime } from '@/utils/time'
+import { formatRelativeTime, formatDateTime, formatShortDate } from '@/utils/time'
 import { watchApi, watchDebugApi, type TrackedProduct, type NotificationMethod, type DebugInfo } from '@/api/watch'
 import { devicesApi } from '@/api/devices'
 import Card from '@/components/Card.vue'
@@ -21,6 +21,7 @@ import Checkbox from '@/components/Checkbox.vue'
 import InputLabel from '@/components/InputLabel.vue'
 import TextInput from '@/components/TextInput.vue'
 import PrimaryButton from '@/components/PrimaryButton.vue'
+import DangerButton from '@/components/DangerButton.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -327,67 +328,75 @@ onMounted(async () => {
               </div>
 
               <!-- Chart -->
-              <div class="relative h-48">
-                <svg
-                  class="w-full h-full"
-                  viewBox="0 0 100 100"
-                  preserveAspectRatio="none"
-                  @mouseleave="hoveredPoint = null"
-                >
-                  <!-- Grid lines -->
-                  <line x1="0" y1="25" x2="100" y2="25" stroke="currentColor" class="text-border" stroke-width="0.5" />
-                  <line x1="0" y1="50" x2="100" y2="50" stroke="currentColor" class="text-border" stroke-width="0.5" />
-                  <line x1="0" y1="75" x2="100" y2="75" stroke="currentColor" class="text-border" stroke-width="0.5" />
-
-                  <!-- Target price line -->
-                  <line
-                    v-if="product.target_price && chartData"
-                    :y1="100 - ((product.target_price - chartData.minPrice) / (chartData.maxPrice - chartData.minPrice)) * 100"
-                    :y2="100 - ((product.target_price - chartData.minPrice) / (chartData.maxPrice - chartData.minPrice)) * 100"
-                    x1="0"
-                    x2="100"
-                    stroke="currentColor"
-                    class="text-success"
-                    stroke-width="0.5"
-                    stroke-dasharray="2,2"
-                  />
-
-                  <!-- Line path -->
-                  <polyline
-                    :points="chartData.points.map(p => `${p.x},${p.y}`).join(' ')"
-                    fill="none"
-                    stroke="currentColor"
-                    class="text-accent"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-
-                  <!-- Area fill -->
-                  <polygon
-                    :points="`0,100 ${chartData.points.map(p => `${p.x},${p.y}`).join(' ')} 100,100`"
-                    fill="currentColor"
-                    class="text-accent/10"
-                  />
-
-                  <!-- Data points -->
-                  <circle
-                    v-for="(point, index) in chartData.points"
-                    :key="index"
-                    :cx="point.x"
-                    :cy="point.y"
-                    r="2"
-                    fill="currentColor"
-                    class="text-accent cursor-pointer hover:text-accent-dark"
-                    @mouseenter="handlePointHover(point)"
-                  />
-                </svg>
-
+              <div class="flex gap-2">
                 <!-- Y-axis labels -->
-                <div class="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-text-muted pr-2">
+                <div class="flex flex-col justify-between text-xs text-text-muted text-right shrink-0 h-48">
                   <span>${{ formatCurrency(chartData.maxPrice) }}</span>
                   <span>${{ formatCurrency((chartData.maxPrice + chartData.minPrice) / 2) }}</span>
                   <span>${{ formatCurrency(chartData.minPrice) }}</span>
+                </div>
+
+                <!-- Chart area -->
+                <div class="flex-1 flex flex-col">
+                  <div class="relative h-48" @mouseleave="hoveredPoint = null">
+                    <svg
+                      class="w-full h-full"
+                      viewBox="0 0 100 100"
+                      preserveAspectRatio="none"
+                    >
+                      <!-- Grid lines -->
+                      <line x1="0" y1="25" x2="100" y2="25" stroke="currentColor" class="text-border" stroke-width="0.5" />
+                      <line x1="0" y1="50" x2="100" y2="50" stroke="currentColor" class="text-border" stroke-width="0.5" />
+                      <line x1="0" y1="75" x2="100" y2="75" stroke="currentColor" class="text-border" stroke-width="0.5" />
+
+                      <!-- Target price line -->
+                      <line
+                        v-if="product.target_price && chartData"
+                        :y1="100 - ((product.target_price - chartData.minPrice) / (chartData.maxPrice - chartData.minPrice)) * 100"
+                        :y2="100 - ((product.target_price - chartData.minPrice) / (chartData.maxPrice - chartData.minPrice)) * 100"
+                        x1="0"
+                        x2="100"
+                        stroke="currentColor"
+                        class="text-success"
+                        stroke-width="0.5"
+                        stroke-dasharray="2,2"
+                      />
+
+                      <!-- Line path -->
+                      <polyline
+                        :points="chartData.points.map(p => `${p.x},${p.y}`).join(' ')"
+                        fill="none"
+                        stroke="currentColor"
+                        class="text-accent"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+
+                      <!-- Area fill -->
+                      <polygon
+                        :points="`0,100 ${chartData.points.map(p => `${p.x},${p.y}`).join(' ')} 100,100`"
+                        fill="currentColor"
+                        class="text-accent/10"
+                      />
+                    </svg>
+
+                    <!-- Data points (rendered as HTML for proper circles) -->
+                    <div
+                      v-for="(point, index) in chartData.points"
+                      :key="index"
+                      class="absolute w-3 h-3 bg-accent rounded-full cursor-pointer hover:bg-accent-dark transition-colors -translate-x-1/2 -translate-y-1/2"
+                      :style="{ left: `${point.x}%`, top: `${point.y}%` }"
+                      @mouseenter="handlePointHover(point)"
+                    />
+                  </div>
+
+                  <!-- X-axis date labels -->
+                  <div class="flex justify-between text-xs text-text-muted mt-2">
+                    <span>{{ formatShortDate(chartData.points[0]?.date) }}</span>
+                    <span v-if="chartData.points.length > 2">{{ formatShortDate(chartData.points[Math.floor(chartData.points.length / 2)]?.date) }}</span>
+                    <span>{{ formatShortDate(chartData.points[chartData.points.length - 1]?.date) }}</span>
+                  </div>
                 </div>
               </div>
 
@@ -464,9 +473,9 @@ onMounted(async () => {
           </div>
 
           <!-- Sidebar -->
-          <div class="space-y-6">
+          <div class="space-y-4">
             <!-- Edit Settings -->
-            <Card>
+            <Card class="!bg-surface">
               <h2 class="text-lg font-bold text-primary mb-4">Edit Settings</h2>
               <div class="space-y-4">
                 <div>
@@ -494,7 +503,7 @@ onMounted(async () => {
                         'flex items-center gap-3 p-4 rounded-lg border-2 transition-all cursor-pointer',
                         editForm.notification_email
                           ? 'border-accent bg-accent/5'
-                          : 'border-border hover:border-accent/30'
+                          : 'border-border hover:bg-tan-light hover:border-tan-dark'
                       ]"
                     >
                       <Checkbox v-model:checked="editForm.notification_email" />
@@ -511,7 +520,7 @@ onMounted(async () => {
                         !hasActiveDevices ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
                         editForm.notification_push && hasActiveDevices
                           ? 'border-accent bg-accent/5'
-                          : 'border-border hover:border-accent/30'
+                          : 'border-border hover:bg-tan-light hover:border-tan-dark'
                       ]"
                     >
                       <Checkbox v-model:checked="editForm.notification_push" :disabled="!hasActiveDevices" />
@@ -532,7 +541,7 @@ onMounted(async () => {
             </Card>
 
             <!-- Product Details -->
-            <Card>
+            <Card class="!bg-surface">
               <h2 class="text-lg font-bold text-primary mb-3">Product Details</h2>
               <dl class="text-sm space-y-3">
                 <div class="flex justify-between items-center">
@@ -558,17 +567,14 @@ onMounted(async () => {
             </Card>
 
             <!-- Danger Zone -->
-            <Card class="border-danger/30">
+            <Card class="!bg-surface border-danger/30">
               <h2 class="text-sm font-bold text-danger mb-2">Stop Tracking</h2>
               <p class="text-xs text-text-muted mb-3">
                 Remove this product from your tracking list. This action cannot be undone.
               </p>
-              <button
-                @click="deleteProduct"
-                class="w-full bg-danger hover:bg-danger/80 text-white px-4 py-2 rounded-lg font-medium transition-all text-sm"
-              >
+              <DangerButton @click="deleteProduct" class="w-full">
                 Stop Tracking
-              </button>
+              </DangerButton>
             </Card>
           </div>
         </div>

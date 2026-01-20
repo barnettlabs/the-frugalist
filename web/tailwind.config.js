@@ -34,9 +34,15 @@ export default {
                 // Neutrals
                 background: "rgb(var(--color-background) / <alpha-value>)",
                 surface: "rgb(var(--color-surface) / <alpha-value>)",
+                "surface-dark": "rgb(var(--color-surface-dark) / <alpha-value>)",
                 border: "rgb(var(--color-border) / <alpha-value>)",
                 "text-muted": "rgb(var(--color-text-muted) / <alpha-value>)",
                 "text-primary": "rgb(var(--color-text-primary) / <alpha-value>)",
+
+                // Tan accent colors
+                tan: "rgb(var(--color-tan) / <alpha-value>)",
+                "tan-light": "rgb(var(--color-tan-light) / <alpha-value>)",
+                "tan-dark": "rgb(var(--color-tan-dark) / <alpha-value>)",
 
                 // Semantic
                 success: "rgb(var(--color-success) / <alpha-value>)",
@@ -50,16 +56,16 @@ export default {
 
                 // Neutral scale
                 neutral: {
-                    50: '#FAFAF9',
-                    100: '#F7F6F3',
-                    200: '#EFEEEB',
-                    300: '#E5E4E1',
-                    400: '#A8A7A4',
-                    500: '#6B6B6B',
-                    600: '#4A4A4A',
-                    700: '#3D3D3D',
-                    800: '#2A2A2A',
-                    900: '#1F1F1F',
+                    50: '#FAFAFA',
+                    100: '#F5F5F5',
+                    200: '#E5E5E5',
+                    300: '#D4D4D4',
+                    400: '#A3A3A3',
+                    500: '#737373',
+                    600: '#525252',
+                    700: '#404040',
+                    800: '#262626',
+                    900: '#171717',
                 },
             },
         },
@@ -70,7 +76,7 @@ export default {
     safelist: [
         {
             pattern:
-                /bg-(primary|primary-light|primary-dark|accent|accent-light|accent-dark|secondary|secondary-light|secondary-dark|success|info|warning|danger|light|dark|background|surface)/,
+                /bg-(primary|primary-light|primary-dark|accent|accent-light|accent-dark|secondary|secondary-light|secondary-dark|success|info|warning|danger|light|dark|background|surface|surface-dark|tan|tan-light|tan-dark)/,
             variants: ["hover", "focus", "active"],
         },
         {

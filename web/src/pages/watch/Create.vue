@@ -292,7 +292,7 @@ onMounted(async () => {
                 ? 'border-border bg-background cursor-not-allowed opacity-60'
                 : form.retailer_id === retailer.id
                   ? 'border-accent bg-accent/5 text-accent'
-                  : 'border-border hover:border-accent/30 text-text-muted hover:bg-background cursor-pointer'
+                  : 'border-border hover:border-tan-dark text-text-muted hover:bg-tan-light cursor-pointer'
             ]">
             <BuildingStorefrontIcon class="h-6 w-6 mb-2" />
             <span class="text-sm font-medium text-center">{{ retailer.name }}</span>
@@ -569,7 +569,7 @@ onMounted(async () => {
               !isProductValidated ? 'cursor-not-allowed' : 'cursor-pointer',
               form.notification_email && isProductValidated
                 ? 'border-accent bg-accent/5'
-                : 'border-border hover:border-accent/30'
+                : 'border-border hover:bg-tan-light hover:border-tan-dark'
             ]">
               <Checkbox v-model:checked="form.notification_email" :disabled="!isProductValidated" />
               <EnvelopeIcon class="h-5 w-5 text-text-muted" />
@@ -585,7 +585,7 @@ onMounted(async () => {
               !hasActiveDevices ? 'opacity-60' : '',
               form.notification_push && isProductValidated && hasActiveDevices
                 ? 'border-accent bg-accent/5'
-                : 'border-border hover:border-accent/30'
+                : 'border-border hover:bg-tan-light hover:border-tan-dark'
             ]">
               <Checkbox v-model:checked="form.notification_push" :disabled="!isProductValidated || !hasActiveDevices" />
               <DevicePhoneMobileIcon class="h-5 w-5 text-text-muted" />
@@ -607,7 +607,7 @@ onMounted(async () => {
       <div class="flex items-center justify-end gap-3">
         <RouterLink to="/watch">
           <button type="button"
-            class="bg-background hover:bg-border text-text-muted px-6 py-3 rounded-lg font-medium transition-colors">
+            class="bg-background hover:bg-tan text-text-muted px-6 py-3 rounded-lg font-medium transition-colors">
             Cancel
           </button>
         </RouterLink>

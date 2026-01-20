@@ -13,6 +13,7 @@ import {
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime } from '@/utils/time'
 import { leaseApi } from '@/api/lease'
+import { LeaseCalculator } from '@/utils/leaseCalculator'
 
 interface VehicleLeaseSheet {
   id: number
@@ -94,6 +95,11 @@ const toggleSelection = (sheetId: number) => {
 
 const isSelected = (sheetId: number) => {
   return selectedSheets.value.has(sheetId)
+}
+
+const getMonthlyPayment = (sheet: VehicleLeaseSheet) => {
+  const calculator = new LeaseCalculator(sheet as any)
+  return calculator.calculateLeasePayment()
 }
 
 const startComparison = () => {
@@ -211,7 +217,7 @@ onMounted(() => {
                       <div class="text-center">
                         <span class="text-text-muted text-xs uppercase tracking-wide block mb-1">Monthly Payment</span>
                         <div class="font-medium text-success text-xl">
-                          ${{ formatCurrency(sheet.monthly_payment || 0) }}
+                          ${{ formatCurrency(getMonthlyPayment(sheet)) }}
                         </div>
                       </div>
                     </div>

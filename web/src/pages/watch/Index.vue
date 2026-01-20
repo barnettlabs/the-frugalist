@@ -6,6 +6,7 @@ import Badge from '@/components/Badge.vue'
 import Spinner from '@/components/Spinner.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import { TagIcon, PlusIcon, TrashIcon, EyeIcon, ArrowPathIcon, EnvelopeIcon, DevicePhoneMobileIcon, BellAlertIcon, PauseIcon, PlayIcon } from '@heroicons/vue/24/outline'
+import CopyText from '@/components/CopyText.vue'
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime } from '@/utils/time'
 import { watchApi, type TrackedProduct } from '@/api/watch'
@@ -193,109 +194,117 @@ onMounted(() => {
       </Card>
 
       <!-- Products List -->
-      <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Card
+      <div v-else class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <RouterLink
           v-for="product in filteredProducts"
           :key="product.id"
-          variant="interactive"
-          padding="none"
-          class="overflow-hidden"
+          :to="`/watch/${product.id}`"
+          class="block group"
         >
-          <!-- Product Header -->
-          <div class="p-4 border-b border-border">
-            <div class="flex items-start justify-between mb-2">
-              <div class="flex-1 min-w-0">
-                <h3 class="font-medium text-primary truncate">
-                  {{ product.product_name || 'Pending lookup...' }}
-                </h3>
-                <p class="text-xs text-text-muted mt-0.5">
-                  {{ getRetailerName(product) }} &middot; {{ product.sku_upc }}
-                </p>
+          <Card variant="interactive" padding="none" class="overflow-hidden h-full">
+            <div class="p-4">
+              <!-- Top Row: Status & Actions -->
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <span
+                    :class="[
+                      'w-2 h-2 rounded-full',
+                      product.is_active ? 'bg-success' : 'bg-text-muted'
+                    ]"
+                    :title="product.is_active ? 'Active' : 'Paused'"
+                  />
+                  <span class="text-xs text-text-muted">{{ getRetailerName(product) }}</span>
+                </div>
+                <div class="flex items-center gap-1" @click.prevent>
+                  <button
+                    @click="refreshProduct(product.id)"
+                    :disabled="refreshingId === product.id"
+                    class="p-1.5 rounded-md text-text-muted hover:text-accent hover:bg-accent/10 transition-colors disabled:opacity-50"
+                    title="Refresh price"
+                  >
+                    <ArrowPathIcon :class="['h-4 w-4', refreshingId === product.id && 'animate-spin']" />
+                  </button>
+                  <button
+                    @click="openPauseDialog(product)"
+                    class="p-1.5 rounded-md text-text-muted hover:text-accent hover:bg-accent/10 transition-colors"
+                    :title="product.is_active ? 'Pause tracking' : 'Resume tracking'"
+                  >
+                    <PlayIcon v-if="!product.is_active" class="h-4 w-4" />
+                    <PauseIcon v-else class="h-4 w-4" />
+                  </button>
+                  <button
+                    @click="openDeleteDialog(product)"
+                    class="p-1.5 rounded-md text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
+                    title="Delete tracker"
+                  >
+                    <TrashIcon class="h-4 w-4" />
+                  </button>
+                </div>
               </div>
-              <Badge v-if="product.is_active" variant="success" size="sm">Active</Badge>
-              <Badge v-else variant="neutral" size="sm">Paused</Badge>
-            </div>
 
-            <!-- Notification Methods -->
-            <div class="flex items-center gap-2 mt-2">
-              <span class="text-xs text-text-muted">Alerts:</span>
-              <div class="flex items-center gap-1">
-                <EnvelopeIcon
-                  v-if="product.notification_method?.includes('email')"
-                  class="h-4 w-4 text-accent"
-                  title="Email notifications"
-                />
-                <DevicePhoneMobileIcon
-                  v-if="product.notification_method?.includes('push')"
-                  class="h-4 w-4 text-accent"
-                  title="Push notifications"
-                />
+              <!-- Product Name -->
+              <h3 class="font-medium text-primary group-hover:text-accent transition-colors line-clamp-2 leading-snug mb-3">
+                {{ product.product_name || 'Pending lookup...' }}
+              </h3>
+
+              <!-- Price Display -->
+              <div class="flex items-center justify-between">
+                <span class="text-2xl font-semibold text-primary">
+                  {{ product.current_price ? `$${formatCurrency(product.current_price)}` : '—' }}
+                </span>
+                <template v-if="product.target_price && product.current_price">
+                  <span
+                    v-if="product.current_price <= product.target_price"
+                    class="text-sm font-medium text-success"
+                  >
+                    Target reached
+                  </span>
+                  <span v-else class="text-sm text-text-muted">
+                    ${{ formatCurrency(product.current_price - product.target_price) }} above target
+                  </span>
+                </template>
+              </div>
+
+              <!-- Progress bar (if target set) -->
+              <div v-if="product.target_price && product.retail_price && product.current_price" class="mt-3">
+                <div class="h-1.5 bg-border rounded-full overflow-hidden">
+                  <div
+                    class="h-full bg-gradient-to-r from-accent to-success rounded-full transition-all"
+                    :style="{ width: Math.min(100, Math.max(0, ((product.retail_price - product.current_price) / (product.retail_price - product.target_price)) * 100)) + '%' }"
+                  />
+                </div>
+              </div>
+
+              <!-- Footer -->
+              <div class="flex items-center justify-between mt-3 pt-3 border-t border-border">
+                <CopyText :text="product.sku_upc" label="SKU/UPC" @click.prevent />
+                <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-1">
+                    <EnvelopeIcon
+                      v-if="product.notification_method?.includes('email')"
+                      class="h-3.5 w-3.5 text-text-muted"
+                      title="Email alerts on"
+                    />
+                    <DevicePhoneMobileIcon
+                      v-if="product.notification_method?.includes('push')"
+                      class="h-3.5 w-3.5 text-text-muted"
+                      title="Push alerts on"
+                    />
+                  </div>
+                  <span class="text-xs text-text-muted">
+                    {{ product.last_checked_at ? formatRelativeTime(product.last_checked_at) : 'Not checked' }}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-
-          <!-- Price Info -->
-          <div class="bg-background p-4">
-            <div class="flex items-center justify-between">
-              <span class="text-text-muted text-sm">Current Price</span>
-              <span class="font-medium text-xl text-success">
-                {{ product.current_price ? `$${formatCurrency(product.current_price)}` : '—' }}
-              </span>
-            </div>
-            <div v-if="product.target_price" class="flex items-center justify-between mt-2">
-              <span class="text-text-muted text-sm">Target Price</span>
-              <span class="font-medium text-primary">${{ formatCurrency(product.target_price) }}</span>
-            </div>
-            <div v-if="product.last_checked_at" class="text-xs text-text-muted mt-2 text-right">
-              Last checked {{ formatRelativeTime(product.last_checked_at) }}
-            </div>
-            <div v-else class="text-xs text-text-muted mt-2 text-right">
-              Not yet checked
-            </div>
-          </div>
-
-          <!-- Actions -->
-          <div class="grid grid-cols-4 gap-px bg-border border-t border-border">
-            <RouterLink :to="`/watch/${product.id}`" class="block">
-              <button class="w-full bg-surface hover:bg-background text-text-muted px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors">
-                <EyeIcon class="h-4 w-4" />
-                <span>Details</span>
-              </button>
-            </RouterLink>
-            <button
-              @click="refreshProduct(product.id)"
-              :disabled="refreshingId === product.id"
-              class="w-full bg-surface hover:bg-background text-text-muted px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
-            >
-              <ArrowPathIcon :class="['h-4 w-4', refreshingId === product.id && 'animate-spin']" />
-              <span>{{ refreshingId === product.id ? '...' : 'Refresh' }}</span>
-            </button>
-            <button
-              @click="openPauseDialog(product)"
-              class="w-full bg-surface hover:bg-background text-text-muted px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
-            >
-              <PlayIcon v-if="!product.is_active" class="h-4 w-4" />
-              <PauseIcon v-else class="h-4 w-4" />
-              <span>{{ product.is_active ? 'Pause' : 'Resume' }}</span>
-            </button>
-            <button
-              @click="openDeleteDialog(product)"
-              class="w-full bg-surface hover:bg-danger text-danger hover:text-white px-2 py-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
-            >
-              <TrashIcon class="h-4 w-4" />
-              <span>Delete</span>
-            </button>
-          </div>
-        </Card>
+          </Card>
+        </RouterLink>
 
         <!-- Add New Card -->
-        <RouterLink to="/watch/create">
-          <Card variant="interactive" class="h-full flex flex-col items-center justify-center text-center border-2 border-dashed border-accent/30 hover:border-accent bg-transparent" padding="lg">
-            <div class="p-3 rounded-xl bg-accent/10 w-fit mx-auto mb-4">
-              <PlusIcon class="h-8 w-8 text-accent-dark" />
-            </div>
-            <h3 class="text-lg font-medium text-primary mb-2">Track New Product</h3>
-            <p class="text-text-muted text-sm">Add a product to monitor its price</p>
+        <RouterLink to="/watch/create" class="block">
+          <Card variant="interactive" class="h-full min-h-[180px] flex flex-col items-center justify-center text-center border-2 border-dashed border-accent/30 hover:border-accent bg-transparent" padding="lg">
+            <PlusIcon class="h-8 w-8 text-accent mb-2" />
+            <span class="font-medium text-primary">Track New Product</span>
           </Card>
         </RouterLink>
       </div>

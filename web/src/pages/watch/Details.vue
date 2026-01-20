@@ -351,16 +351,6 @@ onMounted(async () => {
             <Card v-if="chartData && chartData.points.length > 1">
               <h2 class="text-lg font-bold text-primary mb-4">Price History</h2>
 
-              <!-- Tooltip -->
-              <div
-                v-if="hoveredPoint"
-                class="absolute z-10 bg-primary text-white px-3 py-2 rounded-lg text-sm shadow-lg pointer-events-none"
-                :style="{ left: `${hoveredPoint.x}%`, top: '20px', transform: 'translateX(-50%)' }"
-              >
-                <div class="font-bold">${{ formatCurrency(hoveredPoint.price) }}</div>
-                <div class="text-xs opacity-80">{{ formatDateTime(hoveredPoint.date) }}</div>
-              </div>
-
               <!-- Chart -->
               <div class="flex gap-2">
                 <!-- Y-axis labels -->
@@ -372,7 +362,18 @@ onMounted(async () => {
 
                 <!-- Chart area -->
                 <div class="flex-1 flex flex-col">
-                  <div class="relative h-48 bg-tan-light rounded-xl overflow-hidden" @mouseleave="hoveredPoint = null">
+                  <div class="relative h-48 bg-tan-light rounded-xl" @mouseleave="hoveredPoint = null">
+                    <!-- Tooltip -->
+                    <div
+                      v-if="hoveredPoint"
+                      class="absolute z-20 bg-primary text-white px-3 py-2 rounded-lg text-sm shadow-lg pointer-events-none -translate-x-1/2 -translate-y-full"
+                      :style="{ left: `${hoveredPoint.x}%`, top: `calc(${hoveredPoint.y}% - 10px)` }"
+                    >
+                      <div class="font-bold">${{ formatCurrency(hoveredPoint.price) }}</div>
+                      <div class="text-xs opacity-80">{{ formatDateTime(hoveredPoint.date) }}</div>
+                      <!-- Arrow -->
+                      <div class="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 bg-primary rotate-45"></div>
+                    </div>
                     <svg
                       class="w-full h-full"
                       viewBox="0 0 100 100"

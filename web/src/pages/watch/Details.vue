@@ -338,7 +338,7 @@ onMounted(async () => {
 
                 <!-- Chart area -->
                 <div class="flex-1 flex flex-col">
-                  <div class="relative h-48" @mouseleave="hoveredPoint = null">
+                  <div class="relative h-48 bg-tan-light rounded-xl overflow-hidden" @mouseleave="hoveredPoint = null">
                     <svg
                       class="w-full h-full"
                       viewBox="0 0 100 100"
@@ -358,11 +358,11 @@ onMounted(async () => {
                         x2="100"
                         stroke="currentColor"
                         class="text-success"
-                        stroke-width="0.5"
-                        stroke-dasharray="2,2"
+                        stroke-width="1"
+                        stroke-dasharray="4,3"
                       />
 
-                      <!-- Line path -->
+                      <!-- Price trend line -->
                       <polyline
                         :points="chartData.points.map(p => `${p.x},${p.y}`).join(' ')"
                         fill="none"
@@ -371,13 +371,6 @@ onMounted(async () => {
                         stroke-width="2"
                         stroke-linecap="round"
                         stroke-linejoin="round"
-                      />
-
-                      <!-- Area fill -->
-                      <polygon
-                        :points="`0,100 ${chartData.points.map(p => `${p.x},${p.y}`).join(' ')} 100,100`"
-                        fill="currentColor"
-                        class="text-accent/10"
                       />
                     </svg>
 
@@ -397,6 +390,22 @@ onMounted(async () => {
                     <span v-if="chartData.points.length > 2">{{ formatShortDate(chartData.points[Math.floor(chartData.points.length / 2)]?.date) }}</span>
                     <span>{{ formatShortDate(chartData.points[chartData.points.length - 1]?.date) }}</span>
                   </div>
+                </div>
+              </div>
+
+              <!-- Legend -->
+              <div class="flex flex-wrap gap-4 mt-4 text-xs text-text-muted">
+                <div class="flex items-center gap-2">
+                  <div class="w-4 h-0.5 bg-accent rounded"></div>
+                  <span>Price trend</span>
+                </div>
+                <div v-if="product.target_price" class="flex items-center gap-2">
+                  <div class="w-4 h-0.5 bg-success rounded"></div>
+                  <span>Target price</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-4 h-0.5 bg-border rounded"></div>
+                  <span>Grid lines</span>
                 </div>
               </div>
 

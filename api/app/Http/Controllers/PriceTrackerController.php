@@ -173,7 +173,7 @@ class PriceTrackerController extends Controller
         }
 
         $trackedProduct->load(['retailer', 'priceHistory' => function($query) {
-            $query->orderBy('checked_at', 'desc')->limit(50);
+            $query->limit(50);
         }, 'priceAlerts' => function($query) {
             $query->orderBy('triggered_at', 'desc')->limit(10);
         }]);
@@ -222,7 +222,11 @@ class PriceTrackerController extends Controller
             'notification_method',
         ]));
 
-        $trackedProduct->load(['retailer', 'priceHistory', 'priceAlerts']);
+        $trackedProduct->load(['retailer', 'priceHistory' => function($query) {
+            $query->limit(50);
+        }, 'priceAlerts' => function($query) {
+            $query->orderBy('triggered_at', 'desc')->limit(10);
+        }]);
 
         return response()->json([
             'message' => 'Tracking settings updated successfully!',
@@ -311,7 +315,11 @@ class PriceTrackerController extends Controller
                 ]);
             }
 
-            $trackedProduct->load(['retailer', 'priceHistory', 'priceAlerts']);
+            $trackedProduct->load(['retailer', 'priceHistory' => function($query) {
+                $query->limit(50);
+            }, 'priceAlerts' => function($query) {
+                $query->orderBy('triggered_at', 'desc')->limit(10);
+            }]);
 
             return response()->json([
                 'message' => 'Price updated successfully!',

@@ -61,7 +61,7 @@ class TrackedProduct extends Model
 
     public function priceHistory(): HasMany
     {
-        return $this->hasMany(PriceHistory::class);
+        return $this->hasMany(PriceHistory::class)->orderBy('checked_at', 'desc');
     }
 
     public function priceAlerts(): HasMany

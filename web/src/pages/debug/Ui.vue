@@ -102,28 +102,56 @@ const legacyColors = [
       <section class="mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">Logo Variants</h2>
         <p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded">ApplicationLogo</code></p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card>
-            <p class="text-sm text-gray-500 mb-4">variant="black"</p>
-            <div class="flex items-center gap-3">
-              <ApplicationLogo variant="black" class="h-12 w-auto" />
-              <span class="text-lg font-bold">TheFrugalist</span>
+            <p class="text-sm text-gray-500 mb-4">variant="default"</p>
+            <div class="flex items-center justify-center p-4 bg-gray-50 rounded-lg">
+              <ApplicationLogo variant="default" size="xl" />
             </div>
           </Card>
           <Card>
-            <p class="text-sm text-gray-500 mb-4">variant="primary"</p>
-            <div class="flex items-center gap-3">
-              <ApplicationLogo variant="primary" class="h-12 w-auto" />
-              <span class="text-lg font-bold text-primary">TheFrugalist</span>
+            <p class="text-sm text-gray-500 mb-4">variant="padded"</p>
+            <div class="flex items-center justify-center p-4 bg-gray-50 rounded-lg">
+              <ApplicationLogo variant="padded" size="xl" />
+            </div>
+          </Card>
+          <Card>
+            <p class="text-sm text-gray-500 mb-4">variant="outline"</p>
+            <div class="flex items-center justify-center p-4 bg-gray-50 rounded-lg">
+              <ApplicationLogo variant="outline" size="xl" />
             </div>
           </Card>
           <Card variant="gradient-primary">
             <p class="text-sm text-white/70 mb-4">variant="white"</p>
-            <div class="flex items-center gap-3">
-              <ApplicationLogo variant="white" class="h-12 w-auto" />
-              <span class="text-lg font-bold text-white">TheFrugalist</span>
+            <div class="flex items-center justify-center p-4">
+              <ApplicationLogo variant="white" size="xl" />
             </div>
           </Card>
+        </div>
+        <div class="mt-6">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Sizes</h3>
+          <div class="flex items-end gap-6 p-4 bg-gray-50 rounded-lg">
+            <div class="text-center">
+              <ApplicationLogo variant="padded" size="sm" />
+              <p class="text-xs text-gray-500 mt-2">sm</p>
+            </div>
+            <div class="text-center">
+              <ApplicationLogo variant="padded" size="md" />
+              <p class="text-xs text-gray-500 mt-2">md</p>
+            </div>
+            <div class="text-center">
+              <ApplicationLogo variant="padded" size="lg" />
+              <p class="text-xs text-gray-500 mt-2">lg</p>
+            </div>
+            <div class="text-center">
+              <ApplicationLogo variant="padded" size="xl" />
+              <p class="text-xs text-gray-500 mt-2">xl</p>
+            </div>
+            <div class="text-center">
+              <ApplicationLogo variant="padded" size="2xl" />
+              <p class="text-xs text-gray-500 mt-2">2xl</p>
+            </div>
+          </div>
         </div>
       </section>
 

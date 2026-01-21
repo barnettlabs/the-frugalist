@@ -87,8 +87,9 @@ const valueProps: ValueProp[] = [
       <div class="dotted-background relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <!-- Navigation -->
         <nav class="flex items-center justify-between py-6">
-          <RouterLink to="/" class="flex items-center">
+          <RouterLink to="/" class="flex items-center gap-3">
             <ApplicationLogo variant="white" size="xl" />
+            <span class="text-2xl font-medium text-white tracking-tight">thefrugalist</span>
           </RouterLink>
 
           <div class="flex items-center space-x-4">
@@ -261,7 +262,10 @@ const valueProps: ValueProp[] = [
       <div class="dotted-background-light relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <ApplicationLogo variant="white" size="lg" class="mb-4" />
+            <div class="flex items-center gap-2 mb-4">
+              <ApplicationLogo variant="white" size="lg" />
+              <span class="text-xl font-medium text-white tracking-tight">thefrugalist</span>
+            </div>
             <p class="text-white/70 text-sm leading-relaxed">
               Helping you avoid overpaying by tracking price movement
               and explaining pricing tactics.

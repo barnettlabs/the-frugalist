@@ -47,12 +47,11 @@ const isAuthenticated = computed(() => authStore.isAuthenticated)
         <div class="relative flex items-center justify-center py-4 lg:justify-between">
           <!-- Logo -->
           <div class="absolute left-0 flex-shrink-0 lg:static">
-            <div class="flex items-center space-x-6">
-              <RouterLink to="/" class="flex flex-row items-center">
-                <span class="sr-only">TheFrugalist by JayTech LLC</span>
-                <ApplicationLogo variant="primary" size="xl" />
-              </RouterLink>
-            </div>
+            <RouterLink to="/" class="flex items-center gap-2">
+              <span class="sr-only">TheFrugalist by JayTech LLC</span>
+              <ApplicationLogo variant="padded" size="xl" />
+              <span class="text-2xl font-medium text-accent tracking-tight">thefrugalist</span>
+            </RouterLink>
           </div>
 
           <!-- Right section on desktop -->
@@ -225,8 +224,9 @@ const isAuthenticated = computed(() => authStore.isAuthenticated)
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <div class="flex items-center space-x-3 mb-4">
-              <ApplicationLogo variant="primary" size="lg" />
+            <div class="flex items-center gap-2 mb-4">
+              <ApplicationLogo variant="padded" size="lg" />
+              <span class="text-xl font-medium text-accent tracking-tight">thefrugalist</span>
             </div>
             <p class="text-text-muted text-sm leading-relaxed">
               Helping you avoid overpaying by tracking price movement, explaining pricing tactics,

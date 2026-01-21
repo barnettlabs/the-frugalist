@@ -1,36 +1,58 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import { z } from 'zod'
 import InputError from '@/components/InputError.vue'
 import InputLabel from '@/components/InputLabel.vue'
 import PrimaryButton from '@/components/PrimaryButton.vue'
 import TextInput from '@/components/TextInput.vue'
 import { authApi } from '@/api/auth'
 
-const form = ref({
-  email: '',
+const forgotPasswordSchema = toTypedSchema(
+  z.object({
+    email: z
+      .string()
+      .min(1, 'The email field is required.')
+      .email('Please enter a valid email address.'),
+  })
+)
+
+const { defineField, handleSubmit, errors, setErrors } = useForm({
+  validationSchema: forgotPasswordSchema,
+  initialValues: {
+    email: '',
+  },
 })
+
+const [email] = defineField('email')
 
 const processing = ref(false)
 const status = ref('')
-const errors = ref<Record<string, string[]>>({})
 
-const submit = async () => {
+const submit = handleSubmit(async (values) => {
   processing.value = true
-  errors.value = {}
+  status.value = ''
 
   try {
-    const response = await authApi.forgotPassword({ email: form.value.email })
+    const response = await authApi.forgotPassword({ email: values.email })
     status.value = response.message
   } catch (error: any) {
     if (error.response?.data?.errors) {
-      errors.value = error.response.data.errors
+      const serverErrors: Record<string, string> = {}
+      for (const [key, messages] of Object.entries(error.response.data.errors)) {
+        if ((messages as string[])?.[0]) {
+          serverErrors[key] = (messages as string[])[0]
+        }
+      }
+      setErrors(serverErrors)
     } else if (error.response?.data?.message) {
-      errors.value = { email: [error.response.data.message] }
+      setErrors({ email: error.response.data.message })
     }
   } finally {
     processing.value = false
   }
-}
+})
 </script>
 
 <template>
@@ -44,7 +66,7 @@ const submit = async () => {
       {{ status }}
     </div>
 
-    <form @submit.prevent="submit">
+    <form @submit="submit">
       <div>
         <InputLabel for="email" value="Email" />
 
@@ -52,13 +74,12 @@ const submit = async () => {
           id="email"
           type="email"
           class="mt-1 block w-full"
-          v-model="form.email"
-          required
+          v-model="email"
           autofocus
           autocomplete="username"
         />
 
-        <InputError class="mt-2" :message="errors.email?.[0]" />
+        <InputError class="mt-2" :message="errors.email" />
       </div>
 
       <div class="mt-4 flex items-center justify-end">

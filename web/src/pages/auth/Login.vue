@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { RouterLink, useRouter, useRoute } from 'vue-router'
+import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import { z } from 'zod'
 import Checkbox from '@/components/Checkbox.vue'
 import FormInput from '@/components/FormInput.vue'
 import BaseButton from '@/components/BaseButton.vue'
@@ -10,58 +13,81 @@ const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
 
-const form = ref({
-  email: '',
-  password: '',
-  remember: false,
+const loginSchema = toTypedSchema(
+  z.object({
+    email: z.string().min(1, 'The email field is required.').email('Please enter a valid email address.'),
+    password: z.string().min(1, 'The password field is required.'),
+  })
+)
+
+const { defineField, handleSubmit, errors, setErrors } = useForm({
+  validationSchema: loginSchema,
+  initialValues: {
+    email: '',
+    password: '',
+  },
 })
+
+const [email] = defineField('email')
+const [password] = defineField('password')
+const remember = ref(false)
 
 const processing = ref(false)
 
-const submit = async () => {
+const submit = handleSubmit(async (values) => {
+  authStore.clearErrors()
   processing.value = true
+
   const success = await authStore.login({
-    email: form.value.email,
-    password: form.value.password,
-    remember: form.value.remember,
+    email: values.email,
+    password: values.password,
+    remember: remember.value,
   })
+
   processing.value = false
 
   if (success) {
     const redirect = route.query.redirect as string
     router.push(redirect || '/dashboard')
+  } else {
+    // Map server errors to form fields
+    if (authStore.errors) {
+      const serverErrors: Record<string, string> = {}
+      for (const [key, messages] of Object.entries(authStore.errors)) {
+        if (messages?.[0]) {
+          serverErrors[key] = messages[0]
+        }
+      }
+      setErrors(serverErrors)
+    }
   }
-}
-
-const errors = computed(() => authStore.errors)
+})
 </script>
 
 <template>
   <div class="space-y-6">
-    <form @submit.prevent="submit" class="space-y-6">
+    <form @submit="submit" class="space-y-6">
       <FormInput
-        v-model="form.email"
+        v-model="email"
         name="email"
         type="email"
         label="Email"
-        :error="errors.email?.[0]"
-        required
+        :error="errors.email"
         autofocus
         autocomplete="username"
       />
 
       <FormInput
-        v-model="form.password"
+        v-model="password"
         name="password"
         type="password"
         label="Password"
-        :error="errors.password?.[0]"
-        required
+        :error="errors.password"
         autocomplete="current-password"
       />
 
       <div class="flex items-center">
-        <Checkbox name="remember" v-model:checked="form.remember" />
+        <Checkbox name="remember" v-model:checked="remember" />
         <span class="ms-2 text-sm text-text-muted">Remember me</span>
       </div>
 

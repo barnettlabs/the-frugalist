@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import { z } from 'zod'
 import PageHeader from '@/components/PageHeader.vue'
 import InputError from '@/components/InputError.vue'
 import InputLabel from '@/components/InputLabel.vue'
@@ -15,101 +18,190 @@ const authStore = useAuthStore()
 
 const user = computed(() => authStore.user)
 
-// Profile form
-const profileForm = ref({
-  first_name: '',
-  last_name: '',
-  email: '',
-  phone: '',
+// Profile form schema
+const profileSchema = toTypedSchema(
+  z.object({
+    first_name: z.string().min(1, 'The first name field is required.'),
+    last_name: z.string().min(1, 'The last name field is required.'),
+    email: z
+      .string()
+      .min(1, 'The email field is required.')
+      .email('Please enter a valid email address.'),
+  })
+)
+
+const {
+  defineField: defineProfileField,
+  handleSubmit: handleProfileSubmit,
+  errors: profileErrors,
+  setErrors: setProfileErrors,
+  resetForm: resetProfileForm,
+} = useForm({
+  validationSchema: profileSchema,
+  initialValues: {
+    first_name: '',
+    last_name: '',
+    email: '',
+  },
 })
+
+const [firstName] = defineProfileField('first_name')
+const [lastName] = defineProfileField('last_name')
+const [email] = defineProfileField('email')
+
 const profileLoading = ref(false)
-const profileErrors = ref<Record<string, string[]>>({})
 const profileSuccess = ref(false)
 
-// Password form
-const passwordForm = ref({
-  current_password: '',
-  password: '',
-  password_confirmation: '',
+// Password form schema
+const passwordSchema = toTypedSchema(
+  z
+    .object({
+      current_password: z.string().min(1, 'The current password field is required.'),
+      password: z
+        .string()
+        .min(1, 'The password field is required.')
+        .min(8, 'The password must be at least 8 characters.'),
+      password_confirmation: z.string().min(1, 'Please confirm your password.'),
+    })
+    .refine((data) => data.password === data.password_confirmation, {
+      message: 'The passwords do not match.',
+      path: ['password_confirmation'],
+    })
+)
+
+const {
+  defineField: definePasswordField,
+  handleSubmit: handlePasswordSubmit,
+  errors: passwordErrors,
+  setErrors: setPasswordErrors,
+  resetForm: resetPasswordForm,
+} = useForm({
+  validationSchema: passwordSchema,
+  initialValues: {
+    current_password: '',
+    password: '',
+    password_confirmation: '',
+  },
 })
+
+const [currentPassword] = definePasswordField('current_password')
+const [newPassword] = definePasswordField('password')
+const [passwordConfirmation] = definePasswordField('password_confirmation')
+
 const passwordLoading = ref(false)
-const passwordErrors = ref<Record<string, string[]>>({})
 const passwordSuccess = ref(false)
 
-// Delete account
-const deletePassword = ref('')
+// Delete account schema
+const deleteSchema = toTypedSchema(
+  z.object({
+    password: z.string().min(1, 'Please enter your password to confirm.'),
+  })
+)
+
+const {
+  defineField: defineDeleteField,
+  handleSubmit: handleDeleteSubmit,
+  errors: deleteErrors,
+  setErrors: setDeleteErrors,
+  resetForm: resetDeleteForm,
+} = useForm({
+  validationSchema: deleteSchema,
+  initialValues: {
+    password: '',
+  },
+})
+
+const [deletePassword] = defineDeleteField('password')
+
 const deleteLoading = ref(false)
-const deleteErrors = ref<Record<string, string[]>>({})
 const showDeleteConfirm = ref(false)
 
 const loadProfile = async () => {
   try {
     const data = await profileApi.getProfile()
-    profileForm.value = {
-      first_name: data.first_name || '',
-      last_name: data.last_name || '',
-      email: data.email || '',
-    }
+    resetProfileForm({
+      values: {
+        first_name: data.first_name || '',
+        last_name: data.last_name || '',
+        email: data.email || '',
+      },
+    })
   } catch (error) {
     console.error('Error loading profile:', error)
   }
 }
 
-const updateProfile = async () => {
+const updateProfile = handleProfileSubmit(async (values) => {
   profileLoading.value = true
-  profileErrors.value = {}
   profileSuccess.value = false
 
   try {
-    await profileApi.updateProfile(profileForm.value)
+    await profileApi.updateProfile(values)
     profileSuccess.value = true
     await authStore.refreshUser()
   } catch (error: any) {
     if (error.response?.data?.errors) {
-      profileErrors.value = error.response.data.errors
+      const serverErrors: Record<string, string> = {}
+      for (const [key, messages] of Object.entries(error.response.data.errors)) {
+        if ((messages as string[])?.[0]) {
+          serverErrors[key] = (messages as string[])[0]
+        }
+      }
+      setProfileErrors(serverErrors)
     }
   } finally {
     profileLoading.value = false
   }
-}
+})
 
-const updatePassword = async () => {
+const updatePassword = handlePasswordSubmit(async (values) => {
   passwordLoading.value = true
-  passwordErrors.value = {}
   passwordSuccess.value = false
 
   try {
-    await profileApi.updatePassword(passwordForm.value)
+    await profileApi.updatePassword(values)
     passwordSuccess.value = true
-    passwordForm.value = {
-      current_password: '',
-      password: '',
-      password_confirmation: '',
-    }
+    resetPasswordForm()
   } catch (error: any) {
     if (error.response?.data?.errors) {
-      passwordErrors.value = error.response.data.errors
+      const serverErrors: Record<string, string> = {}
+      for (const [key, messages] of Object.entries(error.response.data.errors)) {
+        if ((messages as string[])?.[0]) {
+          serverErrors[key] = (messages as string[])[0]
+        }
+      }
+      setPasswordErrors(serverErrors)
     }
   } finally {
     passwordLoading.value = false
   }
-}
+})
 
-const deleteAccount = async () => {
+const deleteAccount = handleDeleteSubmit(async (values) => {
   deleteLoading.value = true
-  deleteErrors.value = {}
 
   try {
-    await profileApi.deleteAccount(deletePassword.value)
+    await profileApi.deleteAccount(values.password)
     await authStore.logout()
     router.push('/')
   } catch (error: any) {
     if (error.response?.data?.errors) {
-      deleteErrors.value = error.response.data.errors
+      const serverErrors: Record<string, string> = {}
+      for (const [key, messages] of Object.entries(error.response.data.errors)) {
+        if ((messages as string[])?.[0]) {
+          serverErrors[key] = (messages as string[])[0]
+        }
+      }
+      setDeleteErrors(serverErrors)
     }
   } finally {
     deleteLoading.value = false
   }
+})
+
+const closeDeleteModal = () => {
+  showDeleteConfirm.value = false
+  resetDeleteForm()
 }
 
 onMounted(() => {
@@ -120,12 +212,8 @@ onMounted(() => {
 <template>
   <main class="py-12 flex-1">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-      <PageHeader
-        title="Profile Settings"
-        description="Manage your account settings and preferences"
-        back-link="/dashboard"
-        back-label="Dashboard"
-      />
+      <PageHeader title="Profile Settings" description="Manage your account settings and preferences"
+        back-link="/dashboard" back-label="Dashboard" />
 
       <div class="space-y-6">
         <!-- Profile Information -->
@@ -137,47 +225,29 @@ onMounted(() => {
             Profile updated successfully.
           </div>
 
-          <form @submit.prevent="updateProfile" class="space-y-4">
+          <form @submit="updateProfile" class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <InputLabel for="first_name" value="First Name" />
-                <TextInput
-                  id="first_name"
-                  v-model="profileForm.first_name"
-                  type="text"
-                  class="mt-1 block w-full"
-                  required
-                />
-                <InputError :message="profileErrors.first_name?.[0]" class="mt-2" />
+                <TextInput id="first_name" v-model="firstName" type="text" class="mt-1 block w-full" />
+                <InputError :message="profileErrors.first_name" class="mt-2" />
               </div>
 
               <div>
                 <InputLabel for="last_name" value="Last Name" />
-                <TextInput
-                  id="last_name"
-                  v-model="profileForm.last_name"
-                  type="text"
-                  class="mt-1 block w-full"
-                  required
-                />
-                <InputError :message="profileErrors.last_name?.[0]" class="mt-2" />
+                <TextInput id="last_name" v-model="lastName" type="text" class="mt-1 block w-full" />
+                <InputError :message="profileErrors.last_name" class="mt-2" />
               </div>
             </div>
 
             <div>
               <InputLabel for="email" value="Email" />
-              <TextInput
-                id="email"
-                v-model="profileForm.email"
-                type="email"
-                class="mt-1 block w-full"
-                required
-              />
-              <InputError :message="profileErrors.email?.[0]" class="mt-2" />
+              <TextInput id="email" v-model="email" type="email" class="mt-1 block w-full" />
+              <InputError :message="profileErrors.email" class="mt-2" />
             </div>
 
             <div class="flex justify-end">
-              <PrimaryButton :disabled="profileLoading">
+              <PrimaryButton type="submit" :disabled="profileLoading">
                 {{ profileLoading ? 'Saving...' : 'Save' }}
               </PrimaryButton>
             </div>
@@ -193,45 +263,28 @@ onMounted(() => {
             Password updated successfully.
           </div>
 
-          <form @submit.prevent="updatePassword" class="space-y-4">
+          <form @submit="updatePassword" class="space-y-4">
             <div>
               <InputLabel for="current_password" value="Current Password" />
-              <TextInput
-                id="current_password"
-                v-model="passwordForm.current_password"
-                type="password"
-                class="mt-1 block w-full"
-                required
-              />
-              <InputError :message="passwordErrors.current_password?.[0]" class="mt-2" />
+              <TextInput id="current_password" v-model="currentPassword" type="password" class="mt-1 block w-full" />
+              <InputError :message="passwordErrors.current_password" class="mt-2" />
             </div>
 
             <div>
               <InputLabel for="password" value="New Password" />
-              <TextInput
-                id="password"
-                v-model="passwordForm.password"
-                type="password"
-                class="mt-1 block w-full"
-                required
-              />
-              <InputError :message="passwordErrors.password?.[0]" class="mt-2" />
+              <TextInput id="password" v-model="newPassword" type="password" class="mt-1 block w-full" />
+              <InputError :message="passwordErrors.password" class="mt-2" />
             </div>
 
             <div>
               <InputLabel for="password_confirmation" value="Confirm Password" />
-              <TextInput
-                id="password_confirmation"
-                v-model="passwordForm.password_confirmation"
-                type="password"
-                class="mt-1 block w-full"
-                required
-              />
-              <InputError :message="passwordErrors.password_confirmation?.[0]" class="mt-2" />
+              <TextInput id="password_confirmation" v-model="passwordConfirmation" type="password"
+                class="mt-1 block w-full" />
+              <InputError :message="passwordErrors.password_confirmation" class="mt-2" />
             </div>
 
             <div class="flex justify-end">
-              <PrimaryButton :disabled="passwordLoading">
+              <PrimaryButton type="submit" :disabled="passwordLoading">
                 {{ passwordLoading ? 'Updating...' : 'Update Password' }}
               </PrimaryButton>
             </div>
@@ -258,25 +311,17 @@ onMounted(() => {
                   This action cannot be undone. Please enter your password to confirm.
                 </p>
 
-                <form @submit.prevent="deleteAccount">
+                <form @submit="deleteAccount">
                   <div class="mb-4">
                     <InputLabel for="delete_password" value="Password" />
-                    <TextInput
-                      id="delete_password"
-                      v-model="deletePassword"
-                      type="password"
-                      class="mt-1 block w-full"
-                      required
-                    />
-                    <InputError :message="deleteErrors.password?.[0]" class="mt-2" />
+                    <TextInput id="delete_password" v-model="deletePassword" type="password"
+                      class="mt-1 block w-full" />
+                    <InputError :message="deleteErrors.password" class="mt-2" />
                   </div>
 
                   <div class="flex justify-end gap-3">
-                    <button
-                      type="button"
-                      @click="showDeleteConfirm = false"
-                      class="px-4 py-2 text-sm font-medium text-text-muted bg-background hover:bg-border rounded-lg"
-                    >
+                    <button type="button" @click="closeDeleteModal"
+                      class="px-4 py-2 text-sm font-medium text-text-muted bg-background hover:bg-border rounded-lg">
                       Cancel
                     </button>
                     <DangerButton :disabled="deleteLoading">

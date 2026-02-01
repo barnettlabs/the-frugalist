@@ -5,8 +5,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useLogin } from '@/api/auth/use-auth';
-import { logoBlue } from '@/assets/logos';
-import { Button, ControlledInput, Image, Pressable, SafeAreaView, ScrollView, Text, View } from '@/components/ui';
+import { Button, ControlledInput, LogoImage, Pressable, SafeAreaView, ScrollView, Text, View } from '@/components/ui';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -46,7 +45,7 @@ export default function LoginScreen() {
       >
         {/* Logo */}
         <View className="my-6 items-center">
-          <Image source={logoBlue} className="size-28" contentFit="contain" />
+          <LogoImage className="!size-28" />
         </View>
 
         {/* Header */}

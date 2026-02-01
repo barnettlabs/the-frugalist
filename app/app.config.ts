@@ -28,7 +28,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: 'thefrugalist',
   version: Env.VERSION.toString(),
   orientation: 'portrait',
-  icon: './assets/icon.png',
+  icon: './assets/icons/app-icon.png',
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   updates: {
@@ -49,7 +49,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: './assets/adaptive-icon.png',
+      foregroundImage: './assets/icons/app-icon.png',
       backgroundColor: '#2E3C4B',
     },
     package: Env.PACKAGE,
@@ -60,7 +60,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         data: [
           {
             scheme: 'https',
-            host: 'thefrugalist.com',
+            host: 'thefrugalist.io',
             pathPrefix: '/',
           },
         ],
@@ -68,16 +68,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
   },
-  web: {
-    favicon: './assets/favicon.png',
-    bundler: 'metro',
-  },
   plugins: [
     [
       'expo-splash-screen',
       {
         backgroundColor: '#f0ede6',
-        image: './assets/icon.png',
+        image: './assets/icons/app-icon.png',
         imageWidth: 150,
       },
     ],
@@ -96,7 +92,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-notifications',
       {
-        icon: './assets/notification-icon.png',
+        icon: './assets/icons/app-icon.png',
         color: '#235892',
       },
     ],

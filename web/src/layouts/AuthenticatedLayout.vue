@@ -185,7 +185,7 @@ const handleSignOut = async () => {
                 class="flex grow flex-col gap-y-5 overflow-y-auto bg-surface/95 backdrop-blur-sm px-6 pb-4 border-r border-border">
                 <div class="flex h-16 shrink-0 items-center">
                   <RouterLink to="/dashboard" class="flex items-center gap-2" @click="sidebarOpen = false">
-                    <ApplicationLogo variant="padded" size="lg" />
+                    <ApplicationLogo size="md" />
                     <span class="text-xl font-medium text-accent tracking-tight">thefrugalist</span>
                   </RouterLink>
                 </div>
@@ -284,7 +284,7 @@ const handleSignOut = async () => {
         <!-- Logo -->
         <div class="flex h-16 shrink-0 items-center">
           <RouterLink to="/dashboard" class="flex items-center gap-2">
-            <ApplicationLogo variant="padded" size="lg" />
+            <ApplicationLogo size="md" />
             <span class="text-xl font-medium text-accent tracking-tight">thefrugalist</span>
           </RouterLink>
         </div>

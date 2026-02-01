@@ -101,24 +101,13 @@ const legacyColors = [
       <!-- Logo Variants -->
       <section class="mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">Logo Variants</h2>
-        <p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded">ApplicationLogo</code></p>
+        <p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded">ApplicationLogo</code>
+        </p>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card>
             <p class="text-sm text-gray-500 mb-4">variant="default"</p>
             <div class="flex items-center justify-center p-4 bg-gray-50 rounded-lg">
               <ApplicationLogo variant="default" size="xl" />
-            </div>
-          </Card>
-          <Card>
-            <p class="text-sm text-gray-500 mb-4">variant="padded"</p>
-            <div class="flex items-center justify-center p-4 bg-gray-50 rounded-lg">
-              <ApplicationLogo variant="padded" size="xl" />
-            </div>
-          </Card>
-          <Card>
-            <p class="text-sm text-gray-500 mb-4">variant="outline"</p>
-            <div class="flex items-center justify-center p-4 bg-gray-50 rounded-lg">
-              <ApplicationLogo variant="outline" size="xl" />
             </div>
           </Card>
           <Card variant="gradient-primary">
@@ -132,23 +121,23 @@ const legacyColors = [
           <h3 class="text-lg font-semibold text-gray-800 mb-4">Sizes</h3>
           <div class="flex items-end gap-6 p-4 bg-gray-50 rounded-lg">
             <div class="text-center">
-              <ApplicationLogo variant="padded" size="sm" />
+              <ApplicationLogo size="sm" />
               <p class="text-xs text-gray-500 mt-2">sm</p>
             </div>
             <div class="text-center">
-              <ApplicationLogo variant="padded" size="md" />
+              <ApplicationLogo size="md" />
               <p class="text-xs text-gray-500 mt-2">md</p>
             </div>
             <div class="text-center">
-              <ApplicationLogo variant="padded" size="lg" />
+              <ApplicationLogo size="lg" />
               <p class="text-xs text-gray-500 mt-2">lg</p>
             </div>
             <div class="text-center">
-              <ApplicationLogo variant="padded" size="xl" />
+              <ApplicationLogo size="xl" />
               <p class="text-xs text-gray-500 mt-2">xl</p>
             </div>
             <div class="text-center">
-              <ApplicationLogo variant="padded" size="2xl" />
+              <ApplicationLogo size="2xl" />
               <p class="text-xs text-gray-500 mt-2">2xl</p>
             </div>
           </div>
@@ -158,7 +147,8 @@ const legacyColors = [
       <!-- Color Palette -->
       <section class="mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">Color Palette</h2>
-        <p class="text-sm text-gray-500 mb-4">Defined in: <code class="bg-gray-100 px-1 rounded">src/assets/css/app.css</code></p>
+        <p class="text-sm text-gray-500 mb-4">Defined in: <code
+            class="bg-gray-100 px-1 rounded">src/assets/css/app.css</code></p>
 
         <!-- Primary -->
         <div class="mb-8">
@@ -234,7 +224,8 @@ const legacyColors = [
         <div class="mb-8">
           <h3 class="text-lg font-semibold text-gray-800 mb-4">Neutrals</h3>
           <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div v-for="color in neutralColors" :key="color.name" class="bg-white rounded-lg shadow-sm overflow-hidden border">
+            <div v-for="color in neutralColors" :key="color.name"
+              class="bg-white rounded-lg shadow-sm overflow-hidden border">
               <div :class="[color.class, 'h-20 border-b']"></div>
               <div class="p-3">
                 <p class="font-mono text-sm font-medium">{{ color.name }}</p>
@@ -262,7 +253,8 @@ const legacyColors = [
         <div class="mb-8">
           <h3 class="text-lg font-semibold text-gray-800 mb-4">Legacy Colors</h3>
           <div class="grid grid-cols-2 md:grid-cols-2 gap-4 max-w-md">
-            <div v-for="color in legacyColors" :key="color.name" class="bg-white rounded-lg shadow-sm overflow-hidden border">
+            <div v-for="color in legacyColors" :key="color.name"
+              class="bg-white rounded-lg shadow-sm overflow-hidden border">
               <div :class="[color.class, 'h-20 border-b']"></div>
               <div class="p-3">
                 <p class="font-mono text-sm font-medium">{{ color.name }}</p>
@@ -277,7 +269,8 @@ const legacyColors = [
       <section class="mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">Typography</h2>
         <Card>
-          <p class="text-sm text-gray-500 mb-6">Font Family: <span class="font-mono">Rubik</span> (defined in tailwind.config.js)</p>
+          <p class="text-sm text-gray-500 mb-6">Font Family: <span class="font-mono">Rubik</span> (defined in
+            tailwind.config.js)</p>
 
           <div class="space-y-6">
             <div>
@@ -306,15 +299,18 @@ const legacyColors = [
             </div>
             <div>
               <p class="text-xs text-gray-400 mb-1">text-base (default)</p>
-              <p class="text-base text-gray-900">The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.</p>
+              <p class="text-base text-gray-900">The quick brown fox jumps over the lazy dog. Pack my box with five
+                dozen liquor jugs.</p>
             </div>
             <div>
               <p class="text-xs text-gray-400 mb-1">text-sm</p>
-              <p class="text-sm text-gray-600">The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.</p>
+              <p class="text-sm text-gray-600">The quick brown fox jumps over the lazy dog. Pack my box with five dozen
+                liquor jugs.</p>
             </div>
             <div>
               <p class="text-xs text-gray-400 mb-1">text-xs</p>
-              <p class="text-xs text-gray-500">The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.</p>
+              <p class="text-xs text-gray-500">The quick brown fox jumps over the lazy dog. Pack my box with five dozen
+                liquor jugs.</p>
             </div>
           </div>
 
@@ -342,7 +338,8 @@ const legacyColors = [
             <!-- Primary Buttons -->
             <div>
               <h4 class="font-semibold text-gray-900 mb-2">PrimaryButton</h4>
-              <p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded">PrimaryButton</code></p>
+              <p class="text-sm text-gray-500 mb-4">Component: <code
+                  class="bg-gray-100 px-1 rounded">PrimaryButton</code></p>
               <div class="flex flex-wrap gap-4">
                 <PrimaryButton>Primary Button</PrimaryButton>
                 <PrimaryButton disabled>Disabled</PrimaryButton>
@@ -352,7 +349,8 @@ const legacyColors = [
             <!-- Secondary Buttons -->
             <div>
               <h4 class="font-semibold text-gray-900 mb-2">SecondaryButton</h4>
-              <p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded">SecondaryButton</code></p>
+              <p class="text-sm text-gray-500 mb-4">Component: <code
+                  class="bg-gray-100 px-1 rounded">SecondaryButton</code></p>
               <div class="flex flex-wrap gap-4">
                 <SecondaryButton>Secondary Button</SecondaryButton>
                 <SecondaryButton disabled>Disabled</SecondaryButton>
@@ -362,7 +360,8 @@ const legacyColors = [
             <!-- Danger Buttons -->
             <div>
               <h4 class="font-semibold text-gray-900 mb-2">DangerButton</h4>
-              <p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded">DangerButton</code></p>
+              <p class="text-sm text-gray-500 mb-4">Component: <code
+                  class="bg-gray-100 px-1 rounded">DangerButton</code></p>
               <div class="flex flex-wrap gap-4">
                 <DangerButton>Danger Button</DangerButton>
                 <DangerButton disabled>Disabled</DangerButton>
@@ -372,7 +371,8 @@ const legacyColors = [
             <!-- Button Sizes (CSS Classes) -->
             <div>
               <h4 class="font-semibold text-gray-900 mb-2">Button Sizes</h4>
-              <p class="text-sm text-gray-500 mb-4">CSS classes: <code class="bg-gray-100 px-1 rounded">btn btn--primary btn--{size}</code></p>
+              <p class="text-sm text-gray-500 mb-4">CSS classes: <code
+                  class="bg-gray-100 px-1 rounded">btn btn--primary btn--{size}</code></p>
               <div class="flex flex-wrap items-center gap-4">
                 <button class="btn btn--primary btn--xs">Extra Small</button>
                 <button class="btn btn--primary btn--sm">Small</button>
@@ -385,7 +385,8 @@ const legacyColors = [
             <!-- Button Variants (CSS Classes) -->
             <div>
               <h4 class="font-semibold text-gray-900 mb-2">Button Variants</h4>
-              <p class="text-sm text-gray-500 mb-4">CSS classes: <code class="bg-gray-100 px-1 rounded">btn btn--{variant} btn--md</code></p>
+              <p class="text-sm text-gray-500 mb-4">CSS classes: <code
+                  class="bg-gray-100 px-1 rounded">btn btn--{variant} btn--md</code></p>
               <div class="flex flex-wrap gap-4">
                 <button class="btn btn--primary btn--md">Primary</button>
                 <button class="btn btn--secondary btn--md">Secondary</button>
@@ -398,7 +399,8 @@ const legacyColors = [
             <!-- Outline Buttons (CSS Classes) -->
             <div>
               <h4 class="font-semibold text-gray-900 mb-2">Outline Buttons</h4>
-              <p class="text-sm text-gray-500 mb-4">CSS classes: <code class="bg-gray-100 px-1 rounded">btn btn--{variant} btn--outline btn--md</code></p>
+              <p class="text-sm text-gray-500 mb-4">CSS classes: <code
+                  class="bg-gray-100 px-1 rounded">btn btn--{variant} btn--outline btn--md</code></p>
               <div class="flex flex-wrap gap-4">
                 <button class="btn btn--primary btn--outline btn--md">Primary</button>
                 <button class="btn btn--secondary btn--outline btn--md">Secondary</button>
@@ -417,9 +419,12 @@ const legacyColors = [
         <Card>
           <div class="max-w-md space-y-6">
             <div>
-              <p class="text-sm text-gray-500 mb-4">Components: <code class="bg-gray-100 px-1 rounded">InputLabel</code>, <code class="bg-gray-100 px-1 rounded">TextInput</code></p>
+              <p class="text-sm text-gray-500 mb-4">Components: <code
+                  class="bg-gray-100 px-1 rounded">InputLabel</code>, <code
+                  class="bg-gray-100 px-1 rounded">TextInput</code></p>
               <InputLabel for="sample1" value="Default Input" />
-              <TextInput id="sample1" v-model="sampleInput" type="text" class="mt-1 block w-full" placeholder="Enter something..." />
+              <TextInput id="sample1" v-model="sampleInput" type="text" class="mt-1 block w-full"
+                placeholder="Enter something..." />
             </div>
 
             <div>
@@ -431,11 +436,13 @@ const legacyColors = [
 
             <div>
               <InputLabel for="sample3" value="Disabled Input" />
-              <TextInput id="sample3" v-model="sampleInput" type="text" class="mt-1 block w-full" disabled placeholder="Disabled..." />
+              <TextInput id="sample3" v-model="sampleInput" type="text" class="mt-1 block w-full" disabled
+                placeholder="Disabled..." />
             </div>
 
             <div>
-              <p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded">Checkbox</code></p>
+              <p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded">Checkbox</code>
+              </p>
               <label class="flex items-center gap-2">
                 <Checkbox v-model:checked="sampleCheckbox" />
                 <span class="text-sm text-gray-700">I agree to the terms</span>
@@ -443,7 +450,10 @@ const legacyColors = [
             </div>
 
             <div>
-              <p class="text-sm text-gray-500 mb-4">CSS classes: <code class="bg-gray-100 px-1 rounded">text-input-container</code>, <code class="bg-gray-100 px-1 rounded">text-input-label</code>, <code class="bg-gray-100 px-1 rounded">text-input</code></p>
+              <p class="text-sm text-gray-500 mb-4">CSS classes: <code
+                  class="bg-gray-100 px-1 rounded">text-input-container</code>, <code
+                  class="bg-gray-100 px-1 rounded">text-input-label</code>, <code
+                  class="bg-gray-100 px-1 rounded">text-input</code></p>
               <div class="text-input-container">
                 <label class="text-input-label">Nested Label Style</label>
                 <input type="text" class="text-input" placeholder="Enter value..." />
@@ -474,7 +484,7 @@ const legacyColors = [
             Here's some helpful information for you.
           </Alert>
 
-          <Alert variant="info" title="Dismissible Alert" dismissible @dismiss="() => {}">
+          <Alert variant="info" title="Dismissible Alert" dismissible @dismiss="() => { }">
             This alert can be dismissed by clicking the X button.
           </Alert>
         </div>

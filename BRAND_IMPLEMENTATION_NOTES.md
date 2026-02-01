@@ -109,7 +109,7 @@ Tab Bar:
 ## Removed/Changed
 
 ### Removed
-- "Sneaky Salesman" branding
+- "The Frugalist" branding
 - Fox logo references
 - Neon glow effects (`neon-glow`)
 - Old blue/amber color scheme

@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useLogin } from '@/api/auth/use-auth';
-import { foxLogo } from '@/assets/images';
+import { logoBlue } from '@/assets/logos';
 import { Button, ControlledInput, Image, Pressable, SafeAreaView, ScrollView, Text, View } from '@/components/ui';
 
 const loginSchema = z.object({
@@ -46,7 +46,7 @@ export default function LoginScreen() {
       >
         {/* Logo */}
         <View className="my-6 items-center">
-          <Image source={foxLogo} className="size-28" contentFit="contain" />
+          <Image source={logoBlue} className="size-28" contentFit="contain" />
         </View>
 
         {/* Header */}

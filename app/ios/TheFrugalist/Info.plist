@@ -7,7 +7,7 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
-    <string>Sneaky Salesman</string>
+    <string>TheFrugalist</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
@@ -27,14 +27,14 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>sneaky-salesman</string>
-          <string>com.tensifi.sneakysalesman.development</string>
+          <string>thefrugalist</string>
+          <string>com.tensifi.thefrugalist.development</string>
         </array>
       </dict>
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>exp+sneaky-salesman</string>
+          <string>exp+thefrugalist</string>
         </array>
       </dict>
     </array>

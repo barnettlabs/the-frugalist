@@ -7,39 +7,39 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0AFFB58DEF904A6AABDBD749 /* Inter.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 08C72040175B4B70AAE674F9 /* Inter.ttf */; };
+		02CB9F8E0BA1A453721C8A10 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1A855E85D49187756624F83D /* PrivacyInfo.xcprivacy */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		329AD9301586484D837D2CD5 /* Rubik-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E5CB4EFAE84E44C68F9ACCB8 /* Rubik-Bold.ttf */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		7AF309EB3AA044769056290D /* Rubik-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 134E7975F617469798A8A352 /* Rubik-Medium.ttf */; };
-		9EF4583F612CF1A1AF1336EA /* libPods-SneakySalesman.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D5E42B1C90EAEE2977203A6A /* libPods-SneakySalesman.a */; };
-		A34589F9CEC26AB82EDA40C5 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 236384F6728535E3AB4AF394 /* PrivacyInfo.xcprivacy */; };
+		4059CB33A03F4AA6B92EF672 /* Rubik-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D96756C46D854836B72504DE /* Rubik-SemiBold.ttf */; };
+		4AFA85484B3A4C1E8ECF535A /* Rubik-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5862F45265A14430B78F79D1 /* Rubik-Bold.ttf */; };
+		6AFB6C46A7DD4E98AA00A589 /* Inter.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C0C3827F204845E1853BDBC8 /* Inter.ttf */; };
+		6DBC439B6CD3432A90BD1BA8 /* Rubik-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6213B8E37BE44F0296D1941F /* Rubik-Regular.ttf */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		C2310032208543EE881F9B1C /* Rubik-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 65A2EEE5E7EB407E8F78E9C8 /* Rubik-Regular.ttf */; };
-		E60812A868A54CAFB123EC80 /* Rubik-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B58B208CF884CCFB7586D74 /* Rubik-SemiBold.ttf */; };
+		CC73305CCB2FAA21B21D4F57 /* libPods-TheFrugalist.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0133A70FEB678F8EF74131C2 /* libPods-TheFrugalist.a */; };
+		CD3AACD4379703F4446C0AB4 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800301EBBB6A42963A63465B /* ExpoModulesProvider.swift */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
-		FFB53B5B158AE6A6572F354A /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4729B7C20CA71A6C3763F6F6 /* ExpoModulesProvider.swift */; };
+		F4A87C8FD2314C17845D63B4 /* Rubik-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC07ED0D9FC746AB80A5CBD2 /* Rubik-Medium.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		08C72040175B4B70AAE674F9 /* Inter.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Inter.ttf; path = ../assets/fonts/Inter.ttf; sourceTree = "<group>"; };
-		134E7975F617469798A8A352 /* Rubik-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Medium.ttf"; path = "../assets/fonts/Rubik-Medium.ttf"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* SneakySalesman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SneakySalesman.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = SneakySalesman/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = SneakySalesman/Info.plist; sourceTree = "<group>"; };
-		1B58B208CF884CCFB7586D74 /* Rubik-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-SemiBold.ttf"; path = "../assets/fonts/Rubik-SemiBold.ttf"; sourceTree = "<group>"; };
-		236384F6728535E3AB4AF394 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = SneakySalesman/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		2CAAA7AD84A48E56D26A3873 /* Pods-SneakySalesman.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SneakySalesman.debug.xcconfig"; path = "Target Support Files/Pods-SneakySalesman/Pods-SneakySalesman.debug.xcconfig"; sourceTree = "<group>"; };
-		4729B7C20CA71A6C3763F6F6 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-SneakySalesman/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		65A2EEE5E7EB407E8F78E9C8 /* Rubik-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Regular.ttf"; path = "../assets/fonts/Rubik-Regular.ttf"; sourceTree = "<group>"; };
-		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = SneakySalesman/SplashScreen.storyboard; sourceTree = "<group>"; };
+		0133A70FEB678F8EF74131C2 /* libPods-TheFrugalist.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TheFrugalist.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0602FF135D0A870E2FC64CBD /* Pods-TheFrugalist.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheFrugalist.debug.xcconfig"; path = "Target Support Files/Pods-TheFrugalist/Pods-TheFrugalist.debug.xcconfig"; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* TheFrugalist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheFrugalist.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TheFrugalist/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = TheFrugalist/Info.plist; sourceTree = "<group>"; };
+		1A855E85D49187756624F83D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = TheFrugalist/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		2940E168F568D9E8C14CE76F /* Pods-TheFrugalist.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheFrugalist.release.xcconfig"; path = "Target Support Files/Pods-TheFrugalist/Pods-TheFrugalist.release.xcconfig"; sourceTree = "<group>"; };
+		5862F45265A14430B78F79D1 /* Rubik-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Bold.ttf"; path = "../assets/fonts/Rubik-Bold.ttf"; sourceTree = "<group>"; };
+		6213B8E37BE44F0296D1941F /* Rubik-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Regular.ttf"; path = "../assets/fonts/Rubik-Regular.ttf"; sourceTree = "<group>"; };
+		800301EBBB6A42963A63465B /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-TheFrugalist/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = TheFrugalist/SplashScreen.storyboard; sourceTree = "<group>"; };
+		AC07ED0D9FC746AB80A5CBD2 /* Rubik-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Medium.ttf"; path = "../assets/fonts/Rubik-Medium.ttf"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		D5E42B1C90EAEE2977203A6A /* libPods-SneakySalesman.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SneakySalesman.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DE56E36655BB27189706B334 /* Pods-SneakySalesman.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SneakySalesman.release.xcconfig"; path = "Target Support Files/Pods-SneakySalesman/Pods-SneakySalesman.release.xcconfig"; sourceTree = "<group>"; };
-		E5CB4EFAE84E44C68F9ACCB8 /* Rubik-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Bold.ttf"; path = "../assets/fonts/Rubik-Bold.ttf"; sourceTree = "<group>"; };
+		C0C3827F204845E1853BDBC8 /* Inter.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Inter.ttf; path = ../assets/fonts/Inter.ttf; sourceTree = "<group>"; };
+		D96756C46D854836B72504DE /* Rubik-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-SemiBold.ttf"; path = "../assets/fonts/Rubik-SemiBold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = SneakySalesman/AppDelegate.swift; sourceTree = "<group>"; };
-		F11748442D0722820044C1D9 /* SneakySalesman-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "SneakySalesman-Bridging-Header.h"; path = "SneakySalesman/SneakySalesman-Bridging-Header.h"; sourceTree = "<group>"; };
+		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = TheFrugalist/AppDelegate.swift; sourceTree = "<group>"; };
+		F11748442D0722820044C1D9 /* TheFrugalist-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "TheFrugalist-Bridging-Header.h"; path = "TheFrugalist/TheFrugalist-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,34 +47,65 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9EF4583F612CF1A1AF1336EA /* libPods-SneakySalesman.a in Frameworks */,
+				CC73305CCB2FAA21B21D4F57 /* libPods-TheFrugalist.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		13B07FAE1A68108700A75B9A /* SneakySalesman */ = {
+		13B07FAE1A68108700A75B9A /* TheFrugalist */ = {
 			isa = PBXGroup;
 			children = (
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
-				F11748442D0722820044C1D9 /* SneakySalesman-Bridging-Header.h */,
+				F11748442D0722820044C1D9 /* TheFrugalist-Bridging-Header.h */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				236384F6728535E3AB4AF394 /* PrivacyInfo.xcprivacy */,
+				1A855E85D49187756624F83D /* PrivacyInfo.xcprivacy */,
 			);
-			name = SneakySalesman;
+			name = TheFrugalist;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				D5E42B1C90EAEE2977203A6A /* libPods-SneakySalesman.a */,
+				0133A70FEB678F8EF74131C2 /* libPods-TheFrugalist.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		317891CF159ABCE7B638EDFA /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0602FF135D0A870E2FC64CBD /* Pods-TheFrugalist.debug.xcconfig */,
+				2940E168F568D9E8C14CE76F /* Pods-TheFrugalist.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		4C55A12F5E7F4EFD9ACC2BE4 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C0C3827F204845E1853BDBC8 /* Inter.ttf */,
+				6213B8E37BE44F0296D1941F /* Rubik-Regular.ttf */,
+				AC07ED0D9FC746AB80A5CBD2 /* Rubik-Medium.ttf */,
+				D96756C46D854836B72504DE /* Rubik-SemiBold.ttf */,
+				5862F45265A14430B78F79D1 /* Rubik-Bold.ttf */,
+			);
+			name = Resources;
+			path = "";
+			sourceTree = "<group>";
+		};
+		6F9221CE9CD2883297A54B0B /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				DB404411AD9855D961CEFA5A /* TheFrugalist */,
+			);
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -87,13 +118,13 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				13B07FAE1A68108700A75B9A /* SneakySalesman */,
+				13B07FAE1A68108700A75B9A /* TheFrugalist */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				FF24A10E868A493D8C86F4DF /* Resources */,
-				B095A2DC31A601AC5F0FC7AE /* Pods */,
-				ADE2436AF22E4BAD647C2F21 /* ExpoModulesProviders */,
+				4C55A12F5E7F4EFD9ACC2BE4 /* Resources */,
+				317891CF159ABCE7B638EDFA /* Pods */,
+				6F9221CE9CD2883297A54B0B /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -103,35 +134,9 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* SneakySalesman.app */,
+				13B07F961A680F5B00A75B9A /* TheFrugalist.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		A69232E1F85F320E46C2D041 /* SneakySalesman */ = {
-			isa = PBXGroup;
-			children = (
-				4729B7C20CA71A6C3763F6F6 /* ExpoModulesProvider.swift */,
-			);
-			name = SneakySalesman;
-			sourceTree = "<group>";
-		};
-		ADE2436AF22E4BAD647C2F21 /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				A69232E1F85F320E46C2D041 /* SneakySalesman */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
-		B095A2DC31A601AC5F0FC7AE /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				2CAAA7AD84A48E56D26A3873 /* Pods-SneakySalesman.debug.xcconfig */,
-				DE56E36655BB27189706B334 /* Pods-SneakySalesman.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
@@ -140,45 +145,40 @@
 				BB2F792C24A3F905000567C9 /* Expo.plist */,
 			);
 			name = Supporting;
-			path = SneakySalesman/Supporting;
+			path = TheFrugalist/Supporting;
 			sourceTree = "<group>";
 		};
-		FF24A10E868A493D8C86F4DF /* Resources */ = {
+		DB404411AD9855D961CEFA5A /* TheFrugalist */ = {
 			isa = PBXGroup;
 			children = (
-				08C72040175B4B70AAE674F9 /* Inter.ttf */,
-				65A2EEE5E7EB407E8F78E9C8 /* Rubik-Regular.ttf */,
-				134E7975F617469798A8A352 /* Rubik-Medium.ttf */,
-				1B58B208CF884CCFB7586D74 /* Rubik-SemiBold.ttf */,
-				E5CB4EFAE84E44C68F9ACCB8 /* Rubik-Bold.ttf */,
+				800301EBBB6A42963A63465B /* ExpoModulesProvider.swift */,
 			);
-			name = Resources;
-			path = "";
+			name = TheFrugalist;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* SneakySalesman */ = {
+		13B07F861A680F5B00A75B9A /* TheFrugalist */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "SneakySalesman" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "TheFrugalist" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				F36265998B324358024C8831 /* [Expo] Configure project */,
+				0C947989108E715F62BA4367 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				410FB1EA6CAFAA4596DEDBB2 /* [CP] Embed Pods Frameworks */,
+				347E58F524E9ED0AF8CBFCD9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = SneakySalesman;
-			productName = SneakySalesman;
-			productReference = 13B07F961A680F5B00A75B9A /* SneakySalesman.app */;
+			name = TheFrugalist;
+			productName = TheFrugalist;
+			productReference = 13B07F961A680F5B00A75B9A /* TheFrugalist.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -194,7 +194,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "SneakySalesman" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "TheFrugalist" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -207,7 +207,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* SneakySalesman */,
+				13B07F861A680F5B00A75B9A /* TheFrugalist */,
 			);
 		};
 /* End PBXProject section */
@@ -220,12 +220,12 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				0AFFB58DEF904A6AABDBD749 /* Inter.ttf in Resources */,
-				C2310032208543EE881F9B1C /* Rubik-Regular.ttf in Resources */,
-				7AF309EB3AA044769056290D /* Rubik-Medium.ttf in Resources */,
-				E60812A868A54CAFB123EC80 /* Rubik-SemiBold.ttf in Resources */,
-				329AD9301586484D837D2CD5 /* Rubik-Bold.ttf in Resources */,
-				A34589F9CEC26AB82EDA40C5 /* PrivacyInfo.xcprivacy in Resources */,
+				6AFB6C46A7DD4E98AA00A589 /* Inter.ttf in Resources */,
+				6DBC439B6CD3432A90BD1BA8 /* Rubik-Regular.ttf in Resources */,
+				F4A87C8FD2314C17845D63B4 /* Rubik-Medium.ttf in Resources */,
+				4059CB33A03F4AA6B92EF672 /* Rubik-SemiBold.ttf in Resources */,
+				4AFA85484B3A4C1E8ECF535A /* Rubik-Bold.ttf in Resources */,
+				02CB9F8E0BA1A453721C8A10 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,20 +262,39 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-SneakySalesman-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-TheFrugalist-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		410FB1EA6CAFAA4596DEDBB2 /* [CP] Embed Pods Frameworks */ = {
+		0C947989108E715F62BA4367 /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-TheFrugalist/expo-configure-project.sh\"\n";
+		};
+		347E58F524E9ED0AF8CBFCD9 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SneakySalesman/Pods-SneakySalesman-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-TheFrugalist/Pods-TheFrugalist-frameworks.sh",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -284,7 +303,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SneakySalesman/Pods-SneakySalesman-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TheFrugalist/Pods-TheFrugalist-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
@@ -293,10 +312,12 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SneakySalesman/Pods-SneakySalesman-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-TheFrugalist/Pods-TheFrugalist-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXApplication/ExpoApplication_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/ExpoConstants_privacy.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/EXNotifications/ExpoNotifications_privacy.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/ExpoDevice/ExpoDevice_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/ExpoFileSystem/ExpoFileSystem_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/ExpoLocalization/ExpoLocalization_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/ExpoSystemUI/ExpoSystemUI_privacy.bundle",
@@ -315,6 +336,8 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoApplication_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EXConstants.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoConstants_privacy.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoNotifications_privacy.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoDevice_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoFileSystem_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoLocalization_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoSystemUI_privacy.bundle",
@@ -330,27 +353,8 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SneakySalesman/Pods-SneakySalesman-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TheFrugalist/Pods-TheFrugalist-resources.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		F36265998B324358024C8831 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-SneakySalesman/expo-configure-project.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -360,7 +364,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				FFB53B5B158AE6A6572F354A /* ExpoModulesProvider.swift in Sources */,
+				CD3AACD4379703F4446C0AB4 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -369,11 +373,11 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2CAAA7AD84A48E56D26A3873 /* Pods-SneakySalesman.debug.xcconfig */;
+			baseConfigurationReference = 0602FF135D0A870E2FC64CBD /* Pods-TheFrugalist.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = SneakySalesman/SneakySalesman.entitlements;
+				CODE_SIGN_ENTITLEMENTS = TheFrugalist/TheFrugalist.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 44BTVU6QAF;
 				ENABLE_BITCODE = NO;
@@ -381,7 +385,7 @@
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
 				);
-				INFOPLIST_FILE = SneakySalesman/Info.plist;
+				INFOPLIST_FILE = TheFrugalist/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -394,9 +398,9 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = com.tensifi.sneakysalesman.development;
-				PRODUCT_NAME = SneakySalesman;
-				SWIFT_OBJC_BRIDGING_HEADER = "SneakySalesman/SneakySalesman-Bridging-Header.h";
+				PRODUCT_BUNDLE_IDENTIFIER = com.tensifi.thefrugalist.development;
+				PRODUCT_NAME = TheFrugalist;
+				SWIFT_OBJC_BRIDGING_HEADER = "TheFrugalist/TheFrugalist-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -406,14 +410,14 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE56E36655BB27189706B334 /* Pods-SneakySalesman.release.xcconfig */;
+			baseConfigurationReference = 2940E168F568D9E8C14CE76F /* Pods-TheFrugalist.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = SneakySalesman/SneakySalesman.entitlements;
+				CODE_SIGN_ENTITLEMENTS = TheFrugalist/TheFrugalist.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 44BTVU6QAF;
-				INFOPLIST_FILE = SneakySalesman/Info.plist;
+				INFOPLIST_FILE = TheFrugalist/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -426,9 +430,9 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = com.tensifi.sneakysalesman.development;
-				PRODUCT_NAME = SneakySalesman;
-				SWIFT_OBJC_BRIDGING_HEADER = "SneakySalesman/SneakySalesman-Bridging-Header.h";
+				PRODUCT_BUNDLE_IDENTIFIER = com.tensifi.thefrugalist.development;
+				PRODUCT_NAME = TheFrugalist;
+				SWIFT_OBJC_BRIDGING_HEADER = "TheFrugalist/TheFrugalist-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -562,7 +566,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "SneakySalesman" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "TheFrugalist" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -571,7 +575,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "SneakySalesman" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "TheFrugalist" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

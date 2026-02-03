@@ -45,7 +45,7 @@ export default function LoginScreen() {
       >
         {/* Logo */}
         <View className="my-6 items-center">
-          <LogoImage className="!size-28" />
+          <LogoImage variant="auto" className="!size-28" />
         </View>
 
         {/* Header */}

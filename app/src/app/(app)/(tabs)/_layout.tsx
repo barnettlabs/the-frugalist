@@ -347,9 +347,9 @@ export default function TabLayout() {
     }
   }, [hideSplash, status]);
 
-  //   if (isFirstTime) {
-  //     return <Redirect href="/onboarding" />;
-  //   }
+  if (isFirstTime) {
+    return <Redirect href="/onboarding" />;
+  }
   if (status === 'signOut') {
     return <Redirect href="/(auth)/login" />;
   }

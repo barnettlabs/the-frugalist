@@ -5,9 +5,11 @@ import { showMessage } from 'react-native-flash-message';
 
 import { useAddWatchItem } from '@/api/watch';
 import { TrackerForm } from '@/components/tracker/tracker-form';
+import { useNotifications } from '@/lib/notifications/use-notifications';
 
 export default function TrackerCreateScreen() {
   const { mutate: createProduct, isPending } = useAddWatchItem();
+  const { register: registerNotifications, isRegistered } = useNotifications();
 
   const handleSubmit = (data: {
     sku_upc: string;
@@ -16,6 +18,10 @@ export default function TrackerCreateScreen() {
   }) => {
     createProduct(data, {
       onSuccess: () => {
+        // Request notification permissions when user creates their first tracker
+        if (!isRegistered) {
+          registerNotifications();
+        }
         showMessage({
           message: 'Success',
           description: 'Product is now being tracked',

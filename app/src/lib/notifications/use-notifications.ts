@@ -1,8 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useAuth } from '@/lib';
-
 import { useRegisterDevice } from '@/api/devices';
 
 import {
@@ -21,11 +19,13 @@ export type NotificationState = {
 
 /**
  * Hook to manage push notification registration and handling.
- * Automatically registers for push notifications when the user is authenticated.
+ * Call `register()` explicitly when you want to request notification permissions
+ * (e.g., when user enables a feature that needs notifications).
  */
 export function useNotifications() {
-  const { status } = useAuth();
-  const registerDevice = useRegisterDevice();
+  const registerDeviceMutation = useRegisterDevice();
+  const registerDeviceRef = useRef(registerDeviceMutation);
+  registerDeviceRef.current = registerDeviceMutation;
 
   const [state, setState] = useState<NotificationState>({
     isRegistered: false,
@@ -39,9 +39,12 @@ export function useNotifications() {
   const hasRegistered = useRef(false);
 
   const register = useCallback(async () => {
-    if (state.isLoading || hasRegistered.current) return;
+    if (hasRegistered.current) return;
 
-    setState((prev) => ({ ...prev, isLoading: true, error: null }));
+    setState((prev) => {
+      if (prev.isLoading) return prev;
+      return { ...prev, isLoading: true, error: null };
+    });
 
     try {
       // Setup notification channels for Android
@@ -60,7 +63,7 @@ export function useNotifications() {
       }
 
       // Register the device token with the API
-      await registerDevice.mutateAsync({
+      await registerDeviceRef.current.mutateAsync({
         push_token: result.token,
         device_type: getDeviceType(),
         device_name: getDeviceName(),
@@ -80,14 +83,7 @@ export function useNotifications() {
         error: error instanceof Error ? error.message : 'Registration failed',
       }));
     }
-  }, [state.isLoading, registerDevice]);
-
-  // Auto-register when user is authenticated
-  useEffect(() => {
-    if (status === 'signIn' && !hasRegistered.current) {
-      register();
-    }
-  }, [status, register]);
+  }, []);
 
   // Setup notification listeners
   useEffect(() => {

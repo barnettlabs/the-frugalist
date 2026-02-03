@@ -109,8 +109,8 @@ export default function Dashboard() {
         {/* Finance Section */}
         <GlassEntitySection
           title="Finance"
-          icon={<CalculatorIcon color={colors.info} size={20} />}
-          accentColor={colors.info}
+          icon={<CalculatorIcon color={colors.info.DEFAULT} size={20} />}
+          accentColor={colors.info.DEFAULT}
           count={stats?.financeCount ?? 0}
           isLoading={isLoading}
           theme={theme}
@@ -123,8 +123,8 @@ export default function Dashboard() {
         {/* Lease Section */}
         <GlassEntitySection
           title="Lease"
-          icon={<CarIcon color={colors.success} size={20} />}
-          accentColor={colors.success}
+          icon={<CarIcon color={colors.success.DEFAULT} size={20} />}
+          accentColor={colors.success.DEFAULT}
           count={stats?.leaseCount ?? 0}
           isLoading={isLoading}
           theme={theme}
@@ -141,8 +141,8 @@ export default function Dashboard() {
             <Link href="/(app)/learning/financing" asChild>
               <Pressable>
                 <GlassCard isDark={isDark} style={styles.resourceCard}>
-                  <View style={[styles.resourceIcon, { backgroundColor: `${colors.info}20` }]}>
-                    <CalculatorIcon color={colors.info} size={18} />
+                  <View style={[styles.resourceIcon, { backgroundColor: `${colors.info.DEFAULT}20` }]}>
+                    <CalculatorIcon color={colors.info.DEFAULT} size={18} />
                   </View>
                   <Text style={[styles.resourceTitle, { color: theme.textPrimary }]}>
                     Financing
@@ -154,8 +154,8 @@ export default function Dashboard() {
             <Link href="/(app)/learning/leasing" asChild>
               <Pressable>
                 <GlassCard isDark={isDark} style={styles.resourceCard}>
-                  <View style={[styles.resourceIcon, { backgroundColor: `${colors.success}20` }]}>
-                    <CarIcon color={colors.success} size={18} />
+                  <View style={[styles.resourceIcon, { backgroundColor: `${colors.success.DEFAULT}20` }]}>
+                    <CarIcon color={colors.success.DEFAULT} size={18} />
                   </View>
                   <Text style={[styles.resourceTitle, { color: theme.textPrimary }]}>Leasing</Text>
                   <Text style={[styles.resourceSubtitle, { color: theme.textMuted }]}>Terms</Text>

@@ -40,6 +40,7 @@
     "e2e-test": "maestro test .maestro/ -e APP_ID=com.obytes.development"
   },
   "dependencies": {
+    "@bottom-tabs/react-navigation": "^1.1.0",
     "@expo-google-fonts/rubik": "^0.4.2",
     "@expo/metro-runtime": "^5.0.4",
     "@gorhom/bottom-sheet": "^5.0.5",
@@ -54,11 +55,13 @@
     "expo-constants": "~17.1.6",
     "expo-crypto": "^14.1.5",
     "expo-dev-client": "~5.2.1",
+    "expo-device": "~7.1.4",
     "expo-font": "~13.3.1",
     "expo-image": "~2.3.0",
     "expo-linear-gradient": "~14.1.5",
     "expo-linking": "~7.1.5",
     "expo-localization": "~16.1.5",
+    "expo-notifications": "~0.31.4",
     "expo-router": "~5.1.0",
     "expo-splash-screen": "~0.30.9",
     "expo-status-bar": "~2.2.3",
@@ -73,6 +76,7 @@
     "react-hook-form": "^7.53.0",
     "react-i18next": "^15.0.1",
     "react-native": "0.79.4",
+    "react-native-bottom-tabs": "^1.1.0",
     "react-native-chart-kit": "^6.12.0",
     "react-native-edge-to-edge": "^1.6.0",
     "react-native-flash-message": "^0.4.2",
@@ -90,9 +94,7 @@
     "tailwind-merge": "^3.4.0",
     "tailwind-variants": "^3.2.2",
     "zod": "^3.23.8",
-    "zustand": "^5.0.5",
-    "expo-notifications": "~0.31.4",
-    "expo-device": "~7.1.4"
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",

@@ -7,36 +7,36 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		02CB9F8E0BA1A453721C8A10 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1A855E85D49187756624F83D /* PrivacyInfo.xcprivacy */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		2D19AB772DF648079F506214 /* Rubik-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4C1F6689C365429B9535AE65 /* Rubik-Bold.ttf */; };
+		34FFD6FF7593422CA08F3626 /* Rubik-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96A44D7246684711A285F5D9 /* Rubik-Medium.ttf */; };
+		3A735DE10F2A94DDFBA461EB /* libPods-TheFrugalist.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7966FC61939B4968D9E29AE7 /* libPods-TheFrugalist.a */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		4059CB33A03F4AA6B92EF672 /* Rubik-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D96756C46D854836B72504DE /* Rubik-SemiBold.ttf */; };
-		4AFA85484B3A4C1E8ECF535A /* Rubik-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5862F45265A14430B78F79D1 /* Rubik-Bold.ttf */; };
-		6AFB6C46A7DD4E98AA00A589 /* Inter.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C0C3827F204845E1853BDBC8 /* Inter.ttf */; };
-		6DBC439B6CD3432A90BD1BA8 /* Rubik-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6213B8E37BE44F0296D1941F /* Rubik-Regular.ttf */; };
+		88065D57D4F94E088153078C /* Rubik-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 880BDB3C72074B2CBD90115D /* Rubik-Regular.ttf */; };
+		9FB5852237C6456F94F3EE04 /* Inter.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 038D48E2A2BE4031930A2439 /* Inter.ttf */; };
+		AF07E4B3BAA9B58BA8F39486 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D8CCBD1EC47190E875A5CBB2 /* PrivacyInfo.xcprivacy */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		CC73305CCB2FAA21B21D4F57 /* libPods-TheFrugalist.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0133A70FEB678F8EF74131C2 /* libPods-TheFrugalist.a */; };
-		CD3AACD4379703F4446C0AB4 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800301EBBB6A42963A63465B /* ExpoModulesProvider.swift */; };
+		DFF39B7AFA9F4BB289107C90 /* Rubik-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 43416CB96D8F45E1A09B6160 /* Rubik-SemiBold.ttf */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
-		F4A87C8FD2314C17845D63B4 /* Rubik-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC07ED0D9FC746AB80A5CBD2 /* Rubik-Medium.ttf */; };
+		FA2B89CCFD788CDDC9ECB9DF /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E69A4467B9BE789538B545DE /* ExpoModulesProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0133A70FEB678F8EF74131C2 /* libPods-TheFrugalist.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TheFrugalist.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		0602FF135D0A870E2FC64CBD /* Pods-TheFrugalist.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheFrugalist.debug.xcconfig"; path = "Target Support Files/Pods-TheFrugalist/Pods-TheFrugalist.debug.xcconfig"; sourceTree = "<group>"; };
+		038D48E2A2BE4031930A2439 /* Inter.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Inter.ttf; path = ../assets/fonts/Inter.ttf; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* TheFrugalist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheFrugalist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TheFrugalist/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = TheFrugalist/Info.plist; sourceTree = "<group>"; };
-		1A855E85D49187756624F83D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = TheFrugalist/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		2940E168F568D9E8C14CE76F /* Pods-TheFrugalist.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheFrugalist.release.xcconfig"; path = "Target Support Files/Pods-TheFrugalist/Pods-TheFrugalist.release.xcconfig"; sourceTree = "<group>"; };
-		5862F45265A14430B78F79D1 /* Rubik-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Bold.ttf"; path = "../assets/fonts/Rubik-Bold.ttf"; sourceTree = "<group>"; };
-		6213B8E37BE44F0296D1941F /* Rubik-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Regular.ttf"; path = "../assets/fonts/Rubik-Regular.ttf"; sourceTree = "<group>"; };
-		800301EBBB6A42963A63465B /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-TheFrugalist/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		43416CB96D8F45E1A09B6160 /* Rubik-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-SemiBold.ttf"; path = "../assets/fonts/Rubik-SemiBold.ttf"; sourceTree = "<group>"; };
+		4C1F6689C365429B9535AE65 /* Rubik-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Bold.ttf"; path = "../assets/fonts/Rubik-Bold.ttf"; sourceTree = "<group>"; };
+		7966FC61939B4968D9E29AE7 /* libPods-TheFrugalist.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TheFrugalist.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		880BDB3C72074B2CBD90115D /* Rubik-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Regular.ttf"; path = "../assets/fonts/Rubik-Regular.ttf"; sourceTree = "<group>"; };
+		88AA422FCDEE6917267D5D4F /* Pods-TheFrugalist.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheFrugalist.debug.xcconfig"; path = "Target Support Files/Pods-TheFrugalist/Pods-TheFrugalist.debug.xcconfig"; sourceTree = "<group>"; };
+		96A44D7246684711A285F5D9 /* Rubik-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Medium.ttf"; path = "../assets/fonts/Rubik-Medium.ttf"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = TheFrugalist/SplashScreen.storyboard; sourceTree = "<group>"; };
-		AC07ED0D9FC746AB80A5CBD2 /* Rubik-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-Medium.ttf"; path = "../assets/fonts/Rubik-Medium.ttf"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		C0C3827F204845E1853BDBC8 /* Inter.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Inter.ttf; path = ../assets/fonts/Inter.ttf; sourceTree = "<group>"; };
-		D96756C46D854836B72504DE /* Rubik-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Rubik-SemiBold.ttf"; path = "../assets/fonts/Rubik-SemiBold.ttf"; sourceTree = "<group>"; };
+		CD021C32FCBDBC595360B327 /* Pods-TheFrugalist.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TheFrugalist.release.xcconfig"; path = "Target Support Files/Pods-TheFrugalist/Pods-TheFrugalist.release.xcconfig"; sourceTree = "<group>"; };
+		D8CCBD1EC47190E875A5CBB2 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = TheFrugalist/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		E69A4467B9BE789538B545DE /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-TheFrugalist/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = TheFrugalist/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* TheFrugalist-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "TheFrugalist-Bridging-Header.h"; path = "TheFrugalist/TheFrugalist-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -47,7 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CC73305CCB2FAA21B21D4F57 /* libPods-TheFrugalist.a in Frameworks */,
+				3A735DE10F2A94DDFBA461EB /* libPods-TheFrugalist.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,7 +63,15 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				1A855E85D49187756624F83D /* PrivacyInfo.xcprivacy */,
+				D8CCBD1EC47190E875A5CBB2 /* PrivacyInfo.xcprivacy */,
+			);
+			name = TheFrugalist;
+			sourceTree = "<group>";
+		};
+		2A2685FD8BF43925DC2BC481 /* TheFrugalist */ = {
+			isa = PBXGroup;
+			children = (
+				E69A4467B9BE789538B545DE /* ExpoModulesProvider.swift */,
 			);
 			name = TheFrugalist;
 			sourceTree = "<group>";
@@ -72,40 +80,9 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				0133A70FEB678F8EF74131C2 /* libPods-TheFrugalist.a */,
+				7966FC61939B4968D9E29AE7 /* libPods-TheFrugalist.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		317891CF159ABCE7B638EDFA /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				0602FF135D0A870E2FC64CBD /* Pods-TheFrugalist.debug.xcconfig */,
-				2940E168F568D9E8C14CE76F /* Pods-TheFrugalist.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		4C55A12F5E7F4EFD9ACC2BE4 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				C0C3827F204845E1853BDBC8 /* Inter.ttf */,
-				6213B8E37BE44F0296D1941F /* Rubik-Regular.ttf */,
-				AC07ED0D9FC746AB80A5CBD2 /* Rubik-Medium.ttf */,
-				D96756C46D854836B72504DE /* Rubik-SemiBold.ttf */,
-				5862F45265A14430B78F79D1 /* Rubik-Bold.ttf */,
-			);
-			name = Resources;
-			path = "";
-			sourceTree = "<group>";
-		};
-		6F9221CE9CD2883297A54B0B /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				DB404411AD9855D961CEFA5A /* TheFrugalist */,
-			);
-			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -122,9 +99,9 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				4C55A12F5E7F4EFD9ACC2BE4 /* Resources */,
-				317891CF159ABCE7B638EDFA /* Pods */,
-				6F9221CE9CD2883297A54B0B /* ExpoModulesProviders */,
+				BCEC7218E20746BDB29D38E2 /* Resources */,
+				BF8E0E825EE72FF389C9897F /* Pods */,
+				8736766F2F1C62CFECAEFD88 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -139,6 +116,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		8736766F2F1C62CFECAEFD88 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				2A2685FD8BF43925DC2BC481 /* TheFrugalist */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
 			isa = PBXGroup;
 			children = (
@@ -148,12 +133,27 @@
 			path = TheFrugalist/Supporting;
 			sourceTree = "<group>";
 		};
-		DB404411AD9855D961CEFA5A /* TheFrugalist */ = {
+		BCEC7218E20746BDB29D38E2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				800301EBBB6A42963A63465B /* ExpoModulesProvider.swift */,
+				038D48E2A2BE4031930A2439 /* Inter.ttf */,
+				880BDB3C72074B2CBD90115D /* Rubik-Regular.ttf */,
+				96A44D7246684711A285F5D9 /* Rubik-Medium.ttf */,
+				43416CB96D8F45E1A09B6160 /* Rubik-SemiBold.ttf */,
+				4C1F6689C365429B9535AE65 /* Rubik-Bold.ttf */,
 			);
-			name = TheFrugalist;
+			name = Resources;
+			path = "";
+			sourceTree = "<group>";
+		};
+		BF8E0E825EE72FF389C9897F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				88AA422FCDEE6917267D5D4F /* Pods-TheFrugalist.debug.xcconfig */,
+				CD021C32FCBDBC595360B327 /* Pods-TheFrugalist.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -164,13 +164,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "TheFrugalist" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				0C947989108E715F62BA4367 /* [Expo] Configure project */,
+				BA9E96A94FBD8BD21CA82B46 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				347E58F524E9ED0AF8CBFCD9 /* [CP] Embed Pods Frameworks */,
+				7CFF496F312E3352DAFEECE5 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -220,12 +220,12 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				6AFB6C46A7DD4E98AA00A589 /* Inter.ttf in Resources */,
-				6DBC439B6CD3432A90BD1BA8 /* Rubik-Regular.ttf in Resources */,
-				F4A87C8FD2314C17845D63B4 /* Rubik-Medium.ttf in Resources */,
-				4059CB33A03F4AA6B92EF672 /* Rubik-SemiBold.ttf in Resources */,
-				4AFA85484B3A4C1E8ECF535A /* Rubik-Bold.ttf in Resources */,
-				02CB9F8E0BA1A453721C8A10 /* PrivacyInfo.xcprivacy in Resources */,
+				9FB5852237C6456F94F3EE04 /* Inter.ttf in Resources */,
+				88065D57D4F94E088153078C /* Rubik-Regular.ttf in Resources */,
+				34FFD6FF7593422CA08F3626 /* Rubik-Medium.ttf in Resources */,
+				DFF39B7AFA9F4BB289107C90 /* Rubik-SemiBold.ttf in Resources */,
+				2D19AB772DF648079F506214 /* Rubik-Bold.ttf in Resources */,
+				AF07E4B3BAA9B58BA8F39486 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,26 +269,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		0C947989108E715F62BA4367 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-TheFrugalist/expo-configure-project.sh\"\n";
-		};
-		347E58F524E9ED0AF8CBFCD9 /* [CP] Embed Pods Frameworks */ = {
+		7CFF496F312E3352DAFEECE5 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -356,6 +337,25 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TheFrugalist/Pods-TheFrugalist-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		BA9E96A94FBD8BD21CA82B46 /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-TheFrugalist/expo-configure-project.sh\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -364,7 +364,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				CD3AACD4379703F4446C0AB4 /* ExpoModulesProvider.swift in Sources */,
+				FA2B89CCFD788CDDC9ECB9DF /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -373,7 +373,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0602FF135D0A870E2FC64CBD /* Pods-TheFrugalist.debug.xcconfig */;
+			baseConfigurationReference = 88AA422FCDEE6917267D5D4F /* Pods-TheFrugalist.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -410,7 +410,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2940E168F568D9E8C14CE76F /* Pods-TheFrugalist.release.xcconfig */;
+			baseConfigurationReference = CD021C32FCBDBC595360B327 /* Pods-TheFrugalist.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

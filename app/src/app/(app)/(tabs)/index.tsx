@@ -4,24 +4,14 @@ import { Link, useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React, { useEffect } from 'react';
 import { Dimensions, RefreshControl, StyleSheet } from 'react-native';
-import Animated, {
-  FadeInDown,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated';
+import Animated, { FadeInDown, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useProfile } from '@/api/auth/use-profile';
 import { useDashboardStats } from '@/api/dashboard/use-dashboard-stats';
 import { FocusAwareStatusBar, Pressable, ScrollView, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
-import {
-  Calculator as CalculatorIcon,
-  Car as CarIcon,
-  Chevron,
-  Eye as EyeIcon,
-  Plus,
-} from '@/components/ui/icons';
+import { Calculator as CalculatorIcon, Car as CarIcon, Chevron, Eye as EyeIcon, Plus } from '@/components/ui/icons';
 import { getThemeColors } from '@/components/ui/theme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -56,11 +46,7 @@ export default function Dashboard() {
         contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 16 }]}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl
-            refreshing={isRefetching}
-            onRefresh={refetch}
-            tintColor={colors.accent.DEFAULT}
-          />
+          <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={colors.accent.DEFAULT} />
         }
       >
         {/* Header with entrance animation */}
@@ -145,9 +131,7 @@ export default function Dashboard() {
                   <View style={[styles.resourceIcon, { backgroundColor: `${colors.info.DEFAULT}20` }]}>
                     <CalculatorIcon color={colors.info.DEFAULT} size={18} />
                   </View>
-                  <Text style={[styles.resourceTitle, { color: theme.textPrimary }]}>
-                    Financing
-                  </Text>
+                  <Text style={[styles.resourceTitle, { color: theme.textPrimary }]}>Financing</Text>
                   <Text style={[styles.resourceSubtitle, { color: theme.textMuted }]}>Terms</Text>
                 </GlassCard>
               </Pressable>
@@ -180,15 +164,7 @@ export default function Dashboard() {
 }
 
 // Animated Counter Component
-function AnimatedCounter({
-  value,
-  color,
-  isLoading,
-}: {
-  value: number;
-  color: string;
-  isLoading: boolean;
-}) {
+function AnimatedCounter({ value, color, isLoading }: { value: number; color: string; isLoading: boolean }) {
   const animatedValue = useSharedValue(0);
   const [displayValue, setDisplayValue] = React.useState(0);
 
@@ -219,23 +195,11 @@ function AnimatedCounter({
     );
   }
 
-  return (
-    <Text style={[styles.entityCount, { color }]}>
-      {displayValue}
-    </Text>
-  );
+  return <Text style={[styles.entityCount, { color }]}>{displayValue}</Text>;
 }
 
 // Card Component
-function GlassCard({
-  children,
-  isDark,
-  style,
-}: {
-  children: React.ReactNode;
-  isDark: boolean;
-  style?: any;
-}) {
+function GlassCard({ children, isDark, style }: { children: React.ReactNode; isDark: boolean; style?: any }) {
   const theme = getThemeColors(isDark);
 
   return (
@@ -334,9 +298,7 @@ function GlassEntitySection({
           <View style={styles.entityContent}>
             <View style={styles.entityMetric}>
               <AnimatedCounter value={count} color={accentColor} isLoading={isLoading} />
-              <Text style={[styles.entityLabel, { color: theme.textMuted }]}>
-                {count === 1 ? 'item' : 'items'}
-              </Text>
+              <Text style={[styles.entityLabel, { color: theme.textMuted }]}>{count === 1 ? 'item' : 'items'}</Text>
             </View>
 
             <Pressable

@@ -13,11 +13,7 @@ export const ItemsContainer = ({ children, title }: Props) => {
   return (
     <>
       {title && <Text className="pb-2 pt-4 text-lg" tx={title} />}
-      {
-        <View className={`py-1 ${tw.card}`}>
-          {children}
-        </View>
-      }
+      {<View className={`py-1 ${tw.card}`}>{children}</View>}
     </>
   );
 };

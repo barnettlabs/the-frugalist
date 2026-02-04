@@ -1,6 +1,5 @@
 import { Env } from '@env';
-// TODO: Uncomment after rebuilding dev client
-// import * as Application from 'expo-application';
+import * as Application from 'expo-application';
 import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 import { useColorScheme } from 'nativewind';
@@ -20,6 +19,7 @@ import {
   ScreenContainer,
   ScrollView,
   Text,
+  tw,
   View,
 } from '@/components/ui';
 import { Bug, Rate, Share as ShareIcon, Support, User, Website } from '@/components/ui/icons';
@@ -56,8 +56,7 @@ export default function Settings() {
       await Share.share({
         message: Platform.select({
           ios: 'Check out TheFrugalist - the ultimate car finance & lease calculator!',
-          default:
-            'Check out TheFrugalist - the ultimate car finance & lease calculator! https://thefrugalist.com',
+          default: 'Check out TheFrugalist - the ultimate car finance & lease calculator! https://thefrugalist.com',
         }),
         url: 'https://thefrugalist.com',
         title: 'TheFrugalist',
@@ -72,13 +71,12 @@ export default function Settings() {
   };
 
   const handleRate = async () => {
-    // TODO: Uncomment after rebuilding dev client
-    // const storeUrl = Platform.select({
-    //   ios: `https://apps.apple.com/app/id${Application.applicationId}`,
-    //   android: `https://play.google.com/store/apps/details?id=${Application.applicationId}`,
-    //   default: 'https://thefrugalist.com',
-    // });
-    const storeUrl = 'https://thefrugalist.com';
+    const storeUrl = Platform.select({
+      ios: `https://apps.apple.com/app/id${Application.applicationId}`,
+      android: `https://play.google.com/store/apps/details?id=${Application.applicationId}`,
+      default: 'https://thefrugalist.com',
+    });
+    // const storeUrl = 'https://thefrugalist.com';
     await openLinkInBrowser(storeUrl);
   };
 
@@ -176,7 +174,7 @@ function ThemeButtonGroup() {
   ];
 
   return (
-    <View className="flex-row rounded-xl bg-neutral-200 p-1 dark:bg-charcoal-700">
+    <View className={`${tw.card} flex-row p-1`}>
       {themes.map(theme => {
         const isSelected = selectedTheme === theme.value;
         return (
@@ -184,7 +182,7 @@ function ThemeButtonGroup() {
             key={theme.value}
             onPress={() => setSelectedTheme(theme.value)}
             className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-lg py-2.5 ${
-              isSelected ? 'bg-white dark:bg-charcoal-600' : ''
+              isSelected ? 'bg-neutral-50 dark:bg-charcoal-600' : ''
             }`}
           >
             <Text className="text-base">{theme.icon}</Text>
@@ -212,10 +210,7 @@ function ProfileCard({
   const initials = profile ? `${profile.first_name?.[0] || ''}${profile.last_name?.[0] || ''}`.toUpperCase() : '?';
 
   return (
-    <Pressable
-      onPress={() => router.push('/settings/profile')}
-      className="mb-4 flex-row items-center rounded-xl border border-neutral-200 bg-white p-4 dark:border-charcoal-700 dark:bg-charcoal-800"
-    >
+    <Pressable onPress={() => router.push('/settings/profile')} className={`${tw.card} mb-4 flex-row items-center p-4`}>
       {/* Avatar */}
       <View
         className={`size-16 items-center justify-center rounded-full ${isDark ? 'bg-accent-dark' : 'bg-accent/10'}`}

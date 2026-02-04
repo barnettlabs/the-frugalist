@@ -29,8 +29,8 @@ export function FinanceCard({ sheet }: FinanceCardProps) {
             </Text>
           </View>
           {/* Status badge with accent color */}
-          <View className="rounded-full bg-primary/10 px-3 py-1 dark:bg-primary/20">
-            <Text className="text-xs font-medium text-primary dark:text-primary-tint-3">{sheet.vehicle_type}</Text>
+          <View className="rounded-full bg-accent/10 px-3 py-1 dark:bg-accent/20">
+            <Text className="text-xs font-medium text-accent dark:text-accent-light">{sheet.vehicle_type}</Text>
           </View>
         </View>
 

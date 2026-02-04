@@ -72,7 +72,7 @@ const Label = ({ text, testID, className = '' }: LabelProps) => {
 };
 
 export const CheckboxIcon = ({ checked = false }: IconProps) => {
-  const color = checked ? colors.primary['tint-3'] : colors.charcoal[400];
+  const color = checked ? colors.accent.DEFAULT : colors.charcoal[400];
   return (
     <MotiView
       style={{
@@ -143,7 +143,7 @@ export const Checkbox = Object.assign(CheckboxBase, {
 });
 
 export const RadioIcon = ({ checked = false }: IconProps) => {
-  const color = checked ? colors.primary['tint-3'] : colors.charcoal[400];
+  const color = checked ? colors.accent.DEFAULT : colors.charcoal[400];
   return (
     <MotiView
       style={{
@@ -159,7 +159,7 @@ export const RadioIcon = ({ checked = false }: IconProps) => {
       transition={{ borderColor: { duration: 100, type: 'timing' } }}
     >
       <MotiView
-        className={`size-[10px] rounded-[10px] ${checked && 'bg-primary-tint-3'} `}
+        className={`size-[10px] rounded-[10px] ${checked && 'bg-accent'} `}
         from={{ opacity: 0 }}
         animate={{ opacity: checked ? 1 : 0 }}
         transition={{ opacity: { duration: 50, type: 'timing' } }}
@@ -203,7 +203,7 @@ export const SwitchIcon = ({ checked = false }: IconProps) => {
     ? THUMB_OFFSET
     : WIDTH - THUMB_WIDTH - THUMB_OFFSET;
 
-  const backgroundColor = checked ? colors.primary['tint-3'] : colors.charcoal[400];
+  const backgroundColor = checked ? colors.accent.DEFAULT : colors.charcoal[400];
 
   return (
     <View className="w-[50px] justify-center">

@@ -218,9 +218,9 @@ function ProfileCard({
     >
       {/* Avatar */}
       <View
-        className={`size-16 items-center justify-center rounded-full ${isDark ? 'bg-primary-dark' : 'bg-primary/10'}`}
+        className={`size-16 items-center justify-center rounded-full ${isDark ? 'bg-accent-dark' : 'bg-accent/10'}`}
       >
-        <Text className={`text-xl font-bold ${isDark ? 'text-primary-tint-5' : 'text-primary-dark'}`}>{initials}</Text>
+        <Text className={`text-xl font-bold ${isDark ? 'text-accent-light' : 'text-accent-dark'}`}>{initials}</Text>
       </View>
 
       {/* Info */}

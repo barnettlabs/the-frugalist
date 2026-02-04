@@ -22,6 +22,14 @@ module.exports = {
     muted: '#A3B5CC',
   },
 
+  // Secondary: Teal (leases, secondary actions)
+  secondary: {
+    DEFAULT: '#0D9488',
+    light: '#2DD4BF',
+    dark: '#0F766E',
+    muted: '#99F6E4',
+  },
+
   // Slate scale for backgrounds
   slate: {
     50: '#F8FAFC',

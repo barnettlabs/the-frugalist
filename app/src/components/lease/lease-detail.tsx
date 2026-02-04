@@ -69,7 +69,7 @@ function VehicleInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
           <Text className="text-xs font-medium text-neutral-600 dark:text-neutral-300">{sheet.vehicle_type}</Text>
         </View>
         <View className="rounded-full bg-secondary/10 px-3 py-1 dark:bg-secondary/20">
-          <Text className="text-xs font-medium text-secondary-dark dark:text-secondary-light">LEASE</Text>
+          <Text className="text-xs font-medium text-secondary dark:text-secondary-light">LEASE</Text>
         </View>
       </View>
     </View>

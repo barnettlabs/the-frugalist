@@ -46,11 +46,7 @@ export default function ComputeLayout() {
         },
       ]}
     >
-      <SegmentTabs
-        tabs={TABS}
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-      />
+      <SegmentTabs tabs={TABS} activeTab={activeTab} onTabChange={handleTabChange} />
       <View style={styles.content}>
         <Slot />
       </View>

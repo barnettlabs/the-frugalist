@@ -178,7 +178,7 @@ const Option = React.memo(({ option, selected = false, onPress, testID, isLast }
         <Text
           className={`text-base ${
             selected
-              ? 'font-medium text-primary-dark dark:text-primary-tint-3'
+              ? 'font-medium text-accent-dark dark:text-accent-light'
               : 'text-neutral-900 dark:text-neutral-100'
           }`}
         >

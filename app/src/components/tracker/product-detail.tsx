@@ -191,11 +191,11 @@ function PriceTimelineCard({
 
       {/* Current price indicator */}
       <View className="mb-4 items-center">
-        <View className="rounded-lg bg-neutral-900 px-4 py-2 dark:bg-neutral-100">
-          <Text className="text-center text-xs text-neutral-400 dark:text-neutral-500">
+        <View className="rounded-lg bg-neutral-900 px-4 py-2 dark:bg-charcoal-700">
+          <Text className="text-center text-xs text-neutral-400 dark:text-neutral-400">
             Current
           </Text>
-          <Text className="text-lg font-bold text-white dark:text-neutral-900">
+          <Text className="text-lg font-bold text-white dark:text-white">
             {formatCurrencyWithSymbol(product.current_price)}
           </Text>
         </View>

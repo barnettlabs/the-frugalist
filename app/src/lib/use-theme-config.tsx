@@ -30,12 +30,12 @@ const DarkTheme: Theme = {
   ..._DarkTheme,
   colors: {
     ..._DarkTheme.colors,
-    primary: colors.primary.light, // Primary tint for dark mode
-    background: colors.charcoal[950],
-    text: colors.charcoal[50],
-    border: colors.charcoal[700],
-    card: colors.charcoal[900],
-    notification: colors.primary.DEFAULT,
+    primary: colors.accent.light,
+    background: colors.background.dark, // Pure black
+    text: colors.text.primary.dark,
+    border: colors.border.dark,
+    card: colors.surface.dark, // Dark gray cards
+    notification: colors.accent.DEFAULT,
   },
   fonts,
 };
@@ -44,12 +44,12 @@ const LightTheme: Theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: colors.primary.DEFAULT, // Deep Blue
-    background: colors.neutral[50],
-    text: colors.charcoal[900],
-    border: colors.neutral[200],
-    card: colors.white,
-    notification: colors.primary.DEFAULT,
+    primary: colors.accent.DEFAULT,
+    background: colors.background.light, // Off-white
+    text: colors.text.primary.light,
+    border: colors.border.light,
+    card: colors.surface.light, // Bright white cards
+    notification: colors.accent.DEFAULT,
   },
   fonts,
 };

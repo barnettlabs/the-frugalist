@@ -17,7 +17,7 @@ export function LeaseCard({ sheet }: LeaseCardProps) {
   return (
     <Link href={`/(app)/compute/lease/${sheet.id}`} asChild>
       {/* Glassmorphism card with soft shadow and rounded corners */}
-      <Pressable className="rounded-xl border border-neutral-200/60 bg-white p-4 shadow-card dark:border-charcoal-700/60 dark:bg-charcoal-850/90">
+      <Pressable className="rounded-xl border border-neutral-200/60 bg-white p-4 shadow-card dark:border-charcoal-700 dark:bg-charcoal-850">
         {/* Header */}
         <View className="mb-3 flex-row items-start justify-between">
           <View className="flex-1">

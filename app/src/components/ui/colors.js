@@ -45,34 +45,34 @@ module.exports = {
     950: '#020617',
   },
 
-  // Charcoal scale (legacy, maps to slate)
+  // Charcoal scale (Apple-inspired dark mode colors)
   charcoal: {
-    50: '#F8FAFC',
-    100: '#F1F5F9',
-    200: '#E2E8F0',
-    300: '#CBD5E1',
-    400: '#94A3B8',
-    500: '#64748B',
-    600: '#475569',
-    700: '#334155',
-    800: '#1E293B',
-    850: '#172033',
-    900: '#0F172A',
-    950: '#020617',
+    50: '#F2F2F7',   // Apple systemGroupedBackground light
+    100: '#E5E5EA',  // Apple separator light
+    200: '#D1D1D6',  // Apple systemGray5 light
+    300: '#C7C7CC',  // Apple systemGray4 light
+    400: '#8E8E93',  // Apple systemGray
+    500: '#636366',  // Apple systemGray2
+    600: '#48484A',  // Apple systemGray3
+    700: '#3A3A3C',  // Apple systemGray4 dark (borders)
+    800: '#2C2C2E',  // Apple systemGray5 dark (elevated)
+    850: '#1C1C1E',  // Apple systemGray6 dark (cards)
+    900: '#1C1C1E',  // Apple systemGray6 dark (cards)
+    950: '#000000',  // Pure black (background)
   },
 
-  // Neutral grays
+  // Neutral grays (Apple-inspired)
   neutral: {
-    50: '#FAFAF9',
-    100: '#F7F6F3',
-    200: '#EFEEEB',
-    300: '#E5E4E1',
-    400: '#A8A7A4',
-    500: '#6B6B6B',
-    600: '#4A4A4A',
-    700: '#3D3D3D',
-    800: '#2A2A2A',
-    900: '#1F1F1F',
+    50: '#F2F2F7',   // Apple systemGroupedBackground
+    100: '#FFFFFF',  // White (cards)
+    200: '#E5E5EA',  // Apple separator
+    300: '#D1D1D6',  // Apple systemGray5
+    400: '#8E8E93',  // Apple systemGray
+    500: '#636366',  // Apple systemGray2
+    600: '#48484A',  // Apple systemGray3
+    700: '#3A3A3C',  // Apple systemGray4
+    800: '#2C2C2E',  // Apple systemGray5
+    900: '#1C1C1E',  // Apple systemGray6
   },
 
   // Success - muted green
@@ -135,57 +135,68 @@ module.exports = {
     900: '#1F2F45',
   },
 
-  // Theme-aware UI colors
+  // Apple-inspired dark mode colors
+  // These follow Apple's Human Interface Guidelines
+  systemGray: {
+    1: '#8E8E93', // systemGray
+    2: '#636366', // systemGray2
+    3: '#48484A', // systemGray3
+    4: '#3A3A3C', // systemGray4
+    5: '#2C2C2E', // systemGray5
+    6: '#1C1C1E', // systemGray6 (cards in dark mode)
+  },
+
+  // Theme-aware UI colors (Apple-style)
   background: {
-    light: '#F8FAFC',
-    dark: '#1E293B',
+    light: '#F2F2F7', // Apple systemGroupedBackground
+    dark: '#000000', // Pure black for dark mode
   },
   surface: {
     light: '#FFFFFF',
-    dark: '#334155',
+    dark: '#1C1C1E', // Apple systemGray6
   },
   border: {
-    light: '#E2E8F0',
-    dark: '#475569',
+    light: '#E5E5EA', // Apple separator
+    dark: '#38383A', // Apple separator dark
   },
   text: {
     primary: {
-      light: '#1F1F1F',
-      dark: '#F8FAFC',
+      light: '#000000',
+      dark: '#FFFFFF',
     },
     muted: {
-      light: '#64748B',
-      dark: '#94A3B8',
+      light: '#8E8E93', // Apple systemGray
+      dark: '#8E8E93',
     },
   },
 
-  // Tab bar colors - theme aware
+  // Tab bar colors - theme aware (Apple-style)
   tabBar: {
     light: {
       background: '#FFFFFF',
-      border: '#E2E8F0',
+      border: '#E5E5EA',
       active: '#235892',
-      inactive: '#94A3B8',
+      inactive: '#8E8E93',
     },
     dark: {
-      background: '#334155',
-      border: '#475569',
+      background: '#1C1C1E',
+      border: '#38383A',
       active: '#5A7DAB',
-      inactive: '#64748B',
+      inactive: '#8E8E93',
     },
   },
 
-  // Header colors - theme aware
+  // Header colors - theme aware (Apple-style)
   header: {
     light: {
-      background: '#FFFFFF',
-      text: '#1F1F1F',
-      border: '#E2E8F0',
+      background: '#F2F2F7',
+      text: '#000000',
+      border: '#E5E5EA',
     },
     dark: {
-      background: '#334155',
-      text: '#F8FAFC',
-      border: '#475569',
+      background: '#000000',
+      text: '#FFFFFF',
+      border: '#38383A',
     },
   },
 };

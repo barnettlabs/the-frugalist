@@ -1,11 +1,7 @@
 import { useColorScheme } from 'nativewind';
 import React from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 
 import colors from './colors';
 import { Text } from './text';
@@ -21,25 +17,26 @@ type SegmentTabsProps = {
   onTabChange: (key: string) => void;
 };
 
-const SPRING_CONFIG = { damping: 20, stiffness: 200 };
+const IOS_PADDING = 3;
 
 export function SegmentTabs({ tabs, activeTab, onTabChange }: SegmentTabsProps) {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const isIOS = Platform.OS === 'ios';
 
-  const activeIndex = tabs.findIndex((t) => t.key === activeTab);
-  const tabWidth = useSharedValue(0);
+  const activeIndex = tabs.findIndex(t => t.key === activeTab);
   const containerWidth = useSharedValue(0);
 
   const indicatorStyle = useAnimatedStyle(() => {
     if (containerWidth.value === 0) return { opacity: 0 };
 
-    const width = containerWidth.value / tabs.length;
+    // Account for container padding (3px on each side)
+    const innerWidth = containerWidth.value - IOS_PADDING * 2;
+    const tabWidth = innerWidth / tabs.length;
     return {
       opacity: 1,
-      width,
-      transform: [{ translateX: activeIndex * width }],
+      width: tabWidth,
+      transform: [{ translateX: activeIndex * tabWidth }],
     };
   });
 
@@ -49,10 +46,11 @@ export function SegmentTabs({ tabs, activeTab, onTabChange }: SegmentTabsProps) 
         style={[
           styles.iosContainer,
           {
-            backgroundColor: isDark ? colors.charcoal[800] : colors.neutral[200],
+            // Apple-style: light gray in light mode, dark gray in dark mode
+            backgroundColor: isDark ? colors.charcoal[800] : colors.charcoal[200],
           },
         ]}
-        onLayout={(e) => {
+        onLayout={e => {
           containerWidth.value = e.nativeEvent.layout.width;
         }}
       >
@@ -60,7 +58,8 @@ export function SegmentTabs({ tabs, activeTab, onTabChange }: SegmentTabsProps) 
           style={[
             styles.iosIndicator,
             {
-              backgroundColor: isDark ? colors.charcoal[600] : '#FFFFFF',
+              // White indicator in light mode, elevated gray in dark mode
+              backgroundColor: isDark ? colors.charcoal[700] : '#FFFFFF',
               shadowColor: '#000',
               shadowOffset: { width: 0, height: 1 },
               shadowOpacity: isDark ? 0.3 : 0.1,
@@ -70,25 +69,22 @@ export function SegmentTabs({ tabs, activeTab, onTabChange }: SegmentTabsProps) 
             indicatorStyle,
           ]}
         />
-        {tabs.map((tab) => {
+        {tabs.map(tab => {
           const isActive = tab.key === activeTab;
           return (
-            <Pressable
-              key={tab.key}
-              style={styles.iosTab}
-              onPress={() => onTabChange(tab.key)}
-            >
+            <Pressable key={tab.key} style={styles.iosTab} onPress={() => onTabChange(tab.key)}>
               <Text
                 style={[
                   styles.iosLabel,
                   {
+                    // White text when active in dark mode, black in light mode
                     color: isActive
                       ? isDark
                         ? '#FFFFFF'
-                        : colors.neutral[900]
+                        : '#000000'
                       : isDark
                         ? colors.charcoal[400]
-                        : colors.neutral[500],
+                        : colors.charcoal[500],
                     fontFamily: isActive ? 'Rubik-SemiBold' : 'Rubik-Medium',
                   },
                 ]}
@@ -108,48 +104,35 @@ export function SegmentTabs({ tabs, activeTab, onTabChange }: SegmentTabsProps) 
       style={[
         styles.androidContainer,
         {
-          backgroundColor: isDark ? colors.charcoal[900] : colors.neutral[50],
-          borderBottomColor: isDark ? colors.charcoal[700] : colors.neutral[200],
+          backgroundColor: isDark ? colors.charcoal[950] : colors.neutral[50],
+          borderBottomColor: isDark ? colors.charcoal[700] : colors.charcoal[200],
         },
       ]}
-      onLayout={(e) => {
+      onLayout={e => {
         containerWidth.value = e.nativeEvent.layout.width;
       }}
     >
-      {tabs.map((tab) => {
+      {tabs.map(tab => {
         const isActive = tab.key === activeTab;
         return (
           <Pressable
             key={tab.key}
             style={styles.androidTab}
             onPress={() => onTabChange(tab.key)}
-            android_ripple={{
-              color: isDark ? colors.charcoal[700] : colors.neutral[200],
-            }}
+            android_ripple={{ color: isDark ? colors.charcoal[700] : colors.charcoal[200] }}
           >
             <Text
               style={[
                 styles.androidLabel,
                 {
-                  color: isActive
-                    ? colors.accent.DEFAULT
-                    : isDark
-                      ? colors.charcoal[400]
-                      : colors.neutral[500],
+                  color: isActive ? colors.accent.DEFAULT : isDark ? colors.charcoal[400] : colors.charcoal[500],
                   fontFamily: isActive ? 'Rubik-SemiBold' : 'Rubik-Medium',
                 },
               ]}
             >
               {tab.label}
             </Text>
-            {isActive && (
-              <View
-                style={[
-                  styles.androidIndicator,
-                  { backgroundColor: colors.accent.DEFAULT },
-                ]}
-              />
-            )}
+            {isActive && <View style={[styles.androidIndicator, { backgroundColor: colors.accent.DEFAULT }]} />}
           </Pressable>
         );
       })}

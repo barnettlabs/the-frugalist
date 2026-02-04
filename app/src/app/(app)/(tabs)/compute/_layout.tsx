@@ -1,60 +1,92 @@
-import { Slot, usePathname, useRouter } from 'expo-router';
-import React, { createContext, useCallback, useContext, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Stack } from 'expo-router';
+import { useColorScheme } from 'nativewind';
+import React from 'react';
 
-const TABS = [
-  { key: 'finance', label: 'Finance' },
-  { key: 'lease', label: 'Lease' },
-];
-
-type ComputeContextType = {
-  activeTab: string;
-  handleTabChange: (key: string) => void;
-  tabs: typeof TABS;
-};
-
-export const ComputeContext = createContext<ComputeContextType | null>(null);
-
-export function useComputeTabs() {
-  const context = useContext(ComputeContext);
-  if (!context) {
-    throw new Error('useComputeTabs must be used within ComputeLayout');
-  }
-  return context;
-}
+import colors from '@/components/ui/colors';
 
 export default function ComputeLayout() {
-  const router = useRouter();
-  const pathname = usePathname();
-
-  // Derive active tab directly from pathname (no state needed)
-  const activeTab = useMemo(() => {
-    return pathname.includes('/lease') ? 'lease' : 'finance';
-  }, [pathname]);
-
-  const handleTabChange = useCallback(
-    (key: string) => {
-      router.replace(`/(app)/compute/${key}` as any);
-    },
-    [router]
-  );
-
-  const contextValue = useMemo(
-    () => ({ activeTab, handleTabChange, tabs: TABS }),
-    [activeTab, handleTabChange]
-  );
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const headerColors = isDark ? colors.header.dark : colors.header.light;
 
   return (
-    <ComputeContext.Provider value={contextValue}>
-      <View style={styles.container}>
-        <Slot />
-      </View>
-    </ComputeContext.Provider>
+    <Stack
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: headerColors.background,
+        },
+        headerTintColor: headerColors.text,
+        headerTitleStyle: {
+          fontFamily: 'Rubik-SemiBold',
+        },
+        headerShadowVisible: false,
+        contentStyle: {
+          backgroundColor: isDark ? colors.charcoal[950] : colors.neutral[50],
+        },
+      }}
+    >
+      <Stack.Screen
+        name="index"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="finance/[id]"
+        options={{
+          title: 'Finance Details',
+          headerBackTitle: 'Back',
+        }}
+      />
+      <Stack.Screen
+        name="finance/create"
+        options={{
+          title: 'New Finance Estimate',
+          presentation: 'modal',
+        }}
+      />
+      <Stack.Screen
+        name="finance/compare"
+        options={{
+          title: 'Compare Estimates',
+          headerBackTitle: 'Back',
+        }}
+      />
+      <Stack.Screen
+        name="finance/learn"
+        options={{
+          title: 'Financing Guide',
+          headerBackTitle: 'Back',
+        }}
+      />
+      <Stack.Screen
+        name="lease/[id]"
+        options={{
+          title: 'Lease Details',
+          headerBackTitle: 'Back',
+        }}
+      />
+      <Stack.Screen
+        name="lease/create"
+        options={{
+          title: 'New Lease Estimate',
+          presentation: 'modal',
+        }}
+      />
+      <Stack.Screen
+        name="lease/compare"
+        options={{
+          title: 'Compare Estimates',
+          headerBackTitle: 'Back',
+        }}
+      />
+      <Stack.Screen
+        name="lease/learn"
+        options={{
+          title: 'Leasing Guide',
+          headerBackTitle: 'Back',
+        }}
+      />
+    </Stack>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});

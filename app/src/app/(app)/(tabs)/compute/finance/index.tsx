@@ -1,6 +1,6 @@
 import { Link, useRouter } from 'expo-router';
 import React from 'react';
-import { ActivityIndicator, RefreshControl, StyleSheet } from 'react-native';
+import { ActivityIndicator, RefreshControl } from 'react-native';
 
 import { useFinanceSheets } from '@/api/finance/use-finance-sheets';
 import { FinanceCard } from '@/components/finance/finance-card';
@@ -15,7 +15,7 @@ export default function FinanceListScreen() {
   if (isLoading) {
     return (
       <ScreenContainer className="items-center justify-center">
-        <ActivityIndicator size="large" color={colors.primary.DEFAULT} />
+        <ActivityIndicator size="large" color={colors.accent.DEFAULT} />
         <Text className="mt-4 text-neutral-600 dark:text-neutral-400">Loading estimates...</Text>
       </ScreenContainer>
     );
@@ -41,11 +41,13 @@ export default function FinanceListScreen() {
       >
         {/* Terms Link */}
         <Link href="/(app)/(tabs)/finance/learn" asChild>
-          <Pressable style={styles.termsLink}>
-            <View style={styles.termsIconContainer}>
-              <Book color={colors.primary.DEFAULT} size={18} />
+          <Pressable className="mb-4 flex-row items-center rounded-xl bg-accent/10 px-4 py-3 dark:bg-accent/20">
+            <View className="mr-3">
+              <Book color={colors.accent.DEFAULT} size={18} />
             </View>
-            <Text style={styles.termsText}>Learn Financing Terms</Text>
+            <Text className="text-[15px] font-semibold text-accent dark:text-accent-light">
+              Learn Financing Terms
+            </Text>
           </Pressable>
         </Link>
 
@@ -73,29 +75,9 @@ export default function FinanceListScreen() {
       {/* Floating Add Button */}
       <FloatingAddButton
         onPress={() => router.push('/(app)/compute/finance/create')}
-        color={colors.primary.DEFAULT}
+        color={colors.accent.DEFAULT}
         accessibilityLabel="Create new finance estimate"
       />
     </ScreenContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  termsLink: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-  },
-  termsIconContainer: {
-    marginRight: 12,
-  },
-  termsText: {
-    color: '#3B82F6',
-    fontSize: 15,
-    fontWeight: '600',
-  },
-});

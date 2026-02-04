@@ -1,6 +1,6 @@
 import { Link, useRouter } from 'expo-router';
 import React from 'react';
-import { ActivityIndicator, RefreshControl, StyleSheet } from 'react-native';
+import { ActivityIndicator, RefreshControl } from 'react-native';
 
 import { useLeaseSheets } from '@/api/lease/use-lease-sheets';
 import { LeaseCard } from '@/components/lease/lease-card';
@@ -41,11 +41,13 @@ export default function LeaseListScreen() {
       >
         {/* Terms Link */}
         <Link href="/(app)/(tabs)/lease/learn" asChild>
-          <Pressable style={styles.termsLink}>
-            <View style={styles.termsIconContainer}>
-              <Book color={colors.accent.DEFAULT} size={18} />
+          <Pressable className="mb-4 flex-row items-center rounded-xl bg-secondary/10 px-4 py-3 dark:bg-secondary/20">
+            <View className="mr-3">
+              <Book color={colors.secondary.DEFAULT} size={18} />
             </View>
-            <Text style={styles.termsText}>Learn Leasing Terms</Text>
+            <Text className="text-[15px] font-semibold text-secondary dark:text-secondary-light">
+              Learn Leasing Terms
+            </Text>
           </Pressable>
         </Link>
 
@@ -73,29 +75,9 @@ export default function LeaseListScreen() {
       {/* Floating Add Button */}
       <FloatingAddButton
         onPress={() => router.push('/(app)/compute/lease/create')}
-        color={colors.accent.DEFAULT}
+        color={colors.secondary.DEFAULT}
         accessibilityLabel="Create new lease estimate"
       />
     </ScreenContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  termsLink: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-  },
-  termsIconContainer: {
-    marginRight: 12,
-  },
-  termsText: {
-    color: '#10B981',
-    fontSize: 15,
-    fontWeight: '600',
-  },
-});

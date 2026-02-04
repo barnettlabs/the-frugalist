@@ -1,6 +1,5 @@
 import { Link } from 'expo-router';
 import React, { useMemo } from 'react';
-import { StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button, Pressable, ScrollView, Text, View } from '@/components/ui';
@@ -160,7 +159,7 @@ function ContactInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
       {sheet.sales_consultant && (
         <Text className="text-neutral-600 dark:text-neutral-400">{sheet.sales_consultant}</Text>
       )}
-      {sheet.contact_email && <Text className="text-secondary">{sheet.contact_email}</Text>}
+      {sheet.contact_email && <Text className="text-secondary dark:text-secondary-light">{sheet.contact_email}</Text>}
       {sheet.contact_phone && <Text className="text-neutral-600 dark:text-neutral-400">{sheet.contact_phone}</Text>}
     </View>
   );
@@ -178,35 +177,17 @@ function NotesCard({ notes }: { notes: string }) {
 function TermsLink() {
   return (
     <Link href="/(app)/learning/leasing" asChild>
-      <Pressable style={styles.termsLink}>
-        <View style={styles.termsIconContainer}>
-          <Book color={colors.accent.DEFAULT} size={16} />
+      <Pressable className="mb-4 flex-row items-center rounded-xl bg-secondary/10 px-3.5 py-2.5 dark:bg-secondary/20">
+        <View className="mr-2.5">
+          <Book color={colors.secondary.DEFAULT} size={16} />
         </View>
-        <Text style={styles.termsText}>Learn Leasing Terms</Text>
+        <Text className="text-sm font-semibold text-secondary dark:text-secondary-light">
+          Learn Leasing Terms
+        </Text>
       </Pressable>
     </Link>
   );
 }
-
-const styles = StyleSheet.create({
-  termsLink: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderRadius: 10,
-    marginBottom: 16,
-  },
-  termsIconContainer: {
-    marginRight: 10,
-  },
-  termsText: {
-    color: '#10B981',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-});
 
 function ActionBar({
   onEdit,

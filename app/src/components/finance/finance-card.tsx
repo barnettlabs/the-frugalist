@@ -37,7 +37,7 @@ export function FinanceCard({ sheet }: FinanceCardProps) {
         {/* Monthly Payment - subtle glass effect */}
         <View className="mb-3 rounded-lg bg-neutral-50 p-3 dark:bg-charcoal-800/60">
           <Text className="text-sm text-neutral-500 dark:text-neutral-400">Monthly Payment</Text>
-          <Text className="text-2xl font-bold text-primary dark:text-primary-light">
+          <Text className="text-2xl font-bold text-accent dark:text-accent-light">
             {formatCurrencyWithSymbol(monthlyPayment)}
           </Text>
           <Text className="text-xs text-neutral-500 dark:text-neutral-400">

@@ -1,64 +1,60 @@
 import { Slot, usePathname, useRouter } from 'expo-router';
-import { useColorScheme } from 'nativewind';
-import React, { useEffect, useState } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import colors from '@/components/ui/colors';
-import { SegmentTabs } from '@/components/ui/segment-tabs';
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 const TABS = [
   { key: 'finance', label: 'Finance' },
   { key: 'lease', label: 'Lease' },
 ];
 
+type ComputeContextType = {
+  activeTab: string;
+  handleTabChange: (key: string) => void;
+  tabs: typeof TABS;
+};
+
+export const ComputeContext = createContext<ComputeContextType | null>(null);
+
+export function useComputeTabs() {
+  const context = useContext(ComputeContext);
+  if (!context) {
+    throw new Error('useComputeTabs must be used within ComputeLayout');
+  }
+  return context;
+}
+
 export default function ComputeLayout() {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === 'dark';
-  const insets = useSafeAreaInsets();
   const router = useRouter();
   const pathname = usePathname();
 
-  // Determine active tab from pathname
-  const getActiveTab = () => {
-    if (pathname.includes('/lease')) return 'lease';
-    return 'finance';
-  };
-
-  const [activeTab, setActiveTab] = useState(getActiveTab);
-
-  useEffect(() => {
-    setActiveTab(getActiveTab());
+  // Derive active tab directly from pathname (no state needed)
+  const activeTab = useMemo(() => {
+    return pathname.includes('/lease') ? 'lease' : 'finance';
   }, [pathname]);
 
-  const handleTabChange = (key: string) => {
-    setActiveTab(key);
-    router.replace(`/(app)/compute/${key}` as any);
-  };
+  const handleTabChange = useCallback(
+    (key: string) => {
+      router.replace(`/(app)/compute/${key}` as any);
+    },
+    [router]
+  );
+
+  const contextValue = useMemo(
+    () => ({ activeTab, handleTabChange, tabs: TABS }),
+    [activeTab, handleTabChange]
+  );
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: isDark ? colors.charcoal[950] : colors.neutral[50],
-          paddingTop: Platform.OS === 'ios' ? insets.top : 0,
-        },
-      ]}
-    >
-      <SegmentTabs tabs={TABS} activeTab={activeTab} onTabChange={handleTabChange} />
-      <View style={styles.content}>
+    <ComputeContext.Provider value={contextValue}>
+      <View style={styles.container}>
         <Slot />
       </View>
-    </View>
+    </ComputeContext.Provider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  content: {
     flex: 1,
   },
 });

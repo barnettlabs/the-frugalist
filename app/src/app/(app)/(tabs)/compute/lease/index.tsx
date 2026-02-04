@@ -15,7 +15,7 @@ export default function LeaseListScreen() {
   if (isLoading) {
     return (
       <ScreenContainer className="items-center justify-center">
-        <ActivityIndicator size="large" color={colors.secondary.DEFAULT} />
+        <ActivityIndicator size="large" color={colors.accent.DEFAULT} />
         <Text className="mt-4 text-neutral-600 dark:text-neutral-400">Loading estimates...</Text>
       </ScreenContainer>
     );
@@ -43,7 +43,7 @@ export default function LeaseListScreen() {
         <Link href="/(app)/(tabs)/lease/learn" asChild>
           <Pressable style={styles.termsLink}>
             <View style={styles.termsIconContainer}>
-              <Book color={colors.secondary.DEFAULT} size={18} />
+              <Book color={colors.accent.DEFAULT} size={18} />
             </View>
             <Text style={styles.termsText}>Learn Leasing Terms</Text>
           </Pressable>
@@ -57,7 +57,7 @@ export default function LeaseListScreen() {
             <Text className="mb-6 text-center text-neutral-500 dark:text-neutral-400">
               Create your first lease estimate to get started with vehicle leasing calculations.
             </Text>
-            <Link href="/(app)/lease/create" asChild>
+            <Link href="/(app)/compute/lease/create" asChild>
               <Button label="Create Estimate" />
             </Link>
           </View>
@@ -72,8 +72,8 @@ export default function LeaseListScreen() {
 
       {/* Floating Add Button */}
       <FloatingAddButton
-        onPress={() => router.push('/(app)/lease/create')}
-        color={colors.secondary.DEFAULT}
+        onPress={() => router.push('/(app)/compute/lease/create')}
+        color={colors.accent.DEFAULT}
         accessibilityLabel="Create new lease estimate"
       />
     </ScreenContainer>

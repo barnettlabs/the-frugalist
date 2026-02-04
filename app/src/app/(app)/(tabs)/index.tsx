@@ -97,13 +97,13 @@ export default function Dashboard() {
           title="Watch"
           icon={<EyeIcon color={colors.accent.DEFAULT} size={20} />}
           accentColor={colors.accent.DEFAULT}
-          count={stats?.trackerCount ?? 0}
+          count={stats?.watchCount ?? 0}
           isLoading={isLoading}
           theme={theme}
           isDark={isDark}
           delay={300}
-          onViewAll={() => router.push('/(app)/tracker')}
-          onCreateNew={() => router.push('/(app)/tracker/create')}
+          onViewAll={() => router.push('/(app)/watch')}
+          onCreateNew={() => router.push('/(app)/watch/create')}
         />
 
         {/* Finance Section */}
@@ -116,8 +116,8 @@ export default function Dashboard() {
           theme={theme}
           isDark={isDark}
           delay={400}
-          onViewAll={() => router.push('/(app)/finance')}
-          onCreateNew={() => router.push('/(app)/finance/create')}
+          onViewAll={() => router.push('/(app)/compute/finance')}
+          onCreateNew={() => router.push('/(app)/compute/finance/create')}
         />
 
         {/* Lease Section */}
@@ -130,8 +130,8 @@ export default function Dashboard() {
           theme={theme}
           isDark={isDark}
           delay={500}
-          onViewAll={() => router.push('/(app)/lease')}
-          onCreateNew={() => router.push('/(app)/lease/create')}
+          onViewAll={() => router.push('/(app)/compute/lease')}
+          onCreateNew={() => router.push('/(app)/compute/lease/create')}
         />
 
         {/* Guides */}

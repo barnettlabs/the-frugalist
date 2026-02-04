@@ -15,7 +15,7 @@ export function ProductCard({ product }: ProductCardProps) {
     ((product.retail_price - product.current_price) / (product.retail_price - product.target_price)) * 100;
 
   return (
-    <Link href={`/(app)/tracker/${product.id}`} asChild>
+    <Link href={`/(app)/watch/${product.id}`} asChild>
       {/* Clean card with subtle border */}
       <Pressable className="rounded-xl border border-charcoal-200/50 bg-white p-4 active:bg-charcoal-50 dark:border-charcoal-700/50 dark:bg-charcoal-900 dark:active:bg-charcoal-800">
         <View className="flex-row">

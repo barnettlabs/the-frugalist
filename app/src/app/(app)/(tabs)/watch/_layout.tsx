@@ -4,7 +4,7 @@ import React from 'react';
 
 import colors from '@/components/ui/colors';
 
-export default function TrackerLayout() {
+export default function WatchLayout() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const headerColors = isDark ? colors.header.dark : colors.header.light;

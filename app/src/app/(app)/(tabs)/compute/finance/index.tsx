@@ -57,7 +57,7 @@ export default function FinanceListScreen() {
             <Text className="mb-6 text-center text-neutral-500 dark:text-neutral-400">
               Create your first finance estimate to get started with vehicle financing calculations.
             </Text>
-            <Link href="/(app)/finance/create" asChild>
+            <Link href="/(app)/compute/finance/create" asChild>
               <Button label="Create Estimate" />
             </Link>
           </View>
@@ -72,7 +72,7 @@ export default function FinanceListScreen() {
 
       {/* Floating Add Button */}
       <FloatingAddButton
-        onPress={() => router.push('/(app)/finance/create')}
+        onPress={() => router.push('/(app)/compute/finance/create')}
         color={colors.primary.DEFAULT}
         accessibilityLabel="Create new finance estimate"
       />

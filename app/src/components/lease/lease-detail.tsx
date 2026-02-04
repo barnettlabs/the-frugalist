@@ -180,7 +180,7 @@ function TermsLink() {
     <Link href="/(app)/learning/leasing" asChild>
       <Pressable style={styles.termsLink}>
         <View style={styles.termsIconContainer}>
-          <Book color={colors.secondary.DEFAULT} size={16} />
+          <Book color={colors.accent.DEFAULT} size={16} />
         </View>
         <Text style={styles.termsText}>Learn Leasing Terms</Text>
       </Pressable>

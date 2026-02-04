@@ -48,21 +48,21 @@ export default function TabLayout() {
       />
 
       <NativeTabs.Screen
-        name="tracker"
+        name="compute"
         options={{
-          title: 'Watch',
+          title: 'Compute',
           tabBarIcon: ({ focused }) => ({
-            sfSymbol: focused ? 'binoculars.fill' : 'binoculars',
+            sfSymbol: focused ? 'plusminus.circle.fill' : 'plusminus.circle',
           }),
         }}
       />
 
       <NativeTabs.Screen
-        name="finance"
+        name="watch"
         options={{
-          title: 'Compute',
-          tabBarIcon: () => ({
-            sfSymbol: 'function',
+          title: 'Watch',
+          tabBarIcon: ({ focused }) => ({
+            sfSymbol: focused ? 'binoculars.fill' : 'binoculars',
           }),
         }}
       />
@@ -77,17 +77,11 @@ export default function TabLayout() {
         }}
       />
 
-      {/* Hide screens not in main nav */}
-      <NativeTabs.Screen
-        name="lease"
-        options={{
-          href: null,
-        }}
-      />
+      {/* Hide style screen from tab bar */}
       <NativeTabs.Screen
         name="style"
         options={{
-          href: null,
+          tabBarItemHidden: true,
         }}
       />
     </NativeTabs>

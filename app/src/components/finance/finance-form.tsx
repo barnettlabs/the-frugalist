@@ -7,6 +7,7 @@ import { z } from 'zod';
 
 import { CurrencyInput, FormSection, PercentageInput } from '@/components/forms';
 import { Button, ControlledInput, ScrollView, Select, Text, View } from '@/components/ui';
+import { tw } from '@/components/ui/theme';
 import { FinanceCalculator, formatCurrencyWithSymbol } from '@/lib/calculators';
 import type { FinanceFormData } from '@/lib/types/models';
 import { VehicleType } from '@/lib/types/models';
@@ -72,7 +73,7 @@ export function FinanceForm({ initialData, onSubmit, isSubmitting, submitLabel, 
   const bottomPadding = isModal ? Math.max(insets.bottom, 16) : Math.max(insets.bottom, 16) + 80;
 
   return (
-    <View className="flex-1 bg-neutral-50 dark:bg-charcoal-950">
+    <View className={`flex-1 ${tw.pageBg}`}>
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
         <SummaryCard summary={summary} />
         <EstimateInfoSection control={control} />
@@ -264,7 +265,7 @@ function ActionBar({
 }) {
   return (
     <View
-      className="border-t border-neutral-200 bg-white p-4 dark:border-charcoal-700 dark:bg-charcoal-800"
+      className={tw.footerBar}
       style={{ paddingBottom: bottomPadding }}
     >
       <View className="flex-row gap-3">

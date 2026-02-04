@@ -12,6 +12,7 @@ import {
 import { ProfileForm } from '@/components/profile/profile-form';
 import { Button, ScreenContainer, ScrollView, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
+import { tw } from '@/components/ui/theme';
 import { signOut } from '@/lib/auth';
 import type { User } from '@/lib/types/models';
 
@@ -187,7 +188,7 @@ function AccountStats({ profile }: { profile: User }) {
   );
 
   return (
-    <View className="mt-6 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mt-6 p-4 ${tw.card}`}>
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
         Account Info
       </Text>

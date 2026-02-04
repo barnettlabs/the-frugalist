@@ -3,6 +3,7 @@ import React from 'react';
 
 import type { Post } from '@/api';
 import { Image, Pressable, Text, View } from '@/components/ui';
+import { tw } from '@/components/ui/theme';
 
 type Props = Post;
 
@@ -19,7 +20,7 @@ export const Card = ({ title, body, id }: Props) => {
     <Link href={`/feed/${id}`} asChild>
       <Pressable>
         {/* Glassmorphism card with soft shadow and rounded corners */}
-        <View className="m-2 overflow-hidden rounded-xl border border-neutral-200/60 bg-white shadow-card dark:border-charcoal-700/60 dark:bg-charcoal-850/90">
+        <View className={`m-2 overflow-hidden ${tw.cardElevated}`}>
           <Image
             className="h-56 w-full overflow-hidden rounded-t-xl"
             contentFit="cover"

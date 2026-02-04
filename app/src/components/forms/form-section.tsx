@@ -5,6 +5,7 @@ import { Animated, Pressable, View } from 'react-native';
 import { Chevron } from '@/components/ui/icons';
 import { Text } from '@/components/ui/text';
 import colors from '@/components/ui/colors';
+import { tw } from '@/components/ui/theme';
 
 interface FormSectionProps {
   title: string;
@@ -65,7 +66,7 @@ export function FormSection({
       </Pressable>
 
       {!isCollapsed && (
-        <View className="rounded-lg bg-white p-4 dark:bg-charcoal-800">
+        <View className={`p-4 ${tw.card}`}>
           {children}
         </View>
       )}

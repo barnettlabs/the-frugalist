@@ -13,6 +13,7 @@ import {
   Text,
   View,
 } from '@/components/ui';
+import { tw } from '@/components/ui/theme';
 
 const trackerSchema = z.object({
   sku_upc: z.string().min(1, 'SKU/UPC is required'),
@@ -54,7 +55,7 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
   const bottomPadding = Math.max(insets.bottom, 16) + 80;
 
   return (
-    <View className="flex-1 bg-neutral-50 dark:bg-charcoal-950">
+    <View className={`flex-1 ${tw.pageBg}`}>
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
         {/* Instructions */}
         <View className="mb-6 rounded-xl bg-blue-50 p-4 dark:bg-blue-900/20">
@@ -70,7 +71,7 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
         </View>
 
         {/* Form */}
-        <View className="rounded-xl bg-white p-4 dark:bg-charcoal-800">
+        <View className={`p-4 ${tw.card}`}>
           <Select
             label="Retailer"
             options={RETAILER_OPTIONS}
@@ -117,7 +118,7 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
 
       {/* Action Buttons */}
       <View
-        className="border-t border-neutral-200 bg-white p-4 dark:border-charcoal-700 dark:bg-charcoal-800"
+        className={tw.footerBar}
         style={{ paddingBottom: bottomPadding }}
       >
         <View className="flex-row gap-3">

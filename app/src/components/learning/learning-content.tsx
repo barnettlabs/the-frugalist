@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TermCard } from '@/components/learning/term-card';
 import { TipCard } from '@/components/learning/tip-card';
 import { ScrollView, Text, View } from '@/components/ui';
+import { tw } from '@/components/ui/theme';
 import type { Term } from '@/lib/data/learning-content';
 
 export type LearningContentVariant = 'finance' | 'lease';
@@ -40,7 +41,7 @@ export function LearningContent({
 
   return (
     <ScrollView
-      className="flex-1 bg-neutral-100 dark:bg-neutral-900"
+      className={`flex-1 ${tw.pageBg}`}
       contentContainerStyle={{ paddingBottom: bottomPadding }}
     >
       <View className="p-4">

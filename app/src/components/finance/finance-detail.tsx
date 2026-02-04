@@ -6,6 +6,7 @@ import { Button, Pressable, ScrollView, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
 import { Book } from '@/components/ui/icons';
 import { SummaryRow } from '@/components/ui/summary-row';
+import { tw } from '@/components/ui/theme';
 import { FinanceCalculator, formatCurrencyWithSymbol } from '@/lib/calculators';
 import type { VehicleFinanceSheet } from '@/lib/types/models';
 
@@ -32,7 +33,7 @@ export function FinanceDetail({
   const bottomPadding = Math.max(insets.bottom, 16) + 80;
 
   return (
-    <View className="flex-1 bg-neutral-50 dark:bg-charcoal-950">
+    <View className={`flex-1 ${tw.pageBg}`}>
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
         <PaymentHeader
           payment={summary.monthlyPayment}
@@ -83,7 +84,7 @@ function PaymentHeader({
 
 function VehicleInfoCard({ sheet }: { sheet: VehicleFinanceSheet }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mb-4 p-4 ${tw.card}`}>
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
         {sheet.sheet_name || 'Untitled Estimate'}
       </Text>
@@ -108,7 +109,7 @@ function FinancialSummaryCard({
   sheet: VehicleFinanceSheet;
 }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mb-4 p-4 ${tw.card}`}>
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
         Financial Summary
       </Text>
@@ -185,7 +186,7 @@ function AmortizationCard({
   amortization: AmortizationType;
 }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mb-4 p-4 ${tw.card}`}>
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
         Amortization Summary
       </Text>
@@ -218,7 +219,7 @@ function ContactInfoCard({ sheet }: { sheet: VehicleFinanceSheet }) {
   if (!sheet.dealership_name && !sheet.sales_consultant && !sheet.contact_email)
     return null;
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mb-4 p-4 ${tw.card}`}>
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
         Contact Information
       </Text>
@@ -246,7 +247,7 @@ function ContactInfoCard({ sheet }: { sheet: VehicleFinanceSheet }) {
 
 function NotesCard({ notes }: { notes: string }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mb-4 p-4 ${tw.card}`}>
       <Text className="mb-2 text-lg font-semibold text-neutral-900 dark:text-white">
         Notes
       </Text>
@@ -283,7 +284,7 @@ function ActionBar({
 }) {
   return (
     <View
-      className="border-t border-neutral-200 bg-white p-4 dark:border-charcoal-700 dark:bg-charcoal-800"
+      className={tw.footerBar}
       style={{ paddingBottom: bottomPadding }}
     >
       <View className="flex-row gap-3">

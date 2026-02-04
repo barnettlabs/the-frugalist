@@ -5,6 +5,7 @@ export * from './button';
 export * from './checkbox';
 export { default as colors } from './colors';
 export * from './floating-add-button';
+export * from './theme';
 export * from './focus-aware-status-bar';
 export * from './image';
 export * from './input';

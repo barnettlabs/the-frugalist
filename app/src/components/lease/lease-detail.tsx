@@ -6,6 +6,7 @@ import { Button, Pressable, ScrollView, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
 import { Book } from '@/components/ui/icons';
 import { SummaryRow } from '@/components/ui/summary-row';
+import { tw } from '@/components/ui/theme';
 import { formatCurrencyWithSymbol, formatPercentage, LeaseCalculator } from '@/lib/calculators';
 import type { VehicleLeaseSheet } from '@/lib/types/models';
 
@@ -24,7 +25,7 @@ export function LeaseDetail({ sheet, onEdit, onDelete, isDeleting }: LeaseDetail
   const bottomPadding = Math.max(insets.bottom, 16) + 80;
 
   return (
-    <View className="flex-1 bg-neutral-50 dark:bg-charcoal-950">
+    <View className={`flex-1 ${tw.pageBg}`}>
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
         <PaymentHeader payment={summary.leasePayment} term={sheet.lease_term} residual={sheet.residual_percent} />
         <TermsLink />
@@ -55,7 +56,7 @@ function PaymentHeader({ payment, term, residual }: { payment: number; term: num
 
 function VehicleInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mb-4 p-4 ${tw.card}`}>
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
         {sheet.sheet_name || 'Untitled Estimate'}
       </Text>
@@ -77,7 +78,7 @@ function VehicleInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
 
 function PaymentBreakdownCard({ summary }: { summary: ReturnType<LeaseCalculator['getSummary']> }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mb-4 p-4 ${tw.card}`}>
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">Payment Breakdown</Text>
       <View className="gap-2">
         <SummaryRow label="Principal Payment" value={formatCurrencyWithSymbol(summary.monthlyPrincipalPayment)} />
@@ -98,7 +99,7 @@ function FinancialSummaryCard({
   sheet: VehicleLeaseSheet;
 }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mb-4 p-4 ${tw.card}`}>
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">Financial Summary</Text>
       <View className="gap-3">
         <SummaryRow label="MSRP" value={formatCurrencyWithSymbol(sheet.msrp)} />
@@ -137,7 +138,7 @@ function LeaseDetailsCard({
   summary: ReturnType<LeaseCalculator['getSummary']>;
 }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mb-4 p-4 ${tw.card}`}>
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">Lease Details</Text>
       <View className="gap-2">
         <SummaryRow label="Money Factor" value={String(sheet.money_factor)} />
@@ -153,7 +154,7 @@ function LeaseDetailsCard({
 function ContactInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
   if (!sheet.dealership_name && !sheet.sales_consultant && !sheet.contact_email) return null;
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mb-4 p-4 ${tw.card}`}>
       <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">Contact Information</Text>
       {sheet.dealership_name && <Text className="text-neutral-600 dark:text-neutral-400">{sheet.dealership_name}</Text>}
       {sheet.sales_consultant && (
@@ -167,7 +168,7 @@ function ContactInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
 
 function NotesCard({ notes }: { notes: string }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mb-4 p-4 ${tw.card}`}>
       <Text className="mb-2 text-lg font-semibold text-neutral-900 dark:text-white">Notes</Text>
       <Text className="text-neutral-600 dark:text-neutral-400">{notes}</Text>
     </View>
@@ -202,7 +203,7 @@ function ActionBar({
 }) {
   return (
     <View
-      className="border-t border-neutral-200 bg-white p-4 dark:border-charcoal-700 dark:bg-charcoal-800"
+      className={tw.footerBar}
       style={{ paddingBottom: bottomPadding }}
     >
       <View className="flex-row gap-3">

@@ -2,6 +2,7 @@ import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button, Image, ScrollView, Text, View } from '@/components/ui';
+import { tw } from '@/components/ui/theme';
 import {
   formatCurrencyWithSymbol,
   formatDate,
@@ -36,7 +37,7 @@ export function ProductDetail({
   const bottomPadding = Math.max(insets.bottom, 16) + 80;
 
   return (
-    <View className="flex-1 bg-neutral-50 dark:bg-charcoal-950">
+    <View className={`flex-1 ${tw.pageBg}`}>
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
         <ProductHeader product={product} targetReached={targetReached} />
         <PriceTimelineCard product={product} targetReached={targetReached} />
@@ -74,7 +75,7 @@ function ProductHeader({
   targetReached: boolean;
 }) {
   return (
-    <View className="mb-4 items-center rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mb-4 items-center p-4 ${tw.card}`}>
       {product.product_image_url ? (
         <Image
           source={{ uri: product.product_image_url }}
@@ -154,7 +155,7 @@ function PriceTimelineCard({
   );
 
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mb-4 p-4 ${tw.card}`}>
       <Text className="mb-4 font-semibold text-neutral-900 dark:text-white">
         Price Progress
       </Text>
@@ -225,7 +226,7 @@ function TrackingInfoCard({
   product: PriceTrackerItem['tracked_product'];
 }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mb-4 p-4 ${tw.card}`}>
       <Text className="mb-3 font-semibold text-neutral-900 dark:text-white">
         Tracking Info
       </Text>
@@ -260,7 +261,7 @@ function PriceHistoryCard({
   targetPrice?: number;
 }) {
   return (
-    <View className="mb-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+    <View className={`mb-4 p-4 ${tw.card}`}>
       <Text className="mb-3 font-semibold text-neutral-900 dark:text-white">
         Price History
       </Text>
@@ -352,7 +353,7 @@ function ActionBar({
 }: ActionBarProps) {
   return (
     <View
-      className="border-t border-neutral-200 bg-white p-4 dark:border-charcoal-700 dark:bg-charcoal-800"
+      className={tw.footerBar}
       style={{ paddingBottom: bottomPadding }}
     >
       <View className="flex-row gap-3">

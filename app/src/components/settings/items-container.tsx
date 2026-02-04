@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Text, View } from '@/components/ui';
+import { tw } from '@/components/ui/theme';
 import type { TxKeyPath } from '@/lib';
 
 type Props = {
@@ -13,7 +14,7 @@ export const ItemsContainer = ({ children, title }: Props) => {
     <>
       {title && <Text className="pb-2 pt-4 text-lg" tx={title} />}
       {
-        <View className="rounded-xl border border-neutral-200 bg-white py-1 dark:border-charcoal-700 dark:bg-charcoal-800">
+        <View className={`py-1 ${tw.card}`}>
           {children}
         </View>
       }

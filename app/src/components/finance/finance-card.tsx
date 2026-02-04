@@ -2,6 +2,7 @@ import { Link } from 'expo-router';
 import React from 'react';
 
 import { Pressable, Text, View } from '@/components/ui';
+import { tw } from '@/components/ui/theme';
 import { FinanceCalculator, formatCurrencyWithSymbol } from '@/lib/calculators';
 import type { VehicleFinanceSheet } from '@/lib/types/models';
 
@@ -16,7 +17,7 @@ export function FinanceCard({ sheet }: FinanceCardProps) {
   return (
     <Link href={`/(app)/compute/finance/${sheet.id}`} asChild>
       {/* Glassmorphism card with soft shadow and rounded corners */}
-      <Pressable className="rounded-xl border border-neutral-200/60 bg-white p-4 shadow-card dark:border-charcoal-700/60 dark:bg-charcoal-850/90">
+      <Pressable className={`p-4 ${tw.cardElevated}`}>
         {/* Header */}
         <View className="mb-3 flex-row items-start justify-between">
           <View className="flex-1">

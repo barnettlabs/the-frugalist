@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { Pressable, Text, View } from '@/components/ui';
+import { tw } from '@/components/ui/theme';
 
 interface TermCardProps {
   term: string;
@@ -13,7 +14,7 @@ export function TermCard({ term, definition }: TermCardProps) {
   return (
     <Pressable
       onPress={() => setIsExpanded(!isExpanded)}
-      className="rounded-xl border border-neutral-200/60 bg-white p-4 shadow-card dark:border-charcoal-700/60 dark:bg-charcoal-850/90"
+      className={`p-4 ${tw.cardElevated}`}
     >
       <View className="flex-row items-start justify-between">
         <Text className="flex-1 font-semibold text-neutral-900 dark:text-white">{term}</Text>

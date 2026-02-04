@@ -22,6 +22,7 @@ import {
   Eye as EyeIcon,
   Plus,
 } from '@/components/ui/icons';
+import { getThemeColors } from '@/components/ui/theme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -235,8 +236,7 @@ function GlassCard({
   isDark: boolean;
   style?: any;
 }) {
-  const backgroundColor = isDark ? colors.charcoal[800] : '#FFFFFF';
-  const borderColor = isDark ? colors.charcoal[700] : colors.neutral[200];
+  const theme = getThemeColors(isDark);
 
   return (
     <View
@@ -245,8 +245,8 @@ function GlassCard({
           borderRadius: 16,
           overflow: 'hidden',
           borderWidth: 1,
-          borderColor,
-          backgroundColor,
+          borderColor: theme.cardBorder,
+          backgroundColor: theme.cardBg,
         },
         style,
       ]}
@@ -265,7 +265,7 @@ type Theme = {
 };
 
 const darkTheme: Theme = {
-  cardBg: colors.charcoal[800],
+  cardBg: colors.charcoal[850],
   cardBorder: colors.charcoal[700],
   textPrimary: '#FFFFFF',
   textSecondary: '#94A3B8',
@@ -273,7 +273,7 @@ const darkTheme: Theme = {
 };
 
 const lightTheme: Theme = {
-  cardBg: '#FFFFFF',
+  cardBg: colors.white,
   cardBorder: colors.neutral[200],
   textPrimary: colors.neutral[900],
   textSecondary: colors.neutral[600],

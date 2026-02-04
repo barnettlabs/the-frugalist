@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button, ControlledInput, Text, View } from '@/components/ui';
+import { tw } from '@/components/ui/theme';
 import type { User } from '@/lib/types/models';
 
 const profileSchema = z.object({
@@ -40,7 +41,7 @@ export function ProfileForm({
         Personal Information
       </Text>
 
-      <View className="rounded-xl bg-white p-4 dark:bg-charcoal-800">
+      <View className={`p-4 ${tw.card}`}>
         <View className="flex-row gap-4">
           <View className="flex-1">
             <ControlledInput
@@ -81,7 +82,7 @@ export function ProfileForm({
       </View>
 
       {/* Email Verification Status */}
-      <View className="mt-4 rounded-xl bg-white p-4 dark:bg-charcoal-800">
+      <View className={`mt-4 p-4 ${tw.card}`}>
         <Text className="mb-2 font-semibold text-neutral-900 dark:text-white">
           Email Verification
         </Text>

@@ -41,7 +41,9 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: () => ({ sfSymbol: 'house.fill' }),
+          tabBarIcon: ({ focused }) => ({
+            sfSymbol: focused ? 'house.fill' : 'house',
+          }),
         }}
       />
 
@@ -49,7 +51,9 @@ export default function TabLayout() {
         name="tracker"
         options={{
           title: 'Watch',
-          tabBarIcon: () => ({ sfSymbol: 'eye.fill' }),
+          tabBarIcon: ({ focused }) => ({
+            sfSymbol: focused ? 'binoculars.fill' : 'binoculars',
+          }),
         }}
       />
 
@@ -57,7 +61,9 @@ export default function TabLayout() {
         name="finance"
         options={{
           title: 'Compute',
-          tabBarIcon: () => ({ sfSymbol: 'plusminus.circle.fill' }),
+          tabBarIcon: () => ({
+            sfSymbol: 'function',
+          }),
         }}
       />
 
@@ -65,7 +71,9 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: 'Account',
-          tabBarIcon: () => ({ sfSymbol: 'person.circle.fill' }),
+          tabBarIcon: ({ focused }) => ({
+            sfSymbol: focused ? 'person.crop.circle.fill' : 'person.crop.circle',
+          }),
         }}
       />
 

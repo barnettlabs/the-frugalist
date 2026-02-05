@@ -39,7 +39,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     supportsTablet: true,
     bundleIdentifier: Env.BUNDLE_ID,
     appleTeamId: Env.APPLE_TEAM_ID,
-    associatedDomains: ['applinks:thefrugalist.com'],
+    associatedDomains: ['applinks:thefrugalist.io'],
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
     },

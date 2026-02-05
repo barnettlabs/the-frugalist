@@ -16,7 +16,7 @@ export function LeaseCard({ sheet }: LeaseCardProps) {
   const cashDueAtSigning = calculator.calculateCashDueAtSigning();
 
   return (
-    <Link href={`/(app)/compute/lease/${sheet.id}`} asChild>
+    <Link href={`/compute/lease/${sheet.id}`} asChild>
       {/* Glassmorphism card with soft shadow and rounded corners */}
       <Pressable className={`p-4 ${tw.cardElevated}`}>
         {/* Header */}

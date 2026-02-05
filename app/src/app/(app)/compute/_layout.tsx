@@ -1,13 +1,15 @@
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React from 'react';
 
 import colors from '@/components/ui/colors';
+import { HeaderBackButton } from '@/components/ui/header-back-button';
 
 export default function ComputeLayout() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const headerColors = isDark ? colors.header.dark : colors.header.light;
+  const router = useRouter();
 
   return (
     <Stack
@@ -25,17 +27,20 @@ export default function ComputeLayout() {
         },
       }}
     >
+      {/* Redirect index */}
       <Stack.Screen
         name="index"
         options={{
           headerShown: false,
         }}
       />
+
+      {/* Finance Screens */}
       <Stack.Screen
-        name="finance/[id]"
+        name="finance/index"
         options={{
-          title: 'Finance Details',
-          headerBackTitle: 'Back',
+          title: 'Finance Estimates',
+          headerLeft: () => <HeaderBackButton label="Tools" color={headerColors.text} onPress={() => router.back()} />,
         }}
       />
       <Stack.Screen
@@ -46,9 +51,9 @@ export default function ComputeLayout() {
         }}
       />
       <Stack.Screen
-        name="finance/compare"
+        name="finance/[id]"
         options={{
-          title: 'Compare Estimates',
+          title: 'Finance Details',
           headerBackTitle: 'Back',
         }}
       />
@@ -60,10 +65,19 @@ export default function ComputeLayout() {
         }}
       />
       <Stack.Screen
-        name="lease/[id]"
+        name="finance/compare"
         options={{
-          title: 'Lease Details',
+          title: 'Compare Estimates',
           headerBackTitle: 'Back',
+        }}
+      />
+
+      {/* Lease Screens */}
+      <Stack.Screen
+        name="lease/index"
+        options={{
+          title: 'Lease Estimates',
+          headerLeft: () => <HeaderBackButton label="Tools" color={headerColors.text} onPress={() => router.back()} />,
         }}
       />
       <Stack.Screen
@@ -74,9 +88,9 @@ export default function ComputeLayout() {
         }}
       />
       <Stack.Screen
-        name="lease/compare"
+        name="lease/[id]"
         options={{
-          title: 'Compare Estimates',
+          title: 'Lease Details',
           headerBackTitle: 'Back',
         }}
       />
@@ -84,6 +98,13 @@ export default function ComputeLayout() {
         name="lease/learn"
         options={{
           title: 'Leasing Guide',
+          headerBackTitle: 'Back',
+        }}
+      />
+      <Stack.Screen
+        name="lease/compare"
+        options={{
+          title: 'Compare Estimates',
           headerBackTitle: 'Back',
         }}
       />

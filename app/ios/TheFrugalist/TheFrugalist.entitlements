@@ -6,7 +6,7 @@
     <string>development</string>
     <key>com.apple.developer.associated-domains</key>
     <array>
-      <string>applinks:thefrugalist.com</string>
+      <string>applinks:thefrugalist.io</string>
     </array>
   </dict>
 </plist>

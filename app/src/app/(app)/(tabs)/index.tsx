@@ -2,29 +2,48 @@ import { BlurView } from 'expo-blur';
 import { Image } from 'expo-image';
 import { Link, useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
-import React, { useEffect } from 'react';
-import { Dimensions, RefreshControl, StyleSheet } from 'react-native';
-import Animated, { FadeInDown, useSharedValue, withSpring } from 'react-native-reanimated';
+import React from 'react';
+import { RefreshControl, StyleSheet } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useProfile } from '@/api/auth/use-profile';
 import { useDashboardStats } from '@/api/dashboard/use-dashboard-stats';
+import { useFinanceSheets } from '@/api/finance/use-finance-sheets';
+import { useLeaseSheets } from '@/api/lease/use-lease-sheets';
+import { useWatch } from '@/api/watch';
 import { FocusAwareStatusBar, Pressable, ScrollView, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
-import { Calculator as CalculatorIcon, Car as CarIcon, Chevron, Eye as EyeIcon, Plus } from '@/components/ui/icons';
+import {
+  Calculator as CalculatorIcon,
+  Car as CarIcon,
+  Chevron,
+  Eye as EyeIcon,
+} from '@/components/ui/icons';
 import { getThemeColors } from '@/components/ui/theme';
+import type { PriceTrackerItem, VehicleFinanceSheet, VehicleLeaseSheet } from '@/lib/types/models';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+type RecentItem = {
+  id: string;
+  type: 'finance' | 'lease' | 'watch';
+  title: string;
+  subtitle: string;
+  updatedAt: Date;
+  route: string;
+};
 
 export default function Dashboard() {
-  const { data: stats, isLoading, refetch, isRefetching } = useDashboardStats();
+  const { data: stats, isLoading: statsLoading, refetch: refetchStats, isRefetching } = useDashboardStats();
   const { data: user } = useProfile();
+  const { data: financeSheets } = useFinanceSheets();
+  const { data: leaseSheets } = useLeaseSheets();
+  const { data: watchData } = useWatch();
   const { colorScheme } = useColorScheme();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const isDark = colorScheme === 'dark';
 
-  const theme = isDark ? darkTheme : lightTheme;
+  const theme = getThemeColors(isDark);
 
   const greeting = React.useMemo(() => {
     const hour = new Date().getHours();
@@ -34,8 +53,101 @@ export default function Dashboard() {
   }, []);
 
   const firstName = user?.first_name || 'User';
-
   const backgroundColor = isDark ? colors.charcoal[950] : colors.neutral[50];
+
+  // Build recent activity list
+  const recentItems = React.useMemo(() => {
+    const items: RecentItem[] = [];
+
+    // Add finance sheets
+    (financeSheets ?? []).forEach((sheet: VehicleFinanceSheet) => {
+      items.push({
+        id: `finance-${sheet.id}`,
+        type: 'finance',
+        title: sheet.sheet_name || 'Finance Estimate',
+        subtitle: [sheet.vehicle_year, sheet.vehicle_make, sheet.vehicle_model].filter(Boolean).join(' ') || 'Vehicle',
+        updatedAt: new Date(sheet.updated_at),
+        route: `/compute/finance/${sheet.id}`,
+      });
+    });
+
+    // Add lease sheets
+    (leaseSheets ?? []).forEach((sheet: VehicleLeaseSheet) => {
+      items.push({
+        id: `lease-${sheet.id}`,
+        type: 'lease',
+        title: sheet.sheet_name || 'Lease Estimate',
+        subtitle: [sheet.vehicle_year, sheet.vehicle_make, sheet.vehicle_model].filter(Boolean).join(' ') || 'Vehicle',
+        updatedAt: new Date(sheet.updated_at),
+        route: `/compute/lease/${sheet.id}`,
+      });
+    });
+
+    // Add watch items
+    (watchData?.tracked_products ?? []).forEach((product: PriceTrackerItem['tracked_product']) => {
+      items.push({
+        id: `watch-${product.id}`,
+        type: 'watch',
+        title: product.product_name || 'Tracked Product',
+        subtitle: product.retailer?.name || 'Unknown Retailer',
+        updatedAt: new Date(product.last_checked_at || product.tracking_start_date),
+        route: `/watch/${product.id}`,
+      });
+    });
+
+    // Sort by updated date, most recent first
+    items.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+
+    // Return top 5
+    return items.slice(0, 5);
+  }, [financeSheets, leaseSheets, watchData]);
+
+  // Price alerts - products with price drops
+  const priceAlerts = React.useMemo(() => {
+    return (watchData?.tracked_products ?? [])
+      .filter((p: PriceTrackerItem['tracked_product']) => p.price_drop_percentage > 0 || p.current_price <= p.target_price)
+      .slice(0, 3);
+  }, [watchData]);
+
+  const handleRefresh = () => {
+    refetchStats();
+  };
+
+  const formatRelativeTime = (date: Date) => {
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+
+    if (minutes < 1) return 'Just now';
+    if (minutes < 60) return `${minutes}m ago`;
+    if (hours < 24) return `${hours}h ago`;
+    if (days < 7) return `${days}d ago`;
+    return date.toLocaleDateString();
+  };
+
+  const getTypeIcon = (type: RecentItem['type']) => {
+    switch (type) {
+      case 'finance':
+        return <CalculatorIcon color={colors.info.DEFAULT} size={18} />;
+      case 'lease':
+        return <CarIcon color={colors.success.DEFAULT} size={18} />;
+      case 'watch':
+        return <EyeIcon color={colors.accent.DEFAULT} size={18} />;
+    }
+  };
+
+  const getTypeColor = (type: RecentItem['type']) => {
+    switch (type) {
+      case 'finance':
+        return colors.info.DEFAULT;
+      case 'lease':
+        return colors.success.DEFAULT;
+      case 'watch':
+        return colors.accent.DEFAULT;
+    }
+  };
 
   return (
     <View style={[styles.container, { backgroundColor }]}>
@@ -46,10 +158,10 @@ export default function Dashboard() {
         contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 16 }]}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={colors.accent.DEFAULT} />
+          <RefreshControl refreshing={isRefetching} onRefresh={handleRefresh} tintColor={colors.accent.DEFAULT} />
         }
       >
-        {/* Header with entrance animation */}
+        {/* Header */}
         <Animated.View entering={FadeInDown.duration(600).delay(100)} style={styles.header}>
           <View style={styles.headerText}>
             <Text style={[styles.greeting, { color: theme.textMuted }]}>{greeting},</Text>
@@ -79,75 +191,121 @@ export default function Dashboard() {
           </Link>
         </Animated.View>
 
-        {/* Watch Section */}
-        <GlassEntitySection
-          title="Watch"
-          icon={<EyeIcon color={colors.accent.DEFAULT} size={20} />}
-          accentColor={colors.accent.DEFAULT}
-          count={stats?.watchCount ?? 0}
-          isLoading={isLoading}
-          theme={theme}
-          isDark={isDark}
-          delay={300}
-          onViewAll={() => router.push('/(app)/watch')}
-          onCreateNew={() => router.push('/(app)/watch/create')}
-        />
+        {/* Quick Stats */}
+        <Animated.View entering={FadeInDown.duration(600).delay(200)} style={styles.statsRow}>
+          <Pressable
+            style={[styles.statCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}
+            onPress={() => router.push('/watch')}
+          >
+            <View style={[styles.statIconBg, { backgroundColor: `${colors.accent.DEFAULT}15` }]}>
+              <EyeIcon color={colors.accent.DEFAULT} size={16} />
+            </View>
+            <Text style={[styles.statValue, { color: theme.textPrimary }]}>{stats?.watchCount ?? 0}</Text>
+            <Text style={[styles.statLabel, { color: theme.textMuted }]}>Watching</Text>
+          </Pressable>
 
-        {/* Finance Section */}
-        <GlassEntitySection
-          title="Finance"
-          icon={<CalculatorIcon color={colors.info.DEFAULT} size={20} />}
-          accentColor={colors.info.DEFAULT}
-          count={stats?.financeCount ?? 0}
-          isLoading={isLoading}
-          theme={theme}
-          isDark={isDark}
-          delay={400}
-          onViewAll={() => router.push('/(app)/compute/finance')}
-          onCreateNew={() => router.push('/(app)/compute/finance/create')}
-        />
+          <Pressable
+            style={[styles.statCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}
+            onPress={() => router.push('/compute/finance')}
+          >
+            <View style={[styles.statIconBg, { backgroundColor: `${colors.info.DEFAULT}15` }]}>
+              <CalculatorIcon color={colors.info.DEFAULT} size={16} />
+            </View>
+            <Text style={[styles.statValue, { color: theme.textPrimary }]}>{stats?.financeCount ?? 0}</Text>
+            <Text style={[styles.statLabel, { color: theme.textMuted }]}>Finance</Text>
+          </Pressable>
 
-        {/* Lease Section */}
-        <GlassEntitySection
-          title="Lease"
-          icon={<CarIcon color={colors.success.DEFAULT} size={20} />}
-          accentColor={colors.success.DEFAULT}
-          count={stats?.leaseCount ?? 0}
-          isLoading={isLoading}
-          theme={theme}
-          isDark={isDark}
-          delay={500}
-          onViewAll={() => router.push('/(app)/compute/lease')}
-          onCreateNew={() => router.push('/(app)/compute/lease/create')}
-        />
+          <Pressable
+            style={[styles.statCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}
+            onPress={() => router.push('/compute/lease')}
+          >
+            <View style={[styles.statIconBg, { backgroundColor: `${colors.success.DEFAULT}15` }]}>
+              <CarIcon color={colors.success.DEFAULT} size={16} />
+            </View>
+            <Text style={[styles.statValue, { color: theme.textPrimary }]}>{stats?.leaseCount ?? 0}</Text>
+            <Text style={[styles.statLabel, { color: theme.textMuted }]}>Lease</Text>
+          </Pressable>
+        </Animated.View>
 
-        {/* Guides */}
-        <Animated.View entering={FadeInDown.duration(600).delay(600)} style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>Guides</Text>
-          <View style={styles.resourcesRow}>
-            <Link href="/(app)/learning/financing" asChild>
-              <Pressable>
-                <GlassCard isDark={isDark} style={styles.resourceCard}>
-                  <View style={[styles.resourceIcon, { backgroundColor: `${colors.info.DEFAULT}20` }]}>
-                    <CalculatorIcon color={colors.info.DEFAULT} size={18} />
+        {/* Price Alerts */}
+        {priceAlerts.length > 0 && (
+          <Animated.View entering={FadeInDown.duration(600).delay(300)} style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={[styles.sectionTitle, { color: theme.textPrimary }]}>Price Alerts</Text>
+            </View>
+            <View style={[styles.alertsCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
+              {priceAlerts.map((product: PriceTrackerItem['tracked_product'], index: number) => (
+                <Pressable
+                  key={product.id}
+                  style={[
+                    styles.alertItem,
+                    index < priceAlerts.length - 1 && { borderBottomWidth: 1, borderBottomColor: theme.cardBorder },
+                  ]}
+                  onPress={() => router.push(`/watch/${product.id}` as any)}
+                >
+                  <View style={styles.alertContent}>
+                    <Text style={[styles.alertTitle, { color: theme.textPrimary }]} numberOfLines={1}>
+                      {product.product_name}
+                    </Text>
+                    <Text style={[styles.alertSubtitle, { color: colors.success.DEFAULT }]}>
+                      {product.current_price <= product.target_price
+                        ? 'Target reached!'
+                        : `${product.price_drop_percentage.toFixed(0)}% off`}
+                    </Text>
                   </View>
-                  <Text style={[styles.resourceTitle, { color: theme.textPrimary }]}>Financing</Text>
-                  <Text style={[styles.resourceSubtitle, { color: theme.textMuted }]}>Terms</Text>
-                </GlassCard>
-              </Pressable>
-            </Link>
-            <Link href="/(app)/learning/leasing" asChild>
-              <Pressable>
-                <GlassCard isDark={isDark} style={styles.resourceCard}>
-                  <View style={[styles.resourceIcon, { backgroundColor: `${colors.success.DEFAULT}20` }]}>
-                    <CarIcon color={colors.success.DEFAULT} size={18} />
-                  </View>
-                  <Text style={[styles.resourceTitle, { color: theme.textPrimary }]}>Leasing</Text>
-                  <Text style={[styles.resourceSubtitle, { color: theme.textMuted }]}>Terms</Text>
-                </GlassCard>
-              </Pressable>
-            </Link>
+                  <Chevron direction="right" color={theme.textMuted} size={16} />
+                </Pressable>
+              ))}
+            </View>
+          </Animated.View>
+        )}
+
+        {/* Recent Activity */}
+        <Animated.View entering={FadeInDown.duration(600).delay(400)} style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: theme.textPrimary }]}>Recent Activity</Text>
           </View>
+          {recentItems.length === 0 ? (
+            <View style={[styles.emptyCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
+              <Text style={[styles.emptyText, { color: theme.textMuted }]}>
+                No recent activity yet. Create your first estimate or start tracking a product!
+              </Text>
+              <Pressable
+                style={[styles.emptyButton, { backgroundColor: colors.accent.DEFAULT }]}
+                onPress={() => router.push('/(app)/(tabs)/tools')}
+              >
+                <Text style={styles.emptyButtonText}>Get Started</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <View style={[styles.activityCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
+              {recentItems.map((item, index) => (
+                <Pressable
+                  key={item.id}
+                  style={[
+                    styles.activityItem,
+                    index < recentItems.length - 1 && { borderBottomWidth: 1, borderBottomColor: theme.cardBorder },
+                  ]}
+                  onPress={() => router.push(item.route as any)}
+                >
+                  <View style={[styles.activityIconBg, { backgroundColor: `${getTypeColor(item.type)}15` }]}>
+                    {getTypeIcon(item.type)}
+                  </View>
+                  <View style={styles.activityContent}>
+                    <Text style={[styles.activityTitle, { color: theme.textPrimary }]} numberOfLines={1}>
+                      {item.title}
+                    </Text>
+                    <Text style={[styles.activitySubtitle, { color: theme.textMuted }]} numberOfLines={1}>
+                      {item.subtitle}
+                    </Text>
+                  </View>
+                  <Text style={[styles.activityTime, { color: theme.textMuted }]}>
+                    {formatRelativeTime(item.updatedAt)}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          )}
         </Animated.View>
 
         <View style={{ height: 100 }} />
@@ -160,168 +318,6 @@ export default function Dashboard() {
         style={[styles.statusBarBlur, { height: insets.top }]}
       />
     </View>
-  );
-}
-
-// Animated Counter Component
-function AnimatedCounter({ value, color, isLoading }: { value: number; color: string; isLoading: boolean }) {
-  const animatedValue = useSharedValue(0);
-  const [displayValue, setDisplayValue] = React.useState(0);
-
-  useEffect(() => {
-    if (!isLoading) {
-      animatedValue.value = 0;
-      animatedValue.value = withSpring(value, {
-        damping: 20,
-        stiffness: 90,
-        mass: 1,
-      });
-    }
-  }, [value, isLoading]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const current = Math.round(animatedValue.value);
-      setDisplayValue(current);
-    }, 16);
-    return () => clearInterval(interval);
-  }, []);
-
-  if (isLoading) {
-    return (
-      <View style={styles.counterLoading}>
-        <View style={[styles.counterSkeleton, { backgroundColor: `${color}30` }]} />
-      </View>
-    );
-  }
-
-  return <Text style={[styles.entityCount, { color }]}>{displayValue}</Text>;
-}
-
-// Card Component
-function GlassCard({ children, isDark, style }: { children: React.ReactNode; isDark: boolean; style?: any }) {
-  const theme = getThemeColors(isDark);
-
-  return (
-    <View
-      style={[
-        {
-          borderRadius: 16,
-          overflow: 'hidden',
-          borderWidth: 1,
-          borderColor: theme.cardBorder,
-          backgroundColor: theme.cardBg,
-        },
-        style,
-      ]}
-    >
-      {children}
-    </View>
-  );
-}
-
-type Theme = {
-  cardBg: string;
-  cardBorder: string;
-  textPrimary: string;
-  textSecondary: string;
-  textMuted: string;
-};
-
-const darkTheme: Theme = {
-  cardBg: colors.charcoal[850],
-  cardBorder: colors.charcoal[700],
-  textPrimary: '#FFFFFF',
-  textSecondary: '#94A3B8',
-  textMuted: '#64748B',
-};
-
-const lightTheme: Theme = {
-  cardBg: colors.white,
-  cardBorder: colors.neutral[200],
-  textPrimary: colors.neutral[900],
-  textSecondary: colors.neutral[600],
-  textMuted: colors.neutral[500],
-};
-
-function GlassEntitySection({
-  title,
-  icon,
-  accentColor,
-  count,
-  isLoading,
-  theme,
-  isDark,
-  delay,
-  onViewAll,
-  onCreateNew,
-}: {
-  title: string;
-  icon: React.ReactNode;
-  accentColor: string;
-  count: number;
-  isLoading: boolean;
-  theme: Theme;
-  isDark: boolean;
-  delay: number;
-  onViewAll: () => void;
-  onCreateNew: () => void;
-}) {
-  return (
-    <Animated.View entering={FadeInDown.duration(600).delay(delay).springify()} style={styles.section}>
-      <View style={styles.sectionHeader}>
-        <View style={styles.sectionTitleRow}>
-          <View
-            style={[
-              styles.sectionIcon,
-              {
-                backgroundColor: `${accentColor}20`,
-                shadowColor: accentColor,
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.3,
-                shadowRadius: 4,
-              },
-            ]}
-          >
-            {icon}
-          </View>
-          <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>{title}</Text>
-        </View>
-        <Pressable onPress={onViewAll} style={styles.viewAllButton}>
-          <Text style={[styles.viewAllText, { color: accentColor }]}>View All</Text>
-          <Chevron direction="right" color={accentColor} size={16} />
-        </Pressable>
-      </View>
-
-      <GlassCard isDark={isDark} style={styles.entityCardContainer}>
-        <View style={styles.entityCard}>
-          <View style={styles.entityContent}>
-            <View style={styles.entityMetric}>
-              <AnimatedCounter value={count} color={accentColor} isLoading={isLoading} />
-              <Text style={[styles.entityLabel, { color: theme.textMuted }]}>{count === 1 ? 'item' : 'items'}</Text>
-            </View>
-
-            <Pressable
-              onPress={onCreateNew}
-              style={[
-                styles.entityButton,
-                {
-                  backgroundColor: accentColor,
-                  shadowColor: accentColor,
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.4,
-                  shadowRadius: 8,
-                  elevation: 6,
-                },
-              ]}
-            >
-              <Plus color="#FFFFFF" size={18} />
-              <Text style={[styles.entityButtonText, { color: '#FFFFFF' }]}>New</Text>
-            </Pressable>
-          </View>
-        </View>
-      </GlassCard>
-    </Animated.View>
   );
 }
 
@@ -340,7 +336,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 28,
+    marginBottom: 24,
   },
   headerText: {
     flex: 1,
@@ -375,6 +371,37 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
   },
+  statsRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 24,
+  },
+  statCard: {
+    flex: 1,
+    padding: 14,
+    borderRadius: 14,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  statIconBg: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  statValue: {
+    fontSize: 22,
+    fontWeight: '700',
+    fontFamily: 'Rubik-Bold',
+    lineHeight: 28,
+  },
+  statLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+    marginTop: 2,
+  },
   section: {
     marginBottom: 20,
   },
@@ -384,113 +411,92 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
-  sectionTitleRow: {
+  sectionTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    fontFamily: 'Rubik-SemiBold',
+  },
+  alertsCard: {
+    borderRadius: 14,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  alertItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    padding: 14,
   },
-  sectionIcon: {
-    width: 34,
-    height: 34,
+  alertContent: {
+    flex: 1,
+  },
+  alertTitle: {
+    fontSize: 15,
+    fontWeight: '500',
+    marginBottom: 2,
+  },
+  alertSubtitle: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  activityCard: {
+    borderRadius: 14,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  activityItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 14,
+  },
+  activityIconBg: {
+    width: 36,
+    height: 36,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 10,
+    marginRight: 12,
   },
-  sectionTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    letterSpacing: 0.3,
-  },
-  viewAllButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  viewAllText: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginRight: 2,
-  },
-  entityCardContainer: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  entityCard: {
-    padding: 18,
-  },
-  entityContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  entityMetric: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  entityCount: {
-    fontSize: 36,
-    fontWeight: '700',
-    marginRight: 10,
-    lineHeight: 44,
-  },
-  entityLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  entityButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-    gap: 6,
-  },
-  entityButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  resourcesRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  resourceCard: {
+  activityContent: {
     flex: 1,
-    padding: 18,
-    alignItems: 'center',
-    minWidth: (SCREEN_WIDTH - 44) / 2,
   },
-  resourceIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
-  },
-  resourceTitle: {
+  activityTitle: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '500',
     marginBottom: 2,
   },
-  resourceSubtitle: {
+  activitySubtitle: {
     fontSize: 13,
-    fontWeight: '500',
+  },
+  activityTime: {
+    fontSize: 12,
+    marginLeft: 8,
+  },
+  emptyCard: {
+    borderRadius: 14,
+    borderWidth: 1,
+    padding: 24,
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+  emptyButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  emptyButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
   },
   statusBarBlur: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-  },
-  counterLoading: {
-    height: 44,
-    justifyContent: 'center',
-  },
-  counterSkeleton: {
-    width: 48,
-    height: 36,
-    borderRadius: 8,
   },
 });

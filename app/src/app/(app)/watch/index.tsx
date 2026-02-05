@@ -105,7 +105,7 @@ export default function TrackerListScreen() {
                 : 'Try selecting a different filter.'}
             </Text>
             {allProducts.length === 0 && (
-              <Link href="/(app)/watch/create" asChild>
+              <Link href="/watch/create" asChild>
                 <Button label="Track a Product" />
               </Link>
             )}
@@ -121,7 +121,7 @@ export default function TrackerListScreen() {
 
       {/* Floating Add Button */}
       <FloatingAddButton
-        onPress={() => router.push('/(app)/watch/create')}
+        onPress={() => router.push('/watch/create')}
         color={colors.accent.DEFAULT}
         accessibilityLabel="Track new product"
       />

@@ -48,21 +48,11 @@ export default function TabLayout() {
       />
 
       <NativeTabs.Screen
-        name="compute"
+        name="tools"
         options={{
-          title: 'Compute',
+          title: 'Tools',
           tabBarIcon: ({ focused }) => ({
-            sfSymbol: focused ? 'plusminus.circle.fill' : 'plusminus.circle',
-          }),
-        }}
-      />
-
-      <NativeTabs.Screen
-        name="watch"
-        options={{
-          title: 'Watch',
-          tabBarIcon: ({ focused }) => ({
-            sfSymbol: focused ? 'binoculars.fill' : 'binoculars',
+            sfSymbol: focused ? 'wrench.and.screwdriver.fill' : 'wrench.and.screwdriver',
           }),
         }}
       />
@@ -77,7 +67,7 @@ export default function TabLayout() {
         }}
       />
 
-      {/* Hide style screen from tab bar */}
+      {/* Hidden screens */}
       <NativeTabs.Screen
         name="style"
         options={{

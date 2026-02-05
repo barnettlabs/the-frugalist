@@ -23,7 +23,7 @@ import {
   View,
 } from '@/components/ui';
 import { Bug, Rate, Share as ShareIcon, Support, User, Website } from '@/components/ui/icons';
-import { useAuth, useSelectedTheme } from '@/lib';
+import { useAuth, useIsFirstTime, useSelectedTheme } from '@/lib';
 import type { ColorSchemeType } from '@/lib';
 import { openLinkInBrowser } from '@/lib/utils';
 
@@ -56,9 +56,9 @@ export default function Settings() {
       await Share.share({
         message: Platform.select({
           ios: 'Check out TheFrugalist - the ultimate car finance & lease calculator!',
-          default: 'Check out TheFrugalist - the ultimate car finance & lease calculator! https://thefrugalist.com',
+          default: 'Check out TheFrugalist - the ultimate car finance & lease calculator! https://thefrugalist.io',
         }),
-        url: 'https://thefrugalist.com',
+        url: 'https://thefrugalist.io',
         title: 'TheFrugalist',
       });
     } catch {
@@ -74,9 +74,9 @@ export default function Settings() {
     const storeUrl = Platform.select({
       ios: `https://apps.apple.com/app/id${Application.applicationId}`,
       android: `https://play.google.com/store/apps/details?id=${Application.applicationId}`,
-      default: 'https://thefrugalist.com',
+      default: 'https://thefrugalist.io',
     });
-    // const storeUrl = 'https://thefrugalist.com';
+    // const storeUrl = 'https://thefrugalist.io';
     await openLinkInBrowser(storeUrl);
   };
 
@@ -139,11 +139,11 @@ export default function Settings() {
             <Item
               text="settings.web_app"
               icon={<Website color={iconColor} />}
-              onPress={() => openLinkInBrowser('https://thefrugalist.com')}
+              onPress={() => openLinkInBrowser('https://thefrugalist.io')}
             />
             <Item text="settings.company" onPress={() => openLinkInBrowser('https://tensifi.com')} />
-            <Item text="settings.privacy" onPress={() => openLinkInBrowser('https://thefrugalist.com/privacy')} />
-            <Item text="settings.terms" onPress={() => openLinkInBrowser('https://thefrugalist.com/terms')} />
+            <Item text="settings.privacy" onPress={() => openLinkInBrowser('https://thefrugalist.io/privacy')} />
+            <Item text="settings.terms" onPress={() => openLinkInBrowser('https://thefrugalist.io/terms')} />
           </ItemsContainer>
 
           {/* Debug Section - Only for developers */}
@@ -232,6 +232,17 @@ function ProfileCard({
 
 function DebugSection({ iconColor }: { iconColor: string }) {
   const [isSending, setIsSending] = useState(false);
+  const [, setIsFirstTime] = useIsFirstTime();
+
+  const handleResetOnboarding = () => {
+    setIsFirstTime(true);
+    showMessage({
+      message: 'Onboarding Reset',
+      description: 'Restart the app to see the onboarding flow.',
+      type: 'success',
+      duration: 3000,
+    });
+  };
 
   const handleTestNotification = async () => {
     setIsSending(true);
@@ -308,6 +319,14 @@ function DebugSection({ iconColor }: { iconColor: string }) {
             />
             <Button label="Test Price Alert" variant="secondary" onPress={handleTestPriceAlert} />
             <Button label="Test Error Notification" variant="destructive" onPress={handleTestError} />
+          </View>
+        </View>
+
+        {/* Storage Actions */}
+        <View className="border-t border-amber-200 p-4 dark:border-amber-800">
+          <Text className="mb-3 font-semibold text-neutral-900 dark:text-white">Storage Actions</Text>
+          <View className="gap-2">
+            <Button label="Reset Onboarding" variant="outline" onPress={handleResetOnboarding} />
           </View>
         </View>
 

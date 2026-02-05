@@ -4,7 +4,7 @@ import React from 'react';
 
 import colors from '@/components/ui/colors';
 
-export default function AppLayout() {
+export default function ToolsLayout() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const headerColors = isDark ? colors.header.dark : colors.header.light;
@@ -20,37 +20,15 @@ export default function AppLayout() {
           fontFamily: 'Rubik-SemiBold',
         },
         headerShadowVisible: false,
+        contentStyle: {
+          backgroundColor: isDark ? colors.charcoal[950] : colors.neutral[50],
+        },
       }}
     >
       <Stack.Screen
-        name="(tabs)"
+        name="index"
         options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="learning"
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          headerBackTitle: 'Home',
-        }}
-      />
-      <Stack.Screen
-        name="watch"
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="compute"
-        options={{
-          headerShown: false,
+          title: 'Tools',
         }}
       />
     </Stack>

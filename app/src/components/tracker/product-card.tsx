@@ -16,7 +16,7 @@ export function ProductCard({ product }: ProductCardProps) {
     ((product.retail_price - product.current_price) / (product.retail_price - product.target_price)) * 100;
 
   return (
-    <Link href={`/(app)/watch/${product.id}`} asChild>
+    <Link href={`/watch/${product.id}`} asChild>
       {/* Clean card with subtle border */}
       <Pressable className={`p-4 active:bg-neutral-50 dark:active:bg-charcoal-800 ${tw.cardElevated}`}>
         <View className="flex-row">

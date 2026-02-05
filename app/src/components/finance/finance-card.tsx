@@ -15,7 +15,7 @@ export function FinanceCard({ sheet }: FinanceCardProps) {
   const monthlyPayment = calculator.calculateMonthlyPayment();
 
   return (
-    <Link href={`/(app)/compute/finance/${sheet.id}`} asChild>
+    <Link href={`/compute/finance/${sheet.id}`} asChild>
       {/* Glassmorphism card with soft shadow and rounded corners */}
       <Pressable className={`p-4 ${tw.cardElevated}`}>
         {/* Header */}

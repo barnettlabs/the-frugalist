@@ -2,8 +2,13 @@ import { Stack, useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React from 'react';
 
-import { HeaderBackButton } from '@/components/ui/header-back-button';
 import colors from '@/components/ui/colors';
+import { HeaderBackButton } from '@/components/ui/header-back-button';
+
+const BACK_LABELS: Record<string, string> = {
+  home: 'Home',
+  tools: 'Tools',
+};
 
 export default function WatchLayout() {
   const { colorScheme } = useColorScheme();
@@ -29,9 +34,15 @@ export default function WatchLayout() {
     >
       <Stack.Screen
         name="index"
-        options={{
-          title: 'Watch',
-          headerLeft: () => <HeaderBackButton label="Tools" color={headerColors.text} onPress={() => router.back()} />,
+        options={({ route }) => {
+          const from = (route.params as any)?.from;
+          const label = BACK_LABELS[from] || 'Back';
+          return {
+            title: 'Watch',
+            headerLeft: () => (
+              <HeaderBackButton label={label} color={headerColors.text} onPress={() => router.back()} />
+            ),
+          };
         }}
       />
       <Stack.Screen
@@ -43,9 +54,15 @@ export default function WatchLayout() {
       />
       <Stack.Screen
         name="[id]"
-        options={{
-          title: 'Product Details',
-          headerBackTitle: 'Back',
+        options={({ route }) => {
+          const from = (route.params as any)?.from;
+          const label = BACK_LABELS[from] || 'Back';
+          return {
+            title: 'Product Details',
+            headerLeft: () => (
+              <HeaderBackButton label={label} color={headerColors.text} onPress={() => router.back()} />
+            ),
+          };
         }}
       />
     </Stack>

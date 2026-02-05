@@ -15,8 +15,8 @@ const TOOLS = [
     icon: (color: string) => <EyeIcon color={color} size={20} />,
     accentColor: colors.accent.DEFAULT,
     countKey: 'watchCount' as const,
-    viewRoute: '/watch',
-    createRoute: '/watch/create',
+    viewRoute: '/watch?from=tools',
+    createRoute: '/watch/create?from=tools',
   },
   {
     key: 'finance',
@@ -25,8 +25,8 @@ const TOOLS = [
     icon: (color: string) => <CalculatorIcon color={color} size={20} />,
     accentColor: colors.info.DEFAULT,
     countKey: 'financeCount' as const,
-    viewRoute: '/compute/finance',
-    createRoute: '/compute/finance/create',
+    viewRoute: '/compute/finance?from=tools',
+    createRoute: '/compute/finance/create?from=tools',
   },
   {
     key: 'lease',
@@ -35,8 +35,8 @@ const TOOLS = [
     icon: (color: string) => <CarIcon color={color} size={20} />,
     accentColor: colors.success.DEFAULT,
     countKey: 'leaseCount' as const,
-    viewRoute: '/compute/lease',
-    createRoute: '/compute/lease/create',
+    viewRoute: '/compute/lease?from=tools',
+    createRoute: '/compute/lease/create?from=tools',
   },
   {
     key: 'guides',

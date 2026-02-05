@@ -5,11 +5,24 @@ import React from 'react';
 import colors from '@/components/ui/colors';
 import { HeaderBackButton } from '@/components/ui/header-back-button';
 
+const BACK_LABELS: Record<string, string> = {
+  home: 'Home',
+  tools: 'Tools',
+  finance: 'Finance',
+  lease: 'Lease',
+};
+
 export default function ComputeLayout() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   const headerColors = isDark ? colors.header.dark : colors.header.light;
   const router = useRouter();
+
+  const backButton = (route: any) => {
+    const from = (route.params as any)?.from;
+    const label = BACK_LABELS[from] || 'Back';
+    return <HeaderBackButton label={label} color={headerColors.text} onPress={() => router.back()} />;
+  };
 
   return (
     <Stack
@@ -38,10 +51,10 @@ export default function ComputeLayout() {
       {/* Finance Screens */}
       <Stack.Screen
         name="finance/index"
-        options={{
+        options={({ route }) => ({
           title: 'Finance Estimates',
-          headerLeft: () => <HeaderBackButton label="Tools" color={headerColors.text} onPress={() => router.back()} />,
-        }}
+          headerLeft: () => backButton(route),
+        })}
       />
       <Stack.Screen
         name="finance/create"
@@ -52,33 +65,33 @@ export default function ComputeLayout() {
       />
       <Stack.Screen
         name="finance/[id]"
-        options={{
+        options={({ route }) => ({
           title: 'Finance Details',
-          headerBackTitle: 'Back',
-        }}
+          headerLeft: () => backButton(route),
+        })}
       />
       <Stack.Screen
         name="finance/learn"
-        options={{
+        options={({ route }) => ({
           title: 'Financing Guide',
-          headerBackTitle: 'Back',
-        }}
+          headerLeft: () => backButton(route),
+        })}
       />
       <Stack.Screen
         name="finance/compare"
-        options={{
+        options={({ route }) => ({
           title: 'Compare Estimates',
-          headerBackTitle: 'Back',
-        }}
+          headerLeft: () => backButton(route),
+        })}
       />
 
       {/* Lease Screens */}
       <Stack.Screen
         name="lease/index"
-        options={{
+        options={({ route }) => ({
           title: 'Lease Estimates',
-          headerLeft: () => <HeaderBackButton label="Tools" color={headerColors.text} onPress={() => router.back()} />,
-        }}
+          headerLeft: () => backButton(route),
+        })}
       />
       <Stack.Screen
         name="lease/create"
@@ -89,24 +102,24 @@ export default function ComputeLayout() {
       />
       <Stack.Screen
         name="lease/[id]"
-        options={{
+        options={({ route }) => ({
           title: 'Lease Details',
-          headerBackTitle: 'Back',
-        }}
+          headerLeft: () => backButton(route),
+        })}
       />
       <Stack.Screen
         name="lease/learn"
-        options={{
+        options={({ route }) => ({
           title: 'Leasing Guide',
-          headerBackTitle: 'Back',
-        }}
+          headerLeft: () => backButton(route),
+        })}
       />
       <Stack.Screen
         name="lease/compare"
-        options={{
+        options={({ route }) => ({
           title: 'Compare Estimates',
-          headerBackTitle: 'Back',
-        }}
+          headerLeft: () => backButton(route),
+        })}
       />
     </Stack>
   );

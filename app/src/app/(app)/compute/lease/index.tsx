@@ -40,7 +40,7 @@ export default function LeaseListScreen() {
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
       >
         {/* Terms Link */}
-        <Link href="/compute/lease/learn" asChild>
+        <Link href="/compute/lease/learn?from=lease" asChild>
           <Pressable className="mb-4 flex-row items-center rounded-xl bg-success/10 px-4 py-3 dark:bg-success/20">
             <View className="mr-3">
               <Book color={colors.success.DEFAULT} size={18} />
@@ -67,7 +67,7 @@ export default function LeaseListScreen() {
 
       {/* Floating Add Button */}
       <FloatingAddButton
-        onPress={() => router.push('/compute/lease/create')}
+        onPress={() => router.push('/compute/lease/create?from=lease')}
         color={colors.success.DEFAULT}
         accessibilityLabel="Create new lease estimate"
       />

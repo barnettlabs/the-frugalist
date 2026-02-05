@@ -40,7 +40,7 @@ export default function FinanceListScreen() {
         refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
       >
         {/* Terms Link */}
-        <Link href="/compute/finance/learn" asChild>
+        <Link href="/compute/finance/learn?from=finance" asChild>
           <Pressable className="mb-4 flex-row items-center rounded-xl bg-info/10 px-4 py-3 dark:bg-info/20">
             <View className="mr-3">
               <Book color={colors.info.DEFAULT} size={18} />
@@ -69,7 +69,7 @@ export default function FinanceListScreen() {
 
       {/* Floating Add Button */}
       <FloatingAddButton
-        onPress={() => router.push('/compute/finance/create')}
+        onPress={() => router.push('/compute/finance/create?from=finance')}
         color={colors.info.DEFAULT}
         accessibilityLabel="Create new finance estimate"
       />

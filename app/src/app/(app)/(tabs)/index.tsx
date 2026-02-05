@@ -67,7 +67,7 @@ export default function Dashboard() {
         title: sheet.sheet_name || 'Finance Estimate',
         subtitle: [sheet.vehicle_year, sheet.vehicle_make, sheet.vehicle_model].filter(Boolean).join(' ') || 'Vehicle',
         updatedAt: new Date(sheet.updated_at),
-        route: `/compute/finance/${sheet.id}`,
+        route: `/compute/finance/${sheet.id}?from=home`,
       });
     });
 
@@ -79,7 +79,7 @@ export default function Dashboard() {
         title: sheet.sheet_name || 'Lease Estimate',
         subtitle: [sheet.vehicle_year, sheet.vehicle_make, sheet.vehicle_model].filter(Boolean).join(' ') || 'Vehicle',
         updatedAt: new Date(sheet.updated_at),
-        route: `/compute/lease/${sheet.id}`,
+        route: `/compute/lease/${sheet.id}?from=home`,
       });
     });
 
@@ -91,7 +91,7 @@ export default function Dashboard() {
         title: product.product_name || 'Tracked Product',
         subtitle: product.retailer?.name || 'Unknown Retailer',
         updatedAt: new Date(product.last_checked_at || product.tracking_start_date),
-        route: `/watch/${product.id}`,
+        route: `/watch/${product.id}?from=home`,
       });
     });
 
@@ -195,7 +195,7 @@ export default function Dashboard() {
         <Animated.View entering={FadeInDown.duration(600).delay(200)} style={styles.statsRow}>
           <Pressable
             style={[styles.statCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}
-            onPress={() => router.push('/watch')}
+            onPress={() => router.push('/watch?from=home')}
           >
             <View style={[styles.statIconBg, { backgroundColor: `${colors.accent.DEFAULT}15` }]}>
               <EyeIcon color={colors.accent.DEFAULT} size={16} />
@@ -206,7 +206,7 @@ export default function Dashboard() {
 
           <Pressable
             style={[styles.statCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}
-            onPress={() => router.push('/compute/finance')}
+            onPress={() => router.push('/compute/finance?from=home')}
           >
             <View style={[styles.statIconBg, { backgroundColor: `${colors.info.DEFAULT}15` }]}>
               <CalculatorIcon color={colors.info.DEFAULT} size={16} />
@@ -217,7 +217,7 @@ export default function Dashboard() {
 
           <Pressable
             style={[styles.statCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}
-            onPress={() => router.push('/compute/lease')}
+            onPress={() => router.push('/compute/lease?from=home')}
           >
             <View style={[styles.statIconBg, { backgroundColor: `${colors.success.DEFAULT}15` }]}>
               <CarIcon color={colors.success.DEFAULT} size={16} />
@@ -241,7 +241,7 @@ export default function Dashboard() {
                     styles.alertItem,
                     index < priceAlerts.length - 1 && { borderBottomWidth: 1, borderBottomColor: theme.cardBorder },
                   ]}
-                  onPress={() => router.push(`/watch/${product.id}` as any)}
+                  onPress={() => router.push(`/watch/${product.id}?from=home` as any)}
                 >
                   <View style={styles.alertContent}>
                     <Text style={[styles.alertTitle, { color: theme.textPrimary }]} numberOfLines={1}>

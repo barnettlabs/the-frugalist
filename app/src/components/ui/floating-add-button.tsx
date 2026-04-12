@@ -5,7 +5,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Plus } from './icons';
 import { Text } from './text';
 
-const TAB_BAR_HEIGHT = 64;
 const FAB_SIZE = 56;
 
 type FloatingAddButtonProps = {
@@ -16,10 +15,7 @@ type FloatingAddButtonProps = {
 
 export function FloatingAddButton({ onPress, color, accessibilityLabel }: FloatingAddButtonProps) {
   const insets = useSafeAreaInsets();
-
-  // Position the FAB so it sits centered above the tab bar, overlapping slightly
-  const tabBarBottom = insets.bottom || 16;
-  const fabBottom = tabBarBottom + TAB_BAR_HEIGHT + 8;
+  const fabBottom = Math.max(insets.bottom, 16) + 16;
 
   return (
     <View
@@ -31,7 +27,6 @@ export function FloatingAddButton({ onPress, color, accessibilityLabel }: Floati
       ]}
       pointerEvents="box-none"
     >
-      {/* The actual button */}
       <Pressable
         style={[
           styles.fab,
@@ -53,9 +48,7 @@ export function FloatingAddButton({ onPress, color, accessibilityLabel }: Floati
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    alignItems: 'center',
+    right: 20,
     zIndex: 100,
   },
   fab: {

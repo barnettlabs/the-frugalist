@@ -26,8 +26,7 @@ export function LearningContent({
 }: LearningContentProps) {
   const insets = useSafeAreaInsets();
 
-  // Account for floating tab bar (64px height + 16px margin + safe area)
-  const bottomPadding = Math.max(insets.bottom, 16) + 80;
+  const bottomPadding = Math.max(insets.bottom, 16);
 
   const colorClasses = variant === 'finance'
     ? {

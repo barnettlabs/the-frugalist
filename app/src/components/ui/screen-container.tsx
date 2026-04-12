@@ -15,7 +15,9 @@ export function ScreenContainer({ children, withDots = true, className, style, .
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  const dotColor = isDark ? 'rgba(148, 163, 184, 0.08)' : 'rgba(148, 163, 184, 0.15)';
+  // Accent blue dots matching web pattern
+  // Light: accent blue on off-white. Dark: lighter blue on black for visibility.
+  const dotColor = isDark ? 'rgba(90, 125, 171, 0.18)' : 'rgba(35, 88, 146, 0.12)';
 
   return (
     <View className={`flex-1 ${tw.pageBg} ${className ?? ''}`} style={style} {...props}>
@@ -23,7 +25,7 @@ export function ScreenContainer({ children, withDots = true, className, style, .
         <View style={StyleSheet.absoluteFill} pointerEvents="none">
           <Svg width="100%" height="100%">
             <Defs>
-              <Pattern id="dotPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+              <Pattern id="dotPattern" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
                 <Circle cx="2" cy="2" r="1" fill={dotColor} />
               </Pattern>
             </Defs>

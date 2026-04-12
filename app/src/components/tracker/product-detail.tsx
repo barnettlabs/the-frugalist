@@ -33,8 +33,7 @@ export function ProductDetail({
   const insets = useSafeAreaInsets();
   const targetReached = product.current_price <= product.target_price;
 
-  // Account for floating tab bar (64px height + 16px margin + safe area)
-  const bottomPadding = Math.max(insets.bottom, 16) + 80;
+  const bottomPadding = Math.max(insets.bottom, 16);
 
   return (
     <View className={`flex-1 ${tw.pageBg}`}>

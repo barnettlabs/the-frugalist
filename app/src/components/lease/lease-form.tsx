@@ -91,8 +91,7 @@ export function LeaseForm({
     [watchedValues]
   );
 
-  // Account for floating tab bar (64px height + 16px margin + safe area) when not in modal
-  const bottomPadding = isModal ? Math.max(insets.bottom, 16) : Math.max(insets.bottom, 16) + 80;
+  const bottomPadding = Math.max(insets.bottom, 16);
 
   return (
     <View className={`flex-1 ${tw.pageBg}`}>

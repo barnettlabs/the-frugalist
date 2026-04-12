@@ -25,8 +25,7 @@ export function ProfileContent() {
 
   const isDark = colorScheme === 'dark';
 
-  // Account for floating tab bar
-  const bottomPadding = Math.max(insets.bottom, 16) + 80;
+  const bottomPadding = Math.max(insets.bottom, 16);
 
   if (isLoading) {
     return (

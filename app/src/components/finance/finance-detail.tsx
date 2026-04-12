@@ -29,8 +29,7 @@ export function FinanceDetail({
     [sheet]
   );
 
-  // Account for floating tab bar (64px height + 16px margin + safe area)
-  const bottomPadding = Math.max(insets.bottom, 16) + 80;
+  const bottomPadding = Math.max(insets.bottom, 16);
 
   return (
     <View className={`flex-1 ${tw.pageBg}`}>

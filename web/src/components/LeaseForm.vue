@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import FormField from './FormField.vue'
-import BaseButton from './BaseButton.vue'
+import Spinner from './Spinner.vue'
+import { CalculatorIcon } from '@heroicons/vue/24/outline'
 import { LeaseFormData, FormErrors, vehicleTypeOptions } from '@/types'
 
 interface Props {
@@ -23,69 +24,78 @@ defineEmits<{
 </script>
 
 <template>
-  <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 bg-white">
-    <form @submit.prevent="$emit('submit')" class="space-y-6">
-      <!-- Basic Information -->
-      <div>
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
+  <form @submit.prevent="$emit('submit')" class="space-y-4">
+    <!-- 01 · Basic Information -->
+    <section class="card overflow-hidden">
+      <div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
+        <span class="numeral text-xs text-text-muted">№ 01</span>
+        <h3 class="font-display text-xl text-primary tracking-tight">Basic information</h3>
+      </div>
+      <div class="p-5 sm:p-6">
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <FormField
             v-model="form.sheet_name"
             name="sheet_name"
-            label="Estimate Name"
+            label="Estimate name"
             :error="errors.sheet_name"
           />
-
           <FormField
             v-model="form.dealership_name"
             name="dealership_name"
             label="Dealership"
             :error="errors.dealership_name"
           />
-
           <FormField
             v-model="form.vehicle_type"
             name="vehicle_type"
-            label="Vehicle Type"
+            label="Vehicle type"
             type="select"
             :options="vehicleTypeOptions"
             :error="errors.vehicle_type"
           />
         </div>
       </div>
+    </section>
 
-      <!-- Contact Information (Edit mode only) -->
-      <div class="border-t border-gray-200 pt-6">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Contact Information</h3>
+    <!-- 02 · Contact Information -->
+    <section class="card overflow-hidden">
+      <div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
+        <span class="numeral text-xs text-text-muted">№ 02</span>
+        <h3 class="font-display text-xl text-primary tracking-tight">Contact information</h3>
+      </div>
+      <div class="p-5 sm:p-6">
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <FormField
             v-model="form.sales_consultant"
             name="sales_consultant"
-            label="Sales Consultant"
+            label="Sales consultant"
             :error="errors.sales_consultant"
           />
-
           <FormField
             v-model="form.contact_email"
             name="contact_email"
-            label="Contact Email"
+            label="Contact email"
             type="email"
             :error="errors.contact_email"
           />
-
           <FormField
             v-model="form.contact_phone"
             name="contact_phone"
-            label="Contact Phone"
+            label="Contact phone"
             type="tel"
             :error="errors.contact_phone"
           />
         </div>
       </div>
+    </section>
 
-      <!-- Vehicle Information -->
-      <div class="border-t border-gray-200 pt-6">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Vehicle Information</h3>
+    <!-- 03 · Vehicle Information -->
+    <section class="card overflow-hidden">
+      <div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
+        <span class="numeral text-xs text-text-muted">№ 03</span>
+        <h3 class="font-display text-xl text-primary tracking-tight">Vehicle information</h3>
+      </div>
+      <div class="p-5 sm:p-6">
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <FormField
             v-model="form.vehicle_year"
@@ -96,21 +106,18 @@ defineEmits<{
             :max="2030"
             :error="errors.vehicle_year"
           />
-
           <FormField
             v-model="form.vehicle_make"
             name="vehicle_make"
             label="Make"
             :error="errors.vehicle_make"
           />
-
           <FormField
             v-model="form.vehicle_model"
             name="vehicle_model"
             label="Model"
             :error="errors.vehicle_model"
           />
-
           <FormField
             v-model="form.vehicle_trim"
             name="vehicle_trim"
@@ -119,10 +126,15 @@ defineEmits<{
           />
         </div>
       </div>
+    </section>
 
-      <!-- Pricing Information -->
-      <div class="border-t border-gray-200 pt-6">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Pricing Information</h3>
+    <!-- 04 · Pricing -->
+    <section class="card overflow-hidden">
+      <div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
+        <span class="numeral text-xs text-text-muted">№ 04</span>
+        <h3 class="font-display text-xl text-primary tracking-tight">Pricing</h3>
+      </div>
+      <div class="p-5 sm:p-6">
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <FormField
             v-model="form.msrp"
@@ -131,109 +143,103 @@ defineEmits<{
             type="currency"
             :error="errors.msrp"
           />
-
           <FormField
             v-model="form.dealer_contribution"
             name="dealer_contribution"
-            label="Dealer Contribution"
+            label="Dealer contribution"
             type="currency"
             :error="errors.dealer_contribution"
           />
-
           <FormField
             v-model="form.trade_in"
             name="trade_in"
-            label="Trade-in Value"
+            label="Trade-in value"
             type="currency"
             :error="errors.trade_in"
           />
-
           <FormField
             v-model="form.doc_fee"
             name="doc_fee"
-            label="Documentation Fee"
+            label="Documentation fee"
             type="currency"
             :error="errors.doc_fee"
           />
-
           <FormField
             v-model="form.acquisition_fee"
             name="acquisition_fee"
-            label="Acquisition Fee"
+            label="Acquisition fee"
             type="currency"
             :error="errors.acquisition_fee"
           />
-
           <FormField
             v-model="form.misc_fees"
             name="misc_fees"
-            label="Miscellaneous Fees"
+            label="Miscellaneous fees"
             type="currency"
             :error="errors.misc_fees"
           />
-
           <FormField
             v-model="form.lease_cash"
             name="lease_cash"
-            label="Lease Cash"
+            label="Lease cash"
             type="currency"
             :error="errors.lease_cash"
           />
-
           <FormField
             v-model="form.down_payment"
             name="down_payment"
-            label="Down Payment"
+            label="Down payment"
             type="currency"
             :error="errors.down_payment"
           />
-
           <FormField
             v-model="form.sales_tax_percent"
             name="sales_tax_percent"
-            label="Sales Tax Percent"
+            label="Sales tax percent"
             type="percentage"
             :error="errors.sales_tax_percent"
           />
         </div>
       </div>
+    </section>
 
-      <!-- Lease Terms -->
-      <div class="border-t border-gray-200 pt-6">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Lease Terms</h3>
+    <!-- 05 · Lease Terms -->
+    <section class="card overflow-hidden">
+      <div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
+        <span class="numeral text-xs text-text-muted">№ 05</span>
+        <h3 class="font-display text-xl text-primary tracking-tight">Lease terms</h3>
+      </div>
+      <div class="p-5 sm:p-6">
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <FormField
             v-model="form.money_factor"
             name="money_factor"
-            label="Money Factor"
+            label="Money factor"
             type="number"
             step="0.0001"
             :min="0"
             :max="1"
             :error="errors.money_factor"
           />
-
           <FormField
             v-model="form.residual_percent"
             name="residual_percent"
-            label="Residual Percent"
+            label="Residual percent"
             type="percentage"
             :error="errors.residual_percent"
           />
-
           <FormField
             v-model="form.lease_term"
             name="lease_term"
-            label="Lease Term (Months)"
+            label="Lease term (months)"
             type="number"
             :min="1"
             :max="60"
             :error="errors.lease_term"
           />
-
           <FormField
             name="start_date"
-            label="Start Date"
+            label="Start date"
             type="date"
             :error="errors.start_date"
             :model-value="form.start_date ? form.start_date.substring(0, 10) : ''"
@@ -245,9 +251,15 @@ defineEmits<{
           />
         </div>
       </div>
+    </section>
 
-      <!-- Notes -->
-      <div class="border-t border-gray-200 pt-6">
+    <!-- 06 · Notes -->
+    <section class="card overflow-hidden">
+      <div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
+        <span class="numeral text-xs text-text-muted">№ 06</span>
+        <h3 class="font-display text-xl text-primary tracking-tight">Notes</h3>
+      </div>
+      <div class="p-5 sm:p-6">
         <FormField
           v-model="form.notes"
           name="notes"
@@ -256,48 +268,38 @@ defineEmits<{
           :error="errors.notes"
         />
       </div>
+    </section>
 
-      <!-- Submit Button -->
-      <div class="flex justify-end space-x-3">
-        <RouterLink
-          :to="backUrl"
-          class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          Cancel
-        </RouterLink>
-        <BaseButton type="submit" :disabled="loading" variant="primary">
-          <svg
-            v-if="loading"
-            class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              class="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
-            ></circle>
-            <path
-              class="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-          {{
-            loading
-              ? isEdit
-                ? 'Updating...'
-                : 'Creating...'
-              : isEdit
-                ? 'Update Lease Estimate'
-                : 'Create Lease Estimate'
-          }}
-        </BaseButton>
-      </div>
-    </form>
-  </div>
+    <!-- Submit -->
+    <div class="flex items-center justify-end gap-3 pt-2">
+      <RouterLink
+        :to="backUrl"
+        class="px-5 py-2.5 rounded-md text-sm font-medium text-text-muted hover:text-primary hover:bg-tan/50 transition-colors"
+      >
+        Cancel
+      </RouterLink>
+      <button
+        type="submit"
+        :disabled="loading"
+        :class="[
+          'inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-medium transition-colors',
+          loading
+            ? 'bg-tan text-text-muted cursor-not-allowed'
+            : 'bg-primary hover:bg-primary-light text-surface',
+        ]"
+      >
+        <Spinner v-if="loading" size="sm" color="white" />
+        <CalculatorIcon v-else class="h-4 w-4" />
+        {{
+          loading
+            ? isEdit
+              ? 'Saving…'
+              : 'Creating…'
+            : isEdit
+              ? 'Update lease estimate'
+              : 'Create lease estimate'
+        }}
+      </button>
+    </div>
+  </form>
 </template>

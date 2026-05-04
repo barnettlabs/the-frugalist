@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import PageHeader from '@/components/PageHeader.vue'
+import SectionHeader from '@/components/SectionHeader.vue'
+import Spinner from '@/components/Spinner.vue'
 import FinanceForm from '@/components/FinanceForm.vue'
 import AmortizationTable from '@/components/Finance/AmortizationTable.vue'
 import PaymentCharts from '@/components/Finance/PaymentCharts.vue'
 import ExtraPayments from '@/components/Finance/ExtraPayments.vue'
 import AdvancedCalculations from '@/components/Finance/AdvancedCalculations.vue'
+import { BanknotesIcon, CalculatorIcon, ArrowLeftIcon } from '@heroicons/vue/24/outline'
 import { VehicleType } from '@/types'
 import type { FinanceFormData, FormErrors } from '@/types'
 import { financeApi } from '@/api/finance'
@@ -55,12 +57,18 @@ const vehicleTitle = computed(() => {
   return parts.length > 0 ? parts.join(' ') : 'Finance Estimate'
 })
 
-const pageTitle = computed(() => {
-  return isEdit.value ? `Edit ${vehicleTitle.value}` : 'Create Finance Estimate'
+const headerTitle = computed(() => {
+  return isEdit.value ? vehicleTitle.value : 'New finance estimate.'
 })
 
-const formTitle = computed(() => {
-  return isEdit.value ? 'Edit Finance Estimate' : 'Create Finance Estimate'
+const headerEyebrow = computed(() => {
+  return isEdit.value ? 'Compute · Financing · Edit' : 'Compute · Financing · New'
+})
+
+const headerDescription = computed(() => {
+  return isEdit.value
+    ? 'Refine the numbers behind this offer. Changes save when you click update.'
+    : 'Run any financing offer through the math. APR, amortization, total interest, all in one sheet.'
 })
 
 const loadSheet = async () => {
@@ -106,79 +114,74 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="py-12 flex-1">
-    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-      <!-- Loading State -->
-      <div v-if="loadingSheet" class="flex items-center justify-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+  <div class="pb-16">
+    <!-- Loading state for edit-mode initial fetch -->
+    <div v-if="loadingSheet" class="flex items-center justify-center py-32">
+      <Spinner size="lg" color="accent" />
+    </div>
+
+    <template v-else>
+      <!-- Editorial breadcrumb -->
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8">
+        <RouterLink
+          to="/estimates/financing"
+          class="inline-flex items-center gap-1.5 text-xs eyebrow hover:text-primary transition-colors"
+        >
+          <ArrowLeftIcon class="h-3 w-3" />
+          All finance estimates
+        </RouterLink>
       </div>
 
-      <template v-else>
-        <!-- Header -->
-        <PageHeader
-          :title="formTitle"
-          :description="isEdit ? vehicleTitle : 'Calculate vehicle financing options'"
-          back-link="/estimates/financing"
-          back-label="Finance Calculator"
-        >
-          <template #actions>
-            <button
-              @click="submitForm"
-              :disabled="loading"
-              class="bg-primary hover:bg-primary-shade-1 text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 disabled:opacity-50 flex items-center space-x-2"
-            >
-              <svg
-                v-if="loading"
-                class="animate-spin h-5 w-5 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  class="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="4"
-                ></circle>
-                <path
-                  class="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-              <span v-if="isEdit">{{ loading ? 'Saving...' : 'Save Changes' }}</span>
-              <span v-else>{{ loading ? 'Creating...' : 'Create Estimate' }}</span>
-            </button>
-          </template>
-        </PageHeader>
+      <SectionHeader
+        :eyebrow="headerEyebrow"
+        :title="headerTitle"
+        :description="headerDescription"
+        :icon="BanknotesIcon"
+        variant="compact"
+      >
+        <template v-if="isEdit" #actions>
+          <button
+            @click="submitForm"
+            :disabled="loading"
+            :class="[
+              'inline-flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-medium transition-colors',
+              loading
+                ? 'bg-tan text-text-muted cursor-not-allowed'
+                : 'bg-primary hover:bg-primary-light text-surface',
+            ]"
+          >
+            <Spinner v-if="loading" size="sm" color="white" />
+            <CalculatorIcon v-else class="h-4 w-4" />
+            {{ loading ? 'Saving…' : 'Save changes' }}
+          </button>
+        </template>
+      </SectionHeader>
 
+      <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-2">
         <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
-          <!-- Main Form -->
+          <!-- Main column -->
           <div class="grid grid-cols-1 gap-4 lg:col-span-2">
-            <section :aria-labelledby="`${isEdit ? 'edit' : 'create'}-finance-estimate-title`">
-              <FinanceForm
-                :form="form"
-                :errors="errors"
-                :loading="loading"
-                :title="formTitle"
-                back-url="/estimates/financing"
-                :is-edit="isEdit"
-                @submit="submitForm"
-              />
-            </section>
+            <FinanceForm
+              :form="form"
+              :errors="errors"
+              :loading="loading"
+              :title="headerTitle"
+              back-url="/estimates/financing"
+              :is-edit="isEdit"
+              @submit="submitForm"
+            />
 
             <ExtraPayments v-model="form.extra_payments_json" :data="form" />
             <AmortizationTable :data="form" />
             <PaymentCharts :data="form" />
           </div>
 
-          <!-- Right Sidebar -->
-          <div>
+          <!-- Right sidebar -->
+          <aside class="lg:sticky lg:top-6">
             <AdvancedCalculations :data="form" />
-          </div>
+          </aside>
         </div>
-      </template>
-    </div>
-  </main>
+      </main>
+    </template>
+  </div>
 </template>

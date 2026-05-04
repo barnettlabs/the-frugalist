@@ -1,45 +1,41 @@
 <template>
-  <div class="bg-white rounded-lg border border-gray-200 shadow-sm bg-white p-6">
-    <div class="flex items-center justify-between mb-6">
-      <h3 class="text-lg font-bold text-gray-900">Payment Analysis</h3>
-      <div class="flex items-center space-x-2">
+  <section class="card overflow-hidden">
+    <div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
+      <span class="numeral text-xs text-text-muted">Analysis</span>
+      <h3 class="font-display text-xl text-primary tracking-tight">Payment breakdown</h3>
+      <div class="ml-auto flex items-center gap-1 border border-border rounded-md p-0.5">
         <button
           @click="chartType = 'line'"
-          :class="chartType === 'line' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'"
-          class="px-3 py-1 text-sm rounded-lg transition-colors"
+          :class="[
+            'px-2.5 py-1 text-xs font-medium rounded transition-colors',
+            chartType === 'line' ? 'bg-primary text-surface' : 'text-text-muted hover:text-primary'
+          ]"
         >
-          Line Chart
+          Line
         </button>
         <button
           @click="chartType = 'pie'"
-          :class="chartType === 'pie' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'"
-          class="px-3 py-1 text-sm rounded-lg transition-colors"
+          :class="[
+            'px-2.5 py-1 text-xs font-medium rounded transition-colors',
+            chartType === 'pie' ? 'bg-primary text-surface' : 'text-text-muted hover:text-primary'
+          ]"
         >
-          Pie Chart
+          Pie
         </button>
       </div>
     </div>
 
-    <div v-if="paymentBreakdown">
-      <!-- Line Chart -->
+    <div v-if="paymentBreakdown" class="p-5 sm:p-6">
+      <!-- Line Chart placeholder -->
       <div v-if="chartType === 'line'" class="mb-6">
-        <div class="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
+        <div class="h-64 flex items-center justify-center bg-tan/40 border border-border rounded-md">
           <div class="text-center">
-            <svg
-              class="w-12 h-12 mx-auto mb-2 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-              ></path>
+            <svg class="w-10 h-10 mx-auto mb-3 text-text-muted/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
-            <p class="text-sm text-gray-500">Monthly Payment Breakdown</p>
-            <p class="text-xs text-gray-400">Chart visualization coming soon!</p>
+            <p class="eyebrow mb-1">Line chart</p>
+            <p class="text-xs text-text-muted/70">Visualization coming soon</p>
           </div>
         </div>
       </div>
@@ -54,22 +50,18 @@
                 <svg class="w-40 h-40 transform -rotate-90" viewBox="0 0 100 100">
                   <!-- Principal segment -->
                   <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
+                    cx="50" cy="50" r="40"
                     fill="none"
-                    stroke="#3B82F6"
+                    stroke="rgb(35 88 146)"
                     stroke-width="20"
                     :stroke-dasharray="`${principalPercentage * 2.51} 251`"
                     stroke-dashoffset="0"
                   />
                   <!-- Interest segment -->
                   <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
+                    cx="50" cy="50" r="40"
                     fill="none"
-                    stroke="#EF4444"
+                    stroke="rgb(168 64 60)"
                     stroke-width="20"
                     :stroke-dasharray="`${interestPercentage * 2.51} 251`"
                     :stroke-dashoffset="`-${principalPercentage * 2.51}`"
@@ -77,11 +69,9 @@
                   <!-- Extra payments segment -->
                   <circle
                     v-if="extraPaymentPercentage > 0"
-                    cx="50"
-                    cy="50"
-                    r="40"
+                    cx="50" cy="50" r="40"
                     fill="none"
-                    stroke="#22C55E"
+                    stroke="rgb(67 122 89)"
                     stroke-width="20"
                     :stroke-dasharray="`${extraPaymentPercentage * 2.51} 251`"
                     :stroke-dashoffset="`-${(principalPercentage + interestPercentage) * 2.51}`"
@@ -91,41 +81,35 @@
             </div>
 
             <!-- Legend -->
-            <div class="space-y-2">
+            <div class="space-y-2.5">
               <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                  <div class="w-3 h-3 rounded-full bg-blue-500"></div>
-                  <span class="text-sm text-gray-700">Principal</span>
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-accent"></span>
+                  <span class="eyebrow !text-[0.625rem]">Principal</span>
                 </div>
-                <div class="text-sm font-medium">
-                  ${{ formatCurrency(paymentBreakdown.principal) }} ({{
-                    principalPercentage.toFixed(1)
-                  }}%)
+                <div class="text-sm numeral text-primary">
+                  ${{ formatCurrency(paymentBreakdown.principal) }}
+                  <span class="text-text-muted">· {{ principalPercentage.toFixed(1) }}%</span>
                 </div>
               </div>
               <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                  <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                  <span class="text-sm text-gray-700">Interest</span>
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-danger"></span>
+                  <span class="eyebrow !text-[0.625rem]">Interest</span>
                 </div>
-                <div class="text-sm font-medium">
-                  ${{ formatCurrency(paymentBreakdown.interest) }} ({{
-                    interestPercentage.toFixed(1)
-                  }}%)
+                <div class="text-sm numeral text-primary">
+                  ${{ formatCurrency(paymentBreakdown.interest) }}
+                  <span class="text-text-muted">· {{ interestPercentage.toFixed(1) }}%</span>
                 </div>
               </div>
-              <div
-                v-if="paymentBreakdown.extraPayments > 0"
-                class="flex items-center justify-between"
-              >
-                <div class="flex items-center space-x-2">
-                  <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                  <span class="text-sm text-gray-700">Extra Payments</span>
+              <div v-if="paymentBreakdown.extraPayments > 0" class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-success"></span>
+                  <span class="eyebrow !text-[0.625rem]">Extra payments</span>
                 </div>
-                <div class="text-sm font-medium">
-                  ${{ formatCurrency(paymentBreakdown.extraPayments) }} ({{
-                    extraPaymentPercentage.toFixed(1)
-                  }}%)
+                <div class="text-sm numeral text-primary">
+                  ${{ formatCurrency(paymentBreakdown.extraPayments) }}
+                  <span class="text-text-muted">· {{ extraPaymentPercentage.toFixed(1) }}%</span>
                 </div>
               </div>
             </div>
@@ -133,33 +117,27 @@
         </div>
       </div>
 
-      <!-- Summary Stats -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-blue-50 p-4 rounded-lg">
-          <div class="text-sm text-blue-600 font-medium">Total Principal</div>
-          <div class="text-lg font-bold text-blue-900">
-            ${{ formatCurrency(paymentBreakdown.principal) }}
-          </div>
+      <!-- Summary stats -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border rounded-md overflow-hidden">
+        <div class="bg-surface p-4">
+          <p class="eyebrow !text-[0.625rem] mb-1.5">Total principal</p>
+          <p class="figure text-xl text-accent-dark leading-none">${{ formatCurrency(paymentBreakdown.principal) }}</p>
         </div>
-        <div class="bg-red-50 p-4 rounded-lg">
-          <div class="text-sm text-red-600 font-medium">Total Interest</div>
-          <div class="text-lg font-bold text-red-900">
-            ${{ formatCurrency(paymentBreakdown.interest) }}
-          </div>
+        <div class="bg-surface p-4">
+          <p class="eyebrow !text-[0.625rem] mb-1.5">Total interest</p>
+          <p class="figure text-xl text-warning leading-none">${{ formatCurrency(paymentBreakdown.interest) }}</p>
         </div>
-        <div v-if="paymentBreakdown.extraPayments > 0" class="bg-green-50 p-4 rounded-lg">
-          <div class="text-sm text-green-600 font-medium">Extra Payments</div>
-          <div class="text-lg font-bold text-green-900">
-            ${{ formatCurrency(paymentBreakdown.extraPayments) }}
-          </div>
+        <div v-if="paymentBreakdown.extraPayments > 0" class="bg-surface p-4">
+          <p class="eyebrow !text-[0.625rem] mb-1.5">Extra payments</p>
+          <p class="figure text-xl text-success leading-none">${{ formatCurrency(paymentBreakdown.extraPayments) }}</p>
         </div>
       </div>
     </div>
 
-    <div v-else class="text-center py-8 text-gray-500">
-      <p>Enter loan details to see payment analysis</p>
+    <div v-else class="p-10 text-center text-sm text-text-muted">
+      Enter loan details to see payment analysis.
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup>

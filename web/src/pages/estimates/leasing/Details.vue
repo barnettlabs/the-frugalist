@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import PageHeader from '@/components/PageHeader.vue'
+import SectionHeader from '@/components/SectionHeader.vue'
+import Spinner from '@/components/Spinner.vue'
 import LeaseForm from '@/components/LeaseForm.vue'
 import PaymentAnalysis from '@/components/Lease/PaymentAnalysis.vue'
 import BuyoutAnalysis from '@/components/Lease/BuyoutAnalysis.vue'
 import AdvancedCalculations from '@/components/Lease/AdvancedCalculations.vue'
+import { CurrencyDollarIcon, CalculatorIcon, ArrowLeftIcon } from '@heroicons/vue/24/outline'
 import { VehicleType } from '@/types'
 import type { LeaseFormData, FormErrors } from '@/types'
 import { leaseApi } from '@/api/lease'
@@ -56,12 +58,18 @@ const vehicleTitle = computed(() => {
   return parts.length > 0 ? parts.join(' ') : 'Lease Estimate'
 })
 
-const pageTitle = computed(() => {
-  return isEdit.value ? `Edit ${vehicleTitle.value}` : 'Create Lease Estimate'
+const headerTitle = computed(() => {
+  return isEdit.value ? vehicleTitle.value : 'New lease estimate.'
 })
 
-const formTitle = computed(() => {
-  return isEdit.value ? 'Edit Lease Estimate' : 'Create Lease Estimate'
+const headerEyebrow = computed(() => {
+  return isEdit.value ? 'Compute · Leasing · Edit' : 'Compute · Leasing · New'
+})
+
+const headerDescription = computed(() => {
+  return isEdit.value
+    ? 'Refine the numbers behind this lease. Changes save when you click update.'
+    : 'Run a lease offer through the math. Money factor, residual, total cost, all in one sheet.'
 })
 
 const loadSheet = async () => {
@@ -107,62 +115,73 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="py-12 flex-1">
-    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-      <!-- Loading State -->
-      <div v-if="loadingSheet" class="flex items-center justify-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-secondary"></div>
+  <div class="pb-16">
+    <!-- Loading state for edit-mode initial fetch -->
+    <div v-if="loadingSheet" class="flex items-center justify-center py-32">
+      <Spinner size="lg" color="accent" />
+    </div>
+
+    <template v-else>
+      <!-- Editorial breadcrumb -->
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8">
+        <RouterLink
+          to="/estimates/leasing"
+          class="inline-flex items-center gap-1.5 text-xs eyebrow hover:text-primary transition-colors"
+        >
+          <ArrowLeftIcon class="h-3 w-3" />
+          All lease estimates
+        </RouterLink>
       </div>
 
-      <template v-else>
-        <!-- Header -->
-        <PageHeader
-          :title="formTitle"
-          :description="isEdit ? vehicleTitle : 'Calculate vehicle leasing options'"
-          back-link="/estimates/leasing"
-          back-label="Lease Calculator"
-        >
-          <template #actions>
-            <button
-              @click="submitForm"
-              :disabled="loading"
-              class="bg-secondary hover:bg-secondary-dark text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 disabled:opacity-50 flex items-center space-x-2"
-            >
-              <svg v-if="loading" class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <span v-if="isEdit">{{ loading ? 'Saving...' : 'Save Changes' }}</span>
-              <span v-else>{{ loading ? 'Creating...' : 'Create Estimate' }}</span>
-            </button>
-          </template>
-        </PageHeader>
+      <SectionHeader
+        :eyebrow="headerEyebrow"
+        :title="headerTitle"
+        :description="headerDescription"
+        :icon="CurrencyDollarIcon"
+        variant="compact"
+      >
+        <template v-if="isEdit" #actions>
+          <button
+            @click="submitForm"
+            :disabled="loading"
+            :class="[
+              'inline-flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-medium transition-colors',
+              loading
+                ? 'bg-tan text-text-muted cursor-not-allowed'
+                : 'bg-primary hover:bg-primary-light text-surface',
+            ]"
+          >
+            <Spinner v-if="loading" size="sm" color="white" />
+            <CalculatorIcon v-else class="h-4 w-4" />
+            {{ loading ? 'Saving…' : 'Save changes' }}
+          </button>
+        </template>
+      </SectionHeader>
 
+      <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-2">
         <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
-          <!-- Main Form -->
+          <!-- Main column -->
           <div class="grid grid-cols-1 gap-4 lg:col-span-2">
-            <section>
-              <LeaseForm
-                :form="form"
-                :errors="errors"
-                :loading="loading"
-                :title="formTitle"
-                back-url="/estimates/leasing"
-                :is-edit="isEdit"
-                @submit="submitForm"
-              />
-            </section>
+            <LeaseForm
+              :form="form"
+              :errors="errors"
+              :loading="loading"
+              :title="headerTitle"
+              back-url="/estimates/leasing"
+              :is-edit="isEdit"
+              @submit="submitForm"
+            />
 
             <PaymentAnalysis :data="form" />
             <BuyoutAnalysis :data="form" />
           </div>
 
-          <!-- Right Sidebar -->
-          <div>
+          <!-- Right sidebar -->
+          <aside class="lg:sticky lg:top-6">
             <AdvancedCalculations :data="form" />
-          </div>
+          </aside>
         </div>
-      </template>
-    </div>
-  </main>
+      </main>
+    </template>
+  </div>
 </template>

@@ -36,250 +36,194 @@ import { formatCurrency } from '@/utils/formatters.js'
 </script>
 
 <template>
-  <div class="bg-white rounded-lg border border-gray-200 shadow-sm bg-white p-6">
-    <div class="flex items-center justify-between mb-6">
-      <h3 class="text-lg font-bold text-gray-900">Advanced Lease Calculations</h3>
+  <section class="card overflow-hidden">
+    <div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
+      <span class="numeral text-xs text-text-muted">Summary</span>
+      <h3 class="font-display text-xl text-primary tracking-tight">At a glance</h3>
       <button
         @click="expanded = !expanded"
-        class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+        class="ml-auto p-1.5 rounded-md text-text-muted hover:text-primary hover:bg-tan/40 transition-colors"
       >
         <svg
-          class="w-5 h-5 text-gray-600"
+          class="w-4 h-4 transition-transform"
           :class="{ 'rotate-180': expanded }"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 9l-7 7-7-7"
-          ></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </button>
     </div>
 
-    <div v-if="summary">
-      <!-- Basic Summary (Always Visible) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div class="bg-primary/10 p-4 rounded-lg">
-          <div class="text-sm text-primary font-medium">Monthly Payment</div>
-          <div class="text-xl font-bold text-primary-shade-4">
-            ${{ formatCurrency(summary.leasePayment) }}
-          </div>
+    <div v-if="summary" class="p-5 sm:p-6">
+      <!-- Top tiles -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border rounded-md overflow-hidden">
+        <div class="bg-surface p-4">
+          <p class="eyebrow !text-[0.625rem] mb-1.5">Monthly</p>
+          <p class="figure text-2xl text-primary leading-none">${{ formatCurrency(summary.leasePayment) }}</p>
         </div>
-        <div class="bg-purple-50 p-4 rounded-lg">
-          <div class="text-sm text-purple-600 font-medium">Due at Signing</div>
-          <div class="text-xl font-bold text-purple-900">
-            ${{ formatCurrency(summary.cashDueAtSigning) }}
-          </div>
+        <div class="bg-surface p-4">
+          <p class="eyebrow !text-[0.625rem] mb-1.5">Due at signing</p>
+          <p class="figure text-2xl text-primary leading-none">${{ formatCurrency(summary.cashDueAtSigning) }}</p>
         </div>
       </div>
 
-      <!-- Detailed Calculations (Expandable) -->
-      <div v-if="expanded" class="space-y-6">
-        <!-- Vehicle Pricing -->
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <h4 class="font-semibold text-gray-900 mb-3">Vehicle Pricing</h4>
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">MSRP</span>
-              <span class="text-sm font-medium">${{ formatCurrency(data.msrp) }}</span>
+      <div v-if="expanded" class="mt-6 space-y-5">
+        <!-- Vehicle pricing -->
+        <div>
+          <p class="eyebrow mb-3">Vehicle pricing</p>
+          <dl class="divide-y divide-border border-y border-border">
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">MSRP</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(data.msrp) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Dealer Contribution</span>
-              <span class="text-sm font-medium text-green-600"
-                >-${{ formatCurrency(data.dealer_contribution) }}</span
-              >
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Dealer contribution</dt>
+              <dd class="text-sm numeral text-success">−${{ formatCurrency(data.dealer_contribution) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Trade-in Value</span>
-              <span class="text-sm font-medium text-green-600"
-                >-${{ formatCurrency(data.trade_in) }}</span
-              >
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Trade-in value</dt>
+              <dd class="text-sm numeral text-success">−${{ formatCurrency(data.trade_in) }}</dd>
             </div>
-            <div class="border-t pt-2">
-              <div class="flex justify-between">
-                <span class="text-sm font-medium text-gray-900">Final Dealer Price</span>
-                <span class="text-sm font-bold text-gray-900"
-                  >${{ formatCurrency(summary.finalDealerPrice) }}</span
-                >
-              </div>
+            <div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+              <dt class="text-sm font-medium text-primary">Final dealer price</dt>
+              <dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.finalDealerPrice) }}</dd>
             </div>
-          </div>
+          </dl>
         </div>
 
-        <!-- Capitalized Cost -->
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <h4 class="font-semibold text-gray-900 mb-3">Capitalized Cost</h4>
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Final Dealer Price</span>
-              <span class="text-sm font-medium"
-                >${{ formatCurrency(summary.finalDealerPrice) }}</span
-              >
+        <!-- Capitalized cost -->
+        <div>
+          <p class="eyebrow mb-3">Capitalized cost</p>
+          <dl class="divide-y divide-border border-y border-border">
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Final dealer price</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(summary.finalDealerPrice) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Doc Fee</span>
-              <span class="text-sm font-medium">${{ formatCurrency(data.doc_fee) }}</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Doc fee</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(data.doc_fee) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Acquisition Fee</span>
-              <span class="text-sm font-medium">${{ formatCurrency(data.acquisition_fee) }}</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Acquisition fee</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(data.acquisition_fee) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Misc Fees</span>
-              <span class="text-sm font-medium">${{ formatCurrency(data.misc_fees) }}</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Misc fees</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(data.misc_fees) }}</dd>
             </div>
-            <div class="border-t pt-2">
-              <div class="flex justify-between">
-                <span class="text-sm font-medium text-gray-900">Gross Cap Cost</span>
-                <span class="text-sm font-bold text-gray-900"
-                  >${{ formatCurrency(summary.grossCapCost) }}</span
-                >
-              </div>
+            <div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+              <dt class="text-sm font-medium text-primary">Gross cap cost</dt>
+              <dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.grossCapCost) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Down Payment</span>
-              <span class="text-sm font-medium text-green-600"
-                >-${{ formatCurrency(data.down_payment) }}</span
-              >
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Down payment</dt>
+              <dd class="text-sm numeral text-success">−${{ formatCurrency(data.down_payment) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Lease Cash</span>
-              <span class="text-sm font-medium text-green-600"
-                >-${{ formatCurrency(data.lease_cash) }}</span
-              >
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Lease cash</dt>
+              <dd class="text-sm numeral text-success">−${{ formatCurrency(data.lease_cash) }}</dd>
             </div>
-            <div class="border-t pt-2">
-              <div class="flex justify-between">
-                <span class="text-sm font-medium text-gray-900">Net Cap Cost</span>
-                <span class="text-sm font-bold text-gray-900"
-                  >${{ formatCurrency(summary.netCapCost) }}</span
-                >
-              </div>
+            <div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+              <dt class="text-sm font-medium text-primary">Net cap cost</dt>
+              <dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.netCapCost) }}</dd>
             </div>
-          </div>
+          </dl>
         </div>
 
-        <!-- Residual Value -->
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <h4 class="font-semibold text-gray-900 mb-3">Residual Value</h4>
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">MSRP</span>
-              <span class="text-sm font-medium">${{ formatCurrency(data.msrp) }}</span>
+        <!-- Residual value -->
+        <div>
+          <p class="eyebrow mb-3">Residual value</p>
+          <dl class="divide-y divide-border border-y border-border">
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">MSRP</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(data.msrp) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Residual Percentage</span>
-              <span class="text-sm font-medium">{{ data.residual_percent }}%</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Residual percentage</dt>
+              <dd class="text-sm numeral text-primary">{{ data.residual_percent }}%</dd>
             </div>
-            <div class="border-t pt-2">
-              <div class="flex justify-between">
-                <span class="text-sm font-medium text-gray-900">Residual Amount</span>
-                <span class="text-sm font-bold text-gray-900"
-                  >${{ formatCurrency(summary.residualAmount) }}</span
-                >
-              </div>
+            <div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+              <dt class="text-sm font-medium text-primary">Residual amount</dt>
+              <dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.residualAmount) }}</dd>
             </div>
-          </div>
+          </dl>
         </div>
 
-        <!-- Payment Breakdown -->
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <h4 class="font-semibold text-gray-900 mb-3">Monthly Payment Breakdown</h4>
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Principal Payment</span>
-              <span class="text-sm font-medium text-blue-600"
-                >${{ formatCurrency(summary.monthlyPrincipalPayment) }}</span
-              >
+        <!-- Monthly payment breakdown -->
+        <div>
+          <p class="eyebrow mb-3">Monthly payment breakdown</p>
+          <dl class="divide-y divide-border border-y border-border">
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Principal payment</dt>
+              <dd class="text-sm numeral text-accent-dark">${{ formatCurrency(summary.monthlyPrincipalPayment) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Interest Payment</span>
-              <span class="text-sm font-medium text-red-600"
-                >${{ formatCurrency(summary.residualMonthlyInterestPayment) }}</span
-              >
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Interest payment</dt>
+              <dd class="text-sm numeral text-warning">${{ formatCurrency(summary.residualMonthlyInterestPayment) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Monthly Sales Tax</span>
-              <span class="text-sm font-medium text-orange-600"
-                >${{ formatCurrency(summary.monthlySalesTax) }}</span
-              >
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Monthly sales tax</dt>
+              <dd class="text-sm numeral text-signal-dark">${{ formatCurrency(summary.monthlySalesTax) }}</dd>
             </div>
-            <div class="border-t pt-2">
-              <div class="flex justify-between">
-                <span class="text-sm font-medium text-gray-900">Total Monthly Payment</span>
-                <span class="text-sm font-bold text-gray-900"
-                  >${{ formatCurrency(summary.leasePayment) }}</span
-                >
-              </div>
+            <div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+              <dt class="text-sm font-medium text-primary">Total monthly</dt>
+              <dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.leasePayment) }}</dd>
             </div>
-          </div>
+          </dl>
         </div>
 
-        <!-- Advanced Metrics -->
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <h4 class="font-semibold text-gray-900 mb-3">Advanced Metrics</h4>
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Money Factor</span>
-              <span class="text-sm font-medium"
-                >{{ data.money_factor }} ({{ summary.interestRate.toFixed(2) }}%)</span
-              >
+        <!-- Advanced metrics -->
+        <div>
+          <p class="eyebrow mb-3">Advanced metrics</p>
+          <dl class="divide-y divide-border border-y border-border">
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Money factor</dt>
+              <dd class="text-sm numeral text-primary">{{ data.money_factor }} <span class="text-text-muted">({{ summary.interestRate.toFixed(2) }}%)</span></dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Lease Term</span>
-              <span class="text-sm font-medium">{{ data.lease_term }} months</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Lease term</dt>
+              <dd class="text-sm numeral text-primary">{{ data.lease_term }} mo</dd>
             </div>
-
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Total Lease Cost</span>
-              <span class="text-sm font-medium">${{ formatCurrency(summary.totalLeaseCost) }}</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Total lease cost</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(summary.totalLeaseCost) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Cost per Mile</span>
-              <span class="text-sm font-medium">${{ costPerMile }}</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Cost per mile</dt>
+              <dd class="text-sm numeral text-primary">${{ costPerMile }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Depreciation Rate</span>
-              <span class="text-sm font-medium">{{ depreciationRate }}%</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Depreciation rate</dt>
+              <dd class="text-sm numeral text-primary">{{ depreciationRate }}%</dd>
             </div>
-          </div>
+          </dl>
         </div>
 
-        <!-- Payment Summary -->
-        <div class="bg-secondary/10 p-4 rounded-lg">
-          <h4 class="font-semibold text-secondary-shade-1 mb-3">Total Lease Summary</h4>
-          <div class="space-y-2">
+        <!-- Total summary -->
+        <div class="border border-accent/20 bg-accent/5 rounded-md p-4">
+          <p class="eyebrow text-accent-dark mb-3">Total lease summary</p>
+          <dl class="space-y-2">
             <div class="flex justify-between">
-              <span class="text-sm text-secondary">Monthly Payment × {{ data.lease_term }}</span>
-              <span class="text-sm font-medium text-secondary-shade-1"
-                >${{ formatCurrency(summary.leasePayment * parseInt(data.lease_term || 0)) }}</span
-              >
+              <dt class="text-sm text-text-muted">Monthly × {{ data.lease_term }}</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(summary.leasePayment * parseInt(data.lease_term || 0)) }}</dd>
             </div>
             <div class="flex justify-between">
-              <span class="text-sm text-secondary">Cash Due at Signing</span>
-              <span class="text-sm font-medium text-secondary-shade-1"
-                >${{ formatCurrency(summary.cashDueAtSigning) }}</span
-              >
+              <dt class="text-sm text-text-muted">Cash due at signing</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(summary.cashDueAtSigning) }}</dd>
             </div>
-            <div class="border-t pt-2">
-              <div class="flex justify-between">
-                <span class="text-sm font-medium text-secondary-shade-1">Total Lease Cost</span>
-                <span class="text-sm font-bold text-secondary-shade-1"
-                  >${{ formatCurrency(summary.totalLeaseCost) }}</span
-                >
-              </div>
+            <div class="flex justify-between pt-2 border-t border-border">
+              <dt class="text-sm font-medium text-primary">Total lease cost</dt>
+              <dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.totalLeaseCost) }}</dd>
             </div>
-          </div>
+          </dl>
         </div>
       </div>
     </div>
 
-    <div v-else class="text-center py-8 text-gray-500">
-      <p>Enter lease details to see advanced calculations</p>
+    <div v-else class="p-10 text-center text-sm text-text-muted">
+      Enter lease details to see advanced calculations.
     </div>
-  </div>
+  </section>
 </template>

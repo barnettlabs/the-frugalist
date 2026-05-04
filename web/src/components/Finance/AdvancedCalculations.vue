@@ -75,208 +75,176 @@ import { formatCurrency } from '@/utils/formatters.js'
 </script>
 
 <template>
-  <div class="bg-white rounded-lg border border-gray-200 shadow-sm bg-white p-6">
-    <div class="flex items-center justify-between mb-6">
-      <h3 class="text-lg font-bold text-gray-900">Advanced Calculations</h3>
+  <section class="card overflow-hidden">
+    <div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
+      <span class="numeral text-xs text-text-muted">Summary</span>
+      <h3 class="font-display text-xl text-primary tracking-tight">At a glance</h3>
       <button
         @click="expanded = !expanded"
-        class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+        class="ml-auto p-1.5 rounded-md text-text-muted hover:text-primary hover:bg-tan/40 transition-colors"
       >
         <svg
-          class="w-5 h-5 text-gray-600"
+          class="w-4 h-4 transition-transform"
           :class="{ 'rotate-180': expanded }"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 9l-7 7-7-7"
-          ></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </button>
     </div>
 
-    <div v-if="summary">
-      <!-- Basic Summary (Always Visible) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div class="bg-primary/10 p-4 rounded-lg">
-          <div class="text-sm text-primary font-medium">Monthly Payment</div>
-          <div class="text-xl font-bold text-primary-shade-4">
-            ${{ formatCurrency(summary.monthlyPayment) }}
-          </div>
+    <div v-if="summary" class="p-5 sm:p-6">
+      <!-- Top tiles -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border rounded-md overflow-hidden">
+        <div class="bg-surface p-4">
+          <p class="eyebrow !text-[0.625rem] mb-1.5">Monthly</p>
+          <p class="figure text-2xl text-primary leading-none">${{ formatCurrency(summary.monthlyPayment) }}</p>
         </div>
-        <div class="bg-purple-50 p-4 rounded-lg">
-          <div class="text-sm text-purple-600 font-medium">Due at Signing</div>
-          <div class="text-xl font-bold text-purple-900">
-            ${{ formatCurrency(parseFloat(data.down_payment || 0)) }}
-          </div>
+        <div class="bg-surface p-4">
+          <p class="eyebrow !text-[0.625rem] mb-1.5">Due at signing</p>
+          <p class="figure text-2xl text-primary leading-none">${{ formatCurrency(parseFloat(data.down_payment || 0)) }}</p>
         </div>
-        <div class="bg-red-50 p-4 rounded-lg">
-          <div class="text-sm text-red-600 font-medium">Total Interest</div>
-          <div class="text-xl font-bold text-red-900">
-            ${{ formatCurrency(summary.interestAmount) }}
-          </div>
+        <div class="bg-surface p-4">
+          <p class="eyebrow !text-[0.625rem] mb-1.5">Total interest</p>
+          <p class="figure text-2xl text-warning leading-none">${{ formatCurrency(summary.interestAmount) }}</p>
         </div>
-        <div class="bg-blue-50 p-4 rounded-lg">
-          <div class="text-sm text-blue-600 font-medium">Total Paid</div>
-          <div class="text-xl font-bold text-blue-900">
-            ${{ formatCurrency(summary.paymentsTotal + parseFloat(data.down_payment || 0)) }}
-          </div>
+        <div class="bg-surface p-4">
+          <p class="eyebrow !text-[0.625rem] mb-1.5">Total paid</p>
+          <p class="figure text-2xl text-primary leading-none">${{ formatCurrency(summary.paymentsTotal + parseFloat(data.down_payment || 0)) }}</p>
         </div>
       </div>
 
-      <!-- Detailed Calculations (Expandable) -->
-      <div v-if="expanded" class="space-y-6">
-        <!-- Purchase Breakdown -->
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <h4 class="font-semibold text-gray-900 mb-3">Purchase Breakdown</h4>
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">MSRP</span>
-              <span class="text-sm font-medium">${{ formatCurrency(data.msrp) }}</span>
+      <!-- Detailed (expandable) -->
+      <div v-if="expanded" class="mt-6 space-y-5">
+        <!-- Purchase breakdown -->
+        <div>
+          <p class="eyebrow mb-3">Purchase breakdown</p>
+          <dl class="divide-y divide-border border-y border-border">
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">MSRP</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(data.msrp) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Discounts</span>
-              <span class="text-sm font-medium text-green-600"
-                >-${{ formatCurrency(data.discounts) }}</span
-              >
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Discounts</dt>
+              <dd class="text-sm numeral text-success">−${{ formatCurrency(data.discounts) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Rebates</span>
-              <span class="text-sm font-medium text-green-600"
-                >-${{ formatCurrency(data.rebates) }}</span
-              >
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Rebates</dt>
+              <dd class="text-sm numeral text-success">−${{ formatCurrency(data.rebates) }}</dd>
             </div>
-            <div class="border-t pt-2">
-              <div class="flex justify-between">
-                <span class="text-sm font-medium text-gray-900">Purchase Price</span>
-                <span class="text-sm font-bold text-gray-900"
-                  >${{ formatCurrency(summary.purchasePrice) }}</span
-                >
-              </div>
+            <div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+              <dt class="text-sm font-medium text-primary">Purchase price</dt>
+              <dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.purchasePrice) }}</dd>
             </div>
-          </div>
+          </dl>
         </div>
 
-        <!-- Loan Breakdown -->
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <h4 class="font-semibold text-gray-900 mb-3">Loan Breakdown</h4>
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Purchase Price</span>
-              <span class="text-sm font-medium">${{ formatCurrency(summary.purchasePrice) }}</span>
+        <!-- Loan breakdown -->
+        <div>
+          <p class="eyebrow mb-3">Loan breakdown</p>
+          <dl class="divide-y divide-border border-y border-border">
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Purchase price</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(summary.purchasePrice) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Fees</span>
-              <span class="text-sm font-medium">${{ formatCurrency(data.fees) }}</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Fees</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(data.fees) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Sales Tax</span>
-              <span class="text-sm font-medium">${{ formatCurrency(summary.salesTaxAmount) }}</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Sales tax</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(summary.salesTaxAmount) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Down Payment</span>
-              <span class="text-sm font-medium text-green-600"
-                >-${{ formatCurrency(data.down_payment) }}</span
-              >
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Down payment</dt>
+              <dd class="text-sm numeral text-success">−${{ formatCurrency(data.down_payment) }}</dd>
             </div>
-            <div class="border-t pt-2">
-              <div class="flex justify-between">
-                <span class="text-sm font-medium text-gray-900">Amount Financed</span>
-                <span class="text-sm font-bold text-gray-900"
-                  >${{ formatCurrency(summary.loanAmount) }}</span
-                >
-              </div>
+            <div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+              <dt class="text-sm font-medium text-primary">Amount financed</dt>
+              <dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.loanAmount) }}</dd>
             </div>
-          </div>
+          </dl>
         </div>
 
-        <!-- Payment Analysis -->
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <h4 class="font-semibold text-gray-900 mb-3">Payment Analysis</h4>
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Monthly Payment</span>
-              <span class="text-sm font-medium">${{ formatCurrency(summary.monthlyPayment) }}</span>
+        <!-- Payment analysis -->
+        <div>
+          <p class="eyebrow mb-3">Payment analysis</p>
+          <dl class="divide-y divide-border border-y border-border">
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Monthly</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(summary.monthlyPayment) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Number of Payments</span>
-              <span class="text-sm font-medium">{{ data.finance_term }}</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Number of payments</dt>
+              <dd class="text-sm numeral text-primary">{{ data.finance_term }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Total of Payments</span>
-              <span class="text-sm font-medium">${{ formatCurrency(summary.paymentsTotal) }}</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Total of payments</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(summary.paymentsTotal) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Total Interest</span>
-              <span class="text-sm font-medium text-red-600"
-                >${{ formatCurrency(summary.interestAmount) }}</span
-              >
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Total interest</dt>
+              <dd class="text-sm numeral text-warning">${{ formatCurrency(summary.interestAmount) }}</dd>
             </div>
-          </div>
+          </dl>
         </div>
 
-        <!-- Advanced Metrics -->
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <h4 class="font-semibold text-gray-900 mb-3">Advanced Metrics</h4>
-          <div class="grid grid-cols-1 gap-2">
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Interest Rate</span>
-              <span class="text-sm font-medium">{{ data.interest_rate }}%</span>
+        <!-- Advanced metrics -->
+        <div>
+          <p class="eyebrow mb-3">Advanced metrics</p>
+          <dl class="divide-y divide-border border-y border-border">
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Interest rate</dt>
+              <dd class="text-sm numeral text-primary">{{ data.interest_rate }}%</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Sales Tax Rate</span>
-              <span class="text-sm font-medium">{{ data.sales_tax_percent }}%</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Sales tax rate</dt>
+              <dd class="text-sm numeral text-primary">{{ data.sales_tax_percent }}%</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Loan Term</span>
-              <span class="text-sm font-medium">{{ data.finance_term }} months</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Loan term</dt>
+              <dd class="text-sm numeral text-primary">{{ data.finance_term }} mo</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Interest vs Principal</span>
-              <span class="text-sm font-medium">{{ interestRatio }}% / {{ principalRatio }}%</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Interest / principal</dt>
+              <dd class="text-sm numeral text-primary">{{ interestRatio }}% / {{ principalRatio }}%</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Total Cost</span>
-              <span class="text-sm font-medium">${{ formatCurrency(totalCost) }}</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Total cost</dt>
+              <dd class="text-sm numeral text-primary">${{ formatCurrency(totalCost) }}</dd>
             </div>
-            <div class="flex justify-between">
-              <span class="text-sm text-gray-600">Cost vs MSRP</span>
-              <span class="text-sm font-medium">{{ costVsMsrpRatio }}%</span>
+            <div class="flex justify-between py-2">
+              <dt class="text-sm text-text-muted">Cost vs MSRP</dt>
+              <dd class="text-sm numeral text-primary">{{ costVsMsrpRatio }}%</dd>
             </div>
-          </div>
+          </dl>
         </div>
 
-        <!-- Extra Payments Impact -->
-        <div v-if="hasExtraPayments" class="bg-green-50 p-4 rounded-lg">
-          <h4 class="font-semibold text-green-900 mb-3">Extra Payments Impact</h4>
-          <div class="space-y-2">
+        <!-- Extra payments impact -->
+        <div v-if="hasExtraPayments" class="border border-success/20 bg-success/5 rounded-md p-4">
+          <p class="eyebrow text-success mb-3">Extra payment impact</p>
+          <dl class="space-y-2">
             <div class="flex justify-between">
-              <span class="text-sm text-green-700">Total Extra Payments</span>
-              <span class="text-sm font-medium text-green-900"
-                >${{ formatCurrency(totalExtraPayments) }}</span
-              >
+              <dt class="text-sm text-text-muted">Total extra payments</dt>
+              <dd class="text-sm numeral text-success">${{ formatCurrency(totalExtraPayments) }}</dd>
             </div>
             <div class="flex justify-between">
-              <span class="text-sm text-green-700">Interest Saved</span>
-              <span class="text-sm font-medium text-green-900"
-                >${{ formatCurrency(interestSaved) }}</span
-              >
+              <dt class="text-sm text-text-muted">Interest saved</dt>
+              <dd class="text-sm numeral text-success">${{ formatCurrency(interestSaved) }}</dd>
             </div>
             <div class="flex justify-between">
-              <span class="text-sm text-green-700">Time Saved</span>
-              <span class="text-sm font-medium text-green-900">{{ timeSaved }} months</span>
+              <dt class="text-sm text-text-muted">Time saved</dt>
+              <dd class="text-sm numeral text-success">{{ timeSaved }} mo</dd>
             </div>
-          </div>
+          </dl>
         </div>
       </div>
     </div>
 
-    <div v-else class="text-center py-8 text-gray-500">
-      <p>Enter loan details to see advanced calculations</p>
+    <div v-else class="p-10 text-center text-sm text-text-muted">
+      Enter loan details to see advanced calculations.
     </div>
-  </div>
+  </section>
 </template>

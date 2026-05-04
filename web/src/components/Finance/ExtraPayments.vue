@@ -115,30 +115,26 @@ const getTimeSavings = () => {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg border border-gray-200 shadow-sm bg-white p-6">
-    <div class="flex items-center justify-between mb-6">
-      <h3 class="text-lg font-bold text-gray-900">Extra Payments</h3>
+  <section class="card overflow-hidden">
+    <div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
+      <span class="numeral text-xs text-text-muted">Optional</span>
+      <h3 class="font-display text-xl text-primary tracking-tight">Extra payments</h3>
       <button
         @click="addExtraPayment"
-        class="bg-primary hover:bg-primary-shade-1 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 flex items-center space-x-2"
+        class="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-primary hover:bg-primary-light text-surface transition-colors"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 4v16m8-8H4"
-          ></path>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
         </svg>
-        <span>Add Extra Payment</span>
+        Add payment
       </button>
     </div>
 
-    <div class="space-y-4">
-      <div v-for="(payment, index) in extraPayments" :key="index" class="bg-gray-50 p-4 rounded-lg">
+    <div class="p-5 sm:p-6 space-y-4">
+      <div v-for="(payment, index) in extraPayments" :key="index" class="bg-tan/40 border border-border p-4 rounded-md">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Payment Amount</label>
+            <label class="eyebrow !text-[0.625rem] block mb-1.5">Payment amount</label>
             <TextInput
               v-model="payment.paymentAmount"
               type="number"
@@ -151,26 +147,26 @@ const getTimeSavings = () => {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Start Month</label>
+            <label class="eyebrow !text-[0.625rem] block mb-1.5">Start month</label>
             <input
               v-model="payment.startMonth"
               type="number"
               min="1"
               :max="financeTerm"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+              class="block w-full rounded-md border-border bg-surface shadow-none focus:border-accent focus:ring-1 focus:ring-accent sm:text-sm"
               placeholder="1"
               @input="updateExtraPayments"
             />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">End Month</label>
+            <label class="eyebrow !text-[0.625rem] block mb-1.5">End month</label>
             <input
               v-model="payment.endMonth"
               type="number"
               min="1"
               :max="financeTerm"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+              class="block w-full rounded-md border-border bg-surface shadow-none focus:border-accent focus:ring-1 focus:ring-accent sm:text-sm"
               placeholder="1"
               @input="updateExtraPayments"
             />
@@ -179,89 +175,51 @@ const getTimeSavings = () => {
           <div class="flex items-end">
             <button
               @click="removeExtraPayment(index)"
-              class="w-full bg-red-50 hover:bg-red-100 text-red-600 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2"
+              class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium border border-border text-text-muted hover:border-danger/40 hover:text-danger hover:bg-danger/5 transition-colors"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                ></path>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
               </svg>
-              <span>Remove</span>
+              Remove
             </button>
           </div>
         </div>
 
-        <div class="mt-3 text-sm text-gray-600">
-          <div class="flex items-center space-x-4">
-            <span
-              >Duration: {{ payment.startMonth || 1 }} -
-              {{ payment.endMonth || payment.startMonth || 1 }} months</span
-            >
-            <span>•</span>
-            <span>Total: ${{ formatCurrency(getTotalExtraForPayment(payment)) }}</span>
-          </div>
+        <div class="mt-3 flex items-center gap-3 text-xs text-text-muted">
+          <span class="numeral">
+            Months {{ payment.startMonth || 1 }} – {{ payment.endMonth || payment.startMonth || 1 }}
+          </span>
+          <span>·</span>
+          <span class="numeral text-primary">
+            Total ${{ formatCurrency(getTotalExtraForPayment(payment)) }}
+          </span>
         </div>
       </div>
 
-      <div v-if="extraPayments.length === 0" class="text-center py-8 text-gray-500">
-        <div class="mb-4">
-          <svg
-            class="w-12 h-12 mx-auto text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
-            ></path>
-          </svg>
-        </div>
-        <p class="text-sm">No extra payments configured</p>
-        <p class="text-xs text-gray-400">
-          Add extra payments to reduce your loan term and save on interest
+      <div v-if="extraPayments.length === 0" class="text-center py-10 text-text-muted">
+        <p class="font-display italic text-base text-primary tracking-tight mb-1">No extra payments yet.</p>
+        <p class="text-xs">
+          Add extra payments to reduce your loan term and save on interest.
         </p>
       </div>
-    </div>
 
-    <div v-if="extraPayments.length > 0" class="mt-6 pt-4 border-t border-gray-200">
-      <div class="bg-green-50 p-4 rounded-lg">
-        <div class="flex items-center mb-2">
-          <svg
-            class="w-5 h-5 text-green-600 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            ></path>
-          </svg>
-          <span class="text-sm font-medium text-green-800">Extra Payment Benefits</span>
-        </div>
-        <div class="text-sm text-green-700">
-          <div class="flex justify-between">
-            <span>Total Extra Payments:</span>
-            <span class="font-medium">${{ formatCurrency(getTotalExtraPayments()) }}</span>
+      <div v-if="extraPayments.length > 0" class="mt-2 pt-5 border-t border-border">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border rounded-md overflow-hidden">
+          <div class="bg-surface p-4">
+            <p class="eyebrow !text-[0.625rem] mb-1.5">Total extra</p>
+            <p class="figure text-lg text-primary leading-none">${{ formatCurrency(getTotalExtraPayments()) }}</p>
           </div>
-          <div class="flex justify-between">
-            <span>Interest Savings:</span>
-            <span class="font-medium">${{ formatCurrency(getInterestSavings()) }}</span>
+          <div class="bg-surface p-4">
+            <p class="eyebrow !text-[0.625rem] mb-1.5">Interest saved</p>
+            <p class="figure text-lg text-success leading-none">${{ formatCurrency(getInterestSavings()) }}</p>
           </div>
-          <div class="flex justify-between">
-            <span>Time Saved:</span>
-            <span class="font-medium">{{ getTimeSavings() }} months</span>
+          <div class="bg-surface p-4">
+            <p class="eyebrow !text-[0.625rem] mb-1.5">Time saved</p>
+            <p class="figure text-lg text-success leading-none">{{ getTimeSavings() }} <span class="text-text-muted text-sm">mo</span></p>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>

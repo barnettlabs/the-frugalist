@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ApplicationLogo from '@/components/ApplicationLogo.vue'
+import MastheadBar from '@/components/MastheadBar.vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { version as appVersion } from '../../package.json'
 </script>
@@ -7,16 +8,8 @@ import { version as appVersion } from '../../package.json'
 <template>
   <div class="min-h-screen relative flex items-center justify-center py-12 overflow-hidden">
     <!-- Top masthead bar (matches landing) -->
-    <div class="absolute top-0 inset-x-0 z-20">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6">
-        <div class="flex items-center justify-between border-y border-border-strong py-2">
-          <span class="eyebrow numeral">v {{ appVersion }}</span>
-          <span class="eyebrow hidden sm:inline">A field guide to what things should cost</span>
-          <RouterLink to="/" class="eyebrow hover:text-primary transition-colors">
-            Back to home
-          </RouterLink>
-        </div>
-      </div>
+    <div class="absolute top-0 inset-x-0 z-20 pt-6">
+      <MastheadBar right-text="Back to home" right-to="/" />
     </div>
 
     <!-- Centered content -->

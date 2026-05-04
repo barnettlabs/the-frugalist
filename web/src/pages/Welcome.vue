@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import ApplicationLogo from '@/components/ApplicationLogo.vue'
+import MastheadBar from '@/components/MastheadBar.vue'
 import {
   EyeIcon,
   CalculatorIcon,
@@ -116,14 +117,8 @@ const tripledTickerItems = [...tickerItems, ...tickerItems, ...tickerItems]
     </nav>
 
     <!-- Masthead rule -->
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-6">
-      <div class="flex items-center justify-between border-y border-border-strong py-2 gap-4">
-        <span class="eyebrow numeral">v {{ appVersion }}</span>
-        <span class="eyebrow hidden sm:inline text-center flex-1">A field guide to what things should cost</span>
-        <RouterLink to="/watch" class="eyebrow hover:text-primary transition-colors">
-          {{ retailerCountLabel }}
-        </RouterLink>
-      </div>
+    <div class="mt-6">
+      <MastheadBar :right-text="retailerCountLabel" right-to="/watch" />
     </div>
 
     <!-- Tracking-on strip -->

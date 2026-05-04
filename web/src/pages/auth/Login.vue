@@ -66,6 +66,10 @@ const submit = handleSubmit(async (values) => {
 
 <template>
   <div class="space-y-6">
+    <div class="text-center mb-6">
+      <h2 class="text-2xl font-medium text-primary">Sign in</h2>
+    </div>
+
     <form @submit="submit" class="space-y-6">
       <FormInput
         v-model="email"

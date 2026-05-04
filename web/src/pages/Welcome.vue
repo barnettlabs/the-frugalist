@@ -64,17 +64,21 @@ const pillars: Pillar[] = [
 
 const supportedRetailers = [
   'Best Buy',
-  'Home Depot',
-  'Lowe’s',
-  'Amazon',
-  'Walmart',
-  'Target',
 ]
 
+const retailerCountLabel = `${supportedRetailers.length} ${supportedRetailers.length === 1 ? 'retailer' : 'retailers'}`
+
 const tickerItems = [
-  'Appliances', 'Vehicles', 'Trucks', 'Loans', 'Leases', 'TVs', 'Tools',
-  'Mattresses', 'Strollers', 'Bikes', 'Furniture', 'Electronics', 'Insurance',
+  'Track prices',
+  'Run financing',
+  'Compare leases',
+  'Reclaim refunds',
+  'Spot markups',
+  'Decline add-ons',
+  'Read the fine print',
+  'Wait it out',
 ]
+const tripledTickerItems = [...tickerItems, ...tickerItems, ...tickerItems]
 </script>
 
 <template>
@@ -117,7 +121,7 @@ const tickerItems = [
         <span class="eyebrow numeral">v {{ appVersion }}</span>
         <span class="eyebrow hidden sm:inline text-center flex-1">A field guide to what things should cost</span>
         <RouterLink to="/watch" class="eyebrow hover:text-primary transition-colors">
-          {{ supportedRetailers.length }} retailers
+          {{ retailerCountLabel }}
         </RouterLink>
       </div>
     </div>
@@ -126,11 +130,12 @@ const tickerItems = [
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-3">
       <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2 py-2">
         <span class="eyebrow text-text-muted/70">Now tracking on</span>
-        <span v-for="(retailer, i) in supportedRetailers" :key="retailer"
-          class="flex items-baseline gap-3 font-display text-sm sm:text-base text-primary tracking-tight">
-          {{ retailer }}
-          <span v-if="i < supportedRetailers.length - 1" class="text-border-strong" aria-hidden="true">/</span>
-        </span>
+        <template v-for="(retailer, i) in supportedRetailers" :key="retailer">
+          <span class="font-display text-sm sm:text-base text-primary tracking-tight">{{ retailer }}</span>
+          <span v-if="i < supportedRetailers.length - 1" class="text-border-strong font-mono text-sm" aria-hidden="true">/</span>
+        </template>
+        <span class="text-border-strong font-mono text-sm" aria-hidden="true">/</span>
+        <span class="eyebrow text-text-muted/60 italic">more retailers soon</span>
       </div>
     </div>
 
@@ -249,11 +254,13 @@ const tickerItems = [
     <section class="relative border-y border-border-strong bg-primary text-surface overflow-hidden">
       <div class="paper-grain absolute inset-0"></div>
       <div class="relative flex whitespace-nowrap overflow-hidden py-4">
-        <div class="flex animate-[scroll_60s_linear_infinite] gap-12 pr-12">
-          <span v-for="item in [...tickerItems, ...tickerItems, ...tickerItems]" :key="item + Math.random()"
-            class="font-display italic text-2xl sm:text-3xl text-white/85 tracking-tight">
-            {{ item }} <span class="text-signal not-italic font-mono mx-2">/</span>
-          </span>
+        <div class="flex items-center animate-[scroll_60s_linear_infinite] gap-x-8 sm:gap-x-10">
+          <template v-for="(item, i) in tripledTickerItems" :key="i">
+            <span class="font-display italic text-2xl sm:text-3xl text-white/85 tracking-tight">
+              {{ item }}
+            </span>
+            <span class="font-mono text-xl sm:text-2xl text-signal leading-none" aria-hidden="true">/</span>
+          </template>
         </div>
       </div>
     </section>

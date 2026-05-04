@@ -98,8 +98,7 @@ const submit = handleSubmit(async (values) => {
 <template>
   <div>
     <div class="text-center mb-6">
-      <h2 class="text-2xl font-medium text-primary mb-2">Create an account</h2>
-      <p class="text-text-muted">Track prices and calculate costs before you commit</p>
+      <h2 class="text-2xl font-medium text-primary">Create account</h2>
     </div>
 
     <form @submit="submit" class="space-y-5">

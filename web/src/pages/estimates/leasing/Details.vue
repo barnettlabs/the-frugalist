@@ -177,7 +177,7 @@ onMounted(() => {
           </div>
 
           <!-- Right sidebar -->
-          <aside class="lg:sticky lg:top-6">
+          <aside class="lg:sticky lg:top-20">
             <AdvancedCalculations :data="form" />
           </aside>
         </div>

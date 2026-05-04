@@ -8,7 +8,7 @@ interface Props {
   title: string
   /** Optional supporting description */
   description?: string
-  /** Optional running issue/index number — pure ornament, lends magazine feel */
+  /** Optional running issue/index number, pure ornament that lends a magazine feel */
   index?: string | number
   /** Optional Heroicon component for the inset navy chip */
   icon?: Component
@@ -33,7 +33,7 @@ const isCompact = computed(() => props.variant === 'compact')
           <span v-if="icon" class="inline-flex items-center justify-center w-8 h-8 rounded-md surface-navy paper-grain">
             <component :is="icon" class="h-4 w-4 text-white relative z-10" />
           </span>
-          <span class="eyebrow">{{ eyebrow || '—' }}</span>
+          <span class="eyebrow">{{ eyebrow || '·' }}</span>
         </div>
         <span v-if="index" class="numeral text-xs text-text-muted">№ {{ index }}</span>
       </div>

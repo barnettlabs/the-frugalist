@@ -44,11 +44,11 @@ const benefits = [
     <SectionHeader
       eyebrow="Compute · Estimates"
       title="The math, before the moment."
-      description="Every offer is a formula. These calculators run it forward — so you walk in already knowing what the deal really costs."
+      description="Every offer is a formula. These calculators run it forward, so you walk in already knowing what the deal really costs."
       :icon="CalculatorIcon"
     />
 
-    <!-- Benefits row — three editorial proof points -->
+    <!-- Benefits row -->
     <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border rounded-md overflow-hidden">
         <div

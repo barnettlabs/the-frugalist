@@ -153,7 +153,7 @@ onMounted(() => {
     <SectionHeader
       eyebrow="Compute · Financing"
       title="Run the loan, line by line."
-      description="Monthly payment, total interest, amortization. The full cost of every offer — before you sign anything."
+      description="Monthly payment, total interest, amortization. The full cost of every offer, before you sign anything."
       :icon="BanknotesIcon"
       :index="vehicleFinanceSheets.length || 0"
     >
@@ -261,7 +261,7 @@ onMounted(() => {
             <p class="eyebrow mb-2">{{ sheet.dealership_name || 'No dealership' }}</p>
 
             <h3 class="font-display text-2xl text-primary tracking-tight leading-tight group-hover:text-accent-dark transition-colors">
-              <span class="numeral text-base text-text-muted/80 mr-1">{{ sheet.vehicle_year || '—' }}</span>
+              <span class="numeral text-base text-text-muted/80 mr-1">{{ sheet.vehicle_year || '·' }}</span>
               {{ sheet.vehicle_make }}
               <span class="italic text-text-muted/80">{{ sheet.vehicle_model }}</span>
             </h3>

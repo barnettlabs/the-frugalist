@@ -21,34 +21,34 @@
 @layer base {
 	:root {
 		/* ============================================
-		   THEFRUGALIST — Editorial Fintech Palette
+		   THEFRUGALIST: Editorial Fintech Palette
 		   Refined, warm, intentional. The page reads
 		   like a thoughtful magazine, not a dashboard.
 		   ============================================ */
 
-		/* Ink — primary text + headings */
-		--color-primary: 23 27 39; /* #171B27 — deep ink near-black */
+		/* Ink: primary text + headings */
+		--color-primary: 23 27 39; /* #171B27  Deep ink near-black */
 		--color-primary-light: 60 66 84; /* #3C4254 */
 		--color-primary-dark: 12 14 22; /* #0C0E16 */
 
-		/* Brand navy (preserved — load-bearing brand identity) */
+		/* Brand navy (preserved: load-bearing brand identity) */
 		--color-accent: 35 88 146; /* #235892 */
 		--color-accent-light: 95 132 178; /* #5F84B2 */
 		--color-accent-dark: 22 60 102; /* #163C66 */
 		--color-accent-muted: 191 207 226; /* #BFCFE2 */
 
-		/* Signal — warm marigold for selective callouts (savings unlocked, key metric) */
-		--color-signal: 196 134 38; /* #C48626 — antique gold */
+		/* Signal: warm marigold for selective callouts (savings unlocked, key metric) */
+		--color-signal: 196 134 38; /* #C48626  Antique gold */
 		--color-signal-light: 230 178 90; /* #E6B25A */
 		--color-signal-dark: 153 100 22; /* #996416 */
 
-		/* Surfaces — warm parchment over cool slate */
-		--color-background: 244 240 232; /* #F4F0E8 — parchment */
-		--color-surface: 252 250 245; /* #FCFAF5 — warm cream card */
-		--color-surface-dark: 232 226 214; /* #E8E2D6 — deeper parchment */
-		--color-border: 220 212 196; /* #DCD4C4 — warm sand */
+		/* Surfaces: warm parchment over cool slate */
+		--color-background: 244 240 232; /* #F4F0E8 Parchment */
+		--color-surface: 252 250 245; /* #FCFAF5  Warm cream card */
+		--color-surface-dark: 232 226 214; /* #E8E2D6  Deeper parchment */
+		--color-border: 220 212 196; /* #DCD4C4  Warm sand */
 		--color-border-strong: 195 184 165; /* #C3B8A5 */
-		--color-text-muted: 117 110 96; /* #756E60 — sand-warm muted */
+		--color-text-muted: 117 110 96; /* #756E60  Sand-warm muted */
 		--color-text-primary: 23 27 39; /* alias of primary */
 
 		/* Tan accents (kept) */
@@ -56,11 +56,11 @@
 		--color-tan-light: 247 245 241;
 		--color-tan-dark: 225 220 210;
 
-		/* Semantic — refined for editorial palette */
-		--color-success: 67 122 89; /* #437A59 — forest savings green */
-		--color-warning: 184 134 11; /* #B8860B — kept */
-		--color-danger: 168 64 60; /* #A8403C — clay red */
-		--color-info: 35 88 146; /* #235892 — same as accent */
+		/* Semantic: refined for editorial palette */
+		--color-success: 67 122 89; /* #437A59  Forest savings green */
+		--color-warning: 184 134 11; /* #B8860B  Kept */
+		--color-danger: 168 64 60; /* #A8403C  Clay red */
+		--color-info: 35 88 146; /* #235892  Same as accent */
 
 		--color-light: 252 250 245;
 		--color-dark: 23 27 39;
@@ -116,7 +116,7 @@
 		color: rgb(var(--color-primary));
 	}
 
-	/* Display headings inherit the editorial serif by default — opt out with .font-sans */
+	/* Display headings inherit the editorial serif by default. Opt out with .font-sans */
 	h1, h2, h3 {
 		font-family: var(--font-display);
 		font-feature-settings: "ss01", "ss02";
@@ -139,7 +139,7 @@
 		fill: currentColor;
 	}
 
-	/* Editorial card — warm cream with hairline border, subtle paper feel */
+	/* Editorial card: warm cream with hairline border, subtle paper feel */
 	.card {
 		background: rgb(var(--color-surface));
 		border: 1px solid rgb(var(--color-border));
@@ -249,7 +249,7 @@
 		@apply bg-surface-dark cursor-not-allowed;
 	}
 
-	/* Editorial eyebrow — small caps section label */
+	/* Editorial eyebrow: small caps section label */
 	.eyebrow {
 		font-family: var(--font-sans);
 		font-size: 0.6875rem;
@@ -263,7 +263,7 @@
 		color: rgb(var(--color-primary));
 	}
 
-	/* Section rule — fine hairline divider with optional center character */
+	/* Section rule: fine hairline divider with optional center character */
 	.rule {
 		display: flex;
 		align-items: center;
@@ -319,7 +319,7 @@
 		z-index: 1;
 	}
 
-	/* Paper grain overlay — subtle warmth, applied to specific dark blocks */
+	/* Paper grain overlay: subtle warmth, applied to specific dark blocks */
 	.paper-grain {
 		position: relative;
 	}
@@ -333,7 +333,7 @@
 		background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 	}
 
-	/* Editorial dark surface — for the inset accent card in section headers */
+	/* Editorial dark surface for the inset accent card in section headers */
 	.surface-ink {
 		background: linear-gradient(180deg, rgb(var(--color-primary)) 0%, rgb(var(--color-primary-dark)) 100%);
 		color: rgb(var(--color-surface));
@@ -388,7 +388,7 @@
 		box-shadow: 0 4px 20px -2px rgb(var(--color-accent) / 0.25);
 	}
 
-	/* Section eyebrow chip — used inside the inset accent card on headers */
+	/* Section eyebrow chip used inside the inset accent card on headers */
 	.section-chip {
 		display: inline-flex;
 		align-items: center;
@@ -404,7 +404,7 @@
 		border: 1px solid rgba(255, 255, 255, 0.18);
 	}
 
-	/* Display-style number — large monospace numerals with optical sizing */
+	/* Display-style number: large monospace numerals with optical sizing */
 	.figure {
 		font-family: var(--font-mono);
 		font-variant-numeric: tabular-nums;
@@ -413,7 +413,7 @@
 		font-weight: 500;
 	}
 
-	/* Animation — staggered fade up for editorial hero entrances */
+	/* Animation: staggered fade up for editorial hero entrances */
 	@keyframes fadeUp {
 		from { opacity: 0; transform: translateY(12px); }
 		to { opacity: 1; transform: translateY(0); }

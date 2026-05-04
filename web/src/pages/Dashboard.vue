@@ -110,7 +110,7 @@ onMounted(() => {
             <p class="text-sm text-text-muted leading-relaxed border-l border-border pl-4">
               {{ isFresh
                 ? 'Your ledger is clean. Add a product to watch or run a financing estimate to begin tracking what things should cost.'
-                : 'A snapshot of your watches, estimates, and recent decisions — pull on any thread to dig deeper.' }}
+                : 'A snapshot of your watches, estimates, and recent decisions. Pull on any thread to dig deeper.' }}
             </p>
           </div>
         </div>
@@ -221,7 +221,7 @@ onMounted(() => {
         </div>
       </section>
 
-      <!-- Recent activity — editorial timeline -->
+      <!-- Recent activity timeline -->
       <section v-if="hasRecentActivity" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-14">
         <div class="flex items-center gap-4 mb-6">
           <p class="eyebrow">Recently filed</p>
@@ -274,7 +274,7 @@ onMounted(() => {
         </div>
       </section>
 
-      <!-- Empty state — fully editorial -->
+      <!-- Empty state -->
       <section v-else-if="isFresh" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-16">
         <div class="surface-ink paper-grain rounded-md border border-primary-dark/40 p-8 sm:p-12 relative overflow-hidden">
           <div class="grid grid-cols-12 gap-6 items-center relative z-10">
@@ -282,7 +282,7 @@ onMounted(() => {
               <p class="eyebrow text-white/60 mb-4">Your first entry</p>
               <h2 class="font-display font-medium text-white tracking-tightest text-3xl sm:text-5xl leading-[0.95]">
                 Pick something you&rsquo;ve been<br />
-                <span class="italic text-signal-light">eyeing</span> &mdash; and watch it for a while.
+                <span class="italic text-signal-light">eyeing</span>, and watch it for a while.
               </h2>
               <p class="mt-5 text-sm text-white/70 max-w-md">
                 Track your first product. Set a target. Wait for the market to come to you instead of the other way around.

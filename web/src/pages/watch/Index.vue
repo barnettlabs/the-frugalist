@@ -313,7 +313,7 @@ onMounted(() => {
 
                 <div class="mt-auto pt-3 flex items-baseline gap-2">
                   <span class="figure text-2xl text-primary leading-none">
-                    {{ product.current_price ? `$${formatCurrency(product.current_price)}` : '—' }}
+                    {{ product.current_price ? `$${formatCurrency(product.current_price)}` : '·' }}
                   </span>
                   <span v-if="product.retail_price && product.current_price && product.current_price < product.retail_price"
                     class="numeral text-xs text-text-muted line-through">
@@ -374,7 +374,7 @@ onMounted(() => {
                   title="Push alerts on"
                 />
                 <span class="numeral text-[0.6875rem]">
-                  {{ product.last_checked_at ? formatRelativeTime(product.last_checked_at) : '—' }}
+                  {{ product.last_checked_at ? formatRelativeTime(product.last_checked_at) : '·' }}
                 </span>
               </div>
             </div>

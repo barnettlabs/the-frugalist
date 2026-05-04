@@ -11,6 +11,7 @@ import {
 } from '@heroicons/vue/24/outline'
 import { useAuthStore } from '@/stores/auth'
 import type { Component } from 'vue'
+import { version as appVersion } from '../../package.json'
 
 const authStore = useAuthStore()
 
@@ -33,7 +34,7 @@ const pillars: Pillar[] = [
     italic: 'movement.',
     description:
       'Drop-by-drop price history on the things you actually buy. Alerts fire only when motion makes the moment worth your attention.',
-    proofs: ['Price history', 'Stock alerts', 'Return-window refunds'],
+    proofs: ['Price history', 'In-stock alerts', 'Return-window refunds'],
     href: '/watch',
     icon: EyeIcon,
   },
@@ -43,8 +44,8 @@ const pillars: Pillar[] = [
     title: 'Run',
     italic: 'the math.',
     description:
-      'Financing and leasing rendered in plain numbers — APR, money factor, residual, true monthly cost. The fine print laid bare.',
-    proofs: ['Amortization', 'Money factor → APR', 'Side-by-side compares'],
+      'Financing and leasing rendered in plain numbers: APR, money factor, residual, true monthly cost. The fine print laid bare.',
+    proofs: ['Amortization', 'Money factor to APR', 'Side-by-side comparisons'],
     href: '/estimates',
     icon: CalculatorIcon,
   },
@@ -54,11 +55,20 @@ const pillars: Pillar[] = [
     title: 'Read',
     italic: 'the room.',
     description:
-      'Field notes on the tactics dealers use — markups, urgency theater, hidden add-ons. So you can recognize the play before it lands.',
+      'Field notes on the tactics dealers use: markups, urgency theater, hidden add-ons. So you can recognize the play before it lands.',
     proofs: ['Pricing tactics', 'Loan vs. lease', 'What to refuse'],
     href: '/learning',
     icon: BookOpenIcon,
   },
+]
+
+const supportedRetailers = [
+  'Best Buy',
+  'Home Depot',
+  'Lowe’s',
+  'Amazon',
+  'Walmart',
+  'Target',
 ]
 
 const tickerItems = [
@@ -103,10 +113,24 @@ const tickerItems = [
 
     <!-- Masthead rule -->
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-6">
-      <div class="flex items-center justify-between border-y border-border-strong py-2">
-        <span class="eyebrow">Vol. {{ new Date().getFullYear() - 2023 }} · Issue {{ ((new Date().getMonth() + 1)).toString().padStart(2, '0') }}</span>
-        <span class="eyebrow hidden sm:inline">A field guide to what things should cost</span>
-        <span class="numeral text-xs text-text-muted">EST. {{ new Date().getFullYear() }}</span>
+      <div class="flex items-center justify-between border-y border-border-strong py-2 gap-4">
+        <span class="eyebrow numeral">v {{ appVersion }}</span>
+        <span class="eyebrow hidden sm:inline text-center flex-1">A field guide to what things should cost</span>
+        <RouterLink to="/watch" class="eyebrow hover:text-primary transition-colors">
+          {{ supportedRetailers.length }} retailers
+        </RouterLink>
+      </div>
+    </div>
+
+    <!-- Tracking-on strip -->
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-3">
+      <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2 py-2">
+        <span class="eyebrow text-text-muted/70">Now tracking on</span>
+        <span v-for="(retailer, i) in supportedRetailers" :key="retailer"
+          class="flex items-baseline gap-3 font-display text-sm sm:text-base text-primary tracking-tight">
+          {{ retailer }}
+          <span v-if="i < supportedRetailers.length - 1" class="text-border-strong" aria-hidden="true">/</span>
+        </span>
       </div>
     </div>
 
@@ -123,7 +147,7 @@ const tickerItems = [
             <span class="text-text-muted/70">not impulse.</span>
           </h1>
           <p class="mt-8 text-base sm:text-lg text-primary-light max-w-xl leading-relaxed fade-up fade-up-2">
-            TheFrugalist is a calm tool for noisy markets — track prices that move, run the numbers behind any
+            TheFrugalist is a calm tool for noisy markets. Track prices that move, run the numbers behind any
             financing offer, and learn the playbook dealers don&rsquo;t want you reading.
           </p>
           <div class="mt-10 flex flex-col sm:flex-row gap-3 fade-up fade-up-3">
@@ -147,20 +171,20 @@ const tickerItems = [
           </div>
         </div>
 
-        <!-- Right: inset "specimen" card showing a live-feeling tracked product -->
+        <!-- Right: inset specimen card showing a live-feeling tracked product -->
         <div class="col-span-12 lg:col-span-5 fade-up fade-up-2">
           <div class="relative">
             <!-- Decorative rotated paper behind the main card -->
             <div class="absolute -inset-3 -rotate-2 rounded-md bg-tan border border-border opacity-90"></div>
             <div class="absolute -inset-1.5 rotate-1 rounded-md bg-surface-dark border border-border"></div>
 
-            <!-- Specimen card itself -->
+            <!-- Main card -->
             <div class="relative surface-navy paper-grain rounded-md border border-primary/30 overflow-hidden shadow-paper">
               <!-- Top metadata strip -->
               <div class="flex items-center justify-between px-5 py-3 border-b border-white/10">
                 <div class="flex items-center gap-2">
                   <span class="w-1.5 h-1.5 rounded-full bg-signal animate-pulse"></span>
-                  <span class="eyebrow text-white/80">Specimen · Tracking</span>
+                  <span class="eyebrow text-white/80">Live &middot; tracking</span>
                 </div>
                 <span class="numeral text-xs text-white/60">№ 042</span>
               </div>
@@ -180,7 +204,7 @@ const tickerItems = [
                   </div>
                   <div class="pb-2">
                     <p class="eyebrow text-success/90 mb-0.5">Off Retail</p>
-                    <p class="numeral text-success/90 text-base">−$651</p>
+                    <p class="numeral text-success/90 text-base">&minus;$651</p>
                   </div>
                 </div>
 
@@ -204,7 +228,7 @@ const tickerItems = [
                       :style="{ height: h + '%' }"
                     />
                   </div>
-                  <p class="eyebrow text-white/50 mt-3">90-day movement · 9 drops</p>
+                  <p class="eyebrow text-white/50 mt-3">90-day movement &middot; 9 drops</p>
                 </div>
               </div>
             </div>
@@ -213,7 +237,7 @@ const tickerItems = [
             <div class="absolute -bottom-6 -left-4 sm:left-2 bg-surface border border-border rounded-md px-4 py-3 shadow-paper rotate-[-3deg] max-w-[220px]">
               <p class="eyebrow text-signal-dark mb-1">Today</p>
               <p class="text-sm font-medium text-primary leading-snug">
-                Refund window still open — claim the difference.
+                Refund window still open. Claim the difference.
               </p>
             </div>
           </div>
@@ -221,7 +245,7 @@ const tickerItems = [
       </div>
     </section>
 
-    <!-- Marquee ticker strip — what we track -->
+    <!-- Marquee ticker strip -->
     <section class="relative border-y border-border-strong bg-primary text-surface overflow-hidden">
       <div class="paper-grain absolute inset-0"></div>
       <div class="relative flex whitespace-nowrap overflow-hidden py-4">
@@ -234,7 +258,7 @@ const tickerItems = [
       </div>
     </section>
 
-    <!-- THREE PILLARS — editorial three-act -->
+    <!-- THREE PILLARS -->
     <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
       <div class="flex items-end justify-between mb-12 lg:mb-14">
         <div>
@@ -275,14 +299,14 @@ const tickerItems = [
       </div>
     </section>
 
-    <!-- THE PROBLEM / THE STANCE — editorial pull-quote split -->
+    <!-- THE PROBLEM / THE STANCE -->
     <section class="border-t border-border">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         <div class="grid grid-cols-12 gap-6 lg:gap-12 items-start">
           <div class="col-span-12 lg:col-span-4">
             <p class="eyebrow mb-4">A position</p>
             <p class="font-display text-primary text-2xl leading-snug">
-              Pricing today isn&rsquo;t a number — it&rsquo;s a tactic.
+              Pricing today isn&rsquo;t a number. It&rsquo;s a tactic.
             </p>
           </div>
           <div class="col-span-12 lg:col-span-8 lg:border-l border-border lg:pl-12">
@@ -316,7 +340,7 @@ const tickerItems = [
         <div class="surface-ink paper-grain rounded-md border border-primary-dark/40 px-6 py-12 sm:p-14 relative overflow-hidden">
           <div class="grid grid-cols-12 gap-6 items-center relative z-10">
             <div class="col-span-12 lg:col-span-8">
-              <p class="eyebrow text-white/60 mb-4">Free · No credit card</p>
+              <p class="eyebrow text-white/60 mb-4">Free &middot; No credit card</p>
               <h2 class="font-display font-medium text-white tracking-tightest text-3xl sm:text-5xl leading-[0.95]">
                 Begin a watch list.<br />
                 <span class="italic text-signal-light">Spend the saved hour on something else.</span>
@@ -336,7 +360,7 @@ const tickerItems = [
       </div>
     </section>
 
-    <!-- Footer (refined editorial) -->
+    <!-- Footer -->
     <footer class="border-t border-border-strong">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
         <div class="grid grid-cols-12 gap-6 items-start">
@@ -374,7 +398,7 @@ const tickerItems = [
         </div>
         <div class="mt-10 pt-5 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-text-muted">
           <span>&copy; {{ new Date().getFullYear() }} JayTech LLC. All rights reserved.</span>
-          <span class="numeral">v.{{ new Date().getFullYear() }}.{{ new Date().getMonth() + 1 }}</span>
+          <span class="numeral">v {{ appVersion }}</span>
         </div>
       </div>
     </footer>

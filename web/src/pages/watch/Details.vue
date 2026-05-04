@@ -309,7 +309,7 @@ onMounted(async () => {
                     <div class="text-left">
                       <span class="text-xs text-text-muted block">Retail</span>
                       <span class="text-lg font-semibold text-text-muted">
-                        {{ product.retail_price ? `$${formatCurrency(product.retail_price)}` : '—' }}
+                        {{ product.retail_price ? `$${formatCurrency(product.retail_price)}` : '·' }}
                       </span>
                     </div>
                     <div class="text-center" v-if="product.target_price">

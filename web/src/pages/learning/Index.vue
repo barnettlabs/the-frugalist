@@ -39,7 +39,7 @@ const guides = [
 const whyLearn = [
   { icon: ShieldCheckIcon, title: 'Recognize tactics', description: 'Spot the urgency theater the moment it begins.' },
   { icon: AcademicCapIcon, title: 'Know the language', description: 'Terms, jargon, abbreviations, and what they actually mean.' },
-  { icon: ExclamationTriangleIcon, title: 'Avoid the pitfalls', description: 'Hidden fees, unfavorable clauses — flagged in advance.' },
+  { icon: ExclamationTriangleIcon, title: 'Avoid the pitfalls', description: 'Hidden fees, unfavorable clauses, flagged in advance.' },
 ]
 </script>
 
@@ -48,11 +48,11 @@ const whyLearn = [
     <SectionHeader
       eyebrow="Guides · Field manual"
       title="Knowledge is leverage."
-      description="Read what the dealership reads. The tactics, the terms, the tricks built into the paperwork — all rendered in plain language."
+      description="Read what the dealership reads. The tactics, the terms, the tricks built into the paperwork, all rendered in plain language."
       :icon="BookOpenIcon"
     />
 
-    <!-- Why Learn — refined three -->
+    <!-- Why Learn -->
     <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border rounded-md overflow-hidden">
         <div
@@ -69,7 +69,7 @@ const whyLearn = [
       </div>
     </section>
 
-    <!-- Two guides — editorial cards -->
+    <!-- Two guides -->
     <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12 lg:mt-16">
       <div class="flex items-end justify-between mb-8">
         <div>
@@ -121,8 +121,8 @@ const whyLearn = [
         </div>
         <div class="col-span-12 lg:col-span-8 lg:border-l border-border lg:pl-12">
           <blockquote class="font-display italic text-primary tracking-tight text-2xl sm:text-3xl leading-snug">
-            &ldquo;Read both guides. Understanding both financing <em class="not-italic text-accent-dark">and</em> leasing is what gives you leverage —
-            it&rsquo;s how you recognize the moment a salesperson is steering you toward the path that pays them more.&rdquo;
+            &ldquo;Read both guides. Understanding both financing <em class="not-italic text-accent-dark">and</em> leasing is what gives you leverage.
+            It&rsquo;s how you recognize the moment a salesperson is steering you toward the path that pays them more.&rdquo;
           </blockquote>
         </div>
       </div>

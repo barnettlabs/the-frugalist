@@ -97,21 +97,40 @@ export function FinanceForm({ initialData, onSubmit, isSubmitting, submitLabel, 
 
 function SummaryCard({ summary }: { summary: ReturnType<FinanceCalculator['getSummary']> }) {
   return (
-    <View className="mb-6 rounded-xl bg-accent p-4">
-      <Text className="mb-2 text-white opacity-80">Monthly Payment</Text>
-      <Text className="text-3xl font-bold text-white">{formatCurrencyWithSymbol(summary.monthlyPayment)}</Text>
-      <View className="mt-3 flex-row justify-between">
-        <View>
-          <Text className="text-xs text-white opacity-60">Loan Amount</Text>
-          <Text className="text-white">{formatCurrencyWithSymbol(summary.loanAmount)}</Text>
-        </View>
-        <View>
-          <Text className="text-xs text-white opacity-60">Total Interest</Text>
-          <Text className="text-white">{formatCurrencyWithSymbol(summary.interestAmount)}</Text>
-        </View>
-        <View>
-          <Text className="text-xs text-white opacity-60">Grand Total</Text>
-          <Text className="text-white">{formatCurrencyWithSymbol(summary.grandTotal)}</Text>
+    <View className="mb-5 rounded-md overflow-hidden border border-primary-dark" style={{ backgroundColor: '#171B27' }}>
+      <View className="px-5 py-3 border-b border-white/10">
+        <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60">
+          At a glance
+        </Text>
+      </View>
+      <View className="px-5 py-5">
+        <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1.5">
+          Monthly
+        </Text>
+        <Text className="font-mono tracking-tight text-white" style={{ fontSize: 36, lineHeight: 38 }}>
+          {formatCurrencyWithSymbol(summary.monthlyPayment)}
+        </Text>
+        <View className="mt-5 pt-4 border-t border-white/10 flex-row justify-between">
+          <View>
+            <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1">
+              Financed
+            </Text>
+            <Text className="font-mono text-sm text-white">{formatCurrencyWithSymbol(summary.loanAmount)}</Text>
+          </View>
+          <View>
+            <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1">
+              Interest
+            </Text>
+            <Text className="font-mono text-sm" style={{ color: '#E6B25A' }}>
+              {formatCurrencyWithSymbol(summary.interestAmount)}
+            </Text>
+          </View>
+          <View>
+            <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1">
+              Total
+            </Text>
+            <Text className="font-mono text-sm text-white">{formatCurrencyWithSymbol(summary.grandTotal)}</Text>
+          </View>
         </View>
       </View>
     </View>
@@ -120,8 +139,8 @@ function SummaryCard({ summary }: { summary: ReturnType<FinanceCalculator['getSu
 
 function EstimateInfoSection({ control }: { control: Control<FinanceFormData> }) {
   return (
-    <FormSection title="Estimate Info">
-      <ControlledInput control={control} name="sheet_name" label="Estimate Name" placeholder="My Car Estimate" />
+    <FormSection number="01" title="Estimate info">
+      <ControlledInput control={control} name="sheet_name" label="Estimate name" placeholder="My car estimate" />
     </FormSection>
   );
 }
@@ -134,7 +153,7 @@ type FormProps = {
 
 function VehicleInfoSection({ control, watchedValues, setValue }: FormProps) {
   return (
-    <FormSection title="Vehicle Information">
+    <FormSection number="02" title="Vehicle information">
       <Select
         label="Vehicle Type"
         options={VEHICLE_TYPE_OPTIONS}
@@ -169,7 +188,7 @@ function VehicleInfoSection({ control, watchedValues, setValue }: FormProps) {
 
 function PricingSection({ control }: { control: Control<FinanceFormData> }) {
   return (
-    <FormSection title="Pricing">
+    <FormSection number="03" title="Pricing">
       <CurrencyInput control={control} name="msrp" label="MSRP" />
       <CurrencyInput control={control} name="fees" label="Fees" />
       <CurrencyInput control={control} name="discounts" label="Discounts" />
@@ -180,7 +199,7 @@ function PricingSection({ control }: { control: Control<FinanceFormData> }) {
 
 function FinancingSection({ control, watchedValues, setValue }: FormProps) {
   return (
-    <FormSection title="Financing">
+    <FormSection number="04" title="Finance terms">
       <CurrencyInput control={control} name="down_payment" label="Down Payment" />
       <PercentageInput control={control} name="sales_tax_percent" label="Sales Tax" />
       <PercentageInput control={control} name="interest_rate" label="Interest Rate (APR)" />
@@ -197,7 +216,7 @@ function FinancingSection({ control, watchedValues, setValue }: FormProps) {
 
 function ContactSection({ control }: { control: Control<FinanceFormData> }) {
   return (
-    <FormSection title="Contact Information" collapsible defaultCollapsed>
+    <FormSection number="05" title="Contact information" collapsible defaultCollapsed>
       <ControlledInput control={control} name="sales_consultant" label="Sales Consultant" placeholder="John Smith" />
       <ControlledInput control={control} name="dealership_name" label="Dealership" placeholder="ABC Motors" />
       <ControlledInput
@@ -221,7 +240,7 @@ function ContactSection({ control }: { control: Control<FinanceFormData> }) {
 
 function NotesSection({ control }: { control: Control<FinanceFormData> }) {
   return (
-    <FormSection title="Notes" collapsible defaultCollapsed>
+    <FormSection number="06" title="Notes" collapsible defaultCollapsed>
       <ControlledInput
         control={control}
         name="notes"
@@ -236,7 +255,7 @@ function NotesSection({ control }: { control: Control<FinanceFormData> }) {
 
 function AdvancedSection({ control }: { control: Control<FinanceFormData> }) {
   return (
-    <FormSection title="Advanced" collapsible defaultCollapsed>
+    <FormSection number="07" title="Advanced" collapsible defaultCollapsed>
       <ControlledInput
         control={control}
         name="extra_payments_json"
@@ -264,18 +283,16 @@ function ActionBar({
 }) {
   return (
     <View
-      className={tw.footerBar}
+      className="border-t border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark px-4 py-4 flex-row gap-3"
       style={{ paddingBottom: bottomPadding }}
     >
-      <View className="flex-row gap-3">
-        {onCancel && (
-          <View className="flex-1">
-            <Button label="Cancel" variant="outline" onPress={onCancel} />
-          </View>
-        )}
+      {onCancel && (
         <View className="flex-1">
-          <Button label={isSubmitting ? 'Saving...' : submitLabel} onPress={onSubmit} disabled={isSubmitting} />
+          <Button label="Cancel" variant="outline" onPress={onCancel} />
         </View>
+      )}
+      <View className="flex-1">
+        <Button label={isSubmitting ? 'Saving…' : submitLabel} onPress={onSubmit} disabled={isSubmitting} />
       </View>
     </View>
   );

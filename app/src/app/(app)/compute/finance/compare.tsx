@@ -82,10 +82,10 @@ export default function FinanceCompareScreen() {
   if (isError || sheets.length < 2) {
     return (
       <ScreenContainer className="items-center justify-center p-6">
-        <Text className="mb-2 text-xl font-semibold text-neutral-700 dark:text-neutral-300">
+        <Text className="mb-2 text-xl font-semibold text-text-primary-light dark:text-text-primary-dark">
           Not enough estimates
         </Text>
-        <Text className="text-center text-neutral-500 dark:text-neutral-400">
+        <Text className="text-center text-text-muted-light dark:text-text-muted-dark">
           Create at least two finance estimates to compare them.
         </Text>
       </ScreenContainer>
@@ -98,10 +98,10 @@ export default function FinanceCompareScreen() {
         className="flex-1"
         contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
       >
-        <Text className="mb-2 text-xl font-bold text-neutral-900 dark:text-white">
+        <Text className="mb-2 text-xl font-bold text-text-primary-light dark:text-text-primary-dark">
           Compare Estimates
         </Text>
-        <Text className="mb-4 text-sm text-neutral-500 dark:text-neutral-400">
+        <Text className="mb-4 text-sm text-text-muted-light dark:text-text-muted-dark">
           Select up to {MAX_COMPARE} estimates to compare side by side.
         </Text>
 
@@ -117,10 +117,10 @@ export default function FinanceCompareScreen() {
               >
                 <Checkbox.Icon checked={checked} />
                 <View className="ml-3 flex-1">
-                  <Text className="font-semibold text-neutral-900 dark:text-white">
+                  <Text className="font-semibold text-text-primary-light dark:text-text-primary-dark">
                     {sheet.sheet_name || 'Untitled'}
                   </Text>
-                  <Text className="text-xs text-neutral-500 dark:text-neutral-400">
+                  <Text className="text-xs text-text-muted-light dark:text-text-muted-dark">
                     {sheet.vehicle_year} {sheet.vehicle_make} {sheet.vehicle_model}
                   </Text>
                 </View>
@@ -136,7 +136,7 @@ export default function FinanceCompareScreen() {
         </View>
 
         {selectedSheets.length < 2 ? (
-          <Text className="text-center text-neutral-500 dark:text-neutral-400">
+          <Text className="text-center text-text-muted-light dark:text-text-muted-dark">
             Select 2 or more estimates above.
           </Text>
         ) : (
@@ -214,7 +214,7 @@ function HeaderCell({
       }`}
     >
       <Text
-        className="text-xs font-bold uppercase tracking-wide text-neutral-700 dark:text-neutral-300"
+        className="text-xs font-bold uppercase tracking-wide text-text-primary-light dark:text-text-primary-dark"
         numberOfLines={2}
       >
         {label}
@@ -229,7 +229,7 @@ function LabelCell({ label, width }: { label: string; width: number }) {
       style={{ width }}
       className="border-r border-neutral-200 p-3 dark:border-charcoal-700"
     >
-      <Text className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+      <Text className="text-xs font-semibold uppercase tracking-wide text-text-muted-light dark:text-text-muted-dark">
         {label}
       </Text>
     </View>
@@ -256,7 +256,7 @@ function ValueCell({
         className={`text-sm ${
           highlight
             ? 'font-bold text-success-700 dark:text-success-light'
-            : 'text-neutral-900 dark:text-neutral-200'
+            : 'text-text-primary-light dark:text-text-primary-dark'
         }`}
       >
         {value}

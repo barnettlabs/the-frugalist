@@ -1,18 +1,21 @@
 import { router } from 'expo-router';
 import React from 'react';
+import { Pressable } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useResendVerificationEmail } from '@/api/auth/use-auth';
-import { Button, SafeAreaView, Text, View } from '@/components/ui';
+import { MastheadBar, ScreenContainer, Text, View } from '@/components/ui';
 
 export default function VerifyEmailScreen() {
   const { mutate: resendEmail, isPending } = useResendVerificationEmail();
+  const insets = useSafeAreaInsets();
 
   const handleResend = () => {
     resendEmail(undefined, {
       onSuccess: () => {
         showMessage({
-          message: 'Email Sent',
+          message: 'Email sent',
           description: 'Verification email has been resent',
           type: 'success',
         });
@@ -28,39 +31,60 @@ export default function VerifyEmailScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-neutral-900">
-      <View className="flex-1 items-center justify-center p-6">
-        <View className="mb-6 rounded-full bg-primary/10 p-4 dark:bg-primary/20">
-          <Text className="text-4xl">📧</Text>
-        </View>
+    <ScreenContainer>
+      <View style={{ paddingTop: insets.top + 12 }}>
+        <MastheadBar
+          left="v 1.0.0"
+          center="A field guide to what things should cost"
+        />
+      </View>
 
-        <Text className="mb-2 text-center text-2xl font-bold text-neutral-900 dark:text-white">
-          Verify Your Email
+      <View className="flex-1 items-center justify-center px-6">
+        <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+          Almost there
+        </Text>
+        <Text
+          className="font-display tracking-tightest text-text-primary-light dark:text-text-primary-dark text-center"
+          style={{ fontSize: 38, lineHeight: 40 }}
+        >
+          Verify your
+        </Text>
+        <Text
+          className="font-display italic tracking-tightest text-accent dark:text-accent-light text-center"
+          style={{ fontSize: 38, lineHeight: 40 }}
+        >
+          email.
         </Text>
 
-        <Text className="mb-8 text-center text-neutral-600 dark:text-neutral-400">
-          We{"'"}ve sent a verification email to your inbox. Please click the
-          link in the email to verify your account.
+        <Text className="mt-5 text-center text-sm text-text-muted-light dark:text-text-muted-dark max-w-xs">
+          We sent a verification email to your inbox. Click the link to verify your account.
         </Text>
 
-        <View className="w-full gap-4">
-          <Button
-            label={isPending ? 'Sending...' : 'Resend Verification Email'}
+        <View className="w-full max-w-xs mt-10 gap-3">
+          <Pressable
             onPress={handleResend}
             disabled={isPending}
-          />
-
-          <Button
-            label="Back to Login"
-            variant="outline"
+            className="rounded-md bg-primary px-5 py-3.5 items-center active:opacity-80"
+            style={{ opacity: isPending ? 0.6 : 1 }}
+          >
+            <Text className="text-sm font-medium text-surface-light">
+              {isPending ? 'Sending…' : 'Resend verification email'}
+            </Text>
+          </Pressable>
+          <Pressable
             onPress={() => router.replace('/(auth)/login')}
-          />
+            className="rounded-md border border-primary px-5 py-3.5 items-center active:opacity-70"
+          >
+            <Text className="text-sm font-medium text-primary dark:text-text-primary-dark">
+              Back to sign in
+            </Text>
+          </Pressable>
         </View>
 
-        <Text className="mt-8 text-center text-sm text-neutral-500 dark:text-neutral-400">
-          Already verified? Go back to login and sign in.
+        <Text className="mt-10 text-xs text-text-muted-light dark:text-text-muted-dark">
+          Already verified? Sign in.
         </Text>
       </View>
-    </SafeAreaView>
+    </ScreenContainer>
   );
 }

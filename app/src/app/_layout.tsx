@@ -1,8 +1,21 @@
 // Import  global CSS file
 import '../../global.css';
 
+import {
+  Fraunces_400Regular,
+  Fraunces_500Medium,
+  Fraunces_500Medium_Italic,
+  Fraunces_600SemiBold,
+  Fraunces_600SemiBold_Italic,
+} from '@expo-google-fonts/fraunces';
+import {
+  JetBrainsMono_400Regular,
+  JetBrainsMono_500Medium,
+  JetBrainsMono_600SemiBold,
+} from '@expo-google-fonts/jetbrains-mono';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { ThemeProvider } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React from 'react';
@@ -23,18 +36,30 @@ export const unstable_settings = {
 
 hydrateAuth();
 loadSelectedTheme();
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-// Set the animation options. This is optional.
 SplashScreen.setOptions({
   duration: 500,
   fade: true,
 });
 
 export default function RootLayout() {
-  // const [fontsLoaded] = useFonts([Rubik_400Regular]);
+  const [fontsLoaded] = useFonts({
+    // Editorial display serif (Fraunces)
+    Fraunces_400Regular,
+    Fraunces_500Medium,
+    Fraunces_500Medium_Italic,
+    Fraunces_600SemiBold,
+    Fraunces_600SemiBold_Italic,
+    // Tabular monospace (JetBrains Mono)
+    JetBrainsMono_400Regular,
+    JetBrainsMono_500Medium,
+    JetBrainsMono_600SemiBold,
+  });
 
-  // if (!fontsLoaded) return null;
+  // Don't block on fonts — the platform serif/mono fallbacks render fine
+  // while the bundled fonts hydrate. Splash hides on (app) layout once auth
+  // resolves, so showing the splash a beat longer until fonts load is OK.
+  if (!fontsLoaded) return null;
 
   return (
     <Providers>

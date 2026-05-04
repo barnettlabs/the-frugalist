@@ -41,6 +41,8 @@
   },
   "dependencies": {
     "@bottom-tabs/react-navigation": "^1.1.0",
+    "@expo-google-fonts/fraunces": "^0.4.1",
+    "@expo-google-fonts/jetbrains-mono": "^0.4.1",
     "@expo-google-fonts/rubik": "^0.4.2",
     "@expo/metro-runtime": "^5.0.4",
     "@gorhom/bottom-sheet": "^5.0.5",

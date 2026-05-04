@@ -1,10 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { Pressable } from 'react-native';
 import { z } from 'zod';
 
-import { Button, ControlledInput, Text, View } from '@/components/ui';
-import { tw } from '@/components/ui/theme';
+import { ControlledInput, Text, View } from '@/components/ui';
 import type { User } from '@/lib/types/models';
 
 const profileSchema = z.object({
@@ -37,17 +37,17 @@ export function ProfileForm({
 
   return (
     <View>
-      <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
-        Personal Information
+      <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+        Personal information
       </Text>
 
-      <View className={`p-4 ${tw.card}`}>
-        <View className="flex-row gap-4">
+      <View className="rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark p-5">
+        <View className="flex-row gap-3">
           <View className="flex-1">
             <ControlledInput
               control={control}
               name="first_name"
-              label="First Name"
+              label="First name"
               placeholder="John"
               autoCapitalize="words"
             />
@@ -56,7 +56,7 @@ export function ProfileForm({
             <ControlledInput
               control={control}
               name="last_name"
-              label="Last Name"
+              label="Last name"
               placeholder="Doe"
               autoCapitalize="words"
             />
@@ -72,34 +72,34 @@ export function ProfileForm({
           autoCapitalize="none"
         />
 
-        <View className="mt-4">
-          <Button
-            label={isSubmitting ? 'Saving...' : 'Save Changes'}
-            onPress={handleSubmit(onSubmit)}
-            disabled={isSubmitting}
-          />
-        </View>
+        <Pressable
+          onPress={handleSubmit(onSubmit)}
+          disabled={isSubmitting}
+          className="rounded-md bg-primary px-5 py-3.5 items-center mt-2 active:opacity-80"
+          style={{ opacity: isSubmitting ? 0.6 : 1 }}
+        >
+          <Text className="text-sm font-medium text-surface-light">
+            {isSubmitting ? 'Saving…' : 'Save changes'}
+          </Text>
+        </Pressable>
       </View>
 
       {/* Email Verification Status */}
-      <View className={`mt-4 p-4 ${tw.card}`}>
-        <Text className="mb-2 font-semibold text-neutral-900 dark:text-white">
-          Email Verification
+      <View className="mt-5">
+        <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+          Email verification
         </Text>
         {profile.email_verified_at ? (
-          <View className="flex-row items-center rounded-lg bg-green-50 p-3 dark:bg-green-900/20">
-            <Text className="text-green-700 dark:text-green-400">
-              Your email address has been verified
+          <View className="rounded-md border border-success/30 bg-success/5 px-4 py-3">
+            <Text className="text-sm text-success font-medium">
+              Your email has been verified.
             </Text>
           </View>
         ) : (
-          <View className="rounded-lg bg-amber-50 p-3 dark:bg-amber-900/20">
-            <Text className="font-medium text-amber-700 dark:text-amber-400">
-              Email not verified
-            </Text>
-            <Text className="mt-1 text-sm text-amber-600 dark:text-amber-500">
-              Please check your inbox for the verification email. You may need
-              to check your spam folder.
+          <View className="rounded-md border border-warning/30 bg-warning/5 px-4 py-3">
+            <Text className="font-medium text-sm text-warning">Email not verified</Text>
+            <Text className="mt-1 text-xs text-text-muted-light dark:text-text-muted-dark leading-5">
+              Check your inbox for the verification email. You may need to check spam.
             </Text>
           </View>
         )}

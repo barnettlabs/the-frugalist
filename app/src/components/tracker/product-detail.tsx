@@ -82,19 +82,19 @@ function ProductHeader({
           contentFit="contain"
         />
       ) : (
-        <View className="mb-4 size-40 items-center justify-center rounded-lg bg-neutral-100 dark:bg-charcoal-700">
+        <View className="mb-4 size-40 items-center justify-center rounded-lg bg-tan-light dark:bg-charcoal-800">
           <Text className="text-6xl">📦</Text>
         </View>
       )}
-      <Text className="text-center text-lg font-semibold text-neutral-900 dark:text-white">
+      <Text className="text-center text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
         {product.product_name}
       </Text>
       {product.product_variant && (
-        <Text className="text-center text-neutral-500 dark:text-neutral-400">
+        <Text className="text-center text-text-muted-light dark:text-text-muted-dark">
           {product.product_variant}
         </Text>
       )}
-      <Text className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+      <Text className="mt-1 text-sm text-text-muted-light dark:text-text-muted-dark">
         {product.retailer.name} • {product.sku_upc}
       </Text>
       <StatusBadge targetReached={targetReached} isActive={product.is_active} />
@@ -121,7 +121,7 @@ function StatusBadge({
   if (!isActive) {
     return (
       <View className="mt-3 rounded-full bg-neutral-200 px-4 py-2 dark:bg-neutral-600">
-        <Text className="font-medium text-neutral-600 dark:text-neutral-300">
+        <Text className="font-medium text-text-muted-light dark:text-text-muted-dark">
           Tracking Paused
         </Text>
       </View>
@@ -155,14 +155,14 @@ function PriceTimelineCard({
 
   return (
     <View className={`mb-4 p-4 ${tw.card}`}>
-      <Text className="mb-4 font-semibold text-neutral-900 dark:text-white">
+      <Text className="mb-4 font-semibold text-text-primary-light dark:text-text-primary-dark">
         Price Progress
       </Text>
 
       {/* Labels above bar */}
       <View className="mb-2 flex-row justify-between">
         <View>
-          <Text className="text-xs text-neutral-500 dark:text-neutral-400">
+          <Text className="text-xs text-text-muted-light dark:text-text-muted-dark">
             Retail
           </Text>
           <Text className="text-lg font-semibold text-neutral-400">
@@ -170,10 +170,10 @@ function PriceTimelineCard({
           </Text>
         </View>
         <View className="items-end">
-          <Text className="text-xs text-neutral-500 dark:text-neutral-400">
+          <Text className="text-xs text-text-muted-light dark:text-text-muted-dark">
             Target
           </Text>
-          <Text className="text-lg font-semibold text-green-600">
+          <Text className="text-lg font-semibold text-success">
             {formatCurrencyWithSymbol(product.target_price)}
           </Text>
         </View>
@@ -181,7 +181,7 @@ function PriceTimelineCard({
 
       {/* Progress bar */}
       <View className="relative mb-2">
-        <View className="h-4 rounded-full bg-neutral-200 dark:bg-charcoal-700">
+        <View className="h-4 rounded-full bg-border-light dark:bg-charcoal-800">
           <View
             className={`h-4 rounded-full ${targetReached ? 'bg-green-500' : 'bg-primary'}`}
             style={{ width: `${progress}%` }}
@@ -191,7 +191,7 @@ function PriceTimelineCard({
 
       {/* Current price indicator */}
       <View className="mb-4 items-center">
-        <View className="rounded-lg bg-neutral-900 px-4 py-2 dark:bg-charcoal-700">
+        <View className="rounded-lg bg-neutral-900 px-4 py-2 dark:bg-charcoal-800">
           <Text className="text-center text-xs text-neutral-400 dark:text-neutral-400">
             Current
           </Text>
@@ -203,14 +203,14 @@ function PriceTimelineCard({
 
       {/* Progress status */}
       <View className="flex-row items-center justify-between">
-        <Text className="text-sm text-neutral-500 dark:text-neutral-400">
+        <Text className="text-sm text-text-muted-light dark:text-text-muted-dark">
           Last checked:{' '}
           {product.last_checked_at
             ? formatRelativeTime(product.last_checked_at)
             : 'Never'}
         </Text>
         <Text
-          className={`text-sm font-medium ${targetReached ? 'text-green-600' : 'text-neutral-600 dark:text-neutral-300'}`}
+          className={`text-sm font-medium ${targetReached ? 'text-success' : 'text-text-muted-light dark:text-text-muted-dark'}`}
         >
           {targetReached ? 'Target reached!' : `${progress.toFixed(0)}% to target`}
         </Text>
@@ -226,7 +226,7 @@ function TrackingInfoCard({
 }) {
   return (
     <View className={`mb-4 p-4 ${tw.card}`}>
-      <Text className="mb-3 font-semibold text-neutral-900 dark:text-white">
+      <Text className="mb-3 font-semibold text-text-primary-light dark:text-text-primary-dark">
         Tracking Info
       </Text>
       <View className="gap-2">
@@ -261,7 +261,7 @@ function PriceHistoryCard({
 }) {
   return (
     <View className={`mb-4 p-4 ${tw.card}`}>
-      <Text className="mb-3 font-semibold text-neutral-900 dark:text-white">
+      <Text className="mb-3 font-semibold text-text-primary-light dark:text-text-primary-dark">
         Price History
       </Text>
       <View className="gap-2">
@@ -271,8 +271,8 @@ function PriceHistoryCard({
               <Text
                 className={`font-medium ${
                   targetPrice && entry.price <= targetPrice
-                    ? 'text-green-600'
-                    : 'text-neutral-900 dark:text-white'
+                    ? 'text-success'
+                    : 'text-text-primary-light dark:text-text-primary-dark'
                 }`}
               >
                 {formatCurrencyWithSymbol(entry.price)}
@@ -285,7 +285,7 @@ function PriceHistoryCard({
                 </View>
               )}
             </View>
-            <Text className="text-sm text-neutral-500 dark:text-neutral-400">
+            <Text className="text-sm text-text-muted-light dark:text-text-muted-dark">
               {formatDateTime(entry.checked_at)}
             </Text>
           </View>
@@ -319,9 +319,9 @@ function InfoRow({
 }) {
   return (
     <View className="flex-row justify-between">
-      <Text className="text-neutral-500 dark:text-neutral-400">{label}</Text>
+      <Text className="text-text-muted-light dark:text-text-muted-dark">{label}</Text>
       <Text
-        className={`font-medium ${highlight ? 'text-green-600' : 'text-neutral-900 dark:text-white'}`}
+        className={`font-medium ${highlight ? 'text-success' : 'text-text-primary-light dark:text-text-primary-dark'}`}
       >
         {value}
       </Text>

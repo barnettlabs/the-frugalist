@@ -1,8 +1,6 @@
-import { useColorScheme } from 'nativewind';
 import React from 'react';
-import { ActivityIndicator, Alert } from 'react-native';
+import { ActivityIndicator, Alert, Pressable } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   useDeleteAccount,
@@ -12,7 +10,6 @@ import {
 import { ProfileForm } from '@/components/profile/profile-form';
 import { Button, ScreenContainer, ScrollView, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
-import { tw } from '@/components/ui/theme';
 import { signOut } from '@/lib/auth';
 import type { User } from '@/lib/types/models';
 
@@ -20,12 +17,6 @@ export function ProfileContent() {
   const { data: profile, isLoading, isError, refetch } = useProfile();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount();
-  const insets = useSafeAreaInsets();
-  const { colorScheme } = useColorScheme();
-
-  const isDark = colorScheme === 'dark';
-
-  const bottomPadding = Math.max(insets.bottom, 16);
 
   if (isLoading) {
     return (
@@ -38,10 +29,10 @@ export function ProfileContent() {
   if (isError || !profile) {
     return (
       <ScreenContainer className="items-center justify-center p-6">
-        <Text className="mb-4 text-center text-lg text-danger-600">
-          Failed to load profile
+        <Text className="mb-4 text-center font-display text-2xl text-text-primary-light dark:text-text-primary-dark">
+          Couldn’t load profile
         </Text>
-        <Button label="Try Again" onPress={() => refetch()} />
+        <Button label="Try again" onPress={() => refetch()} />
       </ScreenContainer>
     );
   }
@@ -54,7 +45,7 @@ export function ProfileContent() {
     updateProfile(data, {
       onSuccess: () => {
         showMessage({
-          message: 'Profile Updated',
+          message: 'Profile updated',
           description: 'Your profile has been updated successfully',
           type: 'success',
         });
@@ -72,18 +63,18 @@ export function ProfileContent() {
 
   const handleDeleteAccount = () => {
     Alert.alert(
-      'Delete Account',
+      'Delete account',
       'Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently lost.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Delete Account',
+          text: 'Delete account',
           style: 'destructive',
           onPress: () => {
             deleteAccount(undefined, {
               onSuccess: () => {
                 showMessage({
-                  message: 'Account Deleted',
+                  message: 'Account deleted',
                   description: 'Your account has been deleted',
                   type: 'success',
                 });
@@ -107,23 +98,16 @@ export function ProfileContent() {
     <ScreenContainer>
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ paddingBottom: bottomPadding }}
+        contentContainerStyle={{ paddingBottom: 48 }}
       >
         <View className="p-4">
-          {/* Profile Header */}
-          <ProfileHeader profile={profile} isDark={isDark} />
-
-          {/* Profile Form */}
+          <ProfileHeader profile={profile} />
           <ProfileForm
             profile={profile}
             onSubmit={handleUpdateProfile}
             isSubmitting={isUpdating}
           />
-
-          {/* Account Stats */}
           <AccountStats profile={profile} />
-
-          {/* Danger Zone */}
           <DangerZone
             onDelete={handleDeleteAccount}
             isDeleting={isDeleting}
@@ -134,46 +118,34 @@ export function ProfileContent() {
   );
 }
 
-function ProfileHeader({
-  profile,
-  isDark,
-}: {
-  profile: User;
-  isDark: boolean;
-}) {
+function ProfileHeader({ profile }: { profile: User }) {
   const initials = `${profile.first_name?.[0] || ''}${profile.last_name?.[0] || ''}`.toUpperCase();
 
   return (
     <View className="mb-6 items-center">
-      {/* Avatar */}
-      <View
-        className={`size-24 items-center justify-center rounded-full ${
-          isDark ? 'bg-accent-dark' : 'bg-accent/10'
-        }`}
-      >
+      <View className="size-20 items-center justify-center rounded-full border border-border-light dark:border-border-dark bg-tan-light dark:bg-charcoal-800">
         <Text
-          className={`text-3xl font-bold ${
-            isDark ? 'text-accent-light' : 'text-accent-dark'
-          }`}
+          className="font-display text-text-primary-light dark:text-text-primary-dark"
+          style={{ fontSize: 26 }}
         >
           {initials}
         </Text>
       </View>
 
-      {/* Name */}
-      <Text className="mt-4 text-2xl font-bold text-neutral-900 dark:text-white">
+      <Text
+        className="mt-4 font-display tracking-tight text-text-primary-light dark:text-text-primary-dark"
+        style={{ fontSize: 26, lineHeight: 28 }}
+      >
         {profile.first_name} {profile.last_name}
       </Text>
 
-      {/* Email */}
-      <Text className="mt-1 text-neutral-500 dark:text-neutral-400">
+      <Text className="mt-1 text-sm text-text-muted-light dark:text-text-muted-dark">
         {profile.email}
       </Text>
 
-      {/* Member Since */}
-      <Text className="mt-2 text-sm text-neutral-400 dark:text-neutral-500">
+      <Text className="mt-2 text-[10px] font-mono uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
         Member since {new Date(profile.created_at).toLocaleDateString('en-US', {
-          month: 'long',
+          month: 'short',
           year: 'numeric',
         })}
       </Text>
@@ -183,29 +155,39 @@ function ProfileHeader({
 
 function AccountStats({ profile }: { profile: User }) {
   const memberDays = Math.floor(
-    (Date.now() - new Date(profile.created_at).getTime()) / (1000 * 60 * 60 * 24)
+    (Date.now() - new Date(profile.created_at).getTime()) / (1000 * 60 * 60 * 24),
   );
 
   return (
-    <View className={`mt-6 p-4 ${tw.card}`}>
-      <Text className="mb-3 text-lg font-semibold text-neutral-900 dark:text-white">
-        Account Info
+    <View className="mt-6">
+      <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+        Account info
       </Text>
-      <View className="flex-row justify-around">
-        <View className="items-center">
-          <Text className="text-2xl font-bold text-primary">
+      <View className="flex-row gap-px rounded-md overflow-hidden border border-border-light dark:border-border-dark">
+        <View className="flex-1 bg-surface-light dark:bg-surface-dark p-4">
+          <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-1.5">
+            Days active
+          </Text>
+          <Text
+            className="font-mono text-text-primary-light dark:text-text-primary-dark"
+            style={{ fontSize: 24 }}
+          >
             {memberDays}
           </Text>
-          <Text className="text-sm text-neutral-500 dark:text-neutral-400">
-            Days Active
-          </Text>
         </View>
-        <View className="items-center">
-          <Text className="text-2xl font-bold text-primary">
-            {profile.email_verified_at ? 'Yes' : 'No'}
-          </Text>
-          <Text className="text-sm text-neutral-500 dark:text-neutral-400">
+        <View style={{ width: 1, backgroundColor: colors.border.light }} />
+        <View className="flex-1 bg-surface-light dark:bg-surface-dark p-4">
+          <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-1.5">
             Verified
+          </Text>
+          <Text
+            className="font-mono"
+            style={{
+              fontSize: 24,
+              color: profile.email_verified_at ? colors.success.DEFAULT : colors.text.muted.light,
+            }}
+          >
+            {profile.email_verified_at ? 'Yes' : 'No'}
           </Text>
         </View>
       </View>
@@ -221,25 +203,28 @@ function DangerZone({
   isDeleting: boolean;
 }) {
   return (
-    <View className="mt-8">
-      <Text className="mb-3 text-lg font-semibold text-danger-600">
-        Danger Zone
+    <View className="mt-10">
+      <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-danger mb-3">
+        Danger zone
       </Text>
-      <View className="rounded-xl border border-danger-200 bg-danger-50 p-4 dark:border-danger-800 dark:bg-danger-900/20">
-        <Text className="mb-2 font-medium text-danger-700 dark:text-danger-400">
-          Delete Account
+      <View className="rounded-md border border-danger/30 bg-danger/5 p-4">
+        <Text className="font-display text-lg text-text-primary-light dark:text-text-primary-dark mb-2">
+          Delete account
         </Text>
-        <Text className="mb-4 text-sm text-danger-600 dark:text-danger-500">
-          Once you delete your account, there is no going back. All your data,
-          including finance estimates, lease calculations, and tracked products
-          will be permanently removed.
+        <Text className="text-xs text-text-muted-light dark:text-text-muted-dark mb-4 leading-5">
+          Once you delete your account, there is no going back. All your data — finance
+          estimates, lease calculations, and tracked products — will be permanently removed.
         </Text>
-        <Button
-          label={isDeleting ? 'Deleting...' : 'Delete My Account'}
-          variant="destructive"
+        <Pressable
           onPress={onDelete}
           disabled={isDeleting}
-        />
+          className="rounded-md bg-danger px-4 py-3 items-center active:opacity-80"
+          style={{ opacity: isDeleting ? 0.6 : 1 }}
+        >
+          <Text className="text-sm font-medium text-surface-light">
+            {isDeleting ? 'Deleting…' : 'Delete my account'}
+          </Text>
+        </Pressable>
       </View>
     </View>
   );

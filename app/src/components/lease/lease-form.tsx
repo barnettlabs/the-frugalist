@@ -131,29 +131,44 @@ function SummaryCard({
   summary: ReturnType<LeaseCalculator['getSummary']>;
 }) {
   return (
-    <View className="mb-6 rounded-xl bg-secondary p-4">
-      <Text className="mb-2 text-white opacity-80">Monthly Payment</Text>
-      <Text className="text-3xl font-bold text-white">
-        {formatCurrencyWithSymbol(summary.leasePayment)}
-      </Text>
-      <View className="mt-3 flex-row justify-between">
-        <View>
-          <Text className="text-xs text-white opacity-60">Due at Signing</Text>
-          <Text className="text-white">
-            {formatCurrencyWithSymbol(summary.cashDueAtSigning)}
-          </Text>
-        </View>
-        <View>
-          <Text className="text-xs text-white opacity-60">Total Cost</Text>
-          <Text className="text-white">
-            {formatCurrencyWithSymbol(summary.totalLeaseCost)}
-          </Text>
-        </View>
-        <View>
-          <Text className="text-xs text-white opacity-60">Residual</Text>
-          <Text className="text-white">
-            {formatCurrencyWithSymbol(summary.residualAmount)}
-          </Text>
+    <View className="mb-5 rounded-md overflow-hidden border border-primary-dark" style={{ backgroundColor: '#171B27' }}>
+      <View className="px-5 py-3 border-b border-white/10">
+        <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60">
+          At a glance
+        </Text>
+      </View>
+      <View className="px-5 py-5">
+        <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1.5">
+          Monthly
+        </Text>
+        <Text className="font-mono tracking-tight text-white" style={{ fontSize: 36, lineHeight: 38 }}>
+          {formatCurrencyWithSymbol(summary.leasePayment)}
+        </Text>
+        <View className="mt-5 pt-4 border-t border-white/10 flex-row justify-between">
+          <View>
+            <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1">
+              Due at signing
+            </Text>
+            <Text className="font-mono text-sm text-white">
+              {formatCurrencyWithSymbol(summary.cashDueAtSigning)}
+            </Text>
+          </View>
+          <View>
+            <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1">
+              Total cost
+            </Text>
+            <Text className="font-mono text-sm" style={{ color: '#E6B25A' }}>
+              {formatCurrencyWithSymbol(summary.totalLeaseCost)}
+            </Text>
+          </View>
+          <View>
+            <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1">
+              Residual
+            </Text>
+            <Text className="font-mono text-sm text-white">
+              {formatCurrencyWithSymbol(summary.residualAmount)}
+            </Text>
+          </View>
         </View>
       </View>
     </View>
@@ -162,12 +177,12 @@ function SummaryCard({
 
 function EstimateInfoSection({ control }: { control: Control<LeaseFormData> }) {
   return (
-    <FormSection title="Estimate Info">
+    <FormSection number="01" title="Estimate info">
       <ControlledInput
         control={control}
         name="sheet_name"
-        label="Estimate Name"
-        placeholder="My Lease Estimate"
+        label="Estimate name"
+        placeholder="My lease estimate"
       />
     </FormSection>
   );
@@ -181,7 +196,7 @@ type FormProps = {
 
 function VehicleInfoSection({ control, watchedValues, setValue }: FormProps) {
   return (
-    <FormSection title="Vehicle Information">
+    <FormSection number="02" title="Vehicle information">
       <Select
         label="Vehicle Type"
         options={VEHICLE_TYPE_OPTIONS}
@@ -231,7 +246,7 @@ function VehicleInfoSection({ control, watchedValues, setValue }: FormProps) {
 
 function PricingSection({ control }: { control: Control<LeaseFormData> }) {
   return (
-    <FormSection title="Pricing">
+    <FormSection number="03" title="Pricing">
       <CurrencyInput control={control} name="msrp" label="MSRP" />
       <CurrencyInput
         control={control}
@@ -245,7 +260,7 @@ function PricingSection({ control }: { control: Control<LeaseFormData> }) {
 
 function FeesSection({ control }: { control: Control<LeaseFormData> }) {
   return (
-    <FormSection title="Fees">
+    <FormSection number="04" title="Fees">
       <CurrencyInput control={control} name="doc_fee" label="Doc Fee" />
       <CurrencyInput
         control={control}
@@ -263,7 +278,7 @@ function FeesSection({ control }: { control: Control<LeaseFormData> }) {
 
 function LeaseTermsSection({ control, watchedValues, setValue }: FormProps) {
   return (
-    <FormSection title="Lease Terms">
+    <FormSection number="05" title="Lease terms">
       <CurrencyInput
         control={control}
         name="lease_cash"
@@ -309,7 +324,7 @@ function LeaseTermsSection({ control, watchedValues, setValue }: FormProps) {
 
 function ContactSection({ control }: { control: Control<LeaseFormData> }) {
   return (
-    <FormSection title="Contact Information" collapsible defaultCollapsed>
+    <FormSection number="06" title="Contact information" collapsible defaultCollapsed>
       <ControlledInput
         control={control}
         name="sales_consultant"
@@ -343,7 +358,7 @@ function ContactSection({ control }: { control: Control<LeaseFormData> }) {
 
 function NotesSection({ control }: { control: Control<LeaseFormData> }) {
   return (
-    <FormSection title="Notes" collapsible defaultCollapsed>
+    <FormSection number="07" title="Notes" collapsible defaultCollapsed>
       <ControlledInput
         control={control}
         name="notes"
@@ -371,22 +386,20 @@ function ActionBar({
 }) {
   return (
     <View
-      className={tw.footerBar}
+      className="border-t border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark px-4 py-4 flex-row gap-3"
       style={{ paddingBottom: bottomPadding }}
     >
-      <View className="flex-row gap-3">
-        {onCancel && (
-          <View className="flex-1">
-            <Button label="Cancel" variant="outline" onPress={onCancel} />
-          </View>
-        )}
+      {onCancel && (
         <View className="flex-1">
-          <Button
-            label={isSubmitting ? 'Saving...' : submitLabel}
-            onPress={onSubmit}
-            disabled={isSubmitting}
-          />
+          <Button label="Cancel" variant="outline" onPress={onCancel} />
         </View>
+      )}
+      <View className="flex-1">
+        <Button
+          label={isSubmitting ? 'Saving…' : submitLabel}
+          onPress={onSubmit}
+          disabled={isSubmitting}
+        />
       </View>
     </View>
   );

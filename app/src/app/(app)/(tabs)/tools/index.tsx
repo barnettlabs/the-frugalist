@@ -1,102 +1,196 @@
 import { useRouter } from 'expo-router';
+import { useColorScheme } from 'nativewind';
 import React from 'react';
-import { RefreshControl, StyleSheet, View } from 'react-native';
+import { Pressable, RefreshControl, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useDashboardStats } from '@/api/dashboard/use-dashboard-stats';
-import { ScreenContainer, ScrollView, ToolCard } from '@/components/ui';
+import { MastheadBar, ScreenContainer, SectionHeader, Text } from '@/components/ui';
 import colors from '@/components/ui/colors';
-import { Book, Calculator as CalculatorIcon, Car as CarIcon, Eye as EyeIcon } from '@/components/ui/icons';
+import {
+  Book,
+  Calculator as CalculatorIcon,
+  Car as CarIcon,
+  Chevron,
+  Eye as EyeIcon,
+} from '@/components/ui/icons';
+import { TabAwareScrollView } from '@/components/ui/scroll-aware';
+import { getThemeColors } from '@/components/ui/theme';
 
-const TOOLS = [
+type Tool = {
+  key: string;
+  number: string;
+  eyebrow: string;
+  title: string;
+  italic: string;
+  description: string;
+  icon: React.ComponentType<{ color?: string; size?: number }>;
+  countKey: 'watchCount' | 'financeCount' | 'leaseCount' | null;
+  viewRoute: string;
+  createLabel?: string;
+  createRoute?: string;
+};
+
+const TOOLS: Tool[] = [
   {
     key: 'watch',
-    title: 'Watch',
-    subtitle: 'Track product prices',
-    icon: (color: string) => <EyeIcon color={color} size={20} />,
-    accentColor: colors.accent.DEFAULT,
-    countKey: 'watchCount' as const,
+    number: '01',
+    eyebrow: 'Watch',
+    title: 'Track',
+    italic: 'movement.',
+    description: 'Drop-by-drop price history. Alerts only when motion makes the moment worth your attention.',
+    icon: EyeIcon,
+    countKey: 'watchCount',
     viewRoute: '/watch?from=tools',
+    createLabel: 'Track new',
     createRoute: '/watch/create?from=tools',
   },
   {
     key: 'finance',
-    title: 'Finance',
-    subtitle: 'Calculate loan payments',
-    icon: (color: string) => <CalculatorIcon color={color} size={20} />,
-    accentColor: colors.info.DEFAULT,
-    countKey: 'financeCount' as const,
+    number: '02',
+    eyebrow: 'Compute · Finance',
+    title: 'Run',
+    italic: 'the loan.',
+    description: 'Monthly payment, total interest, amortization. The full cost of every offer.',
+    icon: CalculatorIcon,
+    countKey: 'financeCount',
     viewRoute: '/compute/finance?from=tools',
+    createLabel: 'New estimate',
     createRoute: '/compute/finance/create?from=tools',
   },
   {
     key: 'lease',
-    title: 'Lease',
-    subtitle: 'Calculate lease payments',
-    icon: (color: string) => <CarIcon color={color} size={20} />,
-    accentColor: colors.success.DEFAULT,
-    countKey: 'leaseCount' as const,
+    number: '03',
+    eyebrow: 'Compute · Lease',
+    title: 'Read',
+    italic: 'the lease.',
+    description: 'Money factor, residual, true monthly cost. Read the lease before you sign it.',
+    icon: CarIcon,
+    countKey: 'leaseCount',
     viewRoute: '/compute/lease?from=tools',
+    createLabel: 'New estimate',
     createRoute: '/compute/lease/create?from=tools',
   },
   {
     key: 'guides',
-    title: 'Guides',
-    subtitle: 'Learn the terminology',
-    icon: (color: string) => <Book color={color} size={20} />,
-    accentColor: colors.neutral[500],
+    number: '04',
+    eyebrow: 'Field guides',
+    title: 'Read',
+    italic: 'the room.',
+    description: 'Field notes on the tactics dealers use. Recognize the play before it lands.',
+    icon: Book,
     countKey: null,
     viewRoute: '/learning',
-    createRoute: null,
   },
 ];
 
 export default function ToolsScreen() {
-  const { data: stats, isLoading, refetch, isRefetching } = useDashboardStats();
+  const { data: stats, refetch, isRefetching } = useDashboardStats();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const theme = getThemeColors(isDark);
 
   return (
     <ScreenContainer>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+      <TabAwareScrollView
+        style={{ flex: 1, paddingTop: insets.top + 12 }}
         refreshControl={
-          <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={colors.accent.DEFAULT} />
+          <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={theme.accent} />
         }
       >
-        {/* Tool Grid */}
-        <View style={styles.toolGrid}>
-          {TOOLS.map((tool, index) => (
-            <ToolCard
-              key={tool.key}
-              title={tool.title}
-              icon={tool.icon(tool.accentColor)}
-              accentColor={tool.accentColor}
-              count={tool.countKey ? (stats?.[tool.countKey] ?? 0) : undefined}
-              isLoading={tool.countKey ? isLoading : false}
-              size="default"
-              delay={100 + index * 75}
-              onPress={() => router.push(tool.viewRoute as any)}
-              onCreateNew={tool.createRoute ? () => router.push(tool.createRoute as any) : undefined}
-            />
-          ))}
+        <MastheadBar
+          left="Tools"
+          center="A field guide to what things should cost"
+          right={`v 1.0.0`}
+        />
+
+        <SectionHeader
+          eyebrow="Toolkit"
+          title="The three tools."
+          description="Built for the moment just before you click buy."
+        />
+
+        <View className="px-4 gap-3">
+          {TOOLS.map((tool) => {
+            const Icon = tool.icon;
+            const count = tool.countKey ? stats?.[tool.countKey] ?? 0 : null;
+            return (
+              <Pressable
+                key={tool.key}
+                className="rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-5 active:opacity-80"
+                onPress={() => router.push(tool.viewRoute as any)}
+              >
+                <View className="flex-row items-start justify-between mb-5">
+                  <Text className="text-xs font-mono text-text-muted-light dark:text-text-muted-dark">
+                    {tool.number}
+                  </Text>
+                  <Icon color={theme.textMuted} size={20} />
+                </View>
+
+                <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+                  {tool.eyebrow}
+                </Text>
+
+                <Text
+                  className="font-display tracking-tightest text-text-primary-light dark:text-text-primary-dark"
+                  style={{ fontSize: 32, lineHeight: 34 }}
+                >
+                  {tool.title}
+                </Text>
+                <Text
+                  className="font-display italic tracking-tightest"
+                  style={{ fontSize: 32, lineHeight: 34, color: theme.accentDark }}
+                >
+                  {tool.italic}
+                </Text>
+
+                <Text className="text-sm leading-5 text-text-muted-light dark:text-text-muted-dark mt-4">
+                  {tool.description}
+                </Text>
+
+                {/* Footer */}
+                <View className="flex-row items-center mt-5 pt-4 border-t border-border-light dark:border-border-dark">
+                  {count !== null ? (
+                    <View className="flex-row items-baseline">
+                      <Text
+                        className="font-mono text-text-primary-light dark:text-text-primary-dark"
+                        style={{ fontSize: 22 }}
+                      >
+                        {count}
+                      </Text>
+                      <Text className="ml-2 text-xs text-text-muted-light dark:text-text-muted-dark">
+                        on file
+                      </Text>
+                    </View>
+                  ) : (
+                    <Text className="text-xs text-text-muted-light dark:text-text-muted-dark">
+                      Open the guides
+                    </Text>
+                  )}
+                  <View className="flex-1" />
+                  {tool.createRoute ? (
+                    <Pressable
+                      onPress={(e) => {
+                        e.stopPropagation?.();
+                        router.push(tool.createRoute as any);
+                      }}
+                      className="px-3 py-1.5 rounded-md bg-primary"
+                    >
+                      <Text className="text-xs font-medium" style={{ color: colors.surface.light }}>
+                        {tool.createLabel}
+                      </Text>
+                    </Pressable>
+                  ) : (
+                    <Chevron direction="right" color={theme.textMuted} size={16} />
+                  )}
+                </View>
+              </Pressable>
+            );
+          })}
         </View>
-      </ScrollView>
+      </TabAwareScrollView>
     </ScreenContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 16,
-    paddingBottom: 100,
-  },
-  toolGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-});

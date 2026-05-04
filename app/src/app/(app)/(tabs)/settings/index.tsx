@@ -15,13 +15,13 @@ import {
   Button,
   colors,
   FocusAwareStatusBar,
+  MastheadBar,
   Pressable,
   ScreenContainer,
-  ScrollView,
   Text,
-  tw,
   View,
 } from '@/components/ui';
+import { TabAwareScrollView } from '@/components/ui/scroll-aware';
 import { Bug, Rate, Share as ShareIcon, Support, User, Website } from '@/components/ui/icons';
 import { useAuth, useIsFirstTime, useSelectedTheme } from '@/lib';
 import type { ColorSchemeType } from '@/lib';
@@ -44,10 +44,7 @@ export default function Settings() {
   const { data: profile } = useProfile();
 
   const isDark = colorScheme === 'dark';
-  const iconColor = isDark ? colors.neutral[400] : colors.neutral[500];
-
-  // Account for floating tab bar
-  const bottomPadding = Math.max(insets.bottom, 16) + 80;
+  const iconColor = isDark ? colors.text.muted.dark : colors.text.muted.light;
 
   const showDebug = isDevUser(profile?.email);
 
@@ -101,8 +98,25 @@ export default function Settings() {
     <ScreenContainer>
       <FocusAwareStatusBar />
 
-      <ScrollView contentContainerStyle={{ paddingBottom: bottomPadding }}>
-        <View className="flex-1 px-4 pt-4">
+      <TabAwareScrollView style={{ flex: 1, paddingTop: insets.top + 12 }}>
+        <MastheadBar
+          left="Account"
+          center="A field guide to what things should cost"
+          right={`v ${Env.VERSION}`}
+        />
+
+        <View className="flex-1 px-4 pt-6">
+          {/* Editorial title */}
+          <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+            Account
+          </Text>
+          <Text
+            className="font-display tracking-tightest text-text-primary-light dark:text-text-primary-dark mb-6"
+            style={{ fontSize: 32, lineHeight: 34 }}
+          >
+            Settings &amp; preferences.
+          </Text>
+
           {/* Profile Header Card */}
           <ProfileCard profile={profile} isDark={isDark} />
 
@@ -153,13 +167,13 @@ export default function Settings() {
           <View className="mt-8">
             <Pressable
               onPress={signOut}
-              className="flex-row items-center justify-center rounded-xl border border-danger-200 bg-danger-50 px-6 py-4 dark:border-danger-800 dark:bg-danger-900/20"
+              className="flex-row items-center justify-center rounded-md border border-danger/30 bg-danger/5 px-6 py-3.5 active:opacity-80"
             >
-              <Text className="text-base font-semibold text-danger-600 dark:text-danger-400">Sign Out</Text>
+              <Text className="text-sm font-medium text-danger">Sign out</Text>
             </Pressable>
           </View>
         </View>
-      </ScrollView>
+      </TabAwareScrollView>
     </ScreenContainer>
   );
 }
@@ -174,21 +188,23 @@ function ThemeButtonGroup() {
   ];
 
   return (
-    <View className={`${tw.card} flex-row p-1`}>
+    <View className="flex-row p-1 rounded-md bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark">
       {themes.map(theme => {
         const isSelected = selectedTheme === theme.value;
         return (
           <Pressable
             key={theme.value}
             onPress={() => setSelectedTheme(theme.value)}
-            className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-lg py-2.5 ${
-              isSelected ? 'bg-neutral-50 dark:bg-charcoal-600' : ''
+            className={`flex-1 flex-row items-center justify-center gap-1.5 rounded py-2 ${
+              isSelected ? 'bg-tan-light dark:bg-charcoal-800' : ''
             }`}
           >
             <Text className="text-base">{theme.icon}</Text>
             <Text
               className={`text-sm font-medium ${
-                isSelected ? 'text-neutral-900 dark:text-white' : 'text-neutral-500 dark:text-neutral-400'
+                isSelected
+                  ? 'text-text-primary-light dark:text-text-primary-dark'
+                  : 'text-text-muted-light dark:text-text-muted-dark'
               }`}
             >
               {theme.label}
@@ -202,30 +218,41 @@ function ThemeButtonGroup() {
 
 function ProfileCard({
   profile,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isDark,
 }: {
   profile: { first_name: string; last_name: string; email: string } | undefined;
   isDark: boolean;
 }) {
-  const initials = profile ? `${profile.first_name?.[0] || ''}${profile.last_name?.[0] || ''}`.toUpperCase() : '?';
+  const initials = profile
+    ? `${profile.first_name?.[0] || ''}${profile.last_name?.[0] || ''}`.toUpperCase()
+    : '?';
 
   return (
-    <Pressable onPress={() => router.push('/settings/profile')} className={`${tw.card} mb-4 flex-row items-center p-4`}>
-      {/* Avatar */}
-      <View
-        className={`size-16 items-center justify-center rounded-full ${isDark ? 'bg-accent-dark' : 'bg-accent/10'}`}
-      >
-        <Text className={`text-xl font-bold ${isDark ? 'text-accent-light' : 'text-accent-dark'}`}>{initials}</Text>
+    <Pressable
+      onPress={() => router.push('/settings/profile')}
+      className="mb-5 flex-row items-center rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark p-4 active:opacity-80"
+    >
+      <View className="size-14 items-center justify-center rounded-full border border-border-light dark:border-border-dark bg-tan-light dark:bg-charcoal-800">
+        <Text className="font-display text-text-primary-light dark:text-text-primary-dark" style={{ fontSize: 18 }}>
+          {initials}
+        </Text>
       </View>
 
-      {/* Info */}
       <View className="ml-4 flex-1">
-        <Text className="text-lg font-semibold text-neutral-900 dark:text-white">
-          {profile ? `${profile.first_name} ${profile.last_name}` : 'Loading...'}
+        <Text
+          className="font-display tracking-tight text-text-primary-light dark:text-text-primary-dark"
+          style={{ fontSize: 18 }}
+        >
+          {profile ? `${profile.first_name} ${profile.last_name}` : 'Loading…'}
         </Text>
-        <Text className="text-sm text-neutral-500 dark:text-neutral-400">{profile?.email || ''}</Text>
-        <Text className="mt-1 text-xs text-primary dark:text-primary-light">View Profile</Text>
+        <Text className="text-sm text-text-muted-light dark:text-text-muted-dark mt-0.5">
+          {profile?.email || ''}
+        </Text>
       </View>
+      <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+        View ↗
+      </Text>
     </Pressable>
   );
 }

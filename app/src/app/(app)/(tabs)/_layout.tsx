@@ -32,8 +32,8 @@ export default function TabLayout() {
 
   return (
     <NativeTabs
-      tabBarActiveTintColor={isDark ? '#5A7DAB' : '#235892'}
-      tabBarInactiveTintColor={isDark ? '#64748B' : '#94A3B8'}
+      tabBarActiveTintColor={isDark ? '#F0EADE' : '#171B27'}
+      tabBarInactiveTintColor={isDark ? '#9F9889' : '#857C6B'}
       hapticFeedbackEnabled
       translucent
     >

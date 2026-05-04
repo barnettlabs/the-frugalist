@@ -1,8 +1,8 @@
 /**
- * Shared Theme Styles
+ * Shared Theme Styles — Editorial fintech field notes
  *
- * Use these constants to ensure consistent styling across the app.
- * Import and apply these class names to maintain design consistency.
+ * Mirrors the web app's design tokens. Use these constants to keep every
+ * surface tonally aligned with the parchment + ink + signal palette.
  */
 
 import colors from './colors';
@@ -11,65 +11,79 @@ import colors from './colors';
  * Tailwind class names for consistent theming
  */
 export const tw = {
-  /** Page/screen background - off-white in light, black in dark */
-  pageBg: 'bg-neutral-50 dark:bg-charcoal-950',
+  /** Page/screen background — warm parchment in light, deep ink in dark */
+  pageBg: 'bg-background-light dark:bg-background-dark',
 
-  /** Card background - white in light, dark gray in dark */
-  cardBg: 'bg-white dark:bg-charcoal-850',
+  /** Card background — warm cream */
+  cardBg: 'bg-surface-light dark:bg-surface-dark',
 
-  /** Card with border */
-  card: 'rounded-xl bg-white dark:bg-charcoal-850 border border-neutral-200 dark:border-charcoal-700',
+  /** Card with hairline border (editorial paper card) */
+  card: 'rounded-md bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark',
 
-  /** Card with shadow (for elevated cards) */
+  /** Card with subtle elevation */
   cardElevated:
-    'rounded-xl bg-white dark:bg-charcoal-850 border border-neutral-200/60 dark:border-charcoal-700/60 shadow-card',
+    'rounded-md bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark shadow-paper',
 
-  /** Section/container background (slightly elevated from page) */
-  sectionBg: 'bg-neutral-100 dark:bg-charcoal-900',
+  /** Section background (deeper parchment, slightly recessed) */
+  sectionBg: 'bg-surface-dark-light dark:bg-surface-dark-dark',
 
-  /** Input/form field background */
-  inputBg: 'bg-neutral-100 dark:bg-charcoal-800',
+  /** Input/form field background — same warm cream as cards */
+  inputBg: 'bg-surface-light dark:bg-surface-dark',
 
   /** Footer/action bar at bottom of screen */
-  footerBar: 'border-t border-neutral-200 bg-white p-4 dark:border-charcoal-700 dark:bg-charcoal-850',
+  footerBar:
+    'border-t border-border-light bg-surface-light px-4 py-4 dark:border-border-dark dark:bg-surface-dark',
+
+  /** Eyebrow label (small caps, tracked) — uppercase via custom prop */
+  eyebrow: 'text-[11px] font-semibold tracking-[0.18em] text-text-muted-light dark:text-text-muted-dark uppercase',
+
+  /** Numeral text (tabular numerals) */
+  numeral: 'font-mono tracking-tight',
+
+  /** Hairline rule */
+  hairline: 'h-px bg-border-light dark:bg-border-dark',
+
+  /** Strong hairline */
+  hairlineStrong: 'h-px bg-border-strong-light dark:bg-border-strong-dark',
 } as const;
 
 /**
  * Raw color values for StyleSheet usage
- * Use these when you need inline styles (e.g., with Reanimated, or non-Tailwind components)
  */
 export const themeColors = {
   light: {
-    /** Page background */
-    pageBg: colors.neutral[50],
-    /** Card background */
-    cardBg: colors.white,
-    /** Card border */
-    cardBorder: colors.neutral[200],
-    /** Section background */
-    sectionBg: colors.neutral[100],
-    /** Input background */
-    inputBg: colors.neutral[100],
-    /** Primary text */
+    pageBg: colors.background.light,
+    cardBg: colors.surface.light,
+    cardBorder: colors.border.light,
+    cardBorderStrong: colors['border-strong'].light,
+    sectionBg: colors['surface-dark'].light,
+    inputBg: colors.surface.light,
     textPrimary: colors.text.primary.light,
-    /** Muted text */
     textMuted: colors.text.muted.light,
+    accent: colors.accent.DEFAULT,
+    accentDark: colors.accent.dark,
+    signal: colors.signal.DEFAULT,
+    signalLight: colors.signal.light,
+    primary: colors.primary.DEFAULT,
+    surface: colors.surface.light,
+    tan: colors.tan.DEFAULT,
   },
   dark: {
-    /** Page background */
-    pageBg: colors.charcoal[950],
-    /** Card background */
-    cardBg: colors.charcoal[850],
-    /** Card border */
-    cardBorder: colors.charcoal[700],
-    /** Section background */
-    sectionBg: colors.charcoal[900],
-    /** Input background */
-    inputBg: colors.charcoal[800],
-    /** Primary text */
+    pageBg: colors.background.dark,
+    cardBg: colors.surface.dark,
+    cardBorder: colors.border.dark,
+    cardBorderStrong: colors['border-strong'].dark,
+    sectionBg: colors['surface-dark'].dark,
+    inputBg: colors.surface.dark,
     textPrimary: colors.text.primary.dark,
-    /** Muted text */
     textMuted: colors.text.muted.dark,
+    accent: colors.accent.light,
+    accentDark: colors.accent.DEFAULT,
+    signal: colors.signal.light,
+    signalLight: colors.signal.muted,
+    primary: colors.text.primary.dark,
+    surface: colors.surface.dark,
+    tan: colors.charcoal[800],
   },
 } as const;
 
@@ -79,3 +93,23 @@ export const themeColors = {
 export function getThemeColors(isDark: boolean) {
   return isDark ? themeColors.dark : themeColors.light;
 }
+
+/**
+ * Typography helpers — matches the web design system
+ *
+ * Display = Fraunces serif (falls back to system serif if not loaded)
+ * Sans    = Rubik (default body)
+ * Mono    = JetBrains Mono (falls back to system monospace)
+ */
+export const typography = {
+  /** Editorial display headline (Fraunces serif) */
+  display: 'font-display',
+  /** Italic display variant */
+  displayItalic: 'font-display italic',
+  /** Body sans (Rubik) */
+  sans: 'font-rubik',
+  /** Tabular monospace (JetBrains Mono) */
+  mono: 'font-mono',
+  /** Tabular figure for big numerals */
+  figure: 'font-mono tracking-tight',
+} as const;

@@ -2,7 +2,6 @@ import { Link } from 'expo-router';
 import React from 'react';
 
 import { Image, Pressable, Text, View } from '@/components/ui';
-import { tw } from '@/components/ui/theme';
 import { formatCurrencyWithSymbol, formatRelativeTime } from '@/lib/calculators';
 import type { PriceTrackerItem } from '@/lib/types/models';
 
@@ -17,88 +16,114 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link href={`/watch/${product.id}?from=watch`} asChild>
-      {/* Clean card with subtle border */}
-      <Pressable className={`p-4 active:bg-neutral-50 dark:active:bg-charcoal-800 ${tw.cardElevated}`}>
-        <View className="flex-row">
-          {/* Product Image */}
-          {product.product_image_url ? (
-            <Image
-              source={{ uri: product.product_image_url }}
-              className="mr-4 size-20 rounded-lg bg-charcoal-100 dark:bg-charcoal-800"
-              contentFit="contain"
-            />
-          ) : (
-            <View className="mr-4 size-20 items-center justify-center rounded-lg bg-charcoal-100 dark:bg-charcoal-800">
-              <Text className="text-2xl">📦</Text>
+      <Pressable className="rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark overflow-hidden active:opacity-90">
+        {/* Top metadata strip */}
+        <View className="flex-row items-center px-4 py-2.5 border-b border-border-light dark:border-border-dark">
+          <View
+            className="w-1.5 h-1.5 rounded-full mr-2"
+            style={{ backgroundColor: product.is_active ? '#437A59' : '#857C6B' }}
+          />
+          <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark flex-1">
+            {product.retailer.name}
+          </Text>
+          {targetReached ? (
+            <View className="rounded-sm bg-signal/15 px-2 py-0.5">
+              <Text className="text-[10px] font-mono uppercase tracking-wider text-signal-dark">Target</Text>
             </View>
-          )}
-
-          {/* Product Info */}
-          <View className="flex-1">
-            <View className="mb-1 flex-row items-start justify-between">
-              <Text className="flex-1 font-semibold text-charcoal-900 dark:text-white" numberOfLines={2}>
-                {product.product_name}
+          ) : product.price_drop_percentage > 0 ? (
+            <View className="rounded-sm bg-success/15 px-2 py-0.5">
+              <Text className="text-[10px] font-mono uppercase tracking-wider text-success">
+                −{product.price_drop_percentage.toFixed(0)}%
               </Text>
-              {/* Status Badge */}
-              {targetReached ? (
-                <View className="ml-2 rounded-md bg-secondary/10 px-2 py-0.5 dark:bg-secondary/20">
-                  <Text className="text-xs font-semibold text-secondary dark:text-secondary-light">Target</Text>
-                </View>
-              ) : !product.is_active ? (
-                <View className="ml-2 rounded-md bg-charcoal-200 px-2 py-0.5 dark:bg-charcoal-700">
-                  <Text className="text-xs font-semibold text-charcoal-600 dark:text-charcoal-400">Paused</Text>
-                </View>
-              ) : product.price_drop_percentage > 0 ? (
-                <View className="ml-2 rounded-md bg-primary/10 px-2 py-0.5 dark:bg-primary/20">
-                  <Text className="text-xs font-semibold text-primary dark:text-primary-light">
-                    -{product.price_drop_percentage.toFixed(0)}%
-                  </Text>
-                </View>
-              ) : null}
             </View>
+          ) : !product.is_active ? (
+            <View className="rounded-sm bg-tan-dark/40 px-2 py-0.5">
+              <Text className="text-[10px] font-mono uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
+                Paused
+              </Text>
+            </View>
+          ) : null}
+        </View>
 
-            <Text className="text-sm text-charcoal-500 dark:text-charcoal-400">{product.retailer.name}</Text>
+        {/* Body — image anchor + content */}
+        <View className="flex-row p-4 gap-4">
+          {/* Image */}
+          <View className="relative">
+            {product.product_image_url ? (
+              <Image
+                source={{ uri: product.product_image_url }}
+                className="size-20 rounded-md bg-tan-light dark:bg-charcoal-800 border border-border-light dark:border-border-dark"
+                contentFit="contain"
+              />
+            ) : (
+              <View className="size-20 items-center justify-center rounded-md bg-tan-light dark:bg-charcoal-800 border border-border-light dark:border-border-dark">
+                <Text className="text-2xl">📦</Text>
+              </View>
+            )}
+            {targetReached ? (
+              <View className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-signal items-center justify-center">
+                <Text className="text-[10px] font-bold text-white">↗</Text>
+              </View>
+            ) : null}
+          </View>
 
-            {/* Prices */}
+          {/* Content */}
+          <View className="flex-1">
+            <Text
+              className="font-display tracking-tight text-text-primary-light dark:text-text-primary-dark"
+              style={{ fontSize: 16, lineHeight: 20 }}
+              numberOfLines={2}
+            >
+              {product.product_name || 'Pending lookup…'}
+            </Text>
+
             <View className="mt-2 flex-row items-baseline gap-2">
-              <Text className="text-lg font-bold text-primary dark:text-primary-light">
+              <Text
+                className="font-mono tracking-tight text-text-primary-light dark:text-text-primary-dark"
+                style={{ fontSize: 22, lineHeight: 24 }}
+              >
                 {formatCurrencyWithSymbol(product.current_price)}
               </Text>
               {product.current_price < product.retail_price && (
-                <Text className="text-sm text-charcoal-400 line-through dark:text-charcoal-500">
+                <Text className="text-xs font-mono text-text-muted-light dark:text-text-muted-dark line-through">
                   {formatCurrencyWithSymbol(product.retail_price)}
                 </Text>
               )}
             </View>
-
-            {/* Target */}
-            <Text className="text-xs text-charcoal-500 dark:text-charcoal-400">
-              Target: {formatCurrencyWithSymbol(product.target_price)}
-            </Text>
           </View>
         </View>
 
-        {/* Progress Bar */}
-        {!targetReached && (
-          <View className="mt-3">
-            <View className="h-1.5 rounded-full bg-charcoal-100 dark:bg-charcoal-700">
+        {/* Target progress */}
+        {!targetReached && product.target_price ? (
+          <View className="px-4 pb-3">
+            <View className="flex-row items-baseline justify-between mb-1.5">
+              <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+                Target {formatCurrencyWithSymbol(product.target_price)}
+              </Text>
+              <Text className="text-[10px] font-mono text-text-muted-light dark:text-text-muted-dark">
+                {Math.max(progress, 0).toFixed(0)}%
+              </Text>
+            </View>
+            <View className="h-[3px] rounded-full bg-border-light dark:bg-border-dark overflow-hidden">
               <View
-                className="h-1.5 rounded-full bg-primary"
+                className="h-full rounded-full bg-accent"
                 style={{ width: `${Math.min(Math.max(progress, 0), 100)}%` }}
               />
             </View>
-            <Text className="mt-1 text-right text-xs text-charcoal-500 dark:text-charcoal-400">
-              {Math.max(progress, 0).toFixed(0)}% to target
-            </Text>
           </View>
-        )}
+        ) : null}
 
-        {/* Last Checked */}
-        {product.last_checked_at && (
-          <Text className="mt-2 text-xs text-charcoal-400 dark:text-charcoal-500">
-            Last checked {formatRelativeTime(product.last_checked_at)}
+        {/* Footer */}
+        <View className="flex-row items-center justify-between px-4 py-2.5 border-t border-border-light dark:border-border-dark">
+          <Text className="text-[10px] font-mono uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
+            SKU {product.sku_upc}
           </Text>
-        )}
+          {product.last_checked_at ? (
+            <Text className="text-[10px] font-mono text-text-muted-light dark:text-text-muted-dark">
+              {formatRelativeTime(product.last_checked_at)}
+            </Text>
+          ) : null}
+        </View>
       </Pressable>
     </Link>
   );

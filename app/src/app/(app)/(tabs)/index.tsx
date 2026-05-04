@@ -1,26 +1,26 @@
-import { BlurView } from 'expo-blur';
 import { Image } from 'expo-image';
 import { Link, useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React from 'react';
-import { Platform, RefreshControl, StyleSheet } from 'react-native';
+import { Platform, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Circle, Defs, Pattern, Rect } from 'react-native-svg';
 
 import { useProfile } from '@/api/auth/use-profile';
 import { useDashboardStats } from '@/api/dashboard/use-dashboard-stats';
 import { useFinanceSheets } from '@/api/finance/use-finance-sheets';
 import { useLeaseSheets } from '@/api/lease/use-lease-sheets';
 import { useWatch } from '@/api/watch';
-import { FocusAwareStatusBar, Pressable, ScrollView, Text, View } from '@/components/ui';
+import { FocusAwareStatusBar, MastheadBar, ScreenContainer, Text } from '@/components/ui';
 import colors from '@/components/ui/colors';
 import {
   Calculator as CalculatorIcon,
   Car as CarIcon,
   Chevron,
   Eye as EyeIcon,
+  Plus as PlusIcon,
 } from '@/components/ui/icons';
+import { TabAwareScrollView } from '@/components/ui/scroll-aware';
 import { getThemeColors } from '@/components/ui/theme';
 import type { PriceTrackerItem, VehicleFinanceSheet, VehicleLeaseSheet } from '@/lib/types/models';
 
@@ -43,19 +43,25 @@ export default function Dashboard() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const isDark = colorScheme === 'dark';
-
   const theme = getThemeColors(isDark);
-  const dotColor = isDark ? 'rgba(90, 125, 171, 0.18)' : 'rgba(35, 88, 146, 0.12)';
 
   const greeting = React.useMemo(() => {
     const hour = new Date().getHours();
+    if (hour < 5) return 'Still up';
     if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
+    if (hour < 17) return 'Good afternoon';
     return 'Good evening';
   }, []);
 
-  const firstName = user?.first_name || 'User';
-  const backgroundColor = isDark ? colors.charcoal[950] : colors.neutral[50];
+  const todayLabel = React.useMemo(() => {
+    return new Date().toLocaleDateString(undefined, {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+    });
+  }, []);
+
+  const firstName = user?.first_name || 'Welcome';
 
   const recentItems = React.useMemo(() => {
     const items: RecentItem[] = [];
@@ -65,7 +71,9 @@ export default function Dashboard() {
         id: `finance-${sheet.id}`,
         type: 'finance',
         title: sheet.sheet_name || 'Finance Estimate',
-        subtitle: [sheet.vehicle_year, sheet.vehicle_make, sheet.vehicle_model].filter(Boolean).join(' ') || 'Vehicle',
+        subtitle:
+          [sheet.vehicle_year, sheet.vehicle_make, sheet.vehicle_model].filter(Boolean).join(' ') ||
+          'Vehicle',
         updatedAt: new Date(sheet.updated_at),
         route: `/compute/finance/${sheet.id}?from=home`,
       });
@@ -76,7 +84,9 @@ export default function Dashboard() {
         id: `lease-${sheet.id}`,
         type: 'lease',
         title: sheet.sheet_name || 'Lease Estimate',
-        subtitle: [sheet.vehicle_year, sheet.vehicle_make, sheet.vehicle_model].filter(Boolean).join(' ') || 'Vehicle',
+        subtitle:
+          [sheet.vehicle_year, sheet.vehicle_make, sheet.vehicle_model].filter(Boolean).join(' ') ||
+          'Vehicle',
         updatedAt: new Date(sheet.updated_at),
         route: `/compute/lease/${sheet.id}?from=home`,
       });
@@ -94,254 +104,304 @@ export default function Dashboard() {
     });
 
     items.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-    return items.slice(0, 5);
+    return items.slice(0, 6);
   }, [financeSheets, leaseSheets, watchData]);
 
-  const priceAlerts = React.useMemo(() => {
-    return (watchData?.tracked_products ?? [])
-      .filter((p: PriceTrackerItem['tracked_product']) => p.price_drop_percentage > 0 || p.current_price <= p.target_price)
-      .slice(0, 3);
-  }, [watchData]);
+  const totalActivity = (stats?.watchCount ?? 0) + (stats?.financeCount ?? 0) + (stats?.leaseCount ?? 0);
+  const isFresh = totalActivity === 0;
 
   return (
-    <View style={[styles.container, { backgroundColor }]}>
+    <ScreenContainer>
       <FocusAwareStatusBar />
 
-      {/* Dotted background pattern */}
-      <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <Svg width="100%" height="100%">
-          <Defs>
-            <Pattern id="dashDots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
-              <Circle cx="2" cy="2" r="1" fill={dotColor} />
-            </Pattern>
-          </Defs>
-          <Rect x="0" y="0" width="100%" height="100%" fill="url(#dashDots)" />
-        </Svg>
-      </View>
-
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 16 }]}
-        showsVerticalScrollIndicator={false}
+      <TabAwareScrollView
+        style={{ flex: 1, paddingTop: insets.top + 12 }}
         refreshControl={
-          <RefreshControl refreshing={isRefetching} onRefresh={refetchStats} tintColor={colors.accent.DEFAULT} />
+          <RefreshControl
+            refreshing={isRefetching}
+            onRefresh={refetchStats}
+            tintColor={theme.accent}
+          />
         }
       >
-        {/* Header */}
-        <Animated.View entering={FadeInDown.duration(600).delay(100)} style={styles.header}>
-          <View style={styles.headerText}>
-            <Text style={[styles.systemLabel, { color: colors.accent.DEFAULT }]}>DASHBOARD</Text>
-            <Text style={[styles.greeting, { color: theme.textMuted }]}>{greeting},</Text>
-            <Text style={[styles.userName, { color: theme.textPrimary }]} numberOfLines={1}>
-              {firstName}
-            </Text>
-          </View>
-          <Link href="/(app)/profile">
-            <Animated.View entering={FadeInDown.duration(600).delay(200).springify()}>
-              <View
-                style={[
-                  styles.avatarGlow,
-                  {
-                    backgroundColor: isDark ? `${colors.accent.DEFAULT}20` : `${colors.accent.DEFAULT}10`,
-                  },
-                ]}
+        {/* Editorial masthead */}
+        <Animated.View entering={FadeInDown.duration(500).delay(50)}>
+          <MastheadBar
+            left={todayLabel.toUpperCase()}
+            center="Personal ledger"
+            right={
+              <Text className="text-[10px] font-mono text-text-muted-light dark:text-text-muted-dark">
+                № {String(totalActivity).padStart(3, '0')}
+              </Text>
+            }
+          />
+        </Animated.View>
+
+        {/* Greeting */}
+        <Animated.View entering={FadeInDown.duration(500).delay(150)} className="px-4 mt-8 mb-8">
+          <View className="flex-row items-start justify-between gap-4">
+            <View className="flex-1">
+              <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+                {greeting}
+              </Text>
+              <Text
+                className="font-display tracking-tightest text-text-primary-light dark:text-text-primary-dark"
+                style={{ fontSize: 40, lineHeight: 42 }}
               >
+                {firstName}
+              </Text>
+              <Text
+                className="font-display italic tracking-tight text-accent dark:text-accent-light mt-1"
+                style={{ fontSize: 26, lineHeight: 30 }}
+              >
+                {isFresh ? 'Let’s start small.' : 'Here’s where you stand.'}
+              </Text>
+            </View>
+            <Link href="/(app)/profile" asChild>
+              <Pressable>
                 <View
-                  style={[
-                    styles.avatar,
-                    {
-                      borderColor: colors.accent.DEFAULT,
-                      backgroundColor: isDark ? colors.charcoal[800] : colors.neutral[100],
-                    },
-                  ]}
+                  className="w-12 h-12 rounded-full items-center justify-center border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark overflow-hidden"
                 >
                   {user?.avatar_url ? (
                     <Image source={{ uri: user.avatar_url }} style={styles.avatarImage} />
                   ) : (
-                    <Text style={[styles.avatarText, { color: colors.accent.DEFAULT }]}>
+                    <Text
+                      className="font-display text-text-primary-light dark:text-text-primary-dark"
+                      style={{ fontSize: 18 }}
+                    >
                       {firstName[0]?.toUpperCase() || 'U'}
                     </Text>
                   )}
                 </View>
-              </View>
-            </Animated.View>
-          </Link>
-        </Animated.View>
-
-        {/* Stats HUD */}
-        <Animated.View entering={FadeInDown.duration(600).delay(200)} style={styles.statsRow}>
-          <StatCard
-            label="Watching"
-            value={stats?.watchCount ?? 0}
-            icon={<EyeIcon color={colors.accent.DEFAULT} size={16} />}
-            accentColor={colors.accent.DEFAULT}
-            isDark={isDark}
-            theme={theme}
-            onPress={() => router.push('/watch?from=home')}
-          />
-          <StatCard
-            label="Finance"
-            value={stats?.financeCount ?? 0}
-            icon={<CalculatorIcon color={colors.info.DEFAULT} size={16} />}
-            accentColor={colors.info.DEFAULT}
-            isDark={isDark}
-            theme={theme}
-            onPress={() => router.push('/compute/finance?from=home')}
-          />
-          <StatCard
-            label="Lease"
-            value={stats?.leaseCount ?? 0}
-            icon={<CarIcon color={colors.success.DEFAULT} size={16} />}
-            accentColor={colors.success.DEFAULT}
-            isDark={isDark}
-            theme={theme}
-            onPress={() => router.push('/compute/lease?from=home')}
-          />
-        </Animated.View>
-
-        {/* Price Alerts */}
-        {priceAlerts.length > 0 && (
-          <Animated.View entering={FadeInDown.duration(600).delay(300)} style={styles.section}>
-            <SectionHeader title="PRICE ALERTS" color={colors.success.DEFAULT} textColor={theme.textPrimary} />
-            <View style={[styles.sectionCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
-              {priceAlerts.map((product: PriceTrackerItem['tracked_product'], index: number) => (
-                <Pressable
-                  key={product.id}
-                  style={[
-                    styles.alertItem,
-                    index < priceAlerts.length - 1 && { borderBottomWidth: 1, borderBottomColor: theme.cardBorder },
-                  ]}
-                  onPress={() => router.push(`/watch/${product.id}?from=home` as any)}
-                >
-                  <View style={[styles.typeIndicator, { backgroundColor: colors.success.DEFAULT }]} />
-                  <View style={styles.alertContent}>
-                    <Text style={[styles.alertTitle, { color: theme.textPrimary }]} numberOfLines={1}>
-                      {product.product_name}
-                    </Text>
-                    <Text style={[styles.alertSubtitle, { color: colors.success.DEFAULT }]}>
-                      {product.current_price <= product.target_price
-                        ? 'Target reached!'
-                        : `${product.price_drop_percentage.toFixed(0)}% off`}
-                    </Text>
-                  </View>
-                  <Chevron direction="right" color={theme.textMuted} size={16} />
-                </Pressable>
-              ))}
-            </View>
-          </Animated.View>
-        )}
-
-        {/* Recent Activity */}
-        <Animated.View entering={FadeInDown.duration(600).delay(400)} style={styles.section}>
-          <SectionHeader title="RECENT ACTIVITY" color={colors.accent.DEFAULT} textColor={theme.textPrimary} />
-          {recentItems.length === 0 ? (
-            <View style={[styles.emptyCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
-              <Text style={[styles.emptyLabel, { color: colors.accent.DEFAULT }]}>NO DATA</Text>
-              <Text style={[styles.emptyText, { color: theme.textMuted }]}>
-                Create your first estimate or start tracking a product.
-              </Text>
-              <Pressable
-                style={[styles.emptyButton, { backgroundColor: colors.accent.DEFAULT }]}
-                onPress={() => router.push('/(app)/(tabs)/tools')}
-              >
-                <Text style={styles.emptyButtonText}>GET STARTED</Text>
               </Pressable>
-            </View>
+            </Link>
+          </View>
+        </Animated.View>
+
+        {/* Big-numeral focus trio */}
+        <Animated.View entering={FadeInDown.duration(500).delay(250)} className="px-4 mb-8">
+          <View
+            className="flex-row rounded-md overflow-hidden border border-border-light dark:border-border-dark"
+            style={{ backgroundColor: theme.cardBorder }}
+          >
+            <FocusTile
+              label="Watch"
+              value={stats?.watchCount ?? 0}
+              onPress={() => router.push('/watch?from=home')}
+              theme={theme}
+            />
+            <View style={{ width: 1, backgroundColor: theme.cardBorder }} />
+            <FocusTile
+              label="Finance"
+              value={stats?.financeCount ?? 0}
+              onPress={() => router.push('/compute/finance?from=home')}
+              theme={theme}
+            />
+            <View style={{ width: 1, backgroundColor: theme.cardBorder }} />
+            <FocusTile
+              label="Lease"
+              value={stats?.leaseCount ?? 0}
+              onPress={() => router.push('/compute/lease?from=home')}
+              theme={theme}
+            />
+          </View>
+        </Animated.View>
+
+        {/* Quick actions */}
+        <Animated.View entering={FadeInDown.duration(500).delay(350)} className="px-4 mb-8">
+          <View className="flex-row items-center gap-3 mb-3">
+            <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+              Begin something
+            </Text>
+            <View className="flex-1 h-px bg-border-light dark:bg-border-dark" />
+          </View>
+          <View className="gap-2.5">
+            <ActionRow
+              label="Track a price"
+              hint="Add a product, set a target"
+              icon={<PlusIcon color="#FCFAF5" width={16} height={16} />}
+              onPress={() => router.push('/watch/create?from=home' as any)}
+              theme={theme}
+            />
+            <ActionRow
+              label="Run financing"
+              hint="APR, amortization, total cost"
+              icon={<CalculatorIcon color="#FCFAF5" size={16} />}
+              onPress={() => router.push('/compute/finance/create?from=home' as any)}
+              theme={theme}
+            />
+            <ActionRow
+              label="Run a lease"
+              hint="Money factor, residual, true cost"
+              icon={<CarIcon color="#FCFAF5" size={16} />}
+              onPress={() => router.push('/compute/lease/create?from=home' as any)}
+              theme={theme}
+            />
+          </View>
+        </Animated.View>
+
+        {/* Recent activity */}
+        <Animated.View entering={FadeInDown.duration(500).delay(450)} className="px-4 mb-4">
+          <View className="flex-row items-center gap-3 mb-3">
+            <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+              Recently filed
+            </Text>
+            <View className="flex-1 h-px bg-border-light dark:bg-border-dark" />
+            {recentItems.length > 0 ? (
+              <Pressable onPress={() => router.push('/(app)/(tabs)/tools')}>
+                <Text className="text-xs font-medium text-primary dark:text-text-primary-dark">View all</Text>
+              </Pressable>
+            ) : null}
+          </View>
+
+          {recentItems.length === 0 ? (
+            <EmptyLedger onPress={() => router.push('/(app)/(tabs)/tools')} theme={theme} />
           ) : (
-            <View style={[styles.sectionCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
+            <View className="border-y border-border-light dark:border-border-dark">
               {recentItems.map((item, index) => (
                 <Pressable
                   key={item.id}
-                  style={[
-                    styles.activityItem,
-                    index < recentItems.length - 1 && { borderBottomWidth: 1, borderBottomColor: theme.cardBorder },
-                  ]}
+                  className={`flex-row items-baseline gap-3 py-3.5 ${
+                    index < recentItems.length - 1 ? 'border-b border-border-light dark:border-border-dark' : ''
+                  }`}
                   onPress={() => router.push(item.route as any)}
                 >
-                  <View style={[styles.typeIndicator, { backgroundColor: getTypeColor(item.type) }]} />
-                  <View style={[styles.activityIconBg, { backgroundColor: `${getTypeColor(item.type)}15` }]}>
-                    {getTypeIcon(item.type)}
-                  </View>
-                  <View style={styles.activityContent}>
-                    <Text style={[styles.activityTitle, { color: theme.textPrimary }]} numberOfLines={1}>
+                  <Text className="text-[10px] font-mono uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark w-14">
+                    {labelFor(item.type)}
+                  </Text>
+                  <View className="flex-1">
+                    <Text
+                      className="font-display text-base tracking-tight text-text-primary-light dark:text-text-primary-dark"
+                      numberOfLines={1}
+                    >
                       {item.title}
                     </Text>
-                    <Text style={[styles.activitySubtitle, { color: theme.textMuted }]} numberOfLines={1}>
+                    <Text
+                      className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5"
+                      numberOfLines={1}
+                    >
                       {item.subtitle}
                     </Text>
                   </View>
-                  <Text style={[styles.activityTime, { color: theme.textMuted }]}>
+                  <Text className="text-[10px] font-mono text-text-muted-light dark:text-text-muted-dark">
                     {formatRelativeTime(item.updatedAt)}
                   </Text>
+                  <Chevron direction="right" color={theme.textMuted} size={14} />
                 </Pressable>
               ))}
             </View>
           )}
         </Animated.View>
-
-        <View style={{ height: 100 }} />
-      </ScrollView>
-
-      {/* Blurred status bar */}
-      <BlurView
-        intensity={20}
-        tint={isDark ? 'dark' : 'light'}
-        style={[styles.statusBarBlur, { height: insets.top }]}
-      />
-    </View>
+      </TabAwareScrollView>
+    </ScreenContainer>
   );
 }
 
 // --- Sub-components ---
 
-function StatCard({
+function FocusTile({
   label,
   value,
-  icon,
-  accentColor,
-  isDark,
-  theme,
   onPress,
+  theme,
 }: {
   label: string;
   value: number;
-  icon: React.ReactNode;
-  accentColor: string;
-  isDark: boolean;
-  theme: ReturnType<typeof getThemeColors>;
   onPress: () => void;
+  theme: ReturnType<typeof getThemeColors>;
 }) {
   return (
     <Pressable
-      style={[
-        styles.statCard,
-        {
-          backgroundColor: theme.cardBg,
-          borderColor: theme.cardBorder,
-          ...(Platform.OS === 'ios' && {
-            shadowColor: accentColor,
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: isDark ? 0.15 : 0.08,
-            shadowRadius: 8,
-          }),
-        },
-      ]}
+      style={{ flex: 1, backgroundColor: theme.cardBg, paddingVertical: 18, paddingHorizontal: 16 }}
       onPress={onPress}
+      android_ripple={{ color: theme.cardBorder }}
     >
-      <View style={[styles.statIconBg, { backgroundColor: `${accentColor}15` }]}>{icon}</View>
-      <Text style={[styles.statValue, { color: accentColor }]}>{value}</Text>
-      <Text style={[styles.statLabel, { color: theme.textMuted }]}>{label}</Text>
-      {/* Accent bottom stripe */}
-      <View style={[styles.statAccent, { backgroundColor: accentColor }]} />
+      <Text
+        className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3"
+      >
+        {label}
+      </Text>
+      <Text
+        className="font-mono tracking-tight text-text-primary-light dark:text-text-primary-dark"
+        style={{ fontSize: 36, lineHeight: 38 }}
+      >
+        {value}
+      </Text>
     </Pressable>
   );
 }
 
-function SectionHeader({ title, color, textColor }: { title: string; color: string; textColor: string }) {
+function ActionRow({
+  label,
+  hint,
+  icon,
+  onPress,
+  theme,
+}: {
+  label: string;
+  hint: string;
+  icon: React.ReactNode;
+  onPress: () => void;
+  theme: ReturnType<typeof getThemeColors>;
+}) {
   return (
-    <View style={styles.sectionHeader}>
-      <View style={[styles.sectionDot, { backgroundColor: color }]} />
-      <Text style={[styles.sectionTitle, { color: textColor }]}>{title}</Text>
+    <Pressable
+      onPress={onPress}
+      className="flex-row items-center gap-3 px-4 py-3.5 rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark active:opacity-80"
+    >
+      <View className="w-10 h-10 items-center justify-center rounded-md bg-primary dark:bg-text-primary-dark">
+        {icon}
+      </View>
+      <View className="flex-1">
+        <Text className="text-[15px] font-medium text-text-primary-light dark:text-text-primary-dark">
+          {label}
+        </Text>
+        <Text className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">{hint}</Text>
+      </View>
+      <Chevron direction="right" color={theme.textMuted} size={14} />
+    </Pressable>
+  );
+}
+
+function EmptyLedger({
+  onPress,
+  theme,
+}: {
+  onPress: () => void;
+  theme: ReturnType<typeof getThemeColors>;
+}) {
+  return (
+    <View
+      className="rounded-md p-6 overflow-hidden border"
+      style={{
+        backgroundColor: colors.primary.DEFAULT,
+        borderColor: colors.primary.dark,
+      }}
+    >
+      <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-3">
+        Your first entry
+      </Text>
+      <Text
+        className="font-display tracking-tightest text-white"
+        style={{ fontSize: 28, lineHeight: 30 }}
+      >
+        Pick something you’ve been
+      </Text>
+      <Text
+        className="font-display italic tracking-tightest mt-1"
+        style={{ fontSize: 28, lineHeight: 30, color: colors.signal.light }}
+      >
+        eyeing.
+      </Text>
+      <Text className="text-sm text-white/70 mt-3 mb-5">
+        Track your first product. Set a target. Wait for the market to come to you.
+      </Text>
+      <Pressable
+        onPress={onPress}
+        className="self-start rounded-md px-5 py-3 bg-surface-light"
+      >
+        <Text className="text-sm font-medium text-primary">Track first product</Text>
+      </Pressable>
     </View>
   );
 }
@@ -355,275 +415,27 @@ function formatRelativeTime(date: Date) {
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
 
-  if (minutes < 1) return 'Just now';
-  if (minutes < 60) return `${minutes}m ago`;
-  if (hours < 24) return `${hours}h ago`;
-  if (days < 7) return `${days}d ago`;
-  return date.toLocaleDateString();
+  if (minutes < 1) return 'now';
+  if (minutes < 60) return `${minutes}m`;
+  if (hours < 24) return `${hours}h`;
+  if (days < 7) return `${days}d`;
+  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 }
 
-function getTypeIcon(type: RecentItem['type']) {
+function labelFor(type: RecentItem['type']) {
   switch (type) {
     case 'finance':
-      return <CalculatorIcon color={colors.info.DEFAULT} size={16} />;
+      return 'FIN';
     case 'lease':
-      return <CarIcon color={colors.success.DEFAULT} size={16} />;
+      return 'LEASE';
     case 'watch':
-      return <EyeIcon color={colors.accent.DEFAULT} size={16} />;
+      return 'WATCH';
   }
 }
-
-function getTypeColor(type: RecentItem['type']) {
-  switch (type) {
-    case 'finance':
-      return colors.info.DEFAULT;
-    case 'lease':
-      return colors.success.DEFAULT;
-    case 'watch':
-      return colors.accent.DEFAULT;
-  }
-}
-
-// --- Styles ---
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-  },
-
-  // Header
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  headerText: {
-    flex: 1,
-    marginRight: 16,
-  },
-  systemLabel: {
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 2,
-    marginBottom: 6,
-    fontFamily: 'Rubik-Bold',
-  },
-  greeting: {
-    fontSize: 15,
-    fontWeight: '500',
-    marginBottom: 4,
-    letterSpacing: 0.3,
-  },
-  userName: {
-    fontSize: 28,
-    fontWeight: '700',
-    fontFamily: 'Rubik-Bold',
-    letterSpacing: -0.5,
-    lineHeight: 34,
-  },
-  avatarGlow: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
   avatarImage: {
     width: '100%',
     height: '100%',
-  },
-  avatarText: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
-
-  // Stats
-  statsRow: {
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 24,
-  },
-  statCard: {
-    flex: 1,
-    paddingTop: 14,
-    paddingHorizontal: 12,
-    paddingBottom: 0,
-    borderRadius: 14,
-    borderWidth: 1,
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
-  statAccent: {
-    height: 3,
-    width: '100%',
-    marginTop: 12,
-    borderTopLeftRadius: 2,
-    borderTopRightRadius: 2,
-  },
-  statIconBg: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 6,
-  },
-  statValue: {
-    fontSize: 22,
-    fontWeight: '700',
-    fontFamily: 'Rubik-Bold',
-    lineHeight: 28,
-  },
-  statLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-    marginTop: 2,
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-  },
-
-  // Sections
-  section: {
-    marginBottom: 20,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-    gap: 8,
-  },
-  sectionDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-  },
-  sectionTitle: {
-    fontSize: 12,
-    fontWeight: '700',
-    fontFamily: 'Rubik-Bold',
-    letterSpacing: 1.5,
-  },
-
-  // Cards
-  sectionCard: {
-    borderRadius: 14,
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
-
-  // Alert items
-  alertItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingRight: 14,
-  },
-  typeIndicator: {
-    width: 3,
-    height: '60%',
-    borderTopRightRadius: 2,
-    borderBottomRightRadius: 2,
-    marginRight: 12,
-  },
-  alertContent: {
-    flex: 1,
-  },
-  alertTitle: {
-    fontSize: 15,
-    fontWeight: '500',
-    marginBottom: 2,
-  },
-  alertSubtitle: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-
-  // Activity items
-  activityItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingRight: 14,
-  },
-  activityIconBg: {
-    width: 34,
-    height: 34,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  activityContent: {
-    flex: 1,
-  },
-  activityTitle: {
-    fontSize: 15,
-    fontWeight: '500',
-    marginBottom: 2,
-  },
-  activitySubtitle: {
-    fontSize: 13,
-  },
-  activityTime: {
-    fontSize: 11,
-    fontWeight: '500',
-    marginLeft: 8,
-    letterSpacing: 0.3,
-  },
-
-  // Empty state
-  emptyCard: {
-    borderRadius: 14,
-    borderWidth: 1,
-    padding: 28,
-    alignItems: 'center',
-  },
-  emptyLabel: {
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 2,
-    marginBottom: 8,
-  },
-  emptyText: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 20,
-    lineHeight: 20,
-  },
-  emptyButton: {
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 10,
-  },
-  emptyButtonText: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '700',
-    letterSpacing: 1,
-  },
-
-  // Status bar
-  statusBarBlur: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
   },
 });

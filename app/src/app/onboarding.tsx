@@ -8,12 +8,14 @@ import {
   type NativeScrollEvent,
   type NativeSyntheticEvent,
   Platform,
+  Pressable,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button, Pressable, Text, View } from '@/components/ui';
+import { MastheadBar, ScreenContainer, Text, View } from '@/components/ui';
 import { Bell, Calculator, Eye } from '@/components/ui/icons';
 import { LogoImage } from '@/components/ui/logo';
+import { getThemeColors } from '@/components/ui/theme';
 import { useIsFirstTime } from '@/lib/hooks';
 import { useNotifications } from '@/lib/notifications/use-notifications';
 
@@ -21,90 +23,91 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 type Slide = {
   id: string;
+  number: string;
+  eyebrow: string;
   title: string;
+  italic: string;
   description: string;
   icon: 'logo' | 'calculator' | 'eye' | 'bell';
-  features?: string[];
+  proofs: string[];
 };
 
 const slides: Slide[] = [
   {
     id: 'welcome',
-    title: 'Welcome to\nTheFrugalist',
-    description: 'Your personal finance companion for smarter car buying and deal hunting.',
+    number: '00',
+    eyebrow: 'A field guide',
+    title: 'Spend with',
+    italic: 'intent.',
+    description:
+      'TheFrugalist is a calm tool for noisy markets. Track prices that move, run the numbers, learn the playbook.',
     icon: 'logo',
-    features: [
-      'Calculate car payments',
-      'Track product prices',
-      'Get notified of deals',
-    ],
+    proofs: ['Track prices', 'Run financing', 'Read the lease'],
   },
   {
     id: 'calculators',
-    title: 'Car Payment\nCalculators',
-    description: 'Make informed decisions with our finance and lease calculators.',
+    number: '01',
+    eyebrow: 'Compute',
+    title: 'Run',
+    italic: 'the math.',
+    description:
+      'Financing and leasing rendered in plain numbers: APR, money factor, residual, true monthly cost.',
     icon: 'calculator',
-    features: [
-      'Compare financing options',
-      'Estimate monthly payments',
-      'Understand total costs',
-      'See amortization schedules',
-    ],
+    proofs: ['Amortization', 'Money factor to APR', 'Side-by-side comparisons'],
   },
   {
     id: 'tracker',
-    title: 'Price Drop\nAlerts',
-    description: 'Track products and get notified when prices drop to your target.',
+    number: '02',
+    eyebrow: 'Watch',
+    title: 'Track',
+    italic: 'movement.',
+    description:
+      'Drop-by-drop price history. Alerts only when motion makes the moment worth your attention.',
     icon: 'eye',
-    features: [
-      'Track any product by SKU/UPC',
-      'Set your target price',
-      'Monitor multiple retailers',
-      'View price history',
-    ],
+    proofs: ['Price history', 'In-stock alerts', 'Return-window refunds'],
   },
   {
     id: 'notifications',
-    title: 'Stay\nNotified',
-    description: 'Enable notifications to never miss a price drop or deal.',
+    number: '03',
+    eyebrow: 'Stay informed',
+    title: 'Hear',
+    italic: 'the signal.',
+    description:
+      'Enable notifications to catch every drop the moment it happens. We only ping when motion matters.',
     icon: 'bell',
-    features: [
-      'Instant price drop alerts',
-      'Target price notifications',
-      'Back in stock alerts',
-    ],
+    proofs: ['Price-drop alerts', 'Target-price alerts', 'Back-in-stock alerts'],
   },
 ];
 
-function SlideIcon({ icon, isDark }: { icon: Slide['icon']; isDark: boolean }) {
-  const iconColor = isDark ? '#5A7DAB' : '#235892';
-  const size = 64;
-
+function SlideIcon({ icon, color }: { icon: Slide['icon']; color: string }) {
+  const size = 48;
   switch (icon) {
     case 'logo':
       return <LogoImage variant="auto" size="2xl" />;
     case 'calculator':
-      return <Calculator color={iconColor} size={size} />;
+      return <Calculator color={color} size={size} />;
     case 'eye':
-      return <Eye color={iconColor} size={size} />;
+      return <Eye color={color} size={size} />;
     case 'bell':
-      return <Bell color={iconColor} size={size} />;
+      return <Bell color={color} size={size} />;
     default:
       return null;
   }
 }
 
 export default function Onboarding() {
-  const [_, setIsFirstTime] = useIsFirstTime();
+  const [, setIsFirstTime] = useIsFirstTime();
   const router = useRouter();
   const { colorScheme } = useColorScheme();
   const insets = useSafeAreaInsets();
   const isDark = colorScheme === 'dark';
+  const theme = getThemeColors(isDark);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
-  const { register: registerNotifications, isLoading: isRegisteringNotifications } = useNotifications();
+  const { register: registerNotifications, isLoading: isRegisteringNotifications } =
+    useNotifications();
 
   const handleComplete = () => {
     setIsFirstTime(false);
@@ -119,9 +122,7 @@ export default function Onboarding() {
     }
   };
 
-  const handleSkip = () => {
-    handleComplete();
-  };
+  const handleSkip = () => handleComplete();
 
   const handleEnableNotifications = async () => {
     await registerNotifications();
@@ -139,52 +140,74 @@ export default function Onboarding() {
     return (
       <View
         style={{ width: SCREEN_WIDTH }}
-        className="flex-1 items-center justify-center px-8"
+        className="flex-1 px-8 py-4"
       >
+        {/* Number + eyebrow */}
+        <View className="flex-row items-center mb-8">
+          <Text className="text-xs font-mono text-text-muted-light dark:text-text-muted-dark mr-3">
+            № {item.number}
+          </Text>
+          <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+            {item.eyebrow}
+          </Text>
+        </View>
+
         {/* Icon */}
-        <View className="mb-8 size-32 items-center justify-center rounded-full bg-primary/10 dark:bg-primary-light/10">
-          <SlideIcon icon={item.icon} isDark={isDark} />
+        <View className="mb-8 self-start w-16 h-16 items-center justify-center rounded-md bg-primary dark:bg-text-primary-dark">
+          <SlideIcon icon={item.icon} color={theme.surface} />
         </View>
 
         {/* Title */}
-        <Text className="mb-4 text-center text-4xl font-bold text-neutral-900 dark:text-white">
+        <Text
+          className="font-display tracking-tightest text-text-primary-light dark:text-text-primary-dark"
+          style={{ fontSize: 48, lineHeight: 50 }}
+        >
           {item.title}
+        </Text>
+        <Text
+          className="font-display italic tracking-tightest"
+          style={{ fontSize: 48, lineHeight: 50, color: theme.accentDark }}
+        >
+          {item.italic}
         </Text>
 
         {/* Description */}
-        <Text className="mb-8 text-center text-lg text-neutral-600 dark:text-neutral-400">
+        <Text className="mt-6 text-base leading-6 text-text-muted-light dark:text-text-muted-dark">
           {item.description}
         </Text>
 
-        {/* Features */}
-        {item.features && (
-          <View className="w-full max-w-xs">
-            {item.features.map((feature, i) => (
-              <View key={i} className="mb-3 flex-row items-center">
-                <View className="mr-3 size-2 rounded-full bg-primary dark:bg-primary-light" />
-                <Text className="text-base text-neutral-700 dark:text-neutral-300">
-                  {feature}
-                </Text>
-              </View>
-            ))}
-          </View>
-        )}
+        {/* Proof points */}
+        <View className="mt-8 gap-2">
+          {item.proofs.map((proof, i) => (
+            <View key={i} className="flex-row items-center gap-3">
+              <View className="w-3 h-px bg-accent dark:bg-accent-light" />
+              <Text className="font-mono text-sm text-text-primary-light dark:text-text-primary-dark">
+                {proof}
+              </Text>
+            </View>
+          ))}
+        </View>
 
-        {/* Notification-specific button */}
-        {isLastSlide && (
-          <View className="mt-8 w-full max-w-xs">
-            <Button
-              label={isRegisteringNotifications ? 'Enabling...' : 'Enable Notifications'}
+        {/* Last-slide CTA */}
+        {isLastSlide ? (
+          <View className="mt-10 gap-3">
+            <Pressable
               onPress={handleEnableNotifications}
               disabled={isRegisteringNotifications}
-            />
-            <Pressable onPress={handleComplete} className="mt-4 py-2">
-              <Text className="text-center text-base text-neutral-500 dark:text-neutral-400">
-                Maybe Later
+              className="rounded-md bg-primary px-5 py-3.5 items-center active:opacity-80"
+              style={{ opacity: isRegisteringNotifications ? 0.6 : 1 }}
+            >
+              <Text className="text-sm font-medium text-surface-light">
+                {isRegisteringNotifications ? 'Enabling…' : 'Enable notifications'}
+              </Text>
+            </Pressable>
+            <Pressable onPress={handleComplete} className="py-2 items-center">
+              <Text className="text-sm text-text-muted-light dark:text-text-muted-dark">
+                Maybe later
               </Text>
             </Pressable>
           </View>
-        )}
+        ) : null}
       </View>
     );
   };
@@ -192,19 +215,22 @@ export default function Onboarding() {
   const isLastSlide = currentIndex === slides.length - 1;
 
   return (
-    <View className="flex-1 bg-neutral-50 dark:bg-charcoal-950">
-      {/* Header with Skip button */}
-      <View
-        style={{ paddingTop: insets.top + 16 }}
-        className="flex-row items-center justify-end px-6"
-      >
-        {!isLastSlide && (
-          <Pressable onPress={handleSkip} className="py-2">
-            <Text className="text-base font-medium text-primary dark:text-primary-light">
-              Skip
-            </Text>
-          </Pressable>
-        )}
+    <ScreenContainer>
+      {/* Top bar */}
+      <View style={{ paddingTop: insets.top + 12 }}>
+        <MastheadBar
+          left="Onboarding"
+          center="A field guide to what things should cost"
+          right={
+            !isLastSlide ? (
+              <Pressable onPress={handleSkip} className="py-1">
+                <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+                  Skip
+                </Text>
+              </Pressable>
+            ) : null
+          }
+        />
       </View>
 
       {/* Slides */}
@@ -226,33 +252,36 @@ export default function Onboarding() {
         })}
       />
 
-      {/* Bottom section */}
+      {/* Bottom strip — pagination + CTA */}
       <View
         style={{ paddingBottom: Platform.OS === 'ios' ? insets.bottom + 16 : 32 }}
-        className="px-8"
+        className="px-8 pt-4 border-t border-border-light dark:border-border-dark"
       >
-        {/* Pagination dots */}
-        <View className="mb-6 flex-row items-center justify-center">
+        {/* Pagination */}
+        <View className="mb-5 flex-row items-center justify-center gap-1.5">
           {slides.map((_, index) => (
             <View
               key={index}
-              className={`mx-1 h-2 rounded-full ${
+              className={`h-1 rounded-full ${
                 index === currentIndex
-                  ? 'w-6 bg-primary dark:bg-primary-light'
-                  : 'w-2 bg-neutral-300 dark:bg-charcoal-600'
+                  ? 'w-8 bg-primary dark:bg-text-primary-dark'
+                  : 'w-3 bg-border-light dark:bg-border-dark'
               }`}
             />
           ))}
         </View>
 
-        {/* Next/Get Started button - hidden on notifications slide */}
-        {!isLastSlide && (
-          <Button
-            label={currentIndex === slides.length - 2 ? 'Continue' : 'Next'}
+        {!isLastSlide ? (
+          <Pressable
             onPress={handleNext}
-          />
-        )}
+            className="rounded-md bg-primary px-5 py-3.5 items-center active:opacity-80"
+          >
+            <Text className="text-sm font-medium text-surface-light">
+              {currentIndex === slides.length - 2 ? 'Continue' : 'Next'}
+            </Text>
+          </Pressable>
+        ) : null}
       </View>
-    </View>
+    </ScreenContainer>
   );
 }

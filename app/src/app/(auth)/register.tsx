@@ -2,16 +2,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, router } from 'expo-router';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
 import { useRegister } from '@/api/auth/use-auth';
 import {
-  Button,
   ControlledInput,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
+  LogoImage,
+  MastheadBar,
+  ScreenContainer,
   Text,
   View,
 } from '@/components/ui';
@@ -33,6 +34,7 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 
 export default function RegisterScreen() {
   const { mutate: register, isPending } = useRegister();
+  const insets = useSafeAreaInsets();
 
   const { control, handleSubmit } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -49,7 +51,7 @@ export default function RegisterScreen() {
     register(data, {
       onSuccess: () => {
         showMessage({
-          message: 'Account Created',
+          message: 'Account created',
           description: 'Please check your email to verify your account',
           type: 'success',
         });
@@ -57,7 +59,7 @@ export default function RegisterScreen() {
       },
       onError: (error) => {
         showMessage({
-          message: 'Registration Failed',
+          message: 'Registration failed',
           description: error.message || 'Could not create account',
           type: 'danger',
         });
@@ -66,95 +68,141 @@ export default function RegisterScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-neutral-900">
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ flexGrow: 1, padding: 24 }}
-        keyboardShouldPersistTaps="handled"
+    <ScreenContainer>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 16 : 0}
       >
-        {/* Header */}
-        <View className="my-8">
-          <Text className="text-3xl font-bold text-neutral-900 dark:text-white">
-            Create Account
-          </Text>
-          <Text className="mt-2 text-neutral-600 dark:text-neutral-400">
-            Sign up to get started with TheFrugalist
-          </Text>
-        </View>
+        <ScrollView
+          className="flex-1"
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingTop: insets.top + 12,
+            paddingBottom: insets.bottom + 32,
+          }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <MastheadBar
+            left="v 1.0.0"
+            center="A field guide to what things should cost"
+            right={
+              <Link href="/" asChild>
+                <Pressable>
+                  <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+                    Back to home
+                  </Text>
+                </Pressable>
+              </Link>
+            }
+          />
 
-        {/* Form */}
-        <View className="gap-4">
-          <View className="flex-row gap-4">
-            <View className="flex-1">
+          <View className="px-6 mt-10 items-center">
+            <LogoImage variant="auto" className="!size-16" />
+            <Text
+              className="font-display italic mt-3 text-accent dark:text-accent-light"
+              style={{ fontSize: 18 }}
+            >
+              Spend with intent.
+            </Text>
+          </View>
+
+          <View className="px-6 mt-8">
+            <View className="rounded-md bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-6">
+              <View className="items-center mb-5">
+                <Text
+                  className="font-display text-text-primary-light dark:text-text-primary-dark"
+                  style={{ fontSize: 22 }}
+                >
+                  Create account
+                </Text>
+              </View>
+
+              <View className="flex-row gap-3">
+                <View className="flex-1">
+                  <ControlledInput
+                    control={control}
+                    name="first_name"
+                    label="First name"
+                    placeholder="John"
+                    autoCapitalize="words"
+                  />
+                </View>
+                <View className="flex-1">
+                  <ControlledInput
+                    control={control}
+                    name="last_name"
+                    label="Last name"
+                    placeholder="Doe"
+                    autoCapitalize="words"
+                  />
+                </View>
+              </View>
+
               <ControlledInput
                 control={control}
-                name="first_name"
-                label="First Name"
-                placeholder="John"
-                autoCapitalize="words"
+                name="email"
+                label="Email"
+                placeholder="john@example.com"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoComplete="email"
               />
-            </View>
-            <View className="flex-1">
+
               <ControlledInput
                 control={control}
-                name="last_name"
-                label="Last Name"
-                placeholder="Doe"
-                autoCapitalize="words"
+                name="password"
+                label="Password"
+                placeholder="Min 8 characters"
+                secureTextEntry
+                autoComplete="new-password"
               />
+
+              <ControlledInput
+                control={control}
+                name="password_confirmation"
+                label="Confirm password"
+                placeholder="Confirm your password"
+                secureTextEntry
+                autoComplete="new-password"
+              />
+
+              <Pressable
+                onPress={handleSubmit(onSubmit)}
+                disabled={isPending}
+                className="rounded-md bg-primary px-5 py-3.5 items-center mt-2 active:opacity-80"
+                style={{ opacity: isPending ? 0.6 : 1 }}
+              >
+                <Text className="text-sm font-medium text-surface-light">
+                  {isPending ? 'Creating account…' : 'Create account'}
+                </Text>
+              </Pressable>
+
+              <View className="mt-6 pt-5 border-t border-border-light dark:border-border-dark items-center">
+                <View className="flex-row items-center">
+                  <Text className="text-sm text-text-muted-light dark:text-text-muted-dark">
+                    Already have an account?{' '}
+                  </Text>
+                  <Link href="/(auth)/login" asChild>
+                    <Pressable>
+                      <Text className="text-sm font-medium text-primary dark:text-text-primary-dark">
+                        Sign in
+                      </Text>
+                    </Pressable>
+                  </Link>
+                </View>
+              </View>
             </View>
           </View>
 
-          <ControlledInput
-            control={control}
-            name="email"
-            label="Email"
-            placeholder="john@example.com"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoComplete="email"
-          />
-
-          <ControlledInput
-            control={control}
-            name="password"
-            label="Password"
-            placeholder="Min 8 characters"
-            secureTextEntry
-            autoComplete="new-password"
-          />
-
-          <ControlledInput
-            control={control}
-            name="password_confirmation"
-            label="Confirm Password"
-            placeholder="Confirm your password"
-            secureTextEntry
-            autoComplete="new-password"
-          />
-        </View>
-
-        {/* Submit Button */}
-        <View className="mt-8">
-          <Button
-            label={isPending ? 'Creating Account...' : 'Create Account'}
-            onPress={handleSubmit(onSubmit)}
-            disabled={isPending}
-          />
-        </View>
-
-        {/* Login Link */}
-        <View className="mt-6 flex-row items-center justify-center">
-          <Text className="text-neutral-600 dark:text-neutral-400">
-            Already have an account?{' '}
-          </Text>
-          <Link href="/(auth)/login" asChild>
-            <Pressable>
-              <Text className="font-semibold text-primary">Sign In</Text>
-            </Pressable>
-          </Link>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+          <View className="items-center mt-10">
+            <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light/60 dark:text-text-muted-dark/60">
+              v. 1.0.0 · Established {new Date().getFullYear()}
+            </Text>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </ScreenContainer>
   );
 }

@@ -10,29 +10,30 @@ import { Text } from './text';
 
 const inputTv = tv({
   slots: {
-    container: 'mb-3',
-    label: 'mb-1.5 text-sm font-medium text-charcoal-700 dark:text-charcoal-200',
-    // Clean modern input with subtle border
+    container: 'mb-4',
+    label:
+      'mb-1.5 text-sm font-medium text-text-primary-light dark:text-text-primary-dark',
     input:
-      'mt-0 rounded-md border border-charcoal-200 bg-white px-4 py-3.5 text-base font-normal leading-5 text-charcoal-900 dark:border-charcoal-600 dark:bg-charcoal-800 dark:text-white',
+      'mt-0 rounded-md border border-border-light bg-surface-light px-4 py-3.5 text-base font-normal leading-5 text-text-primary-light dark:border-border-dark dark:bg-surface-dark dark:text-text-primary-dark',
   },
 
   variants: {
     focused: {
       true: {
-        // Blue focus ring
-        input: 'border-primary dark:border-primary-light',
+        // Brand navy focus
+        input: 'border-accent dark:border-accent-light',
       },
     },
     error: {
       true: {
-        input: 'border-danger-500 dark:border-danger-500',
-        label: 'text-danger-600 dark:text-danger-400',
+        input: 'border-danger dark:border-danger',
+        label: 'text-danger dark:text-danger',
       },
     },
     disabled: {
       true: {
-        input: 'bg-charcoal-100 text-charcoal-400 dark:bg-charcoal-700 dark:text-charcoal-500',
+        input:
+          'bg-surface-dark-light text-text-muted-light dark:bg-surface-dark-dark dark:text-text-muted-dark',
       },
     },
   },
@@ -47,6 +48,8 @@ export interface NInputProps extends TextInputProps {
   label?: string;
   disabled?: boolean;
   error?: string;
+  /** Render help text below the input (above the error if any) */
+  helperText?: string;
 }
 
 type TRule<T extends FieldValues> =
@@ -63,7 +66,7 @@ export type InputControllerType<T extends FieldValues> = {
 interface ControlledInputProps<T extends FieldValues> extends NInputProps, InputControllerType<T> {}
 
 export const Input = React.forwardRef<NTextInput, NInputProps>((props, ref) => {
-  const { label, error, testID, ...inputProps } = props;
+  const { label, error, helperText, testID, ...inputProps } = props;
   const [isFocussed, setIsFocussed] = React.useState(false);
   const onBlur = React.useCallback(() => setIsFocussed(false), []);
   const onFocus = React.useCallback(() => setIsFocussed(true), []);
@@ -88,7 +91,7 @@ export const Input = React.forwardRef<NTextInput, NInputProps>((props, ref) => {
       <NTextInput
         testID={testID}
         ref={ref}
-        placeholderTextColor={colors.charcoal[400]}
+        placeholderTextColor={colors.text.muted.light}
         className={styles.input()}
         onBlur={onBlur}
         onFocus={onFocus}
@@ -99,10 +102,15 @@ export const Input = React.forwardRef<NTextInput, NInputProps>((props, ref) => {
           inputProps.style,
         ])}
       />
+      {helperText && !error && (
+        <Text className="mt-1.5 text-xs text-text-muted-light dark:text-text-muted-dark">
+          {helperText}
+        </Text>
+      )}
       {error && (
         <Text
           testID={testID ? `${testID}-error` : undefined}
-          className="mt-1 text-sm text-danger-500 dark:text-danger-400"
+          className="mt-1.5 text-xs text-danger"
         >
           {error}
         </Text>

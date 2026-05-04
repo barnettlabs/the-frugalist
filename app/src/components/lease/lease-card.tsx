@@ -2,7 +2,6 @@ import { Link } from 'expo-router';
 import React from 'react';
 
 import { Pressable, Text, View } from '@/components/ui';
-import { tw } from '@/components/ui/theme';
 import { formatCurrencyWithSymbol, LeaseCalculator } from '@/lib/calculators';
 import type { VehicleLeaseSheet } from '@/lib/types/models';
 
@@ -13,79 +12,80 @@ interface LeaseCardProps {
 export function LeaseCard({ sheet }: LeaseCardProps) {
   const calculator = new LeaseCalculator(sheet);
   const leasePayment = calculator.calculateLeasePayment();
-  const cashDueAtSigning = calculator.calculateCashDueAtSigning();
 
   return (
     <Link href={`/compute/lease/${sheet.id}?from=lease`} asChild>
-      {/* Glassmorphism card with soft shadow and rounded corners */}
-      <Pressable className={`p-4 ${tw.cardElevated}`}>
-        {/* Header */}
-        <View className="mb-3 flex-row items-start justify-between">
-          <View className="flex-1">
-            <Text className="text-lg font-semibold text-neutral-900 dark:text-white">
-              {sheet.sheet_name || 'Untitled Estimate'}
-            </Text>
-            <Text className="text-sm text-neutral-500 dark:text-neutral-400">
-              {sheet.vehicle_year} {sheet.vehicle_make} {sheet.vehicle_model}
-              {sheet.vehicle_trim ? ` ${sheet.vehicle_trim}` : ''}
-            </Text>
-          </View>
-          {/* Status badge with secondary purple accent */}
-          <View className="rounded-full bg-secondary/10 px-3 py-1 dark:bg-secondary/20">
-            <Text className="text-xs font-bold uppercase tracking-wide text-secondary dark:text-secondary-light">
-              Lease
-            </Text>
-          </View>
-        </View>
-
-        {/* Monthly Payment - subtle glass effect */}
-        <View className="mb-3 rounded-lg bg-neutral-50 p-3 dark:bg-charcoal-800/60">
-          <Text className="text-sm text-neutral-500 dark:text-neutral-400">Monthly Payment</Text>
-          <Text className="text-2xl font-bold text-secondary dark:text-secondary-light">
-            {formatCurrencyWithSymbol(leasePayment)}
+      <Pressable className="rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark overflow-hidden active:opacity-90">
+        {/* Header strip */}
+        <View className="px-4 py-2.5 border-b border-border-light dark:border-border-dark flex-row items-center">
+          <Text className="flex-1 text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark" numberOfLines={1}>
+            {sheet.dealership_name || 'No dealership'}
           </Text>
-          <Text className="text-xs text-neutral-500 dark:text-neutral-400">
-            {sheet.lease_term} months • {sheet.residual_percent}% residual
+          <Text className="text-[10px] font-mono uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
+            Lease
           </Text>
         </View>
 
-        {/* Details row */}
-        <View className="flex-row justify-between">
-          <View>
-            <Text className="text-xs font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
-              MSRP
+        {/* Body */}
+        <View className="p-4">
+          <Text className="text-xs text-text-muted-light dark:text-text-muted-dark mb-1">
+            {sheet.sheet_name || 'Untitled estimate'}
+          </Text>
+          <View className="flex-row items-baseline">
+            <Text
+              className="font-mono text-text-muted-light dark:text-text-muted-dark mr-2"
+              style={{ fontSize: 14 }}
+            >
+              {sheet.vehicle_year}
             </Text>
-            <Text className="font-medium text-neutral-700 dark:text-neutral-300">
-              {formatCurrencyWithSymbol(sheet.msrp)}
+            <Text
+              className="font-display tracking-tight text-text-primary-light dark:text-text-primary-dark flex-1"
+              style={{ fontSize: 22, lineHeight: 24 }}
+              numberOfLines={1}
+            >
+              {sheet.vehicle_make}{' '}
+              <Text
+                className="italic text-text-muted-light dark:text-text-muted-dark"
+                style={{ fontSize: 22 }}
+              >
+                {sheet.vehicle_model}
+              </Text>
             </Text>
           </View>
-          <View>
-            <Text className="text-xs font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
-              Down
-            </Text>
-            <Text className="font-medium text-neutral-700 dark:text-neutral-300">
-              {formatCurrencyWithSymbol(sheet.down_payment)}
-            </Text>
-          </View>
-          <View>
-            <Text className="text-xs font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
-              Due
-            </Text>
-            <Text className="font-medium text-neutral-700 dark:text-neutral-300">
-              {formatCurrencyWithSymbol(cashDueAtSigning)}
-            </Text>
+
+          {/* Monthly hero figure */}
+          <View className="flex-row items-baseline justify-between mt-5">
+            <View>
+              <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-1.5">
+                Monthly
+              </Text>
+              <Text
+                className="font-mono tracking-tight text-text-primary-light dark:text-text-primary-dark"
+                style={{ fontSize: 30, lineHeight: 32 }}
+              >
+                {formatCurrencyWithSymbol(leasePayment)}
+              </Text>
+            </View>
+            <View className="items-end">
+              <Text className="font-mono text-xs text-text-muted-light dark:text-text-muted-dark">
+                {sheet.lease_term} mo
+              </Text>
+              <Text className="font-mono text-xs text-text-muted-light dark:text-text-muted-dark">
+                {sheet.residual_percent}% res
+              </Text>
+            </View>
           </View>
         </View>
 
-        {/* Dealership Info */}
-        {sheet.dealership_name && (
-          <View className="mt-3 border-t border-neutral-100 pt-3 dark:border-charcoal-700">
-            <Text className="text-xs text-neutral-500 dark:text-neutral-400">
-              {sheet.dealership_name}
-              {sheet.sales_consultant && ` • ${sheet.sales_consultant}`}
-            </Text>
-          </View>
-        )}
+        {/* Footer */}
+        <View className="px-4 py-3 border-t border-border-light dark:border-border-dark flex-row justify-between">
+          <Text className="font-mono text-xs text-text-muted-light dark:text-text-muted-dark">
+            {formatCurrencyWithSymbol(sheet.msrp)} MSRP
+          </Text>
+          <Text className="text-xs font-medium text-text-primary-light dark:text-text-primary-dark">
+            Open ↗
+          </Text>
+        </View>
       </Pressable>
     </Link>
   );

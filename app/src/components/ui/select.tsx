@@ -20,29 +20,30 @@ import { Text } from './text';
 
 const selectTv = tv({
   slots: {
-    container: 'mb-3',
-    label: 'mb-1.5 text-sm font-medium text-neutral-700 dark:text-neutral-200',
+    container: 'mb-4',
+    label:
+      'mb-1.5 text-sm font-medium text-text-primary-light dark:text-text-primary-dark',
     input:
-      'mt-0 flex-row items-center rounded-xl border border-neutral-200 bg-white px-4 py-3.5 dark:border-charcoal-600 dark:bg-charcoal-800',
-    inputValue: 'text-base text-neutral-900 dark:text-white',
-    inputPlaceholder: 'text-base text-neutral-400 dark:text-neutral-500',
+      'mt-0 flex-row items-center rounded-md border border-border-light bg-surface-light px-4 py-3.5 dark:border-border-dark dark:bg-surface-dark',
+    inputValue: 'text-base text-text-primary-light dark:text-text-primary-dark',
+    inputPlaceholder: 'text-base text-text-muted-light dark:text-text-muted-dark',
   },
   variants: {
     focused: {
       true: {
-        input: 'border-primary-light dark:border-primary',
+        input: 'border-accent dark:border-accent-light',
       },
     },
     error: {
       true: {
-        input: 'border-danger-500 dark:border-danger-500',
-        label: 'text-danger-600 dark:text-danger-400',
-        inputValue: 'text-danger-600',
+        input: 'border-danger dark:border-danger',
+        label: 'text-danger dark:text-danger',
+        inputValue: 'text-danger',
       },
     },
     disabled: {
       true: {
-        input: 'bg-neutral-100 dark:bg-charcoal-700 opacity-60',
+        input: 'bg-surface-dark-light dark:bg-surface-dark-dark opacity-60',
       },
     },
   },
@@ -116,10 +117,10 @@ export const Options = React.forwardRef<BottomSheetModal, OptionsProps>(
         index={0}
         snapPoints={snapPoints}
         backgroundStyle={{
-          backgroundColor: isDark ? colors.charcoal[850] : colors.white,
+          backgroundColor: isDark ? colors.surface.dark : colors.surface.light,
         }}
         handleIndicatorStyle={{
-          backgroundColor: isDark ? colors.charcoal[600] : colors.neutral[300],
+          backgroundColor: isDark ? colors.border.dark : colors.border.light,
           width: 40,
         }}
       >
@@ -150,10 +151,10 @@ const Option = React.memo(({ option, selected = false, onPress, testID, isLast }
 
   return (
     <Pressable
-      className={`mx-3 flex-row items-center rounded-xl px-4 ${hasExtendedContent ? 'py-3' : 'py-3.5'} ${
+      className={`mx-3 flex-row items-center rounded-md px-4 ${hasExtendedContent ? 'py-3' : 'py-3.5'} ${
         selected
-          ? 'bg-primary/10 dark:bg-primary/20'
-          : 'active:bg-neutral-50 dark:active:bg-charcoal-700'
+          ? 'bg-tan-light dark:bg-charcoal-800'
+          : 'active:bg-tan-light dark:active:bg-charcoal-800'
       } ${!isLast ? 'mb-1' : ''}`}
       onPress={onPress}
       testID={testID}
@@ -161,13 +162,13 @@ const Option = React.memo(({ option, selected = false, onPress, testID, isLast }
       {(option.icon || option.image) && (
         <View className="mr-3">
           {option.icon ? (
-            <View className="size-10 items-center justify-center rounded-lg bg-neutral-100 dark:bg-charcoal-700">
+            <View className="size-10 items-center justify-center rounded-md bg-tan-light dark:bg-charcoal-800">
               {option.icon}
             </View>
           ) : option.image ? (
             <Image
               source={{ uri: option.image }}
-              className="size-10 rounded-lg"
+              className="size-10 rounded-md"
               contentFit="cover"
             />
           ) : null}
@@ -178,21 +179,21 @@ const Option = React.memo(({ option, selected = false, onPress, testID, isLast }
         <Text
           className={`text-base ${
             selected
-              ? 'font-medium text-accent-dark dark:text-accent-light'
-              : 'text-neutral-900 dark:text-neutral-100'
+              ? 'font-medium text-primary dark:text-text-primary-dark'
+              : 'text-text-primary-light dark:text-text-primary-dark'
           }`}
         >
           {option.label}
         </Text>
         {option.description && (
-          <Text className="mt-0.5 text-sm text-neutral-500 dark:text-neutral-400">
+          <Text className="mt-0.5 text-sm text-text-muted-light dark:text-text-muted-dark">
             {option.description}
           </Text>
         )}
       </View>
 
       {selected && (
-        <View className="ml-3 size-6 items-center justify-center rounded-full bg-primary dark:bg-primary-light">
+        <View className="ml-3 size-6 items-center justify-center rounded-full bg-primary dark:bg-text-primary-dark">
           <Check />
         </View>
       )}
@@ -285,14 +286,14 @@ export const Select = (props: SelectProps) => {
               {selectedOption?.label ?? placeholder}
             </Text>
           </View>
-          <View className="ml-2 size-8 items-center justify-center rounded-lg">
-            <CaretDown color={colors.neutral[400]} />
+          <View className="ml-2 size-8 items-center justify-center rounded-md">
+            <CaretDown color={colors.text.muted.light} />
           </View>
         </Pressable>
         {error && (
           <Text
             testID={`${testID}-error`}
-            className="mt-1.5 text-sm text-danger-500 dark:text-danger-400"
+            className="mt-1.5 text-xs text-danger"
           >
             {error}
           </Text>

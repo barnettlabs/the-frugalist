@@ -1,14 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { Pressable, ScrollView } from 'react-native';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
 import { CurrencyInput } from '@/components/forms';
 import {
-  Button,
   ControlledInput,
-  ScrollView,
+  FormSection,
   Select,
   Text,
   View,
@@ -31,11 +32,6 @@ interface TrackerFormProps {
 
 const RETAILER_OPTIONS = [
   { value: 1, label: 'Best Buy' },
-  { value: 2, label: 'Home Depot' },
-  { value: 3, label: "Lowe's" },
-  { value: 4, label: 'Amazon' },
-  { value: 5, label: 'Walmart' },
-  { value: 6, label: 'Target' },
 ];
 
 export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormProps) {
@@ -50,91 +46,104 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
   });
 
   const retailerId = watch('retailer_id');
-
   const bottomPadding = Math.max(insets.bottom, 16);
 
   return (
-    <View className={`flex-1 ${tw.pageBg}`}>
-      <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
-        {/* Instructions */}
-        <View className="mb-6 rounded-xl bg-blue-50 p-4 dark:bg-blue-900/20">
-          <Text className="font-semibold text-blue-700 dark:text-blue-300">
-            How to Track a Product
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      className={`flex-1 ${tw.pageBg}`}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+    >
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Editorial title */}
+        <View className="mb-5">
+          <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+            Watch · New tracker
           </Text>
-          <Text className="mt-2 text-sm text-blue-600 dark:text-blue-400">
-            1. Enter the product{"'"}s SKU or UPC number{'\n'}
-            2. Select the retailer{'\n'}
-            3. Set your target price{'\n'}
-            4. We{"'"}ll notify you when the price drops!
+          <Text
+            className="font-display tracking-tightest text-text-primary-light dark:text-text-primary-dark"
+            style={{ fontSize: 30, lineHeight: 32 }}
+          >
+            Track a new product.
+          </Text>
+          <Text className="text-sm text-text-muted-light dark:text-text-muted-dark mt-3 leading-5">
+            Pick a retailer, drop in a SKU, set a target. We’ll do the watching.
           </Text>
         </View>
 
-        {/* Form */}
-        <View className={`p-4 ${tw.card}`}>
+        {/* Section 01 — Retailer */}
+        <FormSection number="01" title="Select store">
           <Select
             label="Retailer"
             options={RETAILER_OPTIONS}
             value={retailerId}
             onSelect={(value) => setValue('retailer_id', value as number)}
           />
+        </FormSection>
 
-          <View className="mt-4">
-            <ControlledInput
-              control={control}
-              name="sku_upc"
-              label="SKU / UPC"
-              placeholder="Enter product SKU or UPC"
-            />
-          </View>
+        {/* Section 02 — Identifier */}
+        <FormSection number="02" title="Product identifier">
+          <ControlledInput
+            control={control}
+            name="sku_upc"
+            label="SKU / UPC"
+            placeholder="Enter product SKU or UPC"
+          />
+        </FormSection>
 
-          <View className="mt-4">
-            <CurrencyInput
-              control={control}
-              name="target_price"
-              label="Target Price"
-              placeholder="0.00"
-            />
-          </View>
-
-          <Text className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
-            You{"'"}ll receive a notification when the price drops to or below
-            your target price.
-          </Text>
-        </View>
+        {/* Section 03 — Target */}
+        <FormSection
+          number="03"
+          title="Target price"
+          helper="You’ll receive a notification when the price drops to or below your target."
+        >
+          <CurrencyInput
+            control={control}
+            name="target_price"
+            label="Target price"
+            placeholder="0.00"
+          />
+        </FormSection>
 
         {/* Tips */}
-        <View className="mt-6 rounded-xl bg-neutral-200 p-4 dark:bg-charcoal-700">
-          <Text className="font-medium text-neutral-700 dark:text-neutral-300">
-            Tips for finding SKU/UPC:
+        <View className="mt-3 rounded-md border border-border-light bg-tan-light dark:bg-charcoal-800 dark:border-border-dark p-4">
+          <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-2">
+            Tip · Finding SKU
           </Text>
-          <Text className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-            • Best Buy: Look for SKU on the product page{'\n'}• Home Depot: Look
-            for Internet # or Store SKU{'\n'}• Amazon: Use the ASIN from the
-            product URL{'\n'}• Check the product barcode for UPC numbers
+          <Text className="text-sm text-text-muted-light dark:text-text-muted-dark leading-5">
+            On Best Buy, look for the SKU on the product page (usually under the product title).
           </Text>
         </View>
       </ScrollView>
 
-      {/* Action Buttons */}
+      {/* Action footer */}
       <View
-        className={tw.footerBar}
+        className="border-t border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark px-4 py-4 flex-row gap-3"
         style={{ paddingBottom: bottomPadding }}
       >
-        <View className="flex-row gap-3">
-          {onCancel && (
-            <View className="flex-1">
-              <Button label="Cancel" variant="outline" onPress={onCancel} />
-            </View>
-          )}
-          <View className="flex-1">
-            <Button
-              label={isSubmitting ? 'Tracking...' : 'Start Tracking'}
-              onPress={handleSubmit(onSubmit)}
-              disabled={isSubmitting}
-            />
-          </View>
-        </View>
+        {onCancel ? (
+          <Pressable
+            onPress={onCancel}
+            className="flex-1 px-4 py-3 rounded-md items-center active:opacity-70"
+          >
+            <Text className="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Cancel</Text>
+          </Pressable>
+        ) : null}
+        <Pressable
+          onPress={handleSubmit(onSubmit)}
+          disabled={isSubmitting}
+          className="flex-1 px-4 py-3 rounded-md items-center bg-primary active:opacity-80"
+          style={{ opacity: isSubmitting ? 0.6 : 1 }}
+        >
+          <Text className="text-sm font-medium text-surface-light">
+            {isSubmitting ? 'Tracking…' : 'Start tracking'}
+          </Text>
+        </Pressable>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }

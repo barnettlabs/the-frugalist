@@ -17,47 +17,50 @@ const button = tv({
   variants: {
     variant: {
       default: {
-        // Primary blue button
-        container: 'bg-primary active:bg-primary-dark',
-        label: 'text-white',
-        indicator: 'text-white',
+        // Primary ink button (editorial palette)
+        container: 'bg-primary active:bg-primary-light',
+        label: 'text-surface-light',
+        indicator: 'text-surface-light',
       },
       secondary: {
-        // Secondary green variant
-        container: 'bg-secondary active:bg-secondary-dark',
-        label: 'text-white',
-        indicator: 'text-white',
+        // Secondary uses brand navy (renamed from teal)
+        container: 'bg-accent active:bg-accent-dark',
+        label: 'text-surface-light',
+        indicator: 'text-surface-light',
+      },
+      signal: {
+        // Marigold signal accent (savings, success moments)
+        container: 'bg-signal active:bg-signal-dark',
+        label: 'text-surface-light',
+        indicator: 'text-surface-light',
       },
       outline: {
-        // Bordered button with transparent background
         container:
-          'border border-primary bg-transparent active:bg-primary/10 dark:border-primary-light dark:active:bg-primary/20',
-        label: 'text-primary dark:text-primary-light',
-        indicator: 'text-primary dark:text-primary-light',
+          'border border-primary bg-transparent active:bg-primary/5 dark:border-text-primary-dark dark:active:bg-text-primary-dark/10',
+        label: 'text-primary dark:text-text-primary-dark',
+        indicator: 'text-primary dark:text-text-primary-dark',
       },
       'outline-secondary': {
-        // Secondary outline
         container:
-          'border border-secondary bg-transparent active:bg-secondary/10 dark:border-secondary-light dark:active:bg-secondary/20',
-        label: 'text-secondary dark:text-secondary-light',
-        indicator: 'text-secondary dark:text-secondary-light',
+          'border border-accent bg-transparent active:bg-accent/10 dark:border-accent-light dark:active:bg-accent-light/10',
+        label: 'text-accent dark:text-accent-light',
+        indicator: 'text-accent dark:text-accent-light',
       },
       destructive: {
-        container: 'bg-danger-600 active:bg-danger-700',
-        label: 'text-white',
-        indicator: 'text-white',
+        container: 'bg-danger active:bg-danger-700',
+        label: 'text-surface-light',
+        indicator: 'text-surface-light',
       },
       ghost: {
-        container: 'bg-transparent active:bg-charcoal-100 dark:active:bg-charcoal-800',
-        label: 'text-charcoal-700 dark:text-charcoal-200',
-        indicator: 'text-charcoal-700 dark:text-charcoal-200',
+        container: 'bg-transparent active:bg-tan-light dark:active:bg-charcoal-800',
+        label: 'text-text-muted-light dark:text-text-muted-dark',
+        indicator: 'text-text-muted-light dark:text-text-muted-dark',
       },
       link: {
         container: 'bg-transparent',
-        label: 'text-primary dark:text-primary-light',
+        label: 'text-primary dark:text-text-primary-dark underline',
         indicator: 'text-primary',
       },
-      // Glassy button for dark backgrounds
       glass: {
         container: 'border border-white/20 bg-white/10 backdrop-blur-md active:bg-white/20',
         label: 'text-white',
@@ -82,9 +85,9 @@ const button = tv({
     },
     disabled: {
       true: {
-        container: 'bg-charcoal-200 dark:bg-charcoal-700',
-        label: 'text-charcoal-400 dark:text-charcoal-500',
-        indicator: 'text-charcoal-400 dark:text-charcoal-500',
+        container: 'bg-tan dark:bg-charcoal-700',
+        label: 'text-text-muted-light dark:text-text-muted-dark',
+        indicator: 'text-text-muted-light dark:text-text-muted-dark',
       },
     },
     fullWidth: {

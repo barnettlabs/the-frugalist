@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Mail\PriceDropAlert;
 use App\Models\PriceAlert;
 use App\Models\TrackedProduct;
+use App\Services\ExpoPushService;
 use App\Services\Retailers\RetailerServiceFactory;
 use App\Services\TwilioService;
 use Illuminate\Console\Command;
@@ -169,6 +170,15 @@ class CheckProductPrices extends Command
                     $this->line("  📧 Email notification sent to {$product->user->email}");
                 }
 
+                // Send push notification if user has 'push' in notification methods and has active devices
+                $this->sendPushAlert($product, $alertType, $oldPrice, $newPrice);
+
+                // Create in-app notification record
+                $this->createInAppNotification($product, $alertType, $oldPrice, $newPrice);
+
+                // Mark alert as notified
+                $alert->update(['notification_sent' => true]);
+
                 // SMS TEMPORARILY DISABLED - waiting for Twilio approval
                 // Send SMS notification if user has phone verified and sms is in notification methods
                 // if (in_array('sms', $product->notification_method ?? []) && $product->user->canReceiveSmsNotifications()) {
@@ -209,6 +219,11 @@ class CheckProductPrices extends Command
                         Mail::to($product->user->email)->send(new PriceDropAlert($product, 'back_in_stock'));
                         $this->line("  📧 Email notification sent to {$product->user->email}");
                     }
+
+                    // Send push notification + in-app record for back_in_stock
+                    $this->sendPushAlert($product, 'back_in_stock', $oldPrice, $newPrice);
+                    $this->createInAppNotification($product, 'back_in_stock', $oldPrice, $newPrice);
+                    $alert->update(['notification_sent' => true]);
                 } elseif ($oldInStock && !$newInStock) {
                     // Went out of stock (just log, no alert)
                     $this->line("  ⚠️  {$product->product_name}: Out of stock");
@@ -232,5 +247,55 @@ class CheckProductPrices extends Command
     private function formatCurrency(float $amount): string
     {
         return '$' . number_format($amount, 2);
+    }
+
+    private function sendPushAlert(TrackedProduct $product, string $alertType, float $oldPrice, float $newPrice): void
+    {
+        if (!in_array('push', $product->notification_method ?? [])) {
+            return;
+        }
+
+        $tokens = $product->user->activePushTokens();
+        if (empty($tokens)) {
+            return;
+        }
+
+        $result = app(ExpoPushService::class)->sendPriceDropAlert(
+            $tokens,
+            $product->product_name,
+            $newPrice,
+            $oldPrice,
+            $alertType,
+            $product->id
+        );
+
+        if ($result['success'] ?? false) {
+            $this->line("  🔔 Push notification sent to " . count($tokens) . " device(s)");
+        } else {
+            $this->line("  ⚠️  Push failed: " . ($result['error'] ?? 'unknown'));
+        }
+    }
+
+    private function createInAppNotification(TrackedProduct $product, string $alertType, float $oldPrice, float $newPrice): void
+    {
+        $title = match ($alertType) {
+            'target_reached' => 'Target price reached',
+            'price_drop' => 'Price drop',
+            'back_in_stock' => 'Back in stock',
+            default => 'Price alert',
+        };
+
+        $message = match ($alertType) {
+            'target_reached' => sprintf('%s hit your target at %s', $product->product_name, $this->formatCurrency($newPrice)),
+            'price_drop' => sprintf('%s dropped from %s to %s', $product->product_name, $this->formatCurrency($oldPrice), $this->formatCurrency($newPrice)),
+            'back_in_stock' => sprintf('%s is back in stock at %s', $product->product_name, $this->formatCurrency($newPrice)),
+            default => $product->product_name,
+        };
+
+        \App\Models\Notification::create([
+            'user_id' => $product->user_id,
+            'title' => $title,
+            'message' => $message,
+        ]);
     }
 }

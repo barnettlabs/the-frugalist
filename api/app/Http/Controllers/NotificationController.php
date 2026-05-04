@@ -23,4 +23,22 @@ class NotificationController extends Controller
 
         return response()->json($notification);
     }
+
+    public function markAsRead(Request $request, Notification $notification): JsonResponse
+    {
+        if ($notification->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $notification->markAsRead();
+
+        return response()->json($notification->fresh());
+    }
+
+    public function markAllAsRead(Request $request): JsonResponse
+    {
+        $request->user()->notifications()->unread()->update(['read_at' => now()]);
+
+        return response()->json(['message' => 'All notifications marked as read.']);
+    }
 }

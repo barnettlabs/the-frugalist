@@ -13,10 +13,27 @@ class Notification extends Model
         'user_id',
         'title',
         'message',
+        'read_at',
+    ];
+
+    protected $casts = [
+        'read_at' => 'datetime',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function markAsRead(): void
+    {
+        if ($this->read_at === null) {
+            $this->forceFill(['read_at' => now()])->save();
+        }
+    }
+
+    public function scopeUnread($query)
+    {
+        return $query->whereNull('read_at');
     }
 }

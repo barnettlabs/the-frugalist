@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import * as Notifications from 'expo-notifications';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -101,8 +102,7 @@ export function useNotifications() {
 
         // Handle navigation based on notification type
         if (data.type === 'price_alert' && data.tracked_product_id) {
-          // TODO: Navigate to the tracked product details
-          // router.push(`/tracker/${data.tracked_product_id}`);
+          router.push(`/watch/${data.tracked_product_id}?from=notification`);
         }
       });
 

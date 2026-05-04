@@ -30,8 +30,8 @@ const isCompact = computed(() => props.variant === 'compact')
       <!-- Top eyebrow row: section label + optional running index -->
       <div class="flex items-baseline justify-between mb-5 lg:mb-7">
         <div class="flex items-center gap-3 fade-up">
-          <span v-if="icon" class="inline-flex items-center justify-center w-8 h-8 rounded-md surface-navy paper-grain">
-            <component :is="icon" class="h-4 w-4 text-white relative z-10" />
+          <span v-if="icon" class="inline-flex items-center justify-center w-8 h-8 rounded-md bg-primary text-surface">
+            <component :is="icon" class="h-4 w-4" />
           </span>
           <span class="eyebrow">{{ eyebrow || '·' }}</span>
         </div>

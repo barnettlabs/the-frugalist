@@ -322,8 +322,8 @@ onMounted(() => {
           to="/estimates/financing/create"
           class="group flex flex-col items-center justify-center min-h-[260px] rounded-md border border-dashed border-border-strong text-center p-6 hover:border-primary hover:bg-surface transition-colors"
         >
-          <div class="w-12 h-12 rounded-md surface-navy paper-grain flex items-center justify-center mb-3">
-            <PlusIcon class="h-5 w-5 text-white relative z-10" />
+          <div class="w-12 h-12 rounded-md bg-primary text-surface flex items-center justify-center mb-3">
+            <PlusIcon class="h-5 w-5" />
           </div>
           <p class="font-display text-lg text-primary tracking-tight">New estimate</p>
           <p class="text-xs text-text-muted mt-1">Run another set of numbers</p>

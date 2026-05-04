@@ -12,6 +12,7 @@ import {
 import { useAuthStore } from '@/stores/auth'
 import { dashboardApi, type DashboardStats } from '@/api/dashboard'
 import Spinner from '@/components/Spinner.vue'
+import MastheadBar from '@/components/MastheadBar.vue'
 
 const authStore = useAuthStore()
 
@@ -91,13 +92,18 @@ onMounted(() => {
 
     <template v-else>
       <!-- Editorial masthead -->
-      <header class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8 lg:pt-12">
-        <div class="flex items-center justify-between border-y border-border-strong py-2 mb-10">
-          <span class="eyebrow">{{ todayLabel }}</span>
-          <span class="eyebrow hidden sm:inline">Personal ledger</span>
-          <span class="numeral text-xs text-text-muted">№ {{ totalActivity.toString().padStart(3, '0') }}</span>
-        </div>
+      <div class="pt-8 lg:pt-12">
+        <MastheadBar center-text="Personal ledger">
+          <template #left>{{ todayLabel }}</template>
+          <template #right>
+            <span class="numeral text-xs text-text-muted">
+              № {{ totalActivity.toString().padStart(3, '0') }}
+            </span>
+          </template>
+        </MastheadBar>
+      </div>
 
+      <header class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-10">
         <div class="grid grid-cols-12 gap-6 lg:gap-12 items-end">
           <div class="col-span-12 lg:col-span-8 fade-up">
             <p class="eyebrow mb-4">{{ greeting }}</p>
@@ -183,8 +189,8 @@ onMounted(() => {
             to="/watch/create"
             class="group flex items-center gap-4 p-4 rounded-md border border-border bg-surface hover:border-primary/40 hover:bg-surface-dark transition-colors"
           >
-            <div class="w-10 h-10 rounded-md surface-navy paper-grain flex items-center justify-center flex-shrink-0">
-              <PlusIcon class="h-4 w-4 text-white relative z-10" />
+            <div class="w-10 h-10 rounded-md bg-primary text-surface flex items-center justify-center flex-shrink-0">
+              <PlusIcon class="h-4 w-4" />
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium text-primary">Track a price</p>
@@ -196,8 +202,8 @@ onMounted(() => {
             to="/estimates/financing/create"
             class="group flex items-center gap-4 p-4 rounded-md border border-border bg-surface hover:border-primary/40 hover:bg-surface-dark transition-colors"
           >
-            <div class="w-10 h-10 rounded-md surface-navy paper-grain flex items-center justify-center flex-shrink-0">
-              <CalculatorIcon class="h-4 w-4 text-white relative z-10" />
+            <div class="w-10 h-10 rounded-md bg-primary text-surface flex items-center justify-center flex-shrink-0">
+              <CalculatorIcon class="h-4 w-4" />
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium text-primary">Run financing</p>
@@ -209,8 +215,8 @@ onMounted(() => {
             to="/estimates/leasing/create"
             class="group flex items-center gap-4 p-4 rounded-md border border-border bg-surface hover:border-primary/40 hover:bg-surface-dark transition-colors"
           >
-            <div class="w-10 h-10 rounded-md surface-navy paper-grain flex items-center justify-center flex-shrink-0">
-              <CalculatorIcon class="h-4 w-4 text-white relative z-10" />
+            <div class="w-10 h-10 rounded-md bg-primary text-surface flex items-center justify-center flex-shrink-0">
+              <CalculatorIcon class="h-4 w-4" />
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium text-primary">Run a lease</p>

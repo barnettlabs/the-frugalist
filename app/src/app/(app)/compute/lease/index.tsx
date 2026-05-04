@@ -49,6 +49,17 @@ export default function LeaseListScreen() {
           </Pressable>
         </Link>
 
+        {sheets.length >= 2 && (
+          <Link href="/compute/lease/compare?from=lease" asChild>
+            <Pressable className="mb-4 flex-row items-center rounded-xl bg-success/10 px-4 py-3 dark:bg-success/20">
+              <Text className="flex-1 text-[15px] font-semibold text-success dark:text-success-light">
+                Compare Estimates
+              </Text>
+              <Text className="text-success dark:text-success-light">→</Text>
+            </Pressable>
+          </Link>
+        )}
+
         {sheets.length === 0 ? (
           <View className="flex-1 items-center justify-center py-20">
             <Text className="mb-2 text-xl font-semibold text-neutral-700 dark:text-neutral-300">No Lease Estimates</Text>

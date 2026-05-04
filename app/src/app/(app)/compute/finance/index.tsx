@@ -49,6 +49,17 @@ export default function FinanceListScreen() {
           </Pressable>
         </Link>
 
+        {sheets.length >= 2 && (
+          <Link href="/compute/finance/compare?from=finance" asChild>
+            <Pressable className="mb-4 flex-row items-center rounded-xl bg-accent/10 px-4 py-3 dark:bg-accent/20">
+              <Text className="flex-1 text-[15px] font-semibold text-accent dark:text-accent-light">
+                Compare Estimates
+              </Text>
+              <Text className="text-accent dark:text-accent-light">→</Text>
+            </Pressable>
+          </Link>
+        )}
+
         {sheets.length === 0 ? (
           <View className="flex-1 items-center justify-center py-20">
             <Text className="mb-2 text-xl font-semibold text-neutral-700 dark:text-neutral-300">

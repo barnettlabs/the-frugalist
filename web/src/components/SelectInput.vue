@@ -35,16 +35,11 @@
     </select>
 
     <!-- Custom dropdown icon -->
-    <!-- <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-      <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M19 9l-7 7-7-7"
-        ></path>
+    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+      <svg class="w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
       </svg>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -113,9 +108,11 @@ const sizeClasses = {
 // Select classes computation
 const selectClasses = computed(() => {
   const baseClasses =
-    'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed appearance-none bg-white'
+    'block w-full rounded-md border-border bg-surface text-primary shadow-none focus:border-accent focus:ring-1 focus:ring-accent disabled:opacity-60 disabled:cursor-not-allowed appearance-none transition-colors'
   const sizeClass = sizeClasses[props.size]
-  const errorClass = props.error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+  const errorClass = props.error
+    ? 'border-danger focus:border-danger focus:ring-danger'
+    : ''
 
   return `${baseClasses} ${sizeClass} ${errorClass}`
 })

@@ -218,9 +218,9 @@ defineExpose({
 <template>
   <div>
     <!-- Label -->
-    <label v-if="label" :for="id || name" class="block text-sm font-medium text-gray-700 mb-1">
+    <label v-if="label" :for="id || name" class="block text-sm font-medium text-primary mb-1.5">
       {{ label }}
-      <span v-if="required" class="text-red-500">*</span>
+      <span v-if="required" class="text-danger">*</span>
     </label>
 
     <!-- Input component selection -->
@@ -247,12 +247,12 @@ defineExpose({
     </component>
 
     <!-- Error message -->
-    <p v-if="errorMessage" class="mt-1 text-sm text-red-600">
+    <p v-if="errorMessage" class="mt-1.5 text-xs text-danger">
       {{ errorMessage }}
     </p>
 
     <!-- Help text -->
-    <p v-if="helpText" class="mt-1 text-sm text-gray-500">
+    <p v-if="helpText" class="mt-1.5 text-xs text-text-muted">
       {{ helpText }}
     </p>
   </div>

@@ -94,10 +94,12 @@ const sizeClasses = {
 // Input classes computation
 const inputClasses = computed(() => {
   const baseClasses =
-    'block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed'
+    'block w-full rounded-md border-border bg-surface text-primary placeholder:text-text-muted/60 shadow-none focus:border-accent focus:ring-1 focus:ring-accent disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-surface-dark transition-colors'
   const sizeClass = sizeClasses[props.size]
   const paddingClass = getPaddingClass()
-  const errorClass = props.error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
+  const errorClass = props.error
+    ? 'border-danger focus:border-danger focus:ring-danger'
+    : ''
 
   return `${baseClasses} ${sizeClass} ${paddingClass} ${errorClass} ${props.inputClass}`
 })

@@ -21,104 +21,107 @@
 @layer base {
 	:root {
 		/* ============================================
-		   THEFRUGALIST COLOR PALETTE
-		   A calm, analytical, and trustworthy design system
+		   THEFRUGALIST — Editorial Fintech Palette
+		   Refined, warm, intentional. The page reads
+		   like a thoughtful magazine, not a dashboard.
 		   ============================================ */
 
-		/* Primary: Text color (swaps in dark mode) */
-		--color-primary: 31 31 31; /* #1F1F1F - Charcoal for light mode */
-		--color-primary-light: 61 61 61; /* #3D3D3D */
-		--color-primary-dark: 10 10 10; /* #0A0A0A */
+		/* Ink — primary text + headings */
+		--color-primary: 23 27 39; /* #171B27 — deep ink near-black */
+		--color-primary-light: 60 66 84; /* #3C4254 */
+		--color-primary-dark: 12 14 22; /* #0C0E16 */
 
-		/* Accent: Classic Blue (links, active states, highlights) */
-		--color-accent: 35 88 146; /* #235892 - Base blue */
-		--color-accent-light: 90 125 171; /* #5A7DAB - Light blue */
-		--color-accent-dark: 26 70 117; /* #1A4675 - Dark blue */
-		--color-accent-muted: 163 181 204; /* #A3B5CC - Muted blue */
+		/* Brand navy (preserved — load-bearing brand identity) */
+		--color-accent: 35 88 146; /* #235892 */
+		--color-accent-light: 95 132 178; /* #5F84B2 */
+		--color-accent-dark: 22 60 102; /* #163C66 */
+		--color-accent-muted: 191 207 226; /* #BFCFE2 */
 
-		/* ============================================
-		   NEUTRALS (UI Backbone)
-		   ============================================ */
+		/* Signal — warm marigold for selective callouts (savings unlocked, key metric) */
+		--color-signal: 196 134 38; /* #C48626 — antique gold */
+		--color-signal-light: 230 178 90; /* #E6B25A */
+		--color-signal-dark: 153 100 22; /* #996416 */
 
-		--color-background: 248 250 252; /* #F8FAFC - Slate-50 */
-		--color-surface: 255 255 255; /* #FFFFFF - Cards, modals */
-		--color-surface-dark: 241 245 249; /* #F1F5F9 - Slate-100 */
-		--color-border: 226 232 240; /* #E2E8F0 - Slate-200 */
-		--color-text-muted: 100 116 139; /* #64748B - Slate-500 */
-		--color-text-primary: 31 31 31; /* #1F1F1F - Primary text */
+		/* Surfaces — warm parchment over cool slate */
+		--color-background: 244 240 232; /* #F4F0E8 — parchment */
+		--color-surface: 252 250 245; /* #FCFAF5 — warm cream card */
+		--color-surface-dark: 232 226 214; /* #E8E2D6 — deeper parchment */
+		--color-border: 220 212 196; /* #DCD4C4 — warm sand */
+		--color-border-strong: 195 184 165; /* #C3B8A5 */
+		--color-text-muted: 117 110 96; /* #756E60 — sand-warm muted */
+		--color-text-primary: 23 27 39; /* alias of primary */
 
-		/* Tan accent colors */
-		--color-tan: 240 237 230; /* #F0EDE6 - Base tan */
-		--color-tan-light: 247 245 241; /* #F7F5F1 - Light tan */
-		--color-tan-dark: 225 220 210; /* #E1DCD2 - Dark tan */
+		/* Tan accents (kept) */
+		--color-tan: 240 237 230;
+		--color-tan-light: 247 245 241;
+		--color-tan-dark: 225 220 210;
 
-		/* ============================================
-		   SEMANTIC COLORS (Muted for calm aesthetic)
-		   ============================================ */
+		/* Semantic — refined for editorial palette */
+		--color-success: 67 122 89; /* #437A59 — forest savings green */
+		--color-warning: 184 134 11; /* #B8860B — kept */
+		--color-danger: 168 64 60; /* #A8403C — clay red */
+		--color-info: 35 88 146; /* #235892 — same as accent */
 
-		--color-success: 20 184 166; /* #14B8A6 - Vibrant teal */
-		--color-warning: 184 134 11; /* #B8860B - Muted amber */
-		--color-danger: 155 61 61; /* #9B3D3D - Muted red */
-		--color-info: 74 111 165; /* #4A6FA5 - Muted blue */
+		--color-light: 252 250 245;
+		--color-dark: 23 27 39;
 
-		/* Legacy compatibility */
-		--color-light: 255 255 255; /* #FFFFFF */
-		--color-dark: 31 31 31; /* #1F1F1F */
-
-		/* Secondary (maps to accent for backward compatibility) */
-		--color-secondary: 35 88 146; /* #235892 */
-		--color-secondary-light: 90 125 171; /* #5A7DAB */
-		--color-secondary-dark: 26 70 117; /* #1A4675 */
+		--color-secondary: 35 88 146;
+		--color-secondary-light: 95 132 178;
+		--color-secondary-dark: 22 60 102;
 
 		--screen-height: 100vh;
-	}
 
-	/* ============================================
-	   DARK MODE
-	   ============================================ */
+		/* Type stacks */
+		--font-display: 'Fraunces', 'Iowan Old Style', 'Apple Garamond', 'Baskerville', Georgia, serif;
+		--font-sans: 'Rubik', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+		--font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+	}
 
 	.dark,
 	[data-theme="dark"] {
-		/* Dark mode backgrounds - charcoal tones */
-		--color-background: 30 41 59; /* #1E293B - Slate-800 */
-		--color-surface: 51 65 85; /* #334155 - Slate-700 */
-		--color-surface-dark: 71 85 105; /* #475569 - Slate-600 */
-		--color-border: 71 85 105; /* #475569 - Slate-600 */
+		--color-background: 21 24 33; /* #151821 */
+		--color-surface: 30 34 45; /* #1E222D */
+		--color-surface-dark: 41 46 60; /* #292E3C */
+		--color-border: 51 57 73; /* #333949 */
+		--color-border-strong: 75 83 102;
 
-		/* Tan in dark mode - muted warm tones */
-		--color-tan: 75 70 60; /* #4B463C - Dark tan */
-		--color-tan-light: 85 80 70; /* #555046 - Light dark tan */
-		--color-tan-dark: 60 56 48; /* #3C3830 - Darker tan */
+		--color-tan: 75 70 60;
+		--color-tan-light: 85 80 70;
+		--color-tan-dark: 60 56 48;
 
-		/* Dark mode text - light colors */
-		--color-primary: 248 250 252; /* #F8FAFC - Slate-50 */
-		--color-primary-light: 226 232 240; /* #E2E8F0 */
-		--color-primary-dark: 241 245 249; /* #F1F5F9 */
-		--color-text-primary: 248 250 252; /* #F8FAFC */
-		--color-text-muted: 148 163 184; /* #94A3B8 - Slate-400 */
+		--color-primary: 240 234 222;
+		--color-primary-light: 220 214 200;
+		--color-primary-dark: 250 246 238;
+		--color-text-primary: 240 234 222;
+		--color-text-muted: 159 152 138;
 
-		/* Accent brightens in dark mode for visibility */
-		--color-accent: 90 125 171; /* #5A7DAB - Light blue */
-		--color-accent-light: 139 171 209; /* #8BABD1 - Lighter blue */
-		--color-accent-dark: 35 88 146; /* #235892 - Base blue */
+		--color-accent: 130 167 211;
+		--color-accent-light: 175 199 230;
+		--color-accent-dark: 80 122 174;
 
-		/* Invert light/dark */
-		--color-light: 30 41 59; /* #1E293B */
-		--color-dark: 248 250 252; /* #F8FAFC */
+		--color-light: 30 34 45;
+		--color-dark: 240 234 222;
 
-		/* Secondary follows accent */
-		--color-secondary: 90 125 171; /* #5A7DAB */
-		--color-secondary-light: 139 171 209; /* #8BABD1 */
-		--color-secondary-dark: 35 88 146; /* #235892 */
+		--color-secondary: 130 167 211;
+		--color-secondary-light: 175 199 230;
+		--color-secondary-dark: 80 122 174;
 	}
 
-	/* Dark mode auto-detection disabled - light mode first
-	@media (prefers-color-scheme: dark) {
-		:root:not([data-theme="light"]) {
-			...
-		}
+	html {
+		font-feature-settings: "ss01", "cv11";
 	}
-	*/
+
+	body {
+		font-family: var(--font-sans);
+		color: rgb(var(--color-primary));
+	}
+
+	/* Display headings inherit the editorial serif by default — opt out with .font-sans */
+	h1, h2, h3 {
+		font-family: var(--font-display);
+		font-feature-settings: "ss01", "ss02";
+		letter-spacing: -0.012em;
+	}
 }
 
 @layer components {
@@ -136,98 +139,80 @@
 		fill: currentColor;
 	}
 
-	/* Clean card styling */
+	/* Editorial card — warm cream with hairline border, subtle paper feel */
 	.card {
-		background: rgb(var(--color-surface) / 0.8);
-		backdrop-filter: blur(4px);
-		-webkit-backdrop-filter: blur(4px);
+		background: rgb(var(--color-surface));
 		border: 1px solid rgb(var(--color-border));
-		border-radius: 8px;
-		box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06);
+		border-radius: 6px;
+		box-shadow: 0 1px 0 0 rgba(23, 27, 39, 0.02);
+		transition: box-shadow 200ms ease, border-color 200ms ease, transform 200ms ease;
 	}
 
 	.card:hover {
-		box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+		border-color: rgb(var(--color-border-strong));
+		box-shadow: 0 1px 0 0 rgba(23, 27, 39, 0.02), 0 12px 30px -16px rgba(23, 27, 39, 0.18);
 	}
 
 	.btn {
-		@apply inline-flex justify-center items-center font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2;
+		@apply inline-flex justify-center items-center font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2;
 		@apply border border-transparent;
 		transition-duration: 200ms;
 	}
 
-	.btn--loading {
-		/*  */
-	}
+	.btn--loading {}
 	.btn--disabled {
 		@apply opacity-60 cursor-not-allowed;
 	}
 
-	/* Primary button - uses accent color */
 	.btn--primary {
-		@apply bg-accent hover:bg-accent-dark text-white focus:ring-accent;
+		@apply bg-primary hover:bg-primary-light text-surface focus:ring-primary;
 	}
 	.btn--primary.btn--outline {
+		@apply bg-transparent hover:bg-primary/5 text-primary border-primary;
+	}
+
+	.btn--info {
+		@apply bg-accent hover:bg-accent-dark text-surface focus:ring-accent;
+	}
+	.btn--info.btn--outline {
 		@apply bg-transparent hover:bg-accent/10 text-accent border-accent;
 	}
 
-	/* Info button - uses info color */
-	.btn--info {
-		@apply bg-info hover:bg-info/90 text-white focus:ring-info;
-	}
-	.btn--info.btn--outline {
-		@apply bg-transparent hover:bg-info/10 text-info border-info;
-	}
-
-	/* Secondary/Success button */
 	.btn--secondary,
 	.btn--success {
-		@apply bg-success hover:bg-success/90 text-white focus:ring-success;
+		@apply bg-success hover:bg-success/90 text-surface focus:ring-success;
 	}
 	.btn--secondary.btn--outline,
 	.btn--success.btn--outline {
 		@apply bg-transparent hover:bg-success/10 text-success border-success;
 	}
 
-	/* Warning button */
 	.btn--warning {
-		@apply bg-warning hover:bg-warning/90 text-white focus:ring-warning;
+		@apply bg-warning hover:bg-warning/90 text-surface focus:ring-warning;
 	}
 	.btn--warning.btn--outline {
 		@apply bg-transparent hover:bg-warning/10 text-warning border-warning;
 	}
 
-	/* Danger button */
 	.btn--danger {
-		@apply bg-danger hover:bg-danger/90 text-white focus:ring-danger;
+		@apply bg-danger hover:bg-danger/90 text-surface focus:ring-danger;
 	}
 	.btn--danger.btn--outline {
 		@apply bg-transparent hover:bg-danger/10 text-danger border-danger;
 	}
 
-	/* Neutral button */
 	.btn--neutral {
-		@apply bg-neutral-200 hover:bg-neutral-300 text-neutral-700 focus:ring-neutral-300;
+		@apply bg-surface-dark hover:bg-border text-primary focus:ring-border;
 	}
 	.btn--neutral.btn--outline {
-		@apply bg-transparent hover:bg-neutral-100 text-neutral-600 border-neutral-400;
+		@apply bg-transparent hover:bg-surface-dark text-primary border-border;
 	}
 
-	.btn--xs {
-		@apply px-2 py-1 text-xs;
-	}
-	.btn--sm {
-		@apply px-3 py-1.5 text-xs;
-	}
-	.btn--md {
-		@apply px-4 py-2 text-sm;
-	}
-	.btn--lg {
-		@apply px-5 py-2.5 text-sm;
-	}
-	.btn--xl {
-		@apply px-6 py-3 text-sm;
-	}
+	.btn--xs { @apply px-2 py-1 text-xs; }
+	.btn--sm { @apply px-3 py-1.5 text-xs; }
+	.btn--md { @apply px-4 py-2 text-sm; }
+	.btn--lg { @apply px-5 py-2.5 text-sm; }
+	.btn--xl { @apply px-6 py-3 text-sm; }
 
 	input:-webkit-autofill,
 	input:-webkit-autofill:hover,
@@ -247,6 +232,9 @@
 	}
 	.text-input-label {
 		@apply block text-xs font-medium text-text-muted text-left;
+		font-feature-settings: "ss01";
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
 	}
 	.text-input-container {
 		@apply flex-1 rounded-lg px-3 pt-2 pb-1.5 bg-surface;
@@ -258,22 +246,59 @@
 	}
 	.text-input-container--disabled,
 	.text-input-container--disabled * {
-		@apply bg-neutral-100 cursor-not-allowed;
+		@apply bg-surface-dark cursor-not-allowed;
+	}
+
+	/* Editorial eyebrow — small caps section label */
+	.eyebrow {
+		font-family: var(--font-sans);
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: rgb(var(--color-text-muted));
+	}
+
+	.eyebrow--ink {
+		color: rgb(var(--color-primary));
+	}
+
+	/* Section rule — fine hairline divider with optional center character */
+	.rule {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+	.rule::before,
+	.rule::after {
+		content: '';
+		flex: 1;
+		height: 1px;
+		background: rgb(var(--color-border));
+	}
+
+	/* Tabular numerals for any numeric content */
+	.tabular {
+		font-variant-numeric: tabular-nums;
+		font-feature-settings: "tnum";
+	}
+
+	.numeral {
+		font-family: var(--font-mono);
+		font-variant-numeric: tabular-nums;
+		font-feature-settings: "tnum", "ss03";
+		letter-spacing: -0.01em;
 	}
 }
 
 @layer utilities {
-   	/* Dotted background pattern - uses pseudo-element to overlay dots */
+	/* Legacy dotted utilities kept as light-touch ambient texture */
 	.dotted-background-light::before {
 		content: '';
 		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
-		background-size: 20px 20px;
-		background-position: 0 0, 10px 10px;
+		top: 0; left: 0; right: 0; bottom: 0;
+		background-image: radial-gradient(circle, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+		background-size: 22px 22px;
 		pointer-events: none;
 		z-index: 0;
 	}
@@ -281,49 +306,126 @@
 	.dotted-background-dark::before {
 		content: '';
 		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background-image: radial-gradient(circle, rgba(35, 88, 146, 0.08) 1px, transparent 1px);
-		background-size: 24px 24px;
-		background-position: 0 0, 12px 12px;
+		top: 0; left: 0; right: 0; bottom: 0;
+		background-image: radial-gradient(circle, rgba(35, 88, 146, 0.06) 1px, transparent 1px);
+		background-size: 26px 26px;
 		pointer-events: none;
 		z-index: 0;
 	}
 
-	/* Ensure content appears above dotted backgrounds */
 	.dotted-background-light > *,
 	.dotted-background-dark > * {
 		position: relative;
 		z-index: 1;
 	}
 
-	/* Subtle gradient backgrounds */
+	/* Paper grain overlay — subtle warmth, applied to specific dark blocks */
+	.paper-grain {
+		position: relative;
+	}
+	.paper-grain::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		opacity: 0.5;
+		mix-blend-mode: overlay;
+		background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+	}
+
+	/* Editorial dark surface — for the inset accent card in section headers */
+	.surface-ink {
+		background: linear-gradient(180deg, rgb(var(--color-primary)) 0%, rgb(var(--color-primary-dark)) 100%);
+		color: rgb(var(--color-surface));
+	}
+
+	.surface-navy {
+		background: linear-gradient(150deg, rgb(var(--color-accent-dark)) 0%, rgb(var(--color-accent)) 60%, rgb(var(--color-accent-dark)) 100%);
+		color: rgb(var(--color-surface));
+	}
+
+	.surface-parchment {
+		background: rgb(var(--color-surface));
+	}
+
+	/* Hairline rule */
+	.hairline {
+		height: 1px;
+		background: rgb(var(--color-border));
+	}
+
+	.hairline-strong {
+		height: 1px;
+		background: rgb(var(--color-border-strong));
+	}
+
 	.bg-gradient-subtle {
-		background: linear-gradient(135deg, rgb(var(--color-background)) 0%, rgb(var(--color-surface)) 100%);
+		background: linear-gradient(180deg, rgb(var(--color-background)) 0%, rgb(var(--color-surface)) 100%);
 	}
 
 	.bg-gradient-accent {
 		background: linear-gradient(135deg, rgb(var(--color-accent-dark)) 0%, rgb(var(--color-accent)) 100%);
 	}
 
-	/* Glass effect - light mode */
 	.glass {
-		background: rgba(255, 255, 255, 0.9);
+		background: rgb(var(--color-surface) / 0.85);
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
 		border: 1px solid rgb(var(--color-border));
 	}
 
-	/* Soft shadows */
 	.shadow-soft {
-		box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08), 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+		box-shadow: 0 4px 20px -2px rgba(23, 27, 39, 0.08), 0 2px 8px -2px rgba(23, 27, 39, 0.04);
+	}
+
+	.shadow-paper {
+		box-shadow:
+			0 1px 0 0 rgba(23, 27, 39, 0.04),
+			0 14px 38px -22px rgba(23, 27, 39, 0.22);
 	}
 
 	.shadow-accent {
 		box-shadow: 0 4px 20px -2px rgb(var(--color-accent) / 0.25);
 	}
+
+	/* Section eyebrow chip — used inside the inset accent card on headers */
+	.section-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.25rem 0.6rem;
+		border-radius: 999px;
+		font-size: 0.6875rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		font-weight: 600;
+		background: rgba(255, 255, 255, 0.12);
+		color: rgba(255, 255, 255, 0.92);
+		border: 1px solid rgba(255, 255, 255, 0.18);
+	}
+
+	/* Display-style number — large monospace numerals with optical sizing */
+	.figure {
+		font-family: var(--font-mono);
+		font-variant-numeric: tabular-nums;
+		font-feature-settings: "tnum", "ss03";
+		letter-spacing: -0.025em;
+		font-weight: 500;
+	}
+
+	/* Animation — staggered fade up for editorial hero entrances */
+	@keyframes fadeUp {
+		from { opacity: 0; transform: translateY(12px); }
+		to { opacity: 1; transform: translateY(0); }
+	}
+	.fade-up {
+		animation: fadeUp 0.6s ease-out both;
+	}
+	.fade-up-1 { animation-delay: 0.05s; }
+	.fade-up-2 { animation-delay: 0.15s; }
+	.fade-up-3 { animation-delay: 0.25s; }
+	.fade-up-4 { animation-delay: 0.35s; }
+	.fade-up-5 { animation-delay: 0.45s; }
 }
 
 html,
@@ -331,12 +433,14 @@ body {
 	@apply h-full;
 }
 
-/* Global dotted background */
+/* Global parchment background with subtle warm dot pattern + paper grain */
 body {
 	background-color: rgb(var(--color-background));
-	background-image: radial-gradient(circle, rgba(35, 88, 146, 0.08) 1px, transparent 1px);
-	background-attachment: fixed;
-	background-size: 24px 24px;
+	background-image:
+		radial-gradient(circle at 1px 1px, rgba(35, 88, 146, 0.05) 1px, transparent 0),
+		url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.09 0 0 0 0 0.07 0 0 0 0 0.04 0 0 0 0.025 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+	background-attachment: fixed, fixed;
+	background-size: 26px 26px, 180px 180px;
 }
 
 #app,
@@ -345,10 +449,13 @@ div#__nuxt {
 	background: transparent;
 }
 
+::selection {
+	background: rgb(var(--color-accent) / 0.18);
+	color: rgb(var(--color-primary));
+}
+
 /* DATE PICKER OVERRIDES */
 .dp__input {
 	@apply focus:ring-0 border-0 pl-0 bg-transparent !important;
 }
 /* END DATE PICKER OVERRIDES */
-
-/* Vue app container - keep transparent to show dotted background */

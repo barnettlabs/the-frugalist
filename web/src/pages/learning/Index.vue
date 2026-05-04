@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import SectionHeader from '@/components/SectionHeader.vue'
 import {
   BanknotesIcon,
   CurrencyDollarIcon,
@@ -7,151 +8,122 @@ import {
   AcademicCapIcon,
   ShieldCheckIcon,
   ExclamationTriangleIcon,
+  ArrowUpRightIcon,
 } from '@heroicons/vue/24/outline'
 
 const guides = [
   {
-    name: 'Financing Guide',
-    description: 'Learn about interest rates, loan terms, and common financing tactics. Understand what affects your monthly payment and how dealers make money.',
+    number: '01',
+    eyebrow: 'Financing',
+    name: 'The Financing Field Guide',
+    italic: 'Reading the offer.',
+    description:
+      'Interest rate markup, pre-printed terms, the line items dealers route quietly into your monthly. Learn the playbook so you can decline the pitch.',
     href: '/learning/financing',
     icon: BanknotesIcon,
-    iconColor: 'text-accent',
     topics: ['Interest rate markup', 'Extended warranties', 'Add-on products', 'Negotiation strategies'],
   },
   {
-    name: 'Leasing Guide',
-    description: 'Understand money factors, residual values, and lease-end fees. Know what to watch for before signing and how to avoid common pitfalls.',
+    number: '02',
+    eyebrow: 'Leasing',
+    name: 'The Leasing Field Guide',
+    italic: 'Reading the lease.',
+    description:
+      'Money factors, residual mechanics, disposition fees, mileage penalties. The full vocabulary you need before signing a 36-month obligation.',
     href: '/learning/leasing',
     icon: CurrencyDollarIcon,
-    iconColor: 'text-accent',
     topics: ['Money factor explained', 'Residual value tricks', 'Disposition fees', 'Mileage penalties'],
   },
 ]
 
 const whyLearn = [
-  {
-    icon: ShieldCheckIcon,
-    title: 'Recognize Tactics',
-    description: 'Understand common sales techniques used to pressure quick decisions.',
-  },
-  {
-    icon: AcademicCapIcon,
-    title: 'Know the Terms',
-    description: 'Learn the jargon so you can speak confidently with salespeople.',
-  },
-  {
-    icon: ExclamationTriangleIcon,
-    title: 'Avoid Pitfalls',
-    description: 'Identify hidden fees and unfavorable terms before you sign.',
-  },
+  { icon: ShieldCheckIcon, title: 'Recognize tactics', description: 'Spot the urgency theater the moment it begins.' },
+  { icon: AcademicCapIcon, title: 'Know the language', description: 'Terms, jargon, abbreviations, and what they actually mean.' },
+  { icon: ExclamationTriangleIcon, title: 'Avoid the pitfalls', description: 'Hidden fees, unfavorable clauses — flagged in advance.' },
 ]
 </script>
 
 <template>
-  <div class="min-h-screen">
-    <!-- Hero Section -->
-    <header class="relative overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-br from-accent via-accent-dark to-blue-900"></div>
-      <div class="dotted-background relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-12">
-        <div class="max-w-2xl">
-          <div class="flex items-center mb-4">
-            <div class="p-2 bg-white/20 rounded-lg mr-3">
-              <BookOpenIcon class="h-6 w-6 text-white" />
-            </div>
-            <span class="text-white/70 text-sm font-medium">Guides</span>
-          </div>
-          <h1 class="text-3xl sm:text-4xl font-medium text-white mb-4 tracking-tight">
-            Knowledge is leverage
-          </h1>
-          <p class="text-lg text-white/80 leading-relaxed">
-            Learn the tactics behind markups, fees, and pressure. When you understand pricing strategies,
-            you can recognize them and respond rationally instead of emotionally.
-          </p>
-        </div>
-      </div>
-    </header>
+  <div class="pb-16">
+    <SectionHeader
+      eyebrow="Guides · Field manual"
+      title="Knowledge is leverage."
+      description="Read what the dealership reads. The tactics, the terms, the tricks built into the paperwork — all rendered in plain language."
+      :icon="BookOpenIcon"
+    />
 
-    <!-- Why Learn Section -->
-    <section class="py-12 border-b border-border">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div
-            v-for="item in whyLearn"
-            :key="item.title"
-            class="flex items-start gap-4"
-          >
-            <div class="p-2 bg-accent/10 rounded-lg shrink-0">
-              <component :is="item.icon" class="h-5 w-5 text-accent" />
-            </div>
-            <div>
-              <h3 class="text-sm font-medium text-primary mb-1">{{ item.title }}</h3>
-              <p class="text-sm text-text-muted">{{ item.description }}</p>
-            </div>
+    <!-- Why Learn — refined three -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border rounded-md overflow-hidden">
+        <div
+          v-for="(item, i) in whyLearn"
+          :key="item.title"
+          class="bg-surface p-6 flex items-start gap-4"
+        >
+          <span class="numeral text-text-muted text-xs">0{{ i + 1 }}</span>
+          <div>
+            <p class="font-display text-lg text-primary tracking-tight leading-snug">{{ item.title }}</p>
+            <p class="text-sm text-text-muted mt-1">{{ item.description }}</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Guides Section -->
-    <section class="py-12 lg:py-16">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 class="text-xl font-medium text-primary mb-8">Choose a Guide</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <RouterLink
-            v-for="guide in guides"
-            :key="guide.name"
-            :to="guide.href"
-            class="group block"
-          >
-            <div class="h-full bg-surface/80 backdrop-blur-sm rounded-2xl border border-border p-6 hover:border-accent/50 hover:shadow-soft transition-all duration-200">
-              <!-- Header -->
-              <div class="flex items-start justify-between mb-4">
-                <div class="p-3 bg-accent/10 rounded-xl group-hover:bg-accent/20 transition-colors">
-                  <component :is="guide.icon" class="h-6 w-6" :class="guide.iconColor" />
-                </div>
-                <div class="text-text-muted group-hover:text-accent transition-colors">
-                  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </div>
-              </div>
-
-              <!-- Content -->
-              <h3 class="text-lg font-medium text-primary group-hover:text-accent transition-colors mb-2">
-                {{ guide.name }}
-              </h3>
-              <p class="text-sm text-text-muted mb-4 leading-relaxed">{{ guide.description }}</p>
-
-              <!-- Topics -->
-              <div class="flex flex-wrap gap-2">
-                <span
-                  v-for="topic in guide.topics"
-                  :key="topic"
-                  class="inline-flex items-center px-2.5 py-1 text-xs font-medium text-text-muted bg-surface border border-border rounded-full"
-                >
-                  {{ topic }}
-                </span>
-              </div>
-            </div>
-          </RouterLink>
+    <!-- Two guides — editorial cards -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12 lg:mt-16">
+      <div class="flex items-end justify-between mb-8">
+        <div>
+          <p class="eyebrow mb-3">The guides</p>
+          <h2 class="font-display font-medium text-primary tracking-tightest text-3xl sm:text-4xl leading-[0.95]">
+            Two field guides. <span class="italic text-accent-dark">Read both.</span>
+          </h2>
         </div>
+      </div>
 
-        <!-- Tip Box -->
-        <div class="mt-12 bg-accent/5 border border-accent/20 rounded-2xl p-6">
-          <div class="flex items-start gap-4">
-            <div class="p-2 bg-accent/10 rounded-lg shrink-0">
-              <AcademicCapIcon class="h-5 w-5 text-accent" />
-            </div>
-            <div>
-              <h3 class="text-sm font-medium text-primary mb-1">Pro Tip</h3>
-              <p class="text-sm text-text-muted leading-relaxed">
-                Read through both guides before visiting a dealership. Understanding both financing and leasing
-                gives you leverage to compare options and recognize when a salesperson is steering you toward
-                a less favorable deal.
-              </p>
-            </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border rounded-md overflow-hidden">
+        <RouterLink
+          v-for="guide in guides"
+          :key="guide.name"
+          :to="guide.href"
+          class="group bg-surface hover:bg-surface-dark transition-colors p-8 sm:p-10 flex flex-col"
+        >
+          <div class="flex items-start justify-between mb-8">
+            <span class="numeral text-text-muted text-sm">{{ guide.number }}</span>
+            <component :is="guide.icon" class="h-5 w-5 text-text-muted group-hover:text-accent-dark transition-colors" />
           </div>
+          <p class="eyebrow mb-3">{{ guide.eyebrow }}</p>
+          <h3 class="font-display font-medium text-primary tracking-tightest text-3xl sm:text-4xl leading-[0.95]">
+            {{ guide.name.split(' ')[0] }} {{ guide.name.split(' ')[1] }}<br />
+            <span class="italic text-accent-dark">{{ guide.italic }}</span>
+          </h3>
+          <p class="mt-5 text-sm text-text-muted leading-relaxed">{{ guide.description }}</p>
+          <ul class="mt-6 flex flex-wrap gap-1.5">
+            <li
+              v-for="topic in guide.topics"
+              :key="topic"
+              class="inline-flex items-center px-2.5 py-1 text-xs numeral text-text-muted bg-tan/60 border border-border rounded-sm"
+            >
+              {{ topic }}
+            </li>
+          </ul>
+          <div class="mt-auto pt-8 flex items-center gap-2 text-primary group-hover:text-accent-dark transition-colors">
+            <span class="text-sm font-medium">Read the guide</span>
+            <ArrowUpRightIcon class="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </div>
+        </RouterLink>
+      </div>
+
+      <!-- Editorial pull-quote tip -->
+      <div class="mt-12 lg:mt-16 grid grid-cols-12 gap-6 lg:gap-12 items-start border-t border-border pt-12">
+        <div class="col-span-12 lg:col-span-4">
+          <p class="eyebrow mb-3">From the editor</p>
+          <p class="font-display text-primary text-2xl leading-snug">A note before you visit the dealership.</p>
+        </div>
+        <div class="col-span-12 lg:col-span-8 lg:border-l border-border lg:pl-12">
+          <blockquote class="font-display italic text-primary tracking-tight text-2xl sm:text-3xl leading-snug">
+            &ldquo;Read both guides. Understanding both financing <em class="not-italic text-accent-dark">and</em> leasing is what gives you leverage —
+            it&rsquo;s how you recognize the moment a salesperson is steering you toward the path that pays them more.&rdquo;
+          </blockquote>
         </div>
       </div>
     </section>

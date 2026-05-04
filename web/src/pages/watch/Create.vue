@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
-import PageHeader from '@/components/PageHeader.vue'
+import SectionHeader from '@/components/SectionHeader.vue'
 import InputError from '@/components/InputError.vue'
 import InputLabel from '@/components/InputLabel.vue'
 import TextInput from '@/components/TextInput.vue'
-import PrimaryButton from '@/components/PrimaryButton.vue'
 import Checkbox from '@/components/Checkbox.vue'
-import Card from '@/components/Card.vue'
 import Alert from '@/components/Alert.vue'
 import Badge from '@/components/Badge.vue'
 import Spinner from '@/components/Spinner.vue'
@@ -16,11 +14,10 @@ import { devicesApi } from '@/api/devices'
 import { formatCurrency } from '@/utils/formatters'
 import {
   BuildingStorefrontIcon,
-  BellIcon,
+  BellAlertIcon,
   EnvelopeIcon,
   DevicePhoneMobileIcon,
   CheckCircleIcon,
-  XCircleIcon,
   TagIcon,
   ArrowTopRightOnSquareIcon,
   BugAntIcon,
@@ -265,92 +262,97 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main class="py-12 flex-1">
-    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-      <!-- Header -->
-      <PageHeader title="Track New Product" description="Set up price tracking for a product" back-link="/watch"
-        back-label="Watch" />
+  <div class="pb-16">
+    <SectionHeader
+      eyebrow="Watch · New tracker"
+      title="Track a new product."
+      description="Pick a retailer, drop in a SKU, set a target. We&rsquo;ll do the watching."
+      :icon="BellAlertIcon"
+      variant="compact"
+    >
+      <template #actions>
+        <RouterLink
+          to="/watch"
+          class="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted hover:text-primary transition-colors"
+        >
+          ← Back to all watches
+        </RouterLink>
+      </template>
+    </SectionHeader>
 
+    <main class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 mt-2">
       <!-- General Error -->
       <Alert v-if="errors.general" variant="danger" class="mb-6">
         {{ errors.general[0] }}
       </Alert>
 
       <!-- Step 1: Store Selection -->
-      <Card class="mb-4">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="flex items-center justify-center w-8 h-8 rounded-full bg-accent text-white font-bold text-sm">
-            1
+      <section class="card mb-4">
+        <div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
+          <span class="numeral text-xs text-text-muted">№ 01</span>
+          <h3 class="font-display text-xl text-primary tracking-tight">Select store</h3>
+          <CheckCircleIcon v-if="isStoreSelected" class="h-4 w-4 text-success ml-auto" />
+        </div>
+        <div class="p-5 sm:p-6">
+
+          <!-- Loading state -->
+          <div v-if="retailersLoading" class="flex items-center justify-center py-8">
+            <Spinner size="md" color="primary" />
           </div>
-          <h3 class="text-lg font-bold text-primary">Select Store</h3>
-          <CheckCircleIcon v-if="isStoreSelected" class="h-5 w-5 text-success ml-auto" />
-        </div>
 
-        <!-- Loading state -->
-        <div v-if="retailersLoading" class="flex items-center justify-center py-8">
-          <Spinner size="md" color="primary" />
+          <div v-else class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+            <button v-for="retailer in visibleRetailers" :key="retailer.id" type="button"
+              @click="retailer.is_active && !retailer.coming_soon ? form.retailer_id = retailer.id : null"
+              :disabled="!retailer.is_active || retailer.coming_soon" :class="[
+                'relative flex flex-col items-center justify-center p-4 rounded-md border transition-all',
+                !retailer.is_active || retailer.coming_soon
+                  ? 'border-border bg-tan/30 cursor-not-allowed opacity-60'
+                  : form.retailer_id === retailer.id
+                    ? 'border-primary bg-primary/5 text-primary'
+                    : 'border-border hover:border-primary/50 text-text-muted hover:bg-tan/40 cursor-pointer'
+              ]">
+              <BuildingStorefrontIcon class="h-5 w-5 mb-2" />
+              <span class="text-sm font-medium text-center">{{ retailer.name }}</span>
+              <Badge v-if="retailer.coming_soon" variant="warning" size="sm" class="absolute -top-2 -right-2">
+                Soon
+              </Badge>
+              <div v-if="form.retailer_id === retailer.id"
+                class="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
+                <svg class="w-2.5 h-2.5 text-surface" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd" />
+                </svg>
+              </div>
+            </button>
+          </div>
+          <InputError :message="errors.retailer_id?.[0]" class="mt-2" />
         </div>
-
-        <div v-else class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          <button v-for="retailer in visibleRetailers" :key="retailer.id" type="button"
-            @click="retailer.is_active && !retailer.coming_soon ? form.retailer_id = retailer.id : null"
-            :disabled="!retailer.is_active || retailer.coming_soon" :class="[
-              'relative flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all',
-              !retailer.is_active || retailer.coming_soon
-                ? 'border-border bg-background cursor-not-allowed opacity-60'
-                : form.retailer_id === retailer.id
-                  ? 'border-accent bg-accent/5 text-accent'
-                  : 'border-border hover:border-tan-dark text-text-muted hover:bg-tan-light cursor-pointer'
-            ]">
-            <BuildingStorefrontIcon class="h-6 w-6 mb-2" />
-            <span class="text-sm font-medium text-center">{{ retailer.name }}</span>
-            <!-- Coming Soon Badge -->
-            <Badge v-if="retailer.coming_soon" variant="warning" size="sm" class="absolute -top-2 -right-2">
-              Soon
-            </Badge>
-            <!-- Selected Checkmark -->
-            <div v-if="form.retailer_id === retailer.id"
-              class="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full flex items-center justify-center">
-              <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clip-rule="evenodd" />
-              </svg>
-            </div>
-          </button>
-        </div>
-        <InputError :message="errors.retailer_id?.[0]" class="mt-2" />
-      </Card>
+      </section>
 
       <!-- Step 2: SKU/UPC Input -->
-      <Card class="mb-4 transition-opacity duration-200"
+      <section class="card mb-4 transition-opacity duration-200"
         :class="{ 'opacity-50 pointer-events-none': !isStoreSelected }">
-        <div class="flex items-center gap-3 mb-4">
-          <div :class="[
-            'flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm',
-            isStoreSelected ? 'bg-accent text-white' : 'bg-border text-text-muted'
-          ]">
-            2
-          </div>
-          <h3 :class="['text-lg font-bold', isStoreSelected ? 'text-primary' : 'text-text-muted']">
-            Enter Product Identifier
+        <div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
+          <span class="numeral text-xs text-text-muted">№ 02</span>
+          <h3 :class="['font-display text-xl tracking-tight', isStoreSelected ? 'text-primary' : 'text-text-muted']">
+            Product identifier
           </h3>
-          <!-- Debug Toggle (only visible to authorized users) -->
           <button v-if="canDebug && isStoreSelected" @click="debugEnabled = !debugEnabled" :class="[
-            'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ml-auto',
+            'flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium transition-colors ml-auto',
             debugEnabled
-              ? 'bg-amber-500 hover:bg-amber-600 text-white'
-              : 'bg-border hover:bg-border/80 text-text-muted'
+              ? 'bg-warning text-white'
+              : 'bg-tan text-text-muted hover:bg-tan-dark'
           ]" title="Toggle debug mode">
-            <BugAntIcon class="h-4 w-4" />
+            <BugAntIcon class="h-3.5 w-3.5" />
             <span>{{ debugEnabled ? 'Debug On' : 'Debug' }}</span>
           </button>
-          <CheckCircleIcon v-if="isProductValidated" class="h-5 w-5 text-success"
+          <CheckCircleIcon v-if="isProductValidated" class="h-4 w-4 text-success"
             :class="{ 'ml-auto': !canDebug || !isStoreSelected }" />
         </div>
 
-        <div>
-          <InputLabel for="sku_upc" value="SKU / UPC / Item Number" />
+        <div class="p-5 sm:p-6">
+          <InputLabel for="sku_upc" value="SKU / UPC / Item number" />
           <div class="flex gap-2 mt-1">
             <div class="relative flex-1">
               <TextInput id="sku_upc" v-model="form.sku_upc" type="text" class="block w-full"
@@ -358,28 +360,26 @@ onMounted(async () => {
             </div>
             <button type="button" @click="validateProduct"
               :disabled="!isStoreSelected || !form.sku_upc.trim() || validating" :class="[
-                'flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors',
+                'flex items-center justify-center gap-2 px-4 py-2 rounded-md font-medium transition-colors text-sm',
                 !isStoreSelected || !form.sku_upc.trim() || validating
-                  ? 'bg-border text-text-muted cursor-not-allowed'
-                  : 'bg-accent hover:bg-accent-dark text-white'
+                  ? 'bg-tan text-text-muted cursor-not-allowed'
+                  : 'bg-primary hover:bg-primary-light text-surface'
               ]">
               <Spinner v-if="validating" size="sm" color="white" />
-              <MagnifyingGlassIcon v-else class="h-5 w-5" />
-              <span class="hidden sm:inline">{{ validating ? 'Searching...' : 'Search' }}</span>
+              <MagnifyingGlassIcon v-else class="h-4 w-4" />
+              <span class="hidden sm:inline">{{ validating ? 'Searching…' : 'Search' }}</span>
             </button>
           </div>
           <InputError :message="errors.sku_upc?.[0]" class="mt-2" />
-        </div>
 
         <!-- Validation Error -->
         <Alert v-if="validationError" variant="danger" class="mt-4" :title="validationError" />
 
         <!-- Product Preview -->
-        <div v-if="isProductValidated && product" class="mt-4 p-5 bg-success/5 border border-success/20 rounded-xl">
-          <!-- Success Header -->
-          <div class="flex items-center gap-2 mb-4 pb-3 border-b border-success/20">
-            <CheckCircleIcon class="h-5 w-5 text-success flex-shrink-0" />
-            <span class="text-sm font-medium text-success">Product Found</span>
+        <div v-if="isProductValidated && product" class="mt-5 surface-ink paper-grain rounded-md border border-primary-dark/40 overflow-hidden">
+          <div class="flex items-center gap-2 px-5 py-3 border-b border-white/10 relative z-10">
+            <CheckCircleIcon class="h-4 w-4 text-success flex-shrink-0" />
+            <span class="eyebrow text-white/80">Product found</span>
             <div class="flex items-center gap-2 ml-auto">
               <Badge v-if="product.metadata?.clearance" variant="warning" size="sm">Clearance</Badge>
               <Badge v-if="product.metadata?.on_sale" variant="accent" size="sm">On Sale</Badge>
@@ -388,73 +388,63 @@ onMounted(async () => {
             </div>
           </div>
 
-          <div class="flex gap-5">
-            <!-- Product Image -->
+          <div class="flex flex-col sm:flex-row gap-5 p-5 sm:p-6 relative z-10">
             <div class="flex-shrink-0">
-              <div v-if="product.image_url" class="w-40 h-40 rounded-lg bg-white border border-border overflow-hidden">
+              <div v-if="product.image_url" class="w-32 h-32 sm:w-40 sm:h-40 rounded-md bg-surface border border-white/10 overflow-hidden">
                 <img :src="product.image_url" :alt="product.name" class="w-full h-full object-contain p-2" />
               </div>
-              <div v-else
-                class="w-40 h-40 bg-background rounded-lg flex items-center justify-center border border-border">
-                <BuildingStorefrontIcon class="h-16 w-16 text-text-muted" />
+              <div v-else class="w-32 h-32 sm:w-40 sm:h-40 bg-white/5 rounded-md flex items-center justify-center border border-white/10">
+                <BuildingStorefrontIcon class="h-12 w-12 text-white/30" />
               </div>
             </div>
 
-            <!-- Product Details -->
             <div class="flex-1 min-w-0">
-              <!-- Product Name -->
-              <h4 class="text-lg font-bold text-primary leading-tight">{{ product.name }}</h4>
-
-              <!-- Model / Variant -->
-              <p v-if="product.variant || product.metadata?.model_number" class="text-sm text-text-muted mt-1">
+              <h4 class="font-display text-xl text-white leading-tight tracking-tight">{{ product.name }}</h4>
+              <p v-if="product.variant || product.metadata?.model_number" class="text-xs text-white/60 mt-1 numeral">
                 Model: {{ product.variant || product.metadata?.model_number }}
               </p>
-
-              <!-- Description -->
-              <p v-if="product.description" class="text-sm text-text-muted mt-2 line-clamp-3">
+              <p v-if="product.description" class="text-sm text-white/70 mt-3 line-clamp-3">
                 {{ product.description }}
               </p>
 
-              <!-- Product Identifiers -->
-              <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-xs text-text-muted">
+              <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-4 text-xs text-white/60">
                 <span class="flex items-center gap-1">
                   <BuildingStorefrontIcon class="h-3.5 w-3.5" />
                   {{ selectedRetailer?.name }}
                 </span>
-                <span class="flex items-center gap-1">
+                <span class="flex items-center gap-1 numeral">
                   <TagIcon class="h-3.5 w-3.5" />
-                  SKU: {{ product.sku_upc || form.sku_upc }}
+                  {{ product.sku_upc || form.sku_upc }}
                 </span>
                 <a v-if="product.retailer_url || product.metadata?.retailer_url"
                   :href="product.retailer_url || product.metadata?.retailer_url" target="_blank"
-                  rel="noopener noreferrer" class="flex items-center gap-1 text-accent hover:underline">
+                  rel="noopener noreferrer" class="flex items-center gap-1 text-signal-light hover:text-signal transition-colors">
                   <ArrowTopRightOnSquareIcon class="h-3.5 w-3.5" />
-                  View on {{ selectedRetailer?.name }}
+                  View at retailer
                 </a>
               </div>
 
-              <!-- Pricing -->
-              <div class="flex items-end gap-4 mt-4 pt-3 border-t border-success/20">
+              <div class="flex items-end gap-5 mt-5 pt-4 border-t border-white/10">
                 <div v-if="product.current_price">
-                  <span class="text-xs text-text-muted block">Current Price</span>
-                  <span class="text-2xl font-bold text-success">${{ formatCurrency(product.current_price) }}</span>
+                  <p class="eyebrow text-white/60 mb-0.5">Current</p>
+                  <p class="figure text-3xl text-white">${{ formatCurrency(product.current_price) }}</p>
                 </div>
                 <div v-if="product.retail_price && product.retail_price !== product.current_price">
-                  <span class="text-xs text-text-muted block">Retail Price</span>
-                  <span class="text-lg text-text-muted line-through">${{ formatCurrency(product.retail_price) }}</span>
+                  <p class="eyebrow text-white/60 mb-0.5">Retail</p>
+                  <p class="numeral text-base text-white/60 line-through">${{ formatCurrency(product.retail_price) }}</p>
                 </div>
-                <Badge v-if="savingsPercent" variant="success" size="sm">
-                  Save {{ savingsPercent }}%
-                </Badge>
+                <span v-if="savingsPercent" class="ml-auto inline-flex items-center px-2 py-0.5 rounded-sm bg-signal/20 text-signal-light text-xs numeral">
+                  −{{ savingsPercent }}%
+                </span>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Tips -->
-        <div v-if="isStoreSelected && !isProductValidated && !validating" class="mt-4 p-3 bg-background rounded-lg">
+        <div v-if="isStoreSelected && !isProductValidated && !validating" class="mt-4 p-3 bg-tan/40 border border-border rounded-md">
           <p class="text-xs text-text-muted">
-            <strong>Tip:</strong>
+            <strong class="eyebrow">Tip ·</strong>
             <template v-if="selectedRetailer?.slug === 'bestbuy'"> Look for "SKU" on the Best Buy product
               page.</template>
             <template v-else-if="selectedRetailer?.slug === 'homedepot'"> Look for "Internet #" or "Store SKU" on the
@@ -472,10 +462,10 @@ onMounted(async () => {
         </div>
 
         <!-- Debug Info Panel -->
-        <div v-if="debugEnabled && debugInfo" class="mt-4 p-5 border-2 border-amber-500/30 rounded-xl bg-amber-50/5">
-          <div class="flex items-center gap-2 mb-4 pb-3 border-b border-amber-500/20">
-            <BugAntIcon class="h-5 w-5 text-amber-500" />
-            <span class="text-sm font-bold text-amber-500">Debug Information</span>
+        <div v-if="debugEnabled && debugInfo" class="mt-4 p-5 border border-warning/40 rounded-md bg-warning/5">
+          <div class="flex items-center gap-2 mb-4 pb-3 border-b border-warning/20">
+            <BugAntIcon class="h-4 w-4 text-warning" />
+            <span class="eyebrow text-warning">Debug information</span>
           </div>
 
           <!-- Raw API Response -->
@@ -502,28 +492,25 @@ onMounted(async () => {
 
           <!-- Error Info (if any) -->
           <div v-if="debugInfo.error" class="mt-4">
-            <h4 class="text-xs font-semibold text-danger mb-2">Error</h4>
+            <h4 class="eyebrow text-danger mb-2">Error</h4>
             <pre class="bg-danger/10 p-4 rounded-lg overflow-x-auto text-xs text-danger max-h-48 overflow-y-auto">{{
               debugInfo.error }}</pre>
           </div>
         </div>
-      </Card>
+        </div>
+      </section>
 
       <!-- Step 3: Tracking Settings -->
-      <Card class="mb-4 transition-opacity duration-200"
+      <section class="card mb-4 transition-opacity duration-200"
         :class="{ 'opacity-50 pointer-events-none': !isProductValidated }">
-        <div class="flex items-center gap-3 mb-4">
-          <div :class="[
-            'flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm',
-            isProductValidated ? 'bg-accent text-white' : 'bg-border text-text-muted'
-          ]">
-            3
-          </div>
-          <h3 :class="['text-lg font-bold', isProductValidated ? 'text-primary' : 'text-text-muted']">
-            Tracking Settings
+        <div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
+          <span class="numeral text-xs text-text-muted">№ 03</span>
+          <h3 :class="['font-display text-xl tracking-tight', isProductValidated ? 'text-primary' : 'text-text-muted']">
+            Tracking settings
           </h3>
-          <CheckCircleIcon v-if="isTargetPriceValid && hasNotificationMethod" class="h-5 w-5 text-success ml-auto" />
+          <CheckCircleIcon v-if="isTargetPriceValid && hasNotificationMethod" class="h-4 w-4 text-success ml-auto" />
         </div>
+        <div class="p-5 sm:p-6">
 
         <!-- Watch Type -->
         <div class="mb-6">
@@ -536,11 +523,11 @@ onMounted(async () => {
               @click="form.watch_type = option.value"
               :disabled="!isProductValidated"
               :class="[
-                'flex flex-col items-start p-4 rounded-lg border-2 transition-all text-left',
+                'flex flex-col items-start p-4 rounded-md border transition-all text-left',
                 !isProductValidated ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
                 form.watch_type === option.value
-                  ? 'border-accent bg-accent/5'
-                  : 'border-border hover:border-tan-dark hover:bg-tan-light'
+                  ? 'border-primary bg-primary/5'
+                  : 'border-border hover:border-primary/40 hover:bg-tan/40'
               ]"
             >
               <span class="font-medium text-primary">{{ option.label }}</span>
@@ -615,11 +602,11 @@ onMounted(async () => {
           <InputLabel value="Notification Preferences" class="mb-3" />
           <div class="space-y-3">
             <label :class="[
-              'flex items-center gap-3 p-4 rounded-lg border-2 transition-all',
+              'flex items-center gap-3 p-4 rounded-md border transition-all',
               !isProductValidated ? 'cursor-not-allowed' : 'cursor-pointer',
               form.notification_email && isProductValidated
-                ? 'border-accent bg-accent/5'
-                : 'border-border hover:bg-tan-light hover:border-tan-dark'
+                ? 'border-primary bg-primary/5'
+                : 'border-border hover:bg-tan/40 hover:border-primary/40'
             ]">
               <Checkbox v-model:checked="form.notification_email" :disabled="!isProductValidated" />
               <EnvelopeIcon class="h-5 w-5 text-text-muted" />
@@ -630,12 +617,12 @@ onMounted(async () => {
             </label>
 
             <label :class="[
-              'flex items-center gap-3 p-4 rounded-lg border-2 transition-all',
+              'flex items-center gap-3 p-4 rounded-md border transition-all',
               !isProductValidated || !hasActiveDevices ? 'cursor-not-allowed' : 'cursor-pointer',
               !hasActiveDevices ? 'opacity-60' : '',
               form.notification_push && isProductValidated && hasActiveDevices
-                ? 'border-accent bg-accent/5'
-                : 'border-border hover:bg-tan-light hover:border-tan-dark'
+                ? 'border-primary bg-primary/5'
+                : 'border-border hover:bg-tan/40 hover:border-primary/40'
             ]">
               <Checkbox v-model:checked="form.notification_push" :disabled="!isProductValidated || !hasActiveDevices" />
               <DevicePhoneMobileIcon class="h-5 w-5 text-text-muted" />
@@ -651,23 +638,34 @@ onMounted(async () => {
           </p>
           <InputError :message="errors.notification_method?.[0]" class="mt-2" />
         </div>
-      </Card>
+        </div>
+      </section>
 
       <!-- Actions -->
-      <div class="flex items-center justify-end gap-3">
-        <RouterLink to="/watch">
-          <button type="button"
-            class="bg-background hover:bg-tan text-text-muted px-6 py-3 rounded-lg font-medium transition-colors">
-            Cancel
-          </button>
+      <div class="flex items-center justify-end gap-3 mt-6">
+        <RouterLink
+          to="/watch"
+          class="px-5 py-2.5 rounded-md text-sm font-medium text-text-muted hover:text-primary hover:bg-tan/50 transition-colors"
+        >
+          Cancel
         </RouterLink>
-        <PrimaryButton @click="submitForm" :disabled="loading || !isFormValid">
-          <BellIcon v-if="!loading" class="h-5 w-5 mr-2" />
-          {{ loading ? 'Creating...' : 'Start Tracking' }}
-        </PrimaryButton>
+        <button
+          @click="submitForm"
+          :disabled="loading || !isFormValid"
+          :class="[
+            'inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-medium transition-colors',
+            loading || !isFormValid
+              ? 'bg-tan text-text-muted cursor-not-allowed'
+              : 'bg-primary hover:bg-primary-light text-surface'
+          ]"
+        >
+          <BellAlertIcon v-if="!loading" class="h-4 w-4" />
+          <Spinner v-else size="sm" color="white" />
+          {{ loading ? 'Creating…' : 'Start tracking' }}
+        </button>
       </div>
-    </div>
-  </main>
+    </main>
+  </div>
 </template>
 
 <style scoped>

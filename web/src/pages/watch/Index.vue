@@ -1,11 +1,24 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
-import Card from '@/components/Card.vue'
-import Badge from '@/components/Badge.vue'
 import Spinner from '@/components/Spinner.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
-import { TagIcon, PlusIcon, TrashIcon, EyeIcon, ArrowPathIcon, EnvelopeIcon, DevicePhoneMobileIcon, BellAlertIcon, PauseIcon, PlayIcon, CurrencyDollarIcon, ArchiveBoxIcon } from '@heroicons/vue/24/outline'
+import SectionHeader from '@/components/SectionHeader.vue'
+import {
+  TagIcon,
+  PlusIcon,
+  TrashIcon,
+  ArrowPathIcon,
+  EnvelopeIcon,
+  DevicePhoneMobileIcon,
+  BellAlertIcon,
+  PauseIcon,
+  PlayIcon,
+  CurrencyDollarIcon,
+  ArchiveBoxIcon,
+  PhotoIcon,
+  ArrowUpRightIcon,
+} from '@heroicons/vue/24/outline'
 import CopyText from '@/components/CopyText.vue'
 import { formatCurrency } from '@/utils/formatters'
 import { formatRelativeTime } from '@/utils/time'
@@ -18,7 +31,6 @@ const loading = ref(true)
 const refreshingId = ref<number | null>(null)
 const activeFilter = ref<FilterType>('all')
 
-// Confirmation dialog state
 const showDeleteDialog = ref(false)
 const showPauseDialog = ref(false)
 const selectedProduct = ref<TrackedProduct | null>(null)
@@ -36,10 +48,13 @@ const filterCounts = computed(() => ({
   paused: products.value.filter(p => !p.is_active).length,
 }))
 
+const targetReachedCount = computed(() =>
+  products.value.filter(p => p.target_price && p.current_price && p.current_price <= p.target_price).length
+)
+
 const fetchProducts = async () => {
   try {
-    const data = await watchApi.getAll()
-    products.value = data
+    products.value = await watchApi.getAll()
   } catch (error) {
     console.error('Error fetching tracked products:', error)
   } finally {
@@ -77,7 +92,7 @@ const confirmTogglePause = async () => {
   actionLoading.value = true
   try {
     await watchApi.update(selectedProduct.value.id, {
-      is_active: !selectedProduct.value.is_active
+      is_active: !selectedProduct.value.is_active,
     })
     await fetchProducts()
     showPauseDialog.value = false
@@ -105,13 +120,19 @@ const getRetailerName = (product: TrackedProduct): string => {
   return product.retailer?.name || 'Unknown'
 }
 
-const getWatchTypeLabel = (watchType?: string): string => {
-  switch (watchType) {
-    case 'price': return 'Price'
-    case 'stock': return 'Stock'
-    case 'both': return 'Price & Stock'
-    default: return 'Price'
-  }
+const getDistanceToTarget = (product: TrackedProduct) => {
+  if (!product.target_price || !product.current_price) return null
+  const diff = product.current_price - product.target_price
+  if (diff <= 0) return { reached: true, amount: 0 }
+  return { reached: false, amount: diff }
+}
+
+const getProgressPercent = (product: TrackedProduct) => {
+  if (!product.target_price || !product.retail_price || !product.current_price) return 0
+  const range = product.retail_price - product.target_price
+  if (range <= 0) return 100
+  const traveled = product.retail_price - product.current_price
+  return Math.min(100, Math.max(0, (traveled / range) * 100))
 }
 
 onMounted(() => {
@@ -120,223 +141,260 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen">
-    <!-- Hero Section -->
-    <header class="relative overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-br from-accent via-accent-dark to-blue-900"></div>
-      <div class="dotted-background relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-12">
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-          <div class="max-w-2xl">
-            <div class="flex items-center mb-4">
-              <div class="p-2 bg-white/20 rounded-lg mr-3">
-                <BellAlertIcon class="h-6 w-6 text-white" />
-              </div>
-              <span class="text-white/70 text-sm font-medium">Watch</span>
-            </div>
-            <h1 class="text-3xl sm:text-4xl font-medium text-white mb-4 tracking-tight">
-              Track prices, buy smarter
-            </h1>
-            <p class="text-lg text-white/80 leading-relaxed">
-              Monitor product prices and get notified when they drop. Know the right time to buy
-              instead of guessing.
-            </p>
+  <div class="pb-16">
+    <!-- Editorial header replaces the heavy gradient block -->
+    <SectionHeader
+      eyebrow="Watch · Price ledger"
+      title="Track movement before you buy."
+      description="Drop-by-drop price history on the things you actually buy. Alerts fire only when motion makes the moment worth your attention."
+      :icon="BellAlertIcon"
+      :index="filterCounts.all || 0"
+    >
+      <template #aside>
+        <div v-if="!loading && filterCounts.all" class="mt-4 grid grid-cols-2 gap-3">
+          <div class="border-l border-border pl-4">
+            <p class="figure text-2xl text-primary leading-none">{{ filterCounts.active }}</p>
+            <p class="eyebrow mt-1.5">Active</p>
           </div>
-          <div class="flex-shrink-0">
-            <RouterLink to="/watch/create">
-              <button class="bg-white/10 hover:bg-white/20 backdrop-blur text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2 border border-white/20">
-                <PlusIcon class="h-5 w-5" />
-                <span>Track New Product</span>
-              </button>
-            </RouterLink>
+          <div class="border-l border-signal pl-4">
+            <p class="figure text-2xl text-signal-dark leading-none">{{ targetReachedCount }}</p>
+            <p class="eyebrow mt-1.5">At target</p>
           </div>
         </div>
-      </div>
-    </header>
+      </template>
 
-    <main class="py-8 lg:py-12 flex-1">
-      <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+      <template #actions>
+        <RouterLink
+          to="/watch/create"
+          class="group inline-flex items-center gap-2 rounded-md px-4 py-2.5 bg-primary text-surface text-sm font-medium hover:bg-primary-light transition-colors"
+        >
+          <PlusIcon class="h-4 w-4" />
+          Track new product
+        </RouterLink>
+      </template>
+    </SectionHeader>
 
-      <!-- Quick Filters -->
-      <div v-if="!loading && products.length" class="flex items-center gap-2 mb-6">
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-2">
+      <!-- Filter strip -->
+      <div v-if="!loading && products.length" class="flex items-center gap-1 mb-8 border border-border rounded-md p-1 bg-surface w-fit">
         <button
           v-for="filter in (['all', 'active', 'paused'] as FilterType[])"
           :key="filter"
           @click="activeFilter = filter"
           :class="[
-            'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+            'inline-flex items-center gap-2 px-3.5 py-1.5 rounded text-xs font-medium transition-colors',
             activeFilter === filter
-              ? 'bg-accent text-white'
-              : 'bg-surface text-text-muted hover:bg-background'
+              ? 'bg-primary text-surface'
+              : 'text-text-muted hover:text-primary',
           ]"
         >
-          {{ filter === 'all' ? 'All' : filter === 'active' ? 'Active' : 'Paused' }}
-          <span class="ml-1.5 text-xs opacity-75">({{ filterCounts[filter] }})</span>
+          <span class="eyebrow !text-[0.625rem]" :class="activeFilter === filter ? '!text-surface' : ''">
+            {{ filter }}
+          </span>
+          <span class="numeral" :class="activeFilter === filter ? 'text-surface/80' : 'text-text-muted'">
+            {{ filterCounts[filter] }}
+          </span>
         </button>
       </div>
 
       <!-- Loading -->
-      <div v-if="loading" class="flex items-center justify-center py-12">
+      <div v-if="loading" class="flex items-center justify-center py-20">
         <Spinner size="lg" color="accent" />
       </div>
 
-      <!-- Empty State -->
-      <Card v-else-if="!products.length" class="text-center" padding="lg">
-        <div class="p-4 rounded-xl bg-accent/10 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-          <TagIcon class="h-8 w-8 text-accent-dark" />
+      <!-- Empty -->
+      <section v-else-if="!products.length" class="surface-ink paper-grain rounded-md border border-primary-dark/40 p-10 sm:p-14 relative overflow-hidden">
+        <div class="grid grid-cols-12 gap-6 items-center relative z-10">
+          <div class="col-span-12 lg:col-span-8">
+            <p class="eyebrow text-white/60 mb-4">Your watchlist is empty</p>
+            <h2 class="font-display font-medium text-white tracking-tightest text-3xl sm:text-4xl leading-[0.95]">
+              Pick a product. <span class="italic text-signal-light">Watch it breathe.</span>
+            </h2>
+            <p class="mt-5 text-sm text-white/70 max-w-md">
+              Drop in a SKU or product link. We&rsquo;ll log every price change and ping you when motion matters.
+            </p>
+          </div>
+          <div class="col-span-12 lg:col-span-4 lg:text-right">
+            <RouterLink
+              to="/watch/create"
+              class="group inline-flex items-center justify-center gap-2 rounded-md px-6 py-3.5 bg-surface text-primary text-sm font-medium hover:bg-tan transition-colors"
+            >
+              <TagIcon class="h-4 w-4" />
+              Track first product
+            </RouterLink>
+          </div>
         </div>
-        <h3 class="text-lg font-medium text-primary mb-2">No products being tracked</h3>
-        <p class="text-text-muted mb-6">Track product prices to understand price movement before you buy</p>
-        <RouterLink to="/watch/create">
-          <button class="bg-accent hover:bg-accent-dark text-white px-6 py-3 rounded-lg font-medium transition-all duration-150 flex items-center space-x-2 mx-auto">
-            <PlusIcon class="h-5 w-5" />
-            <span>Track First Product</span>
-          </button>
-        </RouterLink>
-      </Card>
+      </section>
 
-      <!-- Empty Filter State -->
-      <Card v-else-if="products.length && !filteredProducts.length" class="text-center" padding="lg">
-        <p class="text-text-muted">
+      <!-- Empty filter -->
+      <div v-else-if="products.length && !filteredProducts.length" class="bg-surface border border-border rounded-md p-10 text-center">
+        <p class="text-text-muted text-sm">
           No {{ activeFilter === 'active' ? 'active' : 'paused' }} products.
-          <button @click="activeFilter = 'all'" class="text-accent hover:underline">View all</button>
+          <button @click="activeFilter = 'all'" class="text-accent-dark hover:underline">View all</button>
         </p>
-      </Card>
+      </div>
 
-      <!-- Products List -->
-      <div v-else class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <!-- Cards grid -->
+      <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <RouterLink
           v-for="product in filteredProducts"
           :key="product.id"
           :to="`/watch/${product.id}`"
-          class="block group"
+          class="group block"
         >
-          <Card variant="interactive" padding="none" class="overflow-hidden h-full">
-            <div class="p-4">
-              <!-- Top Row: Status & Actions -->
-              <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-2">
-                  <span
-                    :class="[
-                      'w-2 h-2 rounded-full',
-                      product.is_active ? 'bg-success' : 'bg-text-muted'
-                    ]"
-                    :title="product.is_active ? 'Active' : 'Paused'"
-                  />
-                  <span class="text-xs text-text-muted">{{ getRetailerName(product) }}</span>
-                  <span class="text-xs text-text-muted">·</span>
-                  <span class="inline-flex items-center gap-1 text-xs text-text-muted">
-                    <CurrencyDollarIcon v-if="product.watch_type === 'price'" class="h-3 w-3" title="Watching for price drop" />
-                    <ArchiveBoxIcon v-else-if="product.watch_type === 'stock'" class="h-3 w-3" title="Watching for stock" />
-                    <template v-else-if="product.watch_type === 'both'">
-                      <CurrencyDollarIcon class="h-3 w-3" />
-                      <ArchiveBoxIcon class="h-3 w-3" />
-                    </template>
-                    <CurrencyDollarIcon v-else class="h-3 w-3" title="Watching for price drop" />
-                  </span>
-                </div>
-                <div class="flex items-center gap-1" @click.prevent>
-                  <button
-                    @click="refreshProduct(product.id)"
-                    :disabled="refreshingId === product.id"
-                    class="p-1.5 rounded-md text-text-muted hover:text-accent hover:bg-accent/10 transition-colors disabled:opacity-50"
-                    title="Refresh price"
-                  >
-                    <ArrowPathIcon :class="['h-4 w-4', refreshingId === product.id && 'animate-spin']" />
-                  </button>
-                  <button
-                    @click="openPauseDialog(product)"
-                    class="p-1.5 rounded-md text-text-muted hover:text-accent hover:bg-accent/10 transition-colors"
-                    :title="product.is_active ? 'Pause tracking' : 'Resume tracking'"
-                  >
-                    <PlayIcon v-if="!product.is_active" class="h-4 w-4" />
-                    <PauseIcon v-else class="h-4 w-4" />
-                  </button>
-                  <button
-                    @click="openDeleteDialog(product)"
-                    class="p-1.5 rounded-md text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
-                    title="Delete tracker"
-                  >
-                    <TrashIcon class="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-
-              <!-- Product Name -->
-              <h3 class="font-medium text-primary group-hover:text-accent transition-colors line-clamp-2 leading-snug mb-3">
-                {{ product.product_name || 'Pending lookup...' }}
-              </h3>
-
-              <!-- Price Display -->
-              <div class="flex items-center justify-between">
-                <span class="text-2xl font-semibold text-primary">
-                  {{ product.current_price ? `$${formatCurrency(product.current_price)}` : '—' }}
+          <article class="card h-full flex flex-col overflow-hidden">
+            <!-- Header strip with status + retailer + actions -->
+            <div class="flex items-center justify-between px-4 pt-3 pb-2 border-b border-border">
+              <div class="flex items-center gap-2 min-w-0">
+                <span
+                  :class="[
+                    'w-1.5 h-1.5 rounded-full flex-shrink-0',
+                    product.is_active ? 'bg-success' : 'bg-text-muted',
+                  ]"
+                />
+                <span class="eyebrow truncate">{{ getRetailerName(product) }}</span>
+                <span class="inline-flex items-center gap-0.5 text-text-muted ml-1">
+                  <CurrencyDollarIcon v-if="product.watch_type === 'price' || !product.watch_type" class="h-3 w-3" />
+                  <ArchiveBoxIcon v-if="product.watch_type === 'stock' || product.watch_type === 'both'" class="h-3 w-3" />
                 </span>
-                <!-- Stock status for stock watchers -->
-                <template v-if="product.watch_type === 'stock' || product.watch_type === 'both'">
-                  <Badge v-if="product.in_stock" variant="success" size="sm">In Stock</Badge>
-                  <Badge v-else variant="danger" size="sm">Out of Stock</Badge>
-                </template>
-                <!-- Price target status for price watchers -->
-                <template v-else-if="product.target_price && product.current_price">
-                  <span
-                    v-if="product.current_price <= product.target_price"
-                    class="text-sm font-medium text-success"
-                  >
-                    Target reached
-                  </span>
-                  <span v-else class="text-sm text-text-muted">
-                    ${{ formatCurrency(product.current_price - product.target_price) }} above target
-                  </span>
-                </template>
+              </div>
+              <div class="flex items-center gap-0.5 flex-shrink-0" @click.prevent>
+                <button
+                  @click="refreshProduct(product.id)"
+                  :disabled="refreshingId === product.id"
+                  class="p-1.5 rounded text-text-muted hover:text-primary hover:bg-surface-dark transition-colors disabled:opacity-50"
+                  title="Refresh price"
+                >
+                  <ArrowPathIcon :class="['h-3.5 w-3.5', refreshingId === product.id && 'animate-spin']" />
+                </button>
+                <button
+                  @click="openPauseDialog(product)"
+                  class="p-1.5 rounded text-text-muted hover:text-primary hover:bg-surface-dark transition-colors"
+                  :title="product.is_active ? 'Pause tracking' : 'Resume tracking'"
+                >
+                  <PlayIcon v-if="!product.is_active" class="h-3.5 w-3.5" />
+                  <PauseIcon v-else class="h-3.5 w-3.5" />
+                </button>
+                <button
+                  @click="openDeleteDialog(product)"
+                  class="p-1.5 rounded text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
+                  title="Delete tracker"
+                >
+                  <TrashIcon class="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+
+            <!-- Body: image anchor + content -->
+            <div class="flex gap-4 p-4">
+              <!-- Image anchor -->
+              <div class="flex-shrink-0 w-20 h-20 rounded-md overflow-hidden bg-surface-dark border border-border flex items-center justify-center relative">
+                <img
+                  v-if="product.product_image_url"
+                  :src="product.product_image_url"
+                  :alt="product.product_name || 'Product image'"
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                />
+                <PhotoIcon v-else class="h-8 w-8 text-text-muted/40" />
+
+                <!-- Target reached badge -->
+                <span v-if="getDistanceToTarget(product)?.reached"
+                  class="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 rounded-full bg-signal text-white shadow-soft">
+                  <ArrowUpRightIcon class="h-3 w-3 -rotate-90" />
+                </span>
               </div>
 
-              <!-- Progress bar (if target set) -->
-              <div v-if="product.target_price && product.retail_price && product.current_price" class="mt-3">
-                <div class="h-1.5 bg-border rounded-full overflow-hidden">
-                  <div
-                    class="h-full bg-gradient-to-r from-accent to-success rounded-full transition-all"
-                    :style="{ width: Math.min(100, Math.max(0, ((product.retail_price - product.current_price) / (product.retail_price - product.target_price)) * 100)) + '%' }"
-                  />
-                </div>
-              </div>
+              <!-- Title + price -->
+              <div class="flex-1 min-w-0 flex flex-col">
+                <h3 class="font-display text-[1.0625rem] text-primary tracking-tight leading-snug line-clamp-2 group-hover:text-accent-dark transition-colors">
+                  {{ product.product_name || 'Pending lookup…' }}
+                </h3>
 
-              <!-- Footer -->
-              <div class="flex items-center justify-between mt-3 pt-3 border-t border-border">
-                <CopyText :text="product.sku_upc" label="SKU/UPC" @click.prevent />
-                <div class="flex items-center gap-2">
-                  <div class="flex items-center gap-1">
-                    <EnvelopeIcon
-                      v-if="product.notification_method?.includes('email')"
-                      class="h-3.5 w-3.5 text-text-muted"
-                      title="Email alerts on"
-                    />
-                    <DevicePhoneMobileIcon
-                      v-if="product.notification_method?.includes('push')"
-                      class="h-3.5 w-3.5 text-text-muted"
-                      title="Push alerts on"
-                    />
-                  </div>
-                  <span class="text-xs text-text-muted">
-                    {{ product.last_checked_at ? formatRelativeTime(product.last_checked_at) : 'Not checked' }}
+                <div class="mt-auto pt-3 flex items-baseline gap-2">
+                  <span class="figure text-2xl text-primary leading-none">
+                    {{ product.current_price ? `$${formatCurrency(product.current_price)}` : '—' }}
+                  </span>
+                  <span v-if="product.retail_price && product.current_price && product.current_price < product.retail_price"
+                    class="numeral text-xs text-text-muted line-through">
+                    ${{ formatCurrency(product.retail_price) }}
                   </span>
                 </div>
               </div>
             </div>
-          </Card>
+
+            <!-- Status row: target / stock -->
+            <div class="px-4 pb-2">
+              <template v-if="product.watch_type === 'stock' || product.watch_type === 'both'">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="eyebrow">Stock</span>
+                  <span :class="product.in_stock ? 'text-success' : 'text-danger'" class="numeral">
+                    {{ product.in_stock ? 'In stock' : 'Out of stock' }}
+                  </span>
+                </div>
+              </template>
+              <template v-else-if="product.target_price && product.current_price">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="eyebrow">Target ${{ formatCurrency(product.target_price) }}</span>
+                  <span v-if="getDistanceToTarget(product)?.reached" class="numeral text-signal-dark font-medium">
+                    Reached
+                  </span>
+                  <span v-else class="numeral text-text-muted">
+                    +${{ formatCurrency(getDistanceToTarget(product)?.amount || 0) }}
+                  </span>
+                </div>
+                <!-- Progress -->
+                <div class="mt-2 h-[3px] bg-border rounded-full overflow-hidden">
+                  <div
+                    class="h-full rounded-full bg-gradient-to-r from-accent to-signal transition-all duration-500"
+                    :style="{ width: getProgressPercent(product) + '%' }"
+                  />
+                </div>
+              </template>
+              <template v-else>
+                <div class="flex items-center justify-between text-xs">
+                  <span class="eyebrow">No target set</span>
+                  <span class="numeral text-text-muted">Watching</span>
+                </div>
+              </template>
+            </div>
+
+            <!-- Footer: SKU + alerts + last checked -->
+            <div class="mt-auto px-4 py-3 border-t border-border flex items-center justify-between gap-2">
+              <CopyText :text="product.sku_upc" label="SKU" @click.prevent />
+              <div class="flex items-center gap-2 text-text-muted">
+                <EnvelopeIcon
+                  v-if="product.notification_method?.includes('email')"
+                  class="h-3 w-3"
+                  title="Email alerts on"
+                />
+                <DevicePhoneMobileIcon
+                  v-if="product.notification_method?.includes('push')"
+                  class="h-3 w-3"
+                  title="Push alerts on"
+                />
+                <span class="numeral text-[0.6875rem]">
+                  {{ product.last_checked_at ? formatRelativeTime(product.last_checked_at) : '—' }}
+                </span>
+              </div>
+            </div>
+          </article>
         </RouterLink>
 
-        <!-- Add New Card -->
-        <RouterLink to="/watch/create" class="block">
-          <Card variant="interactive" class="h-full min-h-[180px] flex flex-col items-center justify-center text-center border-2 border-dashed border-accent/30 hover:border-accent bg-transparent" padding="lg">
-            <PlusIcon class="h-8 w-8 text-accent mb-2" />
-            <span class="font-medium text-primary">Track New Product</span>
-          </Card>
+        <!-- Add new card -->
+        <RouterLink
+          to="/watch/create"
+          class="group flex flex-col items-center justify-center min-h-[280px] rounded-md border border-dashed border-border-strong text-center p-6 hover:border-primary hover:bg-surface transition-colors"
+        >
+          <div class="w-12 h-12 rounded-md surface-navy paper-grain flex items-center justify-center mb-3">
+            <PlusIcon class="h-5 w-5 text-white relative z-10" />
+          </div>
+          <p class="font-display text-lg text-primary tracking-tight">Track another</p>
+          <p class="text-xs text-text-muted mt-1">Drop in a SKU or product URL</p>
         </RouterLink>
-      </div>
       </div>
     </main>
 
-    <!-- Delete Confirmation Dialog -->
     <ConfirmDialog
       :show="showDeleteDialog"
       title="Delete Tracker"
@@ -348,13 +406,14 @@ onMounted(() => {
       @close="showDeleteDialog = false"
     />
 
-    <!-- Pause/Resume Confirmation Dialog -->
     <ConfirmDialog
       :show="showPauseDialog"
       :title="selectedProduct?.is_active ? 'Pause Tracking' : 'Resume Tracking'"
-      :message="selectedProduct?.is_active
-        ? `Are you sure you want to pause tracking for '${selectedProduct?.product_name || 'this product'}'? You won't receive price alerts while paused.`
-        : `Are you sure you want to resume tracking for '${selectedProduct?.product_name || 'this product'}'? You'll start receiving price alerts again.`"
+      :message="
+        selectedProduct?.is_active
+          ? `Are you sure you want to pause tracking for '${selectedProduct?.product_name || 'this product'}'? You won't receive price alerts while paused.`
+          : `Are you sure you want to resume tracking for '${selectedProduct?.product_name || 'this product'}'? You'll start receiving price alerts again.`
+      "
       :confirm-text="selectedProduct?.is_active ? 'Pause' : 'Resume'"
       variant="primary"
       :loading="actionLoading"

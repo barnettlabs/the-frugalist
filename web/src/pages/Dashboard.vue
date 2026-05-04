@@ -6,12 +6,12 @@ import {
   CurrencyDollarIcon,
   EyeIcon,
   PlusIcon,
-  ArrowTrendingUpIcon,
+  ArrowUpRightIcon,
   CalculatorIcon,
-  ChevronRightIcon,
 } from '@heroicons/vue/24/outline'
 import { useAuthStore } from '@/stores/auth'
 import { dashboardApi, type DashboardStats } from '@/api/dashboard'
+import Spinner from '@/components/Spinner.vue'
 
 const authStore = useAuthStore()
 
@@ -42,6 +42,28 @@ const hasRecentActivity = computed(() => {
   return (vehicleFinanceSheets.value?.length ?? 0) + (vehicleLeaseSheets.value?.length ?? 0) > 0
 })
 
+const totalActivity = computed(() => {
+  return (stats.value?.tracked_products_count ?? 0) + totalEstimates.value
+})
+
+const isFresh = computed(() => totalActivity.value === 0)
+
+const todayLabel = computed(() => {
+  return new Date().toLocaleDateString(undefined, {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  })
+})
+
+const greeting = computed(() => {
+  const h = new Date().getHours()
+  if (h < 5) return 'Still up'
+  if (h < 12) return 'Good morning'
+  if (h < 17) return 'Good afternoon'
+  return 'Good evening'
+})
+
 const loadDashboard = async () => {
   try {
     const data = await dashboardApi.getStats()
@@ -61,184 +83,223 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="py-6 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-5xl mx-auto">
-      <!-- Loading State -->
-      <div v-if="loading" class="flex items-center justify-center py-16">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
-      </div>
-
-      <template v-else>
-        <!-- Header -->
-        <div class="mb-8">
-          <h1 class="text-2xl font-semibold text-primary">
-            {{ firstName ? `Welcome back, ${firstName}` : 'Dashboard' }}
-          </h1>
-          <p class="mt-1 text-text-muted">Your frugal savings at a glance</p>
-        </div>
-
-        <!-- KPI Stats Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <!-- Tracked Products -->
-          <div class="bg-surface/80 backdrop-blur-sm rounded-xl border border-border p-5 relative overflow-hidden group hover:border-accent/30 transition-all">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-accent/5 to-transparent rounded-bl-full"></div>
-            <div class="flex items-start justify-between relative">
-              <div>
-                <p class="text-sm font-medium text-text-muted mb-1">Tracking</p>
-                <p class="text-3xl font-bold text-primary">{{ stats?.tracked_products_count ?? 0 }}</p>
-                <p class="text-xs text-text-muted mt-1">products watched</p>
-              </div>
-              <div class="p-2.5 rounded-lg bg-accent/10">
-                <EyeIcon class="h-5 w-5 text-accent" />
-              </div>
-            </div>
-            <RouterLink
-              to="/watch"
-              class="mt-4 inline-flex items-center text-sm text-accent hover:text-accent/80 transition-colors"
-            >
-              View all
-              <ChevronRightIcon class="h-4 w-4 ml-0.5" />
-            </RouterLink>
-          </div>
-
-          <!-- Finance Estimates -->
-          <div class="bg-surface/80 backdrop-blur-sm rounded-xl border border-border p-5 relative overflow-hidden group hover:border-info/30 transition-all">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-info/5 to-transparent rounded-bl-full"></div>
-            <div class="flex items-start justify-between relative">
-              <div>
-                <p class="text-sm font-medium text-text-muted mb-1">Finance</p>
-                <p class="text-3xl font-bold text-primary">{{ stats?.finance_sheets_count ?? 0 }}</p>
-                <p class="text-xs text-text-muted mt-1">loan estimates</p>
-              </div>
-              <div class="p-2.5 rounded-lg bg-info/10">
-                <BanknotesIcon class="h-5 w-5 text-info" />
-              </div>
-            </div>
-            <RouterLink
-              to="/estimates"
-              class="mt-4 inline-flex items-center text-sm text-info hover:text-info/80 transition-colors"
-            >
-              View all
-              <ChevronRightIcon class="h-4 w-4 ml-0.5" />
-            </RouterLink>
-          </div>
-
-          <!-- Lease Estimates -->
-          <div class="bg-surface/80 backdrop-blur-sm rounded-xl border border-border p-5 relative overflow-hidden group hover:border-success/30 transition-all">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-success/5 to-transparent rounded-bl-full"></div>
-            <div class="flex items-start justify-between relative">
-              <div>
-                <p class="text-sm font-medium text-text-muted mb-1">Lease</p>
-                <p class="text-3xl font-bold text-primary">{{ stats?.lease_sheets_count ?? 0 }}</p>
-                <p class="text-xs text-text-muted mt-1">lease estimates</p>
-              </div>
-              <div class="p-2.5 rounded-lg bg-success/10">
-                <CurrencyDollarIcon class="h-5 w-5 text-success" />
-              </div>
-            </div>
-            <RouterLink
-              to="/estimates"
-              class="mt-4 inline-flex items-center text-sm text-success hover:text-success/80 transition-colors"
-            >
-              View all
-              <ChevronRightIcon class="h-4 w-4 ml-0.5" />
-            </RouterLink>
-          </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="mb-8">
-          <h2 class="text-sm font-medium text-text-muted uppercase tracking-wide mb-3">Quick Actions</h2>
-          <div class="flex flex-wrap gap-2">
-            <RouterLink
-              to="/watch/create"
-              class="inline-flex items-center gap-2 px-4 py-2 bg-surface/80 backdrop-blur-sm rounded-lg border border-border hover:border-accent/50 hover:bg-accent/5 transition-all text-sm font-medium text-primary"
-            >
-              <PlusIcon class="h-4 w-4 text-accent" />
-              Track Price
-            </RouterLink>
-            <RouterLink
-              to="/estimates/financing/create"
-              class="inline-flex items-center gap-2 px-4 py-2 bg-surface/80 backdrop-blur-sm rounded-lg border border-border hover:border-info/50 hover:bg-info/5 transition-all text-sm font-medium text-primary"
-            >
-              <CalculatorIcon class="h-4 w-4 text-info" />
-              Finance Estimate
-            </RouterLink>
-            <RouterLink
-              to="/estimates/leasing/create"
-              class="inline-flex items-center gap-2 px-4 py-2 bg-surface/80 backdrop-blur-sm rounded-lg border border-border hover:border-success/50 hover:bg-success/5 transition-all text-sm font-medium text-primary"
-            >
-              <CalculatorIcon class="h-4 w-4 text-success" />
-              Lease Estimate
-            </RouterLink>
-          </div>
-        </div>
-
-        <!-- Recent Activity -->
-        <div v-if="hasRecentActivity">
-          <div class="flex items-center justify-between mb-3">
-            <h2 class="text-sm font-medium text-text-muted uppercase tracking-wide">Recent Activity</h2>
-            <RouterLink to="/estimates" class="text-sm text-accent hover:text-accent/80 transition-colors">
-              View all
-            </RouterLink>
-          </div>
-
-          <div class="bg-surface/60 backdrop-blur-sm rounded-xl border border-border divide-y divide-border">
-            <!-- Finance Sheets -->
-            <RouterLink
-              v-for="sheet in vehicleFinanceSheets.slice(0, 3)"
-              :key="'finance-' + sheet.id"
-              :to="`/estimates/financing/${sheet.id}/edit`"
-              class="flex items-center gap-4 p-4 hover:bg-surface/80 transition-colors first:rounded-t-xl last:rounded-b-xl"
-            >
-              <div class="p-2 rounded-lg bg-info/10 flex-shrink-0">
-                <BanknotesIcon class="h-4 w-4 text-info" />
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="font-medium text-primary text-sm truncate">
-                  {{ sheet.vehicle_year }} {{ sheet.vehicle_make }} {{ sheet.vehicle_model }}
-                </p>
-                <p class="text-xs text-text-muted">
-                  Finance · ${{ sheet.vehicle_price?.toLocaleString() }}
-                </p>
-              </div>
-              <ChevronRightIcon class="h-4 w-4 text-text-muted flex-shrink-0" />
-            </RouterLink>
-
-            <!-- Lease Sheets -->
-            <RouterLink
-              v-for="sheet in vehicleLeaseSheets.slice(0, 3)"
-              :key="'lease-' + sheet.id"
-              :to="`/estimates/leasing/${sheet.id}/edit`"
-              class="flex items-center gap-4 p-4 hover:bg-surface/80 transition-colors first:rounded-t-xl last:rounded-b-xl"
-            >
-              <div class="p-2 rounded-lg bg-success/10 flex-shrink-0">
-                <CurrencyDollarIcon class="h-4 w-4 text-success" />
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="font-medium text-primary text-sm truncate">
-                  {{ sheet.vehicle_year }} {{ sheet.vehicle_make }} {{ sheet.vehicle_model }}
-                </p>
-                <p class="text-xs text-text-muted">
-                  Lease · ${{ sheet.vehicle_price?.toLocaleString() }}
-                </p>
-              </div>
-              <ChevronRightIcon class="h-4 w-4 text-text-muted flex-shrink-0" />
-            </RouterLink>
-          </div>
-        </div>
-
-        <!-- Empty State (only show when no activity at all) -->
-        <div v-else-if="totalEstimates === 0 && (stats?.tracked_products_count ?? 0) === 0" class="text-center py-12">
-          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 mb-4">
-            <ArrowTrendingUpIcon class="h-8 w-8 text-accent" />
-          </div>
-          <h3 class="text-lg font-medium text-primary mb-2">Get Started</h3>
-          <p class="text-text-muted mb-6 max-w-sm mx-auto">
-            Start tracking prices or create your first estimate to see your activity here.
-          </p>
-        </div>
-      </template>
+  <div class="pb-16">
+    <!-- Loading -->
+    <div v-if="loading" class="flex items-center justify-center py-32">
+      <Spinner size="lg" color="accent" />
     </div>
+
+    <template v-else>
+      <!-- Editorial masthead -->
+      <header class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8 lg:pt-12">
+        <div class="flex items-center justify-between border-y border-border-strong py-2 mb-10">
+          <span class="eyebrow">{{ todayLabel }}</span>
+          <span class="eyebrow hidden sm:inline">Personal ledger</span>
+          <span class="numeral text-xs text-text-muted">№ {{ totalActivity.toString().padStart(3, '0') }}</span>
+        </div>
+
+        <div class="grid grid-cols-12 gap-6 lg:gap-12 items-end">
+          <div class="col-span-12 lg:col-span-8 fade-up">
+            <p class="eyebrow mb-4">{{ greeting }}</p>
+            <h1 class="font-display font-medium text-primary tracking-tightest text-4xl sm:text-5xl lg:text-[4.25rem] leading-[0.95]">
+              {{ firstName ? firstName : 'Welcome' }}.
+              <span class="italic text-accent-dark">{{ isFresh ? 'Let’s start small.' : 'Here’s where you stand.' }}</span>
+            </h1>
+          </div>
+          <div class="col-span-12 lg:col-span-4 fade-up fade-up-1">
+            <p class="text-sm text-text-muted leading-relaxed border-l border-border pl-4">
+              {{ isFresh
+                ? 'Your ledger is clean. Add a product to watch or run a financing estimate to begin tracking what things should cost.'
+                : 'A snapshot of your watches, estimates, and recent decisions — pull on any thread to dig deeper.' }}
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Big-numeral focus trio -->
+      <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border rounded-md overflow-hidden">
+          <RouterLink
+            to="/watch"
+            class="group relative bg-surface p-6 sm:p-8 hover:bg-surface-dark transition-colors"
+          >
+            <div class="flex items-start justify-between mb-6">
+              <p class="eyebrow">Watch</p>
+              <EyeIcon class="h-4 w-4 text-text-muted group-hover:text-accent-dark transition-colors" />
+            </div>
+            <p class="figure text-5xl sm:text-6xl text-primary leading-none">{{ stats?.tracked_products_count ?? 0 }}</p>
+            <div class="mt-4 flex items-center justify-between">
+              <p class="text-xs text-text-muted">products on watch</p>
+              <span class="inline-flex items-center gap-1 text-xs font-medium text-primary group-hover:text-accent-dark transition-colors">
+                Open <ArrowUpRightIcon class="h-3 w-3" />
+              </span>
+            </div>
+          </RouterLink>
+
+          <RouterLink
+            to="/estimates/financing"
+            class="group relative bg-surface p-6 sm:p-8 hover:bg-surface-dark transition-colors"
+          >
+            <div class="flex items-start justify-between mb-6">
+              <p class="eyebrow">Finance</p>
+              <BanknotesIcon class="h-4 w-4 text-text-muted group-hover:text-accent-dark transition-colors" />
+            </div>
+            <p class="figure text-5xl sm:text-6xl text-primary leading-none">{{ stats?.finance_sheets_count ?? 0 }}</p>
+            <div class="mt-4 flex items-center justify-between">
+              <p class="text-xs text-text-muted">loan estimates</p>
+              <span class="inline-flex items-center gap-1 text-xs font-medium text-primary group-hover:text-accent-dark transition-colors">
+                Open <ArrowUpRightIcon class="h-3 w-3" />
+              </span>
+            </div>
+          </RouterLink>
+
+          <RouterLink
+            to="/estimates/leasing"
+            class="group relative bg-surface p-6 sm:p-8 hover:bg-surface-dark transition-colors"
+          >
+            <div class="flex items-start justify-between mb-6">
+              <p class="eyebrow">Lease</p>
+              <CurrencyDollarIcon class="h-4 w-4 text-text-muted group-hover:text-accent-dark transition-colors" />
+            </div>
+            <p class="figure text-5xl sm:text-6xl text-primary leading-none">{{ stats?.lease_sheets_count ?? 0 }}</p>
+            <div class="mt-4 flex items-center justify-between">
+              <p class="text-xs text-text-muted">lease estimates</p>
+              <span class="inline-flex items-center gap-1 text-xs font-medium text-primary group-hover:text-accent-dark transition-colors">
+                Open <ArrowUpRightIcon class="h-3 w-3" />
+              </span>
+            </div>
+          </RouterLink>
+        </div>
+      </section>
+
+      <!-- Quick actions strip -->
+      <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-10">
+        <div class="flex items-center gap-4 mb-4">
+          <p class="eyebrow">Begin something</p>
+          <div class="h-px flex-1 bg-border"></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <RouterLink
+            to="/watch/create"
+            class="group flex items-center gap-4 p-4 rounded-md border border-border bg-surface hover:border-primary/40 hover:bg-surface-dark transition-colors"
+          >
+            <div class="w-10 h-10 rounded-md surface-navy paper-grain flex items-center justify-center flex-shrink-0">
+              <PlusIcon class="h-4 w-4 text-white relative z-10" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-primary">Track a price</p>
+              <p class="text-xs text-text-muted">Add a product, set a target</p>
+            </div>
+            <ArrowUpRightIcon class="h-4 w-4 text-text-muted group-hover:text-primary transition-colors" />
+          </RouterLink>
+          <RouterLink
+            to="/estimates/financing/create"
+            class="group flex items-center gap-4 p-4 rounded-md border border-border bg-surface hover:border-primary/40 hover:bg-surface-dark transition-colors"
+          >
+            <div class="w-10 h-10 rounded-md surface-navy paper-grain flex items-center justify-center flex-shrink-0">
+              <CalculatorIcon class="h-4 w-4 text-white relative z-10" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-primary">Run financing</p>
+              <p class="text-xs text-text-muted">APR, amortization, total cost</p>
+            </div>
+            <ArrowUpRightIcon class="h-4 w-4 text-text-muted group-hover:text-primary transition-colors" />
+          </RouterLink>
+          <RouterLink
+            to="/estimates/leasing/create"
+            class="group flex items-center gap-4 p-4 rounded-md border border-border bg-surface hover:border-primary/40 hover:bg-surface-dark transition-colors"
+          >
+            <div class="w-10 h-10 rounded-md surface-navy paper-grain flex items-center justify-center flex-shrink-0">
+              <CalculatorIcon class="h-4 w-4 text-white relative z-10" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-primary">Run a lease</p>
+              <p class="text-xs text-text-muted">Money factor, residual, true cost</p>
+            </div>
+            <ArrowUpRightIcon class="h-4 w-4 text-text-muted group-hover:text-primary transition-colors" />
+          </RouterLink>
+        </div>
+      </section>
+
+      <!-- Recent activity — editorial timeline -->
+      <section v-if="hasRecentActivity" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-14">
+        <div class="flex items-center gap-4 mb-6">
+          <p class="eyebrow">Recently filed</p>
+          <div class="h-px flex-1 bg-border"></div>
+          <RouterLink to="/estimates" class="text-xs font-medium text-primary hover:text-accent-dark transition-colors">
+            View all
+          </RouterLink>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
+          <!-- Finance column -->
+          <div>
+            <p class="eyebrow text-text-muted/70 mb-4">Finance ledger</p>
+            <ul class="divide-y divide-border border-y border-border">
+              <li v-for="sheet in vehicleFinanceSheets.slice(0, 4)" :key="'f-' + sheet.id">
+                <RouterLink
+                  :to="`/estimates/financing/${sheet.id}/edit`"
+                  class="group grid grid-cols-12 items-baseline gap-3 py-4 hover:bg-surface-dark/40 transition-colors -mx-2 px-2 rounded"
+                >
+                  <span class="col-span-2 numeral text-xs text-text-muted">{{ sheet.vehicle_year }}</span>
+                  <span class="col-span-7 font-display text-lg text-primary tracking-tight truncate group-hover:text-accent-dark transition-colors">
+                    {{ sheet.vehicle_make }} <span class="italic text-text-muted/80">{{ sheet.vehicle_model }}</span>
+                  </span>
+                  <span class="col-span-3 numeral text-sm text-primary text-right">${{ sheet.vehicle_price?.toLocaleString() }}</span>
+                </RouterLink>
+              </li>
+              <li v-if="!vehicleFinanceSheets.length" class="py-4 text-sm text-text-muted">No finance sheets yet.</li>
+            </ul>
+          </div>
+
+          <!-- Lease column -->
+          <div>
+            <p class="eyebrow text-text-muted/70 mb-4">Lease ledger</p>
+            <ul class="divide-y divide-border border-y border-border">
+              <li v-for="sheet in vehicleLeaseSheets.slice(0, 4)" :key="'l-' + sheet.id">
+                <RouterLink
+                  :to="`/estimates/leasing/${sheet.id}/edit`"
+                  class="group grid grid-cols-12 items-baseline gap-3 py-4 hover:bg-surface-dark/40 transition-colors -mx-2 px-2 rounded"
+                >
+                  <span class="col-span-2 numeral text-xs text-text-muted">{{ sheet.vehicle_year }}</span>
+                  <span class="col-span-7 font-display text-lg text-primary tracking-tight truncate group-hover:text-accent-dark transition-colors">
+                    {{ sheet.vehicle_make }} <span class="italic text-text-muted/80">{{ sheet.vehicle_model }}</span>
+                  </span>
+                  <span class="col-span-3 numeral text-sm text-primary text-right">${{ sheet.vehicle_price?.toLocaleString() }}</span>
+                </RouterLink>
+              </li>
+              <li v-if="!vehicleLeaseSheets.length" class="py-4 text-sm text-text-muted">No lease sheets yet.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Empty state — fully editorial -->
+      <section v-else-if="isFresh" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-16">
+        <div class="surface-ink paper-grain rounded-md border border-primary-dark/40 p-8 sm:p-12 relative overflow-hidden">
+          <div class="grid grid-cols-12 gap-6 items-center relative z-10">
+            <div class="col-span-12 lg:col-span-8">
+              <p class="eyebrow text-white/60 mb-4">Your first entry</p>
+              <h2 class="font-display font-medium text-white tracking-tightest text-3xl sm:text-5xl leading-[0.95]">
+                Pick something you&rsquo;ve been<br />
+                <span class="italic text-signal-light">eyeing</span> &mdash; and watch it for a while.
+              </h2>
+              <p class="mt-5 text-sm text-white/70 max-w-md">
+                Track your first product. Set a target. Wait for the market to come to you instead of the other way around.
+              </p>
+            </div>
+            <div class="col-span-12 lg:col-span-4 lg:text-right">
+              <RouterLink
+                to="/watch/create"
+                class="group inline-flex items-center justify-center gap-2 rounded-md px-6 py-3.5 bg-surface text-primary text-sm font-medium hover:bg-tan transition-colors"
+              >
+                Track first product
+                <ArrowUpRightIcon class="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </RouterLink>
+            </div>
+          </div>
+        </div>
+      </section>
+    </template>
   </div>
 </template>

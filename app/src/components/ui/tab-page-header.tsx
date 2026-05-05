@@ -49,7 +49,7 @@ export function TabPageHeader({
     <View
       style={{
         paddingTop: insets.top,
-        backgroundColor: isDark ? colors.header.dark.background : colors.header.light.background,
+        backgroundColor: isDark ? colors.surface.dark : colors.surface.light,
         borderBottomWidth: 1,
         borderBottomColor: isDark ? colors.border.dark : colors.border.light,
       }}

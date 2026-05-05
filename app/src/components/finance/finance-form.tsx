@@ -5,7 +5,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
-import { CurrencyInput, FormSection, PercentageInput } from '@/components/forms';
+import { CurrencyInput, ExtraPaymentsField, FormSection, PercentageInput } from '@/components/forms';
 import { Button, ControlledInput, ScrollView, Select, Text, View } from '@/components/ui';
 import { tw } from '@/components/ui/theme';
 import { FinanceCalculator, formatCurrencyWithSymbol } from '@/lib/calculators';
@@ -81,7 +81,7 @@ export function FinanceForm({ initialData, onSubmit, isSubmitting, submitLabel, 
         <FinancingSection control={control} watchedValues={watchedValues} setValue={setValue} />
         <ContactSection control={control} />
         <NotesSection control={control} />
-        <AdvancedSection control={control} />
+        <AdvancedSection control={control} watchedValues={watchedValues} />
         <View className="h-20" />
       </ScrollView>
       <ActionBar
@@ -253,16 +253,25 @@ function NotesSection({ control }: { control: Control<FinanceFormData> }) {
   );
 }
 
-function AdvancedSection({ control }: { control: Control<FinanceFormData> }) {
+function AdvancedSection({
+  control,
+  watchedValues,
+}: {
+  control: Control<FinanceFormData>;
+  watchedValues: Partial<FinanceFormData>;
+}) {
   return (
-    <FormSection number="07" title="Advanced" collapsible defaultCollapsed>
-      <ControlledInput
+    <FormSection
+      number="07"
+      title="Advanced"
+      helper="Schedule extra payments to shorten the loan and shave interest."
+      collapsible
+      defaultCollapsed
+    >
+      <ExtraPaymentsField
         control={control}
         name="extra_payments_json"
-        label="Extra Payments (JSON)"
-        placeholder='[{"startMonth": 1, "endMonth": 12, "paymentAmount": 100}]'
-        multiline
-        numberOfLines={3}
+        maxMonths={watchedValues.finance_term as number | undefined}
       />
     </FormSection>
   );

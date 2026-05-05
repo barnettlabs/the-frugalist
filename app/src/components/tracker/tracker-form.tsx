@@ -1,13 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Pressable, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
 import { CurrencyInput } from '@/components/forms';
 import {
+  Button,
   ControlledInput,
   FormSection,
   Select,
@@ -46,13 +47,13 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
   });
 
   const retailerId = watch('retailer_id');
-  const bottomPadding = Math.max(insets.bottom, 16);
+  const bottomPadding = Math.max(insets.bottom, 20);
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       className={`flex-1 ${tw.pageBg}`}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+      keyboardVerticalOffset={0}
     >
       <ScrollView
         className="flex-1"
@@ -126,23 +127,17 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
         style={{ paddingBottom: bottomPadding }}
       >
         {onCancel ? (
-          <Pressable
-            onPress={onCancel}
-            className="flex-1 px-4 py-3 rounded-md items-center active:opacity-70"
-          >
-            <Text className="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">Cancel</Text>
-          </Pressable>
+          <View className="flex-1">
+            <Button label="Cancel" variant="outline" onPress={onCancel} />
+          </View>
         ) : null}
-        <Pressable
-          onPress={handleSubmit(onSubmit)}
-          disabled={isSubmitting}
-          className="flex-1 px-4 py-3 rounded-md items-center bg-primary active:opacity-80"
-          style={{ opacity: isSubmitting ? 0.6 : 1 }}
-        >
-          <Text className="text-sm font-medium text-surface-light">
-            {isSubmitting ? 'Tracking…' : 'Start tracking'}
-          </Text>
-        </Pressable>
+        <View className="flex-1">
+          <Button
+            label={isSubmitting ? 'Tracking…' : 'Start tracking'}
+            onPress={handleSubmit(onSubmit)}
+            disabled={isSubmitting}
+          />
+        </View>
       </View>
     </KeyboardAvoidingView>
   );

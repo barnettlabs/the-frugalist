@@ -80,7 +80,10 @@ export const Options = React.forwardRef<BottomSheetModal, OptionsProps>(
     const hasExtendedContent = options.some(o => o.description || o.icon || o.image);
     const itemHeight = hasExtendedContent ? 72 : 56;
     const headerHeight = title ? 56 : 0;
-    const height = Math.min(options.length * itemHeight + headerHeight + 40, 400);
+    const MIN_SHEET_HEIGHT = 280;
+    const MAX_SHEET_HEIGHT = 480;
+    const naturalHeight = options.length * itemHeight + headerHeight + 56;
+    const height = Math.max(MIN_SHEET_HEIGHT, Math.min(naturalHeight, MAX_SHEET_HEIGHT));
     const snapPoints = React.useMemo(() => [height], [height]);
     const { colorScheme } = useColorScheme();
     const isDark = colorScheme === 'dark';

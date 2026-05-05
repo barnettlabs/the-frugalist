@@ -126,7 +126,7 @@ function ProfileHeader({ profile }: { profile: User }) {
       <View className="size-20 items-center justify-center rounded-full border border-border-light dark:border-border-dark bg-tan-light dark:bg-charcoal-800">
         <Text
           className="font-display text-text-primary-light dark:text-text-primary-dark"
-          style={{ fontSize: 26 }}
+          style={{ fontSize: 26, lineHeight: 32, includeFontPadding: false } as any}
         >
           {initials}
         </Text>
@@ -134,7 +134,7 @@ function ProfileHeader({ profile }: { profile: User }) {
 
       <Text
         className="mt-4 font-display tracking-tight text-text-primary-light dark:text-text-primary-dark"
-        style={{ fontSize: 26, lineHeight: 28 }}
+        style={{ fontSize: 26, lineHeight: 32, includeFontPadding: false } as any}
       >
         {profile.first_name} {profile.last_name}
       </Text>
@@ -170,7 +170,7 @@ function AccountStats({ profile }: { profile: User }) {
           </Text>
           <Text
             className="font-mono text-text-primary-light dark:text-text-primary-dark"
-            style={{ fontSize: 24 }}
+            style={{ fontSize: 24, lineHeight: 30, includeFontPadding: false } as any}
           >
             {memberDays}
           </Text>
@@ -184,8 +184,10 @@ function AccountStats({ profile }: { profile: User }) {
             className="font-mono"
             style={{
               fontSize: 24,
+              lineHeight: 30,
+              includeFontPadding: false,
               color: profile.email_verified_at ? colors.success.DEFAULT : colors.text.muted.light,
-            }}
+            } as any}
           >
             {profile.email_verified_at ? 'Yes' : 'No'}
           </Text>

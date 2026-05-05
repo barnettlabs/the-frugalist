@@ -6,7 +6,6 @@ import { useColorScheme } from 'nativewind';
 import React, { useState } from 'react';
 import { Platform, Share } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useProfile } from '@/api/auth/use-profile';
 import { Item } from '@/components/settings/item';
@@ -15,14 +14,13 @@ import {
   Button,
   colors,
   FocusAwareStatusBar,
-  MastheadBar,
   Pressable,
   ScreenContainer,
   Text,
   View,
 } from '@/components/ui';
 import { TabAwareScrollView } from '@/components/ui/scroll-aware';
-import { Bug, Rate, Share as ShareIcon, Support, User, Website } from '@/components/ui/icons';
+import { Bug, Chevron, Rate, Share as ShareIcon, Support, User, Website } from '@/components/ui/icons';
 import { useAuth, useIsFirstTime, useSelectedTheme } from '@/lib';
 import type { ColorSchemeType } from '@/lib';
 import { openLinkInBrowser } from '@/lib/utils';
@@ -40,7 +38,6 @@ function isDevUser(email: string | undefined): boolean {
 export default function Settings() {
   const signOut = useAuth.use.signOut();
   const { colorScheme } = useColorScheme();
-  const insets = useSafeAreaInsets();
   const { data: profile } = useProfile();
 
   const isDark = colorScheme === 'dark';
@@ -98,21 +95,15 @@ export default function Settings() {
     <ScreenContainer>
       <FocusAwareStatusBar />
 
-      <TabAwareScrollView style={{ flex: 1, paddingTop: insets.top + 12 }}>
-        <MastheadBar
-          left="Account"
-          center="A field guide to what things should cost"
-          right={`v ${Env.VERSION}`}
-        />
-
-        <View className="flex-1 px-4 pt-6">
+      <TabAwareScrollView style={{ flex: 1 }} extraBottomPadding={48}>
+        <View className="flex-1 px-4 pt-4">
           {/* Editorial title */}
           <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
             Account
           </Text>
           <Text
             className="font-display tracking-tightest text-text-primary-light dark:text-text-primary-dark mb-6"
-            style={{ fontSize: 32, lineHeight: 34 }}
+            style={{ fontSize: 32, lineHeight: 38, includeFontPadding: false } as any}
           >
             Settings &amp; preferences.
           </Text>
@@ -218,7 +209,6 @@ function ThemeButtonGroup() {
 
 function ProfileCard({
   profile,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isDark,
 }: {
   profile: { first_name: string; last_name: string; email: string } | undefined;
@@ -234,7 +224,10 @@ function ProfileCard({
       className="mb-5 flex-row items-center rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark p-4 active:opacity-80"
     >
       <View className="size-14 items-center justify-center rounded-full border border-border-light dark:border-border-dark bg-tan-light dark:bg-charcoal-800">
-        <Text className="font-display text-text-primary-light dark:text-text-primary-dark" style={{ fontSize: 18 }}>
+        <Text
+          className="font-display text-text-primary-light dark:text-text-primary-dark"
+          style={{ fontSize: 18, lineHeight: 24, includeFontPadding: false } as any}
+        >
           {initials}
         </Text>
       </View>
@@ -242,7 +235,7 @@ function ProfileCard({
       <View className="ml-4 flex-1">
         <Text
           className="font-display tracking-tight text-text-primary-light dark:text-text-primary-dark"
-          style={{ fontSize: 18 }}
+          style={{ fontSize: 18, lineHeight: 24, includeFontPadding: false } as any}
         >
           {profile ? `${profile.first_name} ${profile.last_name}` : 'Loading…'}
         </Text>
@@ -250,9 +243,16 @@ function ProfileCard({
           {profile?.email || ''}
         </Text>
       </View>
-      <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
-        View ↗
-      </Text>
+      <View className="flex-row items-center gap-1.5">
+        <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+          View
+        </Text>
+        <Chevron
+          direction="right"
+          color={isDark ? colors.text.muted.dark : colors.text.muted.light}
+          size={12}
+        />
+      </View>
     </Pressable>
   );
 }

@@ -1,8 +1,9 @@
+import { Env } from '@env';
 import { Image } from 'expo-image';
 import { Link, useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React from 'react';
-import { Platform, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
+import { Pressable, RefreshControl, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -31,6 +32,7 @@ type RecentItem = {
   subtitle: string;
   updatedAt: Date;
   route: string;
+  imageUrl?: string;
 };
 
 export default function Dashboard() {
@@ -100,6 +102,7 @@ export default function Dashboard() {
         subtitle: product.retailer?.name || 'Unknown Retailer',
         updatedAt: new Date(product.last_checked_at || product.tracking_start_date),
         route: `/watch/${product.id}?from=home`,
+        imageUrl: product.product_image_url,
       });
     });
 
@@ -126,15 +129,7 @@ export default function Dashboard() {
       >
         {/* Editorial masthead */}
         <Animated.View entering={FadeInDown.duration(500).delay(50)}>
-          <MastheadBar
-            left={todayLabel.toUpperCase()}
-            center="Personal ledger"
-            right={
-              <Text className="text-[10px] font-mono text-text-muted-light dark:text-text-muted-dark">
-                № {String(totalActivity).padStart(3, '0')}
-              </Text>
-            }
-          />
+          <MastheadBar left={todayLabel.toUpperCase()} right={`v ${Env.VERSION}`} />
         </Animated.View>
 
         {/* Greeting */}
@@ -146,19 +141,19 @@ export default function Dashboard() {
               </Text>
               <Text
                 className="font-display tracking-tightest text-text-primary-light dark:text-text-primary-dark"
-                style={{ fontSize: 40, lineHeight: 42 }}
+                style={{ fontSize: 40, lineHeight: 48, includeFontPadding: false } as any}
               >
                 {firstName}
               </Text>
               <Text
                 className="font-display italic tracking-tight text-accent dark:text-accent-light mt-1"
-                style={{ fontSize: 26, lineHeight: 30 }}
+                style={{ fontSize: 26, lineHeight: 34, includeFontPadding: false } as any}
               >
                 {isFresh ? 'Let’s start small.' : 'Here’s where you stand.'}
               </Text>
             </View>
             <Link href="/(app)/profile" asChild>
-              <Pressable>
+              <Pressable className="active:opacity-70">
                 <View
                   className="w-12 h-12 rounded-full items-center justify-center border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark overflow-hidden"
                 >
@@ -167,7 +162,7 @@ export default function Dashboard() {
                   ) : (
                     <Text
                       className="font-display text-text-primary-light dark:text-text-primary-dark"
-                      style={{ fontSize: 18 }}
+                      style={{ fontSize: 18, lineHeight: 24, includeFontPadding: false } as any}
                     >
                       {firstName[0]?.toUpperCase() || 'U'}
                     </Text>
@@ -257,31 +252,36 @@ export default function Dashboard() {
           {recentItems.length === 0 ? (
             <EmptyLedger onPress={() => router.push('/(app)/(tabs)/tools')} theme={theme} />
           ) : (
-            <View className="border-y border-border-light dark:border-border-dark">
+            <View>
               {recentItems.map((item, index) => (
                 <Pressable
                   key={item.id}
-                  className={`flex-row items-baseline gap-3 py-3.5 ${
+                  className={`flex-row items-center gap-3 py-3.5 active:opacity-60 ${
                     index < recentItems.length - 1 ? 'border-b border-border-light dark:border-border-dark' : ''
                   }`}
                   onPress={() => router.push(item.route as any)}
                 >
-                  <Text className="text-[10px] font-mono uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark w-14">
-                    {labelFor(item.type)}
-                  </Text>
+                  <RecentThumb item={item} theme={theme} />
                   <View className="flex-1">
                     <Text
                       className="font-display text-base tracking-tight text-text-primary-light dark:text-text-primary-dark"
+                      style={{ lineHeight: 20, includeFontPadding: false } as any}
                       numberOfLines={1}
                     >
                       {item.title}
                     </Text>
-                    <Text
-                      className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5"
-                      numberOfLines={1}
-                    >
-                      {item.subtitle}
-                    </Text>
+                    <View className="flex-row items-center gap-2 mt-0.5">
+                      <Text className="text-[10px] font-mono uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
+                        {labelFor(item.type)}
+                      </Text>
+                      <Text className="text-[10px] text-text-muted-light dark:text-text-muted-dark">·</Text>
+                      <Text
+                        className="text-xs text-text-muted-light dark:text-text-muted-dark flex-1"
+                        numberOfLines={1}
+                      >
+                        {item.subtitle}
+                      </Text>
+                    </View>
                   </View>
                   <Text className="text-[10px] font-mono text-text-muted-light dark:text-text-muted-dark">
                     {formatRelativeTime(item.updatedAt)}
@@ -312,7 +312,13 @@ function FocusTile({
 }) {
   return (
     <Pressable
-      style={{ flex: 1, backgroundColor: theme.cardBg, paddingVertical: 18, paddingHorizontal: 16 }}
+      style={({ pressed }) => ({
+        flex: 1,
+        backgroundColor: theme.cardBg,
+        paddingVertical: 18,
+        paddingHorizontal: 16,
+        opacity: pressed ? 0.65 : 1,
+      })}
       onPress={onPress}
       android_ripple={{ color: theme.cardBorder }}
     >
@@ -323,11 +329,33 @@ function FocusTile({
       </Text>
       <Text
         className="font-mono tracking-tight text-text-primary-light dark:text-text-primary-dark"
-        style={{ fontSize: 36, lineHeight: 38 }}
+        style={{ fontSize: 36, lineHeight: 42, includeFontPadding: false } as any}
       >
         {value}
       </Text>
     </Pressable>
+  );
+}
+
+function RecentThumb({
+  item,
+  theme,
+}: {
+  item: RecentItem;
+  theme: ReturnType<typeof getThemeColors>;
+}) {
+  if (item.type === 'watch' && item.imageUrl) {
+    return (
+      <View className="size-12 rounded-md overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark">
+        <Image source={{ uri: item.imageUrl }} style={styles.thumbImage} contentFit="cover" />
+      </View>
+    );
+  }
+  const Icon = item.type === 'finance' ? CalculatorIcon : item.type === 'lease' ? CarIcon : EyeIcon;
+  return (
+    <View className="size-12 items-center justify-center rounded-md border border-border-light dark:border-border-dark bg-tan-light dark:bg-charcoal-800">
+      <Icon color={theme.textMuted} size={18} />
+    </View>
   );
 }
 
@@ -347,7 +375,7 @@ function ActionRow({
   return (
     <Pressable
       onPress={onPress}
-      className="flex-row items-center gap-3 px-4 py-3.5 rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark active:opacity-80"
+      className="flex-row items-center gap-3 px-4 py-3.5 rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark active:opacity-60"
     >
       <View className="w-10 h-10 items-center justify-center rounded-md bg-primary dark:bg-text-primary-dark">
         {icon}
@@ -435,6 +463,10 @@ function labelFor(type: RecentItem['type']) {
 
 const styles = StyleSheet.create({
   avatarImage: {
+    width: '100%',
+    height: '100%',
+  },
+  thumbImage: {
     width: '100%',
     height: '100%',
   },

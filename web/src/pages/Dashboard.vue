@@ -93,13 +93,8 @@ onMounted(() => {
     <template v-else>
       <!-- Editorial masthead -->
       <div class="pt-8 lg:pt-12">
-        <MastheadBar center-text="Personal ledger">
+        <MastheadBar>
           <template #left>{{ todayLabel }}</template>
-          <template #right>
-            <span class="numeral text-xs text-text-muted">
-              № {{ totalActivity.toString().padStart(3, '0') }}
-            </span>
-          </template>
         </MastheadBar>
       </div>
 

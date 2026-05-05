@@ -41,7 +41,8 @@ const NAME = 'TheFrugalist'; // app name
 const EXPO_ACCOUNT_OWNER = 'expo-owner'; // expo account owner
 const EAS_PROJECT_ID = 'c3e1075b-6fe7-4686-aa49-35b46a229044'; // eas project id
 const SCHEME = 'thefrugalist'; // app scheme
-const APPLE_TEAM_ID = '44BTVU6QAF'; // APp Store Connect team ID
+const APPLE_TEAM_ID = '44BTVU6QAF'; // App Store Connect team ID
+const ESTABLISHED_YEAR = 2025; // year shown on the auth masthead — bump only on rebrand events
 
 /**
  * We declare a function withEnvSuffix that will add a suffix to the variable name based on the APP_ENV
@@ -80,6 +81,7 @@ const client = z.object({
   APPLE_TEAM_ID: z.string(),
   PACKAGE: z.string(),
   VERSION: z.string(),
+  ESTABLISHED_YEAR: z.number(),
 
   // ADD YOUR CLIENT ENV VARS HERE
   API_URL: z.string(),
@@ -105,6 +107,7 @@ const _clientEnv = {
   APPLE_TEAM_ID: APPLE_TEAM_ID,
   PACKAGE: withEnvSuffix(PACKAGE),
   VERSION: packageJSON.version,
+  ESTABLISHED_YEAR,
 
   // ADD YOUR ENV VARS HERE TOO
   API_URL: process.env.API_URL,

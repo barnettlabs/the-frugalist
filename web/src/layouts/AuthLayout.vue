@@ -37,7 +37,7 @@ import { version as appVersion } from '../../package.json'
       <!-- Bottom marker -->
       <div class="text-center mt-10">
         <span class="eyebrow text-text-muted/60">
-          v. {{ appVersion }} &middot; Established {{ new Date().getFullYear() }}
+          v. {{ appVersion }} &middot; Established 2025
         </span>
       </div>
     </div>

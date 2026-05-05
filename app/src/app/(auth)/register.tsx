@@ -1,3 +1,4 @@
+import { Env } from '@env';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, router } from 'expo-router';
 import React from 'react';
@@ -87,29 +88,22 @@ export default function RegisterScreen() {
           <MastheadBar
             left="v 1.0.0"
             center="A field guide to what things should cost"
-            right={
-              <Link href="/" asChild>
-                <Pressable>
-                  <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
-                    Back to home
-                  </Text>
-                </Pressable>
-              </Link>
-            }
+            right={`Est. ${Env.ESTABLISHED_YEAR}`}
           />
 
-          <View className="px-6 mt-10 items-center">
-            <LogoImage variant="auto" className="!size-16" />
-            <Text
-              className="font-display italic mt-3 text-accent dark:text-accent-light"
-              style={{ fontSize: 18 }}
-            >
-              Spend with intent.
-            </Text>
-          </View>
+          <View className="flex-1 justify-center py-8">
+            <View className="px-6 items-center">
+              <LogoImage variant="auto" className="!size-20" />
+              <Text
+                className="font-display italic mt-4 text-accent dark:text-accent-light"
+                style={{ fontSize: 18 }}
+              >
+                Spend with intent.
+              </Text>
+            </View>
 
-          <View className="px-6 mt-8">
-            <View className="rounded-md bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-6">
+            <View className="px-6 mt-8">
+              <View className="rounded-md bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-6">
               <View className="items-center mb-5">
                 <Text
                   className="font-display text-text-primary-light dark:text-text-primary-dark"
@@ -194,13 +188,9 @@ export default function RegisterScreen() {
                 </View>
               </View>
             </View>
+            </View>
           </View>
 
-          <View className="items-center mt-10">
-            <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light/60 dark:text-text-muted-dark/60">
-              v. 1.0.0 · Established {new Date().getFullYear()}
-            </Text>
-          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </ScreenContainer>

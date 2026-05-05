@@ -19,7 +19,7 @@ export default function ToolsLayout() {
         headerTitleStyle: {
           fontFamily: 'Rubik-SemiBold',
         },
-        headerShadowVisible: false,
+        headerShadowVisible: true,
         contentStyle: {
           backgroundColor: 'transparent',
         },
@@ -28,7 +28,7 @@ export default function ToolsLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Tools',
+          title: 'Toolkit',
         }}
       />
     </Stack>

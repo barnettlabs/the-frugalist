@@ -50,7 +50,7 @@ export default function TabLayout() {
       <NativeTabs.Screen
         name="tools"
         options={{
-          title: 'Tools',
+          title: 'Toolkit',
           tabBarIcon: ({ focused }) => ({
             sfSymbol: focused ? 'wrench.and.screwdriver.fill' : 'wrench.and.screwdriver',
           }),

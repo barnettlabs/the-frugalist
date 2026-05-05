@@ -20,7 +20,7 @@ export default function SettingsLayout() {
         headerTitleStyle: {
           fontFamily: 'Rubik-SemiBold',
         },
-        headerShadowVisible: false,
+        headerShadowVisible: true,
         contentStyle: {
           backgroundColor: 'transparent',
         },
@@ -29,14 +29,14 @@ export default function SettingsLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Settings',
+          title: 'Account',
         }}
       />
       <Stack.Screen
         name="profile"
         options={{
           title: 'Profile',
-          headerBackTitle: 'Settings',
+          headerBackTitle: 'Account',
         }}
       />
     </Stack>

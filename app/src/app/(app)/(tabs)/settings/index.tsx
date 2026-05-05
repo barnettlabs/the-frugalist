@@ -95,19 +95,8 @@ export default function Settings() {
     <ScreenContainer>
       <FocusAwareStatusBar />
 
-      <TabAwareScrollView style={{ flex: 1 }} extraBottomPadding={48}>
-        <View className="flex-1 px-4 pt-4">
-          {/* Editorial title */}
-          <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
-            Account
-          </Text>
-          <Text
-            className="font-display tracking-tightest text-text-primary-light dark:text-text-primary-dark mb-6"
-            style={{ fontSize: 32, lineHeight: 38, includeFontPadding: false } as any}
-          >
-            Settings &amp; preferences.
-          </Text>
-
+      <TabAwareScrollView style={{ flex: 1 }}>
+        <View className="flex-1 px-4 pt-3">
           {/* Profile Header Card */}
           <ProfileCard profile={profile} isDark={isDark} />
 

@@ -29,14 +29,13 @@ export default function SettingsLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Account',
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="profile"
         options={{
-          title: 'Profile',
-          headerBackTitle: 'Account',
+          headerShown: false,
         }}
       />
     </Stack>

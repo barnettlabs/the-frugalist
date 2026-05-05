@@ -16,6 +16,7 @@ import {
   FocusAwareStatusBar,
   Pressable,
   ScreenContainer,
+  TabPageHeader,
   Text,
   View,
 } from '@/components/ui';
@@ -94,7 +95,7 @@ export default function Settings() {
   return (
     <ScreenContainer>
       <FocusAwareStatusBar />
-
+      <TabPageHeader title="Account" />
       <TabAwareScrollView style={{ flex: 1 }}>
         <View className="flex-1 px-4 pt-3">
           {/* Profile Header Card */}

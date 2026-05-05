@@ -8,7 +8,7 @@ import {
   useUpdateProfile,
 } from '@/api/auth/use-profile';
 import { ProfileForm } from '@/components/profile/profile-form';
-import { Button, ScreenContainer, ScrollView, Text, View } from '@/components/ui';
+import { Button, ScreenContainer, ScrollView, TabPageHeader, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
 import { signOut } from '@/lib/auth';
 import type { User } from '@/lib/types/models';
@@ -96,6 +96,7 @@ export function ProfileContent() {
 
   return (
     <ScreenContainer>
+      <TabPageHeader title="Profile" showBack backLabel="Account" />
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingBottom: 48 }}

@@ -4,7 +4,7 @@ import React from 'react';
 import { Pressable, RefreshControl, View } from 'react-native';
 
 import { useDashboardStats } from '@/api/dashboard/use-dashboard-stats';
-import { ScreenContainer, Text } from '@/components/ui';
+import { ScreenContainer, TabPageHeader, Text } from '@/components/ui';
 import colors from '@/components/ui/colors';
 import { Chevron } from '@/components/ui/icons';
 import { TabAwareScrollView } from '@/components/ui/scroll-aware';
@@ -84,6 +84,7 @@ export default function ToolsScreen() {
 
   return (
     <ScreenContainer>
+      <TabPageHeader title="Toolkit" />
       <TabAwareScrollView
         style={{ flex: 1 }}
         refreshControl={

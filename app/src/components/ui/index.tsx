@@ -21,6 +21,7 @@ export * from './screen-container';
 export * from './scroll-aware';
 export * from './section-header';
 export * from './select';
+export * from './tab-page-header';
 export * from './text';
 export * from './tool-card';
 export * from './utils';

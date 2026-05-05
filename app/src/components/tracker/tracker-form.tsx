@@ -10,6 +10,7 @@ import {
   ControlledInput,
   FormSection,
   Select,
+  TabPageHeader,
   Text,
   View,
 } from '@/components/ui';
@@ -47,6 +48,7 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
 
   return (
     <View className={`flex-1 ${tw.pageBg}`}>
+      <TabPageHeader title="Track new" showBack backLabel="Cancel" />
       <KeyboardAwareScrollView
         className="flex-1"
         contentContainerStyle={{ padding: 16, paddingBottom: 120 }}

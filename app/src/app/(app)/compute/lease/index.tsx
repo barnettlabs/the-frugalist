@@ -1,16 +1,20 @@
-import { Link, useRouter } from 'expo-router';
+import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React from 'react';
 import { ActivityIndicator, RefreshControl, View } from 'react-native';
 
 import { useLeaseSheets } from '@/api/lease/use-lease-sheets';
 import { LeaseCard } from '@/components/lease/lease-card';
-import { Button, FloatingAddButton, Pressable, ScreenContainer, ScrollView, Text } from '@/components/ui';
+import { Button, FloatingAddButton, Pressable, ScreenContainer, ScrollView, TabPageHeader, Text } from '@/components/ui';
 import { Book, Plus as PlusIcon } from '@/components/ui/icons';
 import { getThemeColors } from '@/components/ui/theme';
 
+const BACK_LABELS: Record<string, string> = { home: 'Home', tools: 'Toolkit' };
+
 export default function LeaseListScreen() {
   const router = useRouter();
+  const { from } = useLocalSearchParams<{ from?: string }>();
+  const backLabel = BACK_LABELS[from ?? ''] ?? 'Back';
   const { data, isLoading, isError, refetch, isRefetching } = useLeaseSheets();
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -40,6 +44,7 @@ export default function LeaseListScreen() {
 
   return (
     <ScreenContainer>
+      <TabPageHeader title="Lease" showBack backLabel={backLabel} />
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingBottom: 120 }}

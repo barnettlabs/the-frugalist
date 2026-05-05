@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button, Image, ScrollView, Text, View } from '@/components/ui';
+import { Button, Image, ScrollView, TabPageHeader, Text, View } from '@/components/ui';
 import { tw } from '@/components/ui/theme';
 import {
   formatCurrencyWithSymbol,
@@ -37,6 +37,7 @@ export function ProductDetail({
 
   return (
     <View className={`flex-1 ${tw.pageBg}`}>
+      <TabPageHeader title="Product" showBack backLabel="Watch" />
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
         <ProductHeader product={product} targetReached={targetReached} />
         <PriceTimelineCard product={product} targetReached={targetReached} />

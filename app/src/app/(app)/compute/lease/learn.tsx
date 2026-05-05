@@ -7,6 +7,8 @@ export default function LeasingTermsScreen() {
   return (
     <LearningContent
       variant="lease"
+      headerTitle="Leasing"
+      backLabel="Lease"
       title="Understanding Vehicle Leasing"
       description="Master the terminology and concepts behind vehicle leasing to make informed decisions."
       terms={LEASE_TERMS}

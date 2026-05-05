@@ -3,7 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { TermCard } from '@/components/learning/term-card';
 import { TipCard } from '@/components/learning/tip-card';
-import { ScrollView, Text, View } from '@/components/ui';
+import { ScrollView, TabPageHeader, Text, View } from '@/components/ui';
 import { tw } from '@/components/ui/theme';
 import type { Term } from '@/lib/data/learning-content';
 
@@ -15,6 +15,10 @@ type LearningContentProps = {
   description: string;
   terms: Term[];
   tips: string[];
+  /** Header title (defaults to "Field guide") */
+  headerTitle?: string;
+  /** Back button label in the inline header */
+  backLabel?: string;
 };
 
 export function LearningContent({
@@ -23,6 +27,8 @@ export function LearningContent({
   description,
   terms,
   tips,
+  headerTitle = 'Field guide',
+  backLabel = 'Back',
 }: LearningContentProps) {
   const insets = useSafeAreaInsets();
 
@@ -39,10 +45,12 @@ export function LearningContent({
       };
 
   return (
-    <ScrollView
-      className={`flex-1 ${tw.pageBg}`}
-      contentContainerStyle={{ paddingBottom: bottomPadding }}
-    >
+    <View className={`flex-1 ${tw.pageBg}`}>
+      <TabPageHeader title={headerTitle} showBack backLabel={backLabel} />
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ paddingBottom: bottomPadding }}
+      >
       <View className="p-4">
         {/* Introduction */}
         <View className={`mb-6 rounded-xl p-4 ${colorClasses.introBg}`}>
@@ -74,6 +82,7 @@ export function LearningContent({
           ))}
         </View>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }

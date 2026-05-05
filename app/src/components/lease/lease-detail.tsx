@@ -1,7 +1,7 @@
 import { Link } from 'expo-router';
 import React, { useMemo } from 'react';
 
-import { ActionFooter, Pressable, ScrollView, Text, View } from '@/components/ui';
+import { ActionFooter, Pressable, ScrollView, TabPageHeader, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
 import { Book } from '@/components/ui/icons';
 import { SummaryRow } from '@/components/ui/summary-row';
@@ -21,6 +21,7 @@ export function LeaseDetail({ sheet, onEdit, onDelete, isDeleting }: LeaseDetail
 
   return (
     <View className={`flex-1 ${tw.pageBg}`}>
+      <TabPageHeader title="Lease estimate" showBack backLabel="Lease" />
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16, paddingBottom: 140 }}>
         <PaymentHeader payment={summary.leasePayment} term={sheet.lease_term} residual={sheet.residual_percent} />
         <TermsLink />

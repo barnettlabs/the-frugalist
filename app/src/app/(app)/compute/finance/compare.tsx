@@ -7,6 +7,7 @@ import {
   Pressable,
   ScreenContainer,
   ScrollView,
+  TabPageHeader,
   Text,
   View,
 } from '@/components/ui';
@@ -94,6 +95,7 @@ export default function FinanceCompareScreen() {
 
   return (
     <ScreenContainer>
+      <TabPageHeader title="Compare" showBack backLabel="Finance" />
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ padding: 16, paddingBottom: 40 }}

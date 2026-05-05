@@ -7,6 +7,8 @@ export default function FinancingTermsScreen() {
   return (
     <LearningContent
       variant="finance"
+      headerTitle="Financing"
+      backLabel="Finance"
       title="Understanding Vehicle Financing"
       description="Learn the key terms and concepts that will help you navigate the vehicle financing process with confidence."
       terms={FINANCE_TERMS}

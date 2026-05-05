@@ -6,7 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
 
 import { CurrencyInput, ExtraPaymentsField, FormSection, PercentageInput } from '@/components/forms';
-import { ActionFooter, ControlledInput, Select, Text, View } from '@/components/ui';
+import { ActionFooter, ControlledInput, Select, TabPageHeader, Text, View } from '@/components/ui';
 import { tw } from '@/components/ui/theme';
 import { FinanceCalculator, formatCurrencyWithSymbol } from '@/lib/calculators';
 import type { FinanceFormData } from '@/lib/types/models';
@@ -43,6 +43,10 @@ interface FinanceFormProps {
   submitLabel: string;
   onCancel?: () => void;
   isModal?: boolean;
+  /** Header title (defaults to "Finance estimate") */
+  headerTitle?: string;
+  /** Back-button label in the inline header */
+  backLabel?: string;
 }
 
 const VEHICLE_TYPE_OPTIONS = [
@@ -60,7 +64,15 @@ const TERM_OPTIONS = [
   { value: 84, label: '84 months' },
 ];
 
-export function FinanceForm({ initialData, onSubmit, isSubmitting, submitLabel, onCancel }: FinanceFormProps) {
+export function FinanceForm({
+  initialData,
+  onSubmit,
+  isSubmitting,
+  submitLabel,
+  onCancel,
+  headerTitle = 'New estimate',
+  backLabel = 'Cancel',
+}: FinanceFormProps) {
   const { control, handleSubmit, setValue } = useForm<FinanceFormData>({
     resolver: zodResolver(financeSchema),
     defaultValues: initialData,
@@ -70,6 +82,7 @@ export function FinanceForm({ initialData, onSubmit, isSubmitting, submitLabel, 
 
   return (
     <View className={`flex-1 ${tw.pageBg}`}>
+      <TabPageHeader title={headerTitle} showBack backLabel={backLabel} onBack={onCancel} />
       <KeyboardAwareScrollView
         className="flex-1"
         contentContainerStyle={{ padding: 16, paddingBottom: 140 }}

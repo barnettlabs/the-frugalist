@@ -14,6 +14,7 @@ import {
   ActionFooter,
   ControlledInput,
   Select,
+  TabPageHeader,
   Text,
   View,
 } from '@/components/ui';
@@ -56,6 +57,8 @@ interface LeaseFormProps {
   submitLabel: string;
   onCancel?: () => void;
   isModal?: boolean;
+  headerTitle?: string;
+  backLabel?: string;
 }
 
 const VEHICLE_TYPE_OPTIONS = [
@@ -77,6 +80,8 @@ export function LeaseForm({
   isSubmitting,
   submitLabel,
   onCancel,
+  headerTitle = 'New estimate',
+  backLabel = 'Cancel',
 }: LeaseFormProps) {
   const { control, handleSubmit, setValue } = useForm<LeaseFormData>({
     resolver: zodResolver(leaseSchema),
@@ -90,6 +95,7 @@ export function LeaseForm({
 
   return (
     <View className={`flex-1 ${tw.pageBg}`}>
+      <TabPageHeader title={headerTitle} showBack backLabel={backLabel} onBack={onCancel} />
       <KeyboardAwareScrollView
         className="flex-1"
         contentContainerStyle={{ padding: 16, paddingBottom: 140 }}

@@ -1,16 +1,20 @@
-import { Link, useRouter } from 'expo-router';
+import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React from 'react';
 import { ActivityIndicator, RefreshControl, View } from 'react-native';
 
 import { useFinanceSheets } from '@/api/finance/use-finance-sheets';
 import { FinanceCard } from '@/components/finance/finance-card';
-import { Button, FloatingAddButton, Pressable, ScreenContainer, ScrollView, Text } from '@/components/ui';
+import { Button, FloatingAddButton, Pressable, ScreenContainer, ScrollView, TabPageHeader, Text } from '@/components/ui';
 import { Book, Plus as PlusIcon } from '@/components/ui/icons';
 import { getThemeColors } from '@/components/ui/theme';
 
+const BACK_LABELS: Record<string, string> = { home: 'Home', tools: 'Toolkit' };
+
 export default function FinanceListScreen() {
   const router = useRouter();
+  const { from } = useLocalSearchParams<{ from?: string }>();
+  const backLabel = BACK_LABELS[from ?? ''] ?? 'Back';
   const { data, isLoading, isError, refetch, isRefetching } = useFinanceSheets();
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -40,6 +44,7 @@ export default function FinanceListScreen() {
 
   return (
     <ScreenContainer>
+      <TabPageHeader title="Finance" showBack backLabel={backLabel} />
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingBottom: 120 }}

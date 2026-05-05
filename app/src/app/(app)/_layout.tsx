@@ -1,58 +1,19 @@
 import { Stack } from 'expo-router';
-import { useColorScheme } from 'nativewind';
 import React from 'react';
 
-import colors from '@/components/ui/colors';
-
 export default function AppLayout() {
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === 'dark';
-  const headerColors = isDark ? colors.header.dark : colors.header.light;
-
   return (
     <Stack
       screenOptions={{
-        headerStyle: {
-          backgroundColor: headerColors.background,
-        },
-        headerTintColor: headerColors.text,
-        headerTitleStyle: {
-          fontFamily: 'Rubik-SemiBold',
-        },
-        headerShadowVisible: false,
+        headerShown: false,
+        contentStyle: { backgroundColor: 'transparent' },
       }}
     >
-      <Stack.Screen
-        name="(tabs)"
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="learning"
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          headerBackTitle: 'Home',
-        }}
-      />
-      <Stack.Screen
-        name="watch"
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="compute"
-        options={{
-          headerShown: false,
-        }}
-      />
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="learning" />
+      <Stack.Screen name="profile" />
+      <Stack.Screen name="watch" />
+      <Stack.Screen name="compute" />
     </Stack>
   );
 }

@@ -1,11 +1,11 @@
-import { Link, useRouter } from 'expo-router';
+import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React, { useState } from 'react';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 
 import { useWatch } from '@/api/watch';
 import { ProductCard } from '@/components/tracker/product-card';
-import { Button, FloatingAddButton, Pressable, ScreenContainer, ScrollView, Text, View } from '@/components/ui';
+import { Button, FloatingAddButton, Pressable, ScreenContainer, ScrollView, TabPageHeader, Text, View } from '@/components/ui';
 import { Plus as PlusIcon } from '@/components/ui/icons';
 import { getThemeColors } from '@/components/ui/theme';
 import type { PriceTrackerFilter } from '@/lib/types/models';
@@ -18,8 +18,12 @@ const FILTERS: { key: PriceTrackerFilter; label: string }[] = [
   { key: 'price_drops', label: 'Drops' },
 ];
 
+const BACK_LABELS: Record<string, string> = { home: 'Home', tools: 'Toolkit' };
+
 export default function TrackerListScreen() {
   const router = useRouter();
+  const { from } = useLocalSearchParams<{ from?: string }>();
+  const backLabel = BACK_LABELS[from ?? ''] ?? 'Back';
   const [filter, setFilter] = useState<PriceTrackerFilter>('all');
   const { data, isLoading, isError, refetch, isRefetching } = useWatch();
   const { colorScheme } = useColorScheme();
@@ -65,6 +69,7 @@ export default function TrackerListScreen() {
 
   return (
     <ScreenContainer>
+      <TabPageHeader title="Watch" showBack backLabel={backLabel} />
       {/* Editorial header */}
       <View className="px-4 pt-6 pb-4">
         <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">

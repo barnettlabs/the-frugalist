@@ -7,6 +7,7 @@ import {
   Pressable,
   ScreenContainer,
   ScrollView,
+  TabPageHeader,
   Text,
   View,
 } from '@/components/ui';
@@ -97,6 +98,7 @@ export default function LeaseCompareScreen() {
 
   return (
     <ScreenContainer>
+      <TabPageHeader title="Compare" showBack backLabel="Lease" />
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ padding: 16, paddingBottom: 40 }}

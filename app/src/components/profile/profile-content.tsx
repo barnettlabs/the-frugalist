@@ -13,7 +13,7 @@ import colors from '@/components/ui/colors';
 import { signOut } from '@/lib/auth';
 import type { User } from '@/lib/types/models';
 
-export function ProfileContent() {
+export function ProfileContent({ backLabel = 'Account' }: { backLabel?: string } = {}) {
   const { data: profile, isLoading, isError, refetch } = useProfile();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount();
@@ -96,7 +96,7 @@ export function ProfileContent() {
 
   return (
     <ScreenContainer>
-      <TabPageHeader title="Profile" showBack backLabel="Account" />
+      <TabPageHeader title="Profile" showBack backLabel={backLabel} />
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingBottom: 48 }}

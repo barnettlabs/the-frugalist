@@ -21,7 +21,7 @@ import {
   View,
 } from '@/components/ui';
 import { TabAwareScrollView } from '@/components/ui/scroll-aware';
-import { Bug, Chevron, Rate, Share as ShareIcon, Support, User, Website } from '@/components/ui/icons';
+import { Bug, Chevron, Rate, Share as ShareIcon, Support, Website } from '@/components/ui/icons';
 import { useAuth, useIsFirstTime, useSelectedTheme } from '@/lib';
 import type { ColorSchemeType } from '@/lib';
 import { openLinkInBrowser } from '@/lib/utils';
@@ -100,15 +100,6 @@ export default function Settings() {
         <View className="flex-1 px-4 pt-3">
           {/* Profile Header Card */}
           <ProfileCard profile={profile} isDark={isDark} />
-
-          {/* Account Section */}
-          <ItemsContainer title="settings.account">
-            <Item
-              text="settings.profile"
-              icon={<User color={iconColor} />}
-              onPress={() => router.push('/settings/profile')}
-            />
-          </ItemsContainer>
 
           {/* Appearance Section */}
           <Text className="pb-2 pt-4 text-lg text-neutral-900 dark:text-white">Appearance</Text>

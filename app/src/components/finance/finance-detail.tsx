@@ -1,8 +1,7 @@
 import { Link } from 'expo-router';
 import React, { useMemo } from 'react';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button, Pressable, ScrollView, Text, View } from '@/components/ui';
+import { ActionFooter, Pressable, ScrollView, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
 import { Book } from '@/components/ui/icons';
 import { SummaryRow } from '@/components/ui/summary-row';
@@ -23,17 +22,14 @@ export function FinanceDetail({
   onDelete,
   isDeleting,
 }: FinanceDetailProps) {
-  const insets = useSafeAreaInsets();
   const summary = useMemo(
     () => new FinanceCalculator(sheet).getSummary(),
     [sheet]
   );
 
-  const bottomPadding = Math.max(insets.bottom, 16);
-
   return (
     <View className={`flex-1 ${tw.pageBg}`}>
-      <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
+      <ScrollView className="flex-1" contentContainerStyle={{ padding: 16, paddingBottom: 140 }}>
         <PaymentHeader
           payment={summary.monthlyPayment}
           term={sheet.finance_term}
@@ -47,13 +43,13 @@ export function FinanceDetail({
         )}
         <ContactInfoCard sheet={sheet} />
         {sheet.notes && <NotesCard notes={sheet.notes} />}
-        <View className="h-20" />
       </ScrollView>
-      <ActionBar
-        onEdit={onEdit}
-        onDelete={onDelete}
-        isDeleting={isDeleting}
-        bottomPadding={bottomPadding}
+      <ActionFooter
+        primaryLabel="Edit"
+        onPrimary={onEdit}
+        secondaryLabel={isDeleting ? 'Deleting…' : 'Delete'}
+        onSecondary={onDelete}
+        isSecondaryDisabled={isDeleting}
       />
     </View>
   );
@@ -286,33 +282,3 @@ function TermsLink() {
   );
 }
 
-function ActionBar({
-  onEdit,
-  onDelete,
-  isDeleting,
-  bottomPadding,
-}: {
-  onEdit: () => void;
-  onDelete: () => void;
-  isDeleting: boolean;
-  bottomPadding: number;
-}) {
-  return (
-    <View
-      className="border-t border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark px-4 py-4 flex-row gap-3"
-      style={{ paddingBottom: bottomPadding }}
-    >
-      <View className="flex-1">
-        <Button
-          label={isDeleting ? 'Deleting…' : 'Delete'}
-          variant="destructive"
-          onPress={onDelete}
-          disabled={isDeleting}
-        />
-      </View>
-      <View className="flex-1">
-        <Button label="Edit" onPress={onEdit} />
-      </View>
-    </View>
-  );
-}

@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useMemo } from 'react';
 import type { Control, UseFormSetValue } from 'react-hook-form';
 import { useForm, useWatch } from 'react-hook-form';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
 
 import {
@@ -11,9 +11,8 @@ import {
   PercentageInput,
 } from '@/components/forms';
 import {
-  Button,
+  ActionFooter,
   ControlledInput,
-  ScrollView,
   Select,
   Text,
   View,
@@ -78,9 +77,7 @@ export function LeaseForm({
   isSubmitting,
   submitLabel,
   onCancel,
-  isModal = false,
 }: LeaseFormProps) {
-  const insets = useSafeAreaInsets();
   const { control, handleSubmit, setValue } = useForm<LeaseFormData>({
     resolver: zodResolver(leaseSchema),
     defaultValues: initialData,
@@ -91,11 +88,14 @@ export function LeaseForm({
     [watchedValues]
   );
 
-  const bottomPadding = Math.max(insets.bottom, 16);
-
   return (
     <View className={`flex-1 ${tw.pageBg}`}>
-      <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
+      <KeyboardAwareScrollView
+        className="flex-1"
+        contentContainerStyle={{ padding: 16, paddingBottom: 140 }}
+        keyboardShouldPersistTaps="handled"
+        bottomOffset={120}
+      >
         <SummaryCard summary={summary} />
         <EstimateInfoSection control={control} />
         <VehicleInfoSection
@@ -112,14 +112,12 @@ export function LeaseForm({
         />
         <ContactSection control={control} />
         <NotesSection control={control} />
-        <View className="h-20" />
-      </ScrollView>
-      <ActionBar
-        onSubmit={handleSubmit(onSubmit)}
+      </KeyboardAwareScrollView>
+      <ActionFooter
+        primaryLabel={isSubmitting ? 'Saving…' : submitLabel}
+        onPrimary={handleSubmit(onSubmit)}
+        isPrimaryDisabled={isSubmitting}
         onCancel={onCancel}
-        isSubmitting={isSubmitting}
-        submitLabel={submitLabel}
-        bottomPadding={bottomPadding}
       />
     </View>
   );
@@ -371,36 +369,3 @@ function NotesSection({ control }: { control: Control<LeaseFormData> }) {
   );
 }
 
-function ActionBar({
-  onSubmit,
-  onCancel,
-  isSubmitting,
-  submitLabel,
-  bottomPadding,
-}: {
-  onSubmit: () => void;
-  onCancel?: () => void;
-  isSubmitting: boolean;
-  submitLabel: string;
-  bottomPadding: number;
-}) {
-  return (
-    <View
-      className="border-t border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark px-4 py-4 flex-row gap-3"
-      style={{ paddingBottom: bottomPadding }}
-    >
-      {onCancel && (
-        <View className="flex-1">
-          <Button label="Cancel" variant="outline" onPress={onCancel} />
-        </View>
-      )}
-      <View className="flex-1">
-        <Button
-          label={isSubmitting ? 'Saving…' : submitLabel}
-          onPress={onSubmit}
-          disabled={isSubmitting}
-        />
-      </View>
-    </View>
-  );
-}

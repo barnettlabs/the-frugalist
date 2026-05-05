@@ -21,7 +21,7 @@ export default function ToolsLayout() {
         },
         headerShadowVisible: false,
         contentStyle: {
-          backgroundColor: isDark ? colors.charcoal[950] : colors.neutral[50],
+          backgroundColor: 'transparent',
         },
       }}
     >

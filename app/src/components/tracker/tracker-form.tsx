@@ -1,14 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { ScrollView } from 'react-native';
-import { KeyboardAvoidingView, Platform } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
 
 import { CurrencyInput } from '@/components/forms';
 import {
-  Button,
+  ActionFooter,
   ControlledInput,
   FormSection,
   Select,
@@ -36,7 +34,6 @@ const RETAILER_OPTIONS = [
 ];
 
 export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormProps) {
-  const insets = useSafeAreaInsets();
   const { control, handleSubmit, setValue, watch } = useForm<TrackerFormData>({
     resolver: zodResolver(trackerSchema),
     defaultValues: {
@@ -47,18 +44,14 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
   });
 
   const retailerId = watch('retailer_id');
-  const bottomPadding = Math.max(insets.bottom, 20);
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className={`flex-1 ${tw.pageBg}`}
-      keyboardVerticalOffset={0}
-    >
-      <ScrollView
+    <View className={`flex-1 ${tw.pageBg}`}>
+      <KeyboardAwareScrollView
         className="flex-1"
-        contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
         keyboardShouldPersistTaps="handled"
+        bottomOffset={120}
       >
         {/* Editorial title */}
         <View className="mb-5">
@@ -119,26 +112,14 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
             On Best Buy, look for the SKU on the product page (usually under the product title).
           </Text>
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
 
-      {/* Action footer */}
-      <View
-        className="border-t border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark px-4 py-4 flex-row gap-3"
-        style={{ paddingBottom: bottomPadding }}
-      >
-        {onCancel ? (
-          <View className="flex-1">
-            <Button label="Cancel" variant="outline" onPress={onCancel} />
-          </View>
-        ) : null}
-        <View className="flex-1">
-          <Button
-            label={isSubmitting ? 'Tracking…' : 'Start tracking'}
-            onPress={handleSubmit(onSubmit)}
-            disabled={isSubmitting}
-          />
-        </View>
-      </View>
-    </KeyboardAvoidingView>
+      <ActionFooter
+        primaryLabel={isSubmitting ? 'Tracking…' : 'Start tracking'}
+        onPrimary={handleSubmit(onSubmit)}
+        isPrimaryDisabled={isSubmitting}
+        onCancel={onCancel}
+      />
+    </View>
   );
 }

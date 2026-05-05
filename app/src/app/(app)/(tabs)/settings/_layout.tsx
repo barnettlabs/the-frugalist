@@ -21,6 +21,9 @@ export default function SettingsLayout() {
           fontFamily: 'Rubik-SemiBold',
         },
         headerShadowVisible: false,
+        contentStyle: {
+          backgroundColor: 'transparent',
+        },
       }}
     >
       <Stack.Screen

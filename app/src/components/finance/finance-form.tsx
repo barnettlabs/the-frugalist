@@ -2,11 +2,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useMemo } from 'react';
 import type { Control, UseFormSetValue } from 'react-hook-form';
 import { useForm, useWatch } from 'react-hook-form';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
 
 import { CurrencyInput, ExtraPaymentsField, FormSection, PercentageInput } from '@/components/forms';
-import { Button, ControlledInput, ScrollView, Select, Text, View } from '@/components/ui';
+import { ActionFooter, ControlledInput, Select, Text, View } from '@/components/ui';
 import { tw } from '@/components/ui/theme';
 import { FinanceCalculator, formatCurrencyWithSymbol } from '@/lib/calculators';
 import type { FinanceFormData } from '@/lib/types/models';
@@ -60,20 +60,22 @@ const TERM_OPTIONS = [
   { value: 84, label: '84 months' },
 ];
 
-export function FinanceForm({ initialData, onSubmit, isSubmitting, submitLabel, onCancel, isModal = false }: FinanceFormProps) {
-  const insets = useSafeAreaInsets();
-  const { control, handleSubmit, setValue, formState } = useForm<FinanceFormData>({
+export function FinanceForm({ initialData, onSubmit, isSubmitting, submitLabel, onCancel }: FinanceFormProps) {
+  const { control, handleSubmit, setValue } = useForm<FinanceFormData>({
     resolver: zodResolver(financeSchema),
     defaultValues: initialData,
   });
   const watchedValues = useWatch({ control });
   const summary = useMemo(() => new FinanceCalculator(watchedValues as FinanceFormData).getSummary(), [watchedValues]);
 
-  const bottomPadding = Math.max(insets.bottom, 16);
-
   return (
     <View className={`flex-1 ${tw.pageBg}`}>
-      <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
+      <KeyboardAwareScrollView
+        className="flex-1"
+        contentContainerStyle={{ padding: 16, paddingBottom: 140 }}
+        keyboardShouldPersistTaps="handled"
+        bottomOffset={120}
+      >
         <SummaryCard summary={summary} />
         <EstimateInfoSection control={control} />
         <VehicleInfoSection control={control} watchedValues={watchedValues} setValue={setValue} />
@@ -82,14 +84,12 @@ export function FinanceForm({ initialData, onSubmit, isSubmitting, submitLabel, 
         <ContactSection control={control} />
         <NotesSection control={control} />
         <AdvancedSection control={control} watchedValues={watchedValues} />
-        <View className="h-20" />
-      </ScrollView>
-      <ActionBar
-        onSubmit={handleSubmit(onSubmit)}
+      </KeyboardAwareScrollView>
+      <ActionFooter
+        primaryLabel={isSubmitting ? 'Saving…' : submitLabel}
+        onPrimary={handleSubmit(onSubmit)}
+        isPrimaryDisabled={isSubmitting}
         onCancel={onCancel}
-        isSubmitting={isSubmitting}
-        submitLabel={submitLabel}
-        bottomPadding={bottomPadding}
       />
     </View>
   );
@@ -277,32 +277,3 @@ function AdvancedSection({
   );
 }
 
-function ActionBar({
-  onSubmit,
-  onCancel,
-  isSubmitting,
-  submitLabel,
-  bottomPadding,
-}: {
-  onSubmit: () => void;
-  onCancel?: () => void;
-  isSubmitting: boolean;
-  submitLabel: string;
-  bottomPadding: number;
-}) {
-  return (
-    <View
-      className="border-t border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark px-4 py-4 flex-row gap-3"
-      style={{ paddingBottom: bottomPadding }}
-    >
-      {onCancel && (
-        <View className="flex-1">
-          <Button label="Cancel" variant="outline" onPress={onCancel} />
-        </View>
-      )}
-      <View className="flex-1">
-        <Button label={isSubmitting ? 'Saving…' : submitLabel} onPress={onSubmit} disabled={isSubmitting} />
-      </View>
-    </View>
-  );
-}

@@ -312,19 +312,12 @@ function FocusTile({
 }) {
   return (
     <Pressable
-      style={({ pressed }) => ({
-        flex: 1,
-        backgroundColor: theme.cardBg,
-        paddingVertical: 18,
-        paddingHorizontal: 16,
-        opacity: pressed ? 0.65 : 1,
-      })}
+      className="flex-1 active:opacity-65"
+      style={{ backgroundColor: theme.cardBg, paddingVertical: 18, paddingHorizontal: 16 }}
       onPress={onPress}
       android_ripple={{ color: theme.cardBorder }}
     >
-      <Text
-        className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3"
-      >
+      <Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
         {label}
       </Text>
       <Text

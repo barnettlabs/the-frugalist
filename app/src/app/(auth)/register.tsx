@@ -77,6 +77,7 @@ export default function RegisterScreen() {
       >
         <ScrollView
           className="flex-1"
+          bounces={false}
           contentContainerStyle={{
             flexGrow: 1,
             paddingTop: insets.top + 12,
@@ -103,7 +104,17 @@ export default function RegisterScreen() {
             </View>
 
             <View className="px-6 mt-8">
-              <View className="rounded-md bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-6">
+              <View className="relative">
+                <View
+                  className="absolute rounded-md bg-tan border border-border-light"
+                  style={{ top: -10, bottom: -10, left: -10, right: -10, transform: [{ rotate: '-1.5deg' }] }}
+                />
+                <View
+                  className="absolute rounded-md bg-surface-dark-light border border-border-light"
+                  style={{ top: -5, bottom: -5, left: -5, right: -5, transform: [{ rotate: '1deg' }] }}
+                />
+
+                <View className="relative rounded-md bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-6">
               <View className="items-center mb-5">
                 <Text
                   className="font-display text-text-primary-light dark:text-text-primary-dark"
@@ -186,6 +197,7 @@ export default function RegisterScreen() {
                     </Pressable>
                   </Link>
                 </View>
+              </View>
               </View>
             </View>
             </View>

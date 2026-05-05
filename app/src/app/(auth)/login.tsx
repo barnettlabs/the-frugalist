@@ -52,6 +52,7 @@ export default function LoginScreen() {
       >
         <ScrollView
           className="flex-1"
+          bounces={false}
           contentContainerStyle={{
             flexGrow: 1,
             paddingTop: insets.top + 12,

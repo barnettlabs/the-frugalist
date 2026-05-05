@@ -9,38 +9,40 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 /**
- * Visible footprint of the native @bottom-tabs translucent tab bar on Android.
- * iOS lets UIKit auto-adjust the scroll content inset for the translucent tab
- * bar via `contentInsetAdjustmentBehavior: automatic` (default), so we don't
- * add any manual padding for it on iOS — only the small breathing buffer.
+ * Visible footprint of the @bottom-tabs translucent tab bar.
+ * iOS ≈ 49pt + bottom safe area; Android ≈ 56dp + bottom inset.
+ *
+ * UIKit doesn't always apply the tab bar inset to the ScrollView when the
+ * Stack screen has `headerShown: false`, so we add the padding manually on
+ * both platforms and disable UIKit auto-adjustment to avoid double-counting.
  */
-const ANDROID_TAB_BAR = 56;
+const TAB_BAR_VISIBLE = Platform.select({ ios: 49, android: 56, default: 49 });
 
 interface TabAwareScrollViewProps extends ScrollViewProps {
   /** When true, adds tab-bar-safe bottom padding. Set false on screens with no tab bar. */
   tabAware?: boolean;
-  /** Breathing room above the tab bar. Defaults to 8pt. */
+  /** Breathing room above the tab bar. Defaults to 16pt. */
   extraBottomPadding?: number;
   contentContainerStyle?: StyleProp<ViewStyle>;
 }
 
 export const TabAwareScrollView = React.forwardRef<ScrollView, TabAwareScrollViewProps>(
   (
-    { tabAware = true, extraBottomPadding = 8, contentContainerStyle, children, ...rest },
+    { tabAware = true, extraBottomPadding = 16, contentContainerStyle, children, ...rest },
     ref,
   ) => {
     const insets = useSafeAreaInsets();
-    const bottomPadding = !tabAware
-      ? extraBottomPadding
-      : Platform.OS === 'ios'
-        ? extraBottomPadding
-        : ANDROID_TAB_BAR + insets.bottom + extraBottomPadding;
+    const bottomPadding = tabAware
+      ? TAB_BAR_VISIBLE + insets.bottom + extraBottomPadding
+      : extraBottomPadding;
 
     return (
       <ScrollView
         ref={ref}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        contentInsetAdjustmentBehavior="never"
+        automaticallyAdjustContentInsets={false}
         contentContainerStyle={[{ paddingBottom: bottomPadding }, contentContainerStyle]}
         {...rest}
       >
@@ -53,11 +55,10 @@ export const TabAwareScrollView = React.forwardRef<ScrollView, TabAwareScrollVie
 TabAwareScrollView.displayName = 'TabAwareScrollView';
 
 /**
- * Returns a numeric `paddingBottom` value that clears the tab bar + safe area
- * on Android. iOS callers can use 0 (or a small breathing buffer) and rely on
- * UIKit's automatic content-inset adjustment.
+ * Returns a numeric `paddingBottom` value that clears the tab bar + safe area.
+ * Use when you need to apply the offset to a non-ScrollView (FlatList contentContainerStyle, etc.).
  */
-export function useTabBarBottomPadding(extra = 8) {
+export function useTabBarBottomPadding(extra = 16) {
   const insets = useSafeAreaInsets();
-  return Platform.OS === 'ios' ? extra : ANDROID_TAB_BAR + insets.bottom + extra;
+  return TAB_BAR_VISIBLE + insets.bottom + extra;
 }

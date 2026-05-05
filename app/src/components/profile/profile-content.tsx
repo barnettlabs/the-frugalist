@@ -8,12 +8,16 @@ import {
   useUpdateProfile,
 } from '@/api/auth/use-profile';
 import { ProfileForm } from '@/components/profile/profile-form';
-import { Button, ScreenContainer, ScrollView, TabPageHeader, Text, View } from '@/components/ui';
+import { Button, ScreenContainer, TabPageHeader, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
+import { TabAwareScrollView } from '@/components/ui/scroll-aware';
 import { signOut } from '@/lib/auth';
 import type { User } from '@/lib/types/models';
 
-export function ProfileContent({ backLabel = 'Account' }: { backLabel?: string } = {}) {
+export function ProfileContent({
+  backLabel = 'Account',
+  tabAware = true,
+}: { backLabel?: string; tabAware?: boolean } = {}) {
   const { data: profile, isLoading, isError, refetch } = useProfile();
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount();
@@ -97,10 +101,7 @@ export function ProfileContent({ backLabel = 'Account' }: { backLabel?: string }
   return (
     <ScreenContainer>
       <TabPageHeader title="Profile" showBack backLabel={backLabel} />
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: 48 }}
-      >
+      <TabAwareScrollView className="flex-1" tabAware={tabAware}>
         <View className="p-4">
           <ProfileHeader profile={profile} />
           <ProfileForm
@@ -114,7 +115,7 @@ export function ProfileContent({ backLabel = 'Account' }: { backLabel?: string }
             isDeleting={isDeleting}
           />
         </View>
-      </ScrollView>
+      </TabAwareScrollView>
     </ScreenContainer>
   );
 }

@@ -253,12 +253,6 @@ const handleSignOut = async () => {
                     </li>
 
                     <li class="mt-auto">
-                      <RouterLink v-if="isAdmin" to="/admin" @click="sidebarOpen = false"
-                        class="group -mx-2 mb-1 flex items-center gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-accent-dark bg-accent/5 hover:bg-accent/10 transition-all">
-                        <ShieldCheckIcon class="h-5 w-5 shrink-0 text-accent" />
-                        <span>Admin Console</span>
-                      </RouterLink>
-
                       <RouterLink to="/profile" @click="sidebarOpen = false"
                         class="group -mx-2 flex items-center gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-text-muted hover:bg-neutral-100 hover:text-primary transition-all">
                         <div
@@ -358,12 +352,6 @@ const handleSignOut = async () => {
             </li>
 
             <li class="mt-auto">
-              <RouterLink v-if="isAdmin" to="/admin"
-                class="group -mx-2 mb-1 flex items-center gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-accent-dark bg-accent/5 hover:bg-accent/10 transition-all">
-                <ShieldCheckIcon class="h-5 w-5 shrink-0 text-accent" />
-                <span>Admin Console</span>
-              </RouterLink>
-
               <RouterLink to="/profile"
                 class="group -mx-2 flex items-center gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-text-muted hover:bg-neutral-100 hover:text-primary transition-all">
                 <div
@@ -416,6 +404,13 @@ const handleSignOut = async () => {
             </li>
           </ol>
         </nav>
+
+        <RouterLink v-if="isAdmin" to="/admin"
+          title="Admin Console" aria-label="Admin Console"
+          class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs text-text-muted hover:text-accent hover:bg-neutral-100 transition-colors">
+          <ShieldCheckIcon class="h-4 w-4" />
+          <span class="hidden sm:inline">Admin</span>
+        </RouterLink>
       </div>
 
       <!-- Page content -->

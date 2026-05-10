@@ -103,11 +103,15 @@ const handleSignOut = async () => {
                         </li>
                       </ul>
                     </li>
-                    <li class="mt-auto space-y-1">
-                      <RouterLink to="/dashboard"
+                    <li class="mt-auto">
+                      <RouterLink to="/profile" @click="sidebarOpen = false"
                         class="group -mx-2 flex items-center gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-text-muted hover:bg-neutral-100 hover:text-primary transition-all">
-                        <ArrowLeftIcon class="h-4 w-4 shrink-0" />
-                        <span>Back to app</span>
+                        <div class="h-8 w-8 rounded-full overflow-hidden bg-neutral-200 flex items-center justify-center flex-shrink-0">
+                          <img v-if="(user as any)?.avatar_url" class="h-full w-full object-cover"
+                            :src="(user as any)?.avatar_url" :alt="fullName" />
+                          <UserIcon v-else class="h-4 w-4 text-text-muted" />
+                        </div>
+                        <span class="truncate">{{ fullName }}</span>
                       </RouterLink>
                       <button @click="handleSignOut"
                         class="group -mx-2 flex w-full gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-text-muted hover:bg-danger/10 hover:text-danger transition-all">
@@ -154,19 +158,15 @@ const handleSignOut = async () => {
                 </li>
               </ul>
             </li>
-            <li class="mt-auto space-y-1">
-              <div class="-mx-2 flex items-center gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-text-muted">
+            <li class="mt-auto">
+              <RouterLink to="/profile"
+                class="group -mx-2 flex items-center gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-text-muted hover:bg-neutral-100 hover:text-primary transition-all">
                 <div class="h-8 w-8 rounded-full overflow-hidden bg-neutral-200 flex items-center justify-center flex-shrink-0">
                   <img v-if="(user as any)?.avatar_url" class="h-full w-full object-cover"
                     :src="(user as any)?.avatar_url" :alt="fullName" />
                   <UserIcon v-else class="h-4 w-4 text-text-muted" />
                 </div>
                 <span class="truncate">{{ fullName }}</span>
-              </div>
-              <RouterLink to="/dashboard"
-                class="group -mx-2 flex items-center gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-text-muted hover:bg-neutral-100 hover:text-primary transition-all">
-                <ArrowLeftIcon class="h-4 w-4 shrink-0" />
-                <span>Back to app</span>
               </RouterLink>
               <button @click="handleSignOut"
                 class="group -mx-2 flex w-full gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-text-muted hover:bg-danger/10 hover:text-danger transition-all">
@@ -186,10 +186,17 @@ const handleSignOut = async () => {
           <span class="sr-only">Open sidebar</span>
           <Bars3Icon class="h-6 w-6" aria-hidden="true" />
         </button>
-        <div class="flex items-center gap-2 text-sm">
+        <div class="flex flex-1 items-center gap-2 text-sm">
           <ShieldCheckIcon class="h-4 w-4 text-accent" />
           <span class="eyebrow">Admin Console</span>
         </div>
+
+        <RouterLink to="/dashboard"
+          title="Back to app" aria-label="Back to app"
+          class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs text-text-muted hover:text-primary hover:bg-neutral-100 transition-colors">
+          <ArrowLeftIcon class="h-4 w-4" />
+          <span class="hidden sm:inline">Back to app</span>
+        </RouterLink>
       </div>
 
       <main class="min-h-[calc(100vh-3.5rem)] py-8 px-4 sm:px-6 lg:px-8">

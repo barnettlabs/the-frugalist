@@ -237,6 +237,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Admin routes (auth + admin gate)
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('retailers/available-slugs', [\App\Http\Controllers\Admin\RetailerController::class, 'availableSlugs']);
     Route::apiResource('retailers', \App\Http\Controllers\Admin\RetailerController::class);
     Route::apiResource('announcements', \App\Http\Controllers\Admin\AnnouncementController::class);
     Route::get('users', [\App\Http\Controllers\Admin\UserController::class, 'index']);

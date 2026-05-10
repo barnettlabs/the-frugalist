@@ -72,6 +72,10 @@ export const adminRetailersApi = {
     const { data } = await apiClient.get<{ retailers: AdminRetailer[] }>('/admin/retailers')
     return data.retailers
   },
+  async availableSlugs(): Promise<{ registered: string[]; available: string[] }> {
+    const { data } = await apiClient.get<{ registered: string[]; available: string[] }>('/admin/retailers/available-slugs')
+    return data
+  },
   async create(payload: Partial<AdminRetailer>): Promise<AdminRetailer> {
     const { data } = await apiClient.post<{ retailer: AdminRetailer }>('/admin/retailers', payload)
     return data.retailer

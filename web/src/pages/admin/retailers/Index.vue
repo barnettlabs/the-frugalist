@@ -13,6 +13,8 @@ import Modal from '@/components/Modal.vue'
 import { adminRetailersApi, type AdminRetailer } from '@/api/admin'
 
 const retailers = ref<AdminRetailer[]>([])
+const availableSlugs = ref<string[]>([])
+const registeredSlugs = ref<string[]>([])
 const loading = ref(true)
 const saving = ref(false)
 const showForm = ref(false)
@@ -34,7 +36,13 @@ const errors = ref<Record<string, string[]>>({})
 const fetchRetailers = async () => {
   loading.value = true
   try {
-    retailers.value = await adminRetailersApi.list()
+    const [list, slugs] = await Promise.all([
+      adminRetailersApi.list(),
+      adminRetailersApi.availableSlugs(),
+    ])
+    retailers.value = list
+    availableSlugs.value = slugs.available
+    registeredSlugs.value = slugs.registered
   } finally {
     loading.value = false
   }
@@ -44,7 +52,7 @@ const openCreate = () => {
   editing.value = null
   Object.assign(form, {
     name: '',
-    slug: '',
+    slug: availableSlugs.value[0] || '',
     api_base_url: '',
     api_key: '',
     logo_url: '',
@@ -206,8 +214,19 @@ onMounted(fetchRetailers)
           </div>
           <div>
             <label class="block text-sm font-medium text-text-muted mb-1">Slug</label>
-            <input v-model="form.slug" type="text" class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral" placeholder="bestbuy" />
-            <p class="text-xs text-text-muted mt-1">Must match a registered service in <code>RetailerServiceFactory</code>.</p>
+            <input v-if="editing" :value="form.slug" type="text" disabled
+              class="w-full rounded-md border border-border bg-surface-dark px-3 py-2 text-sm numeral text-text-muted cursor-not-allowed" />
+            <select v-else-if="availableSlugs.length" v-model="form.slug"
+              class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral">
+              <option v-for="s in availableSlugs" :key="s" :value="s">{{ s }}</option>
+            </select>
+            <p v-else class="text-xs text-danger">
+              No service classes registered. Add one to <code>RetailerServiceFactory</code> first.
+            </p>
+            <p class="text-xs text-text-muted mt-1">
+              <template v-if="editing">Slug is locked — changing it would orphan existing tracked products.</template>
+              <template v-else>Bound to a service class in <code>RetailerServiceFactory</code>.</template>
+            </p>
             <p v-if="errors.slug" class="text-xs text-danger mt-1">{{ errors.slug[0] }}</p>
           </div>
           <div>

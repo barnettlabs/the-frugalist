@@ -21,6 +21,7 @@ import {
   ChevronRightIcon,
   BanknotesIcon,
   CurrencyDollarIcon,
+  ShieldCheckIcon,
 } from '@heroicons/vue/24/outline'
 import { useAuthStore } from '@/stores/auth'
 
@@ -45,6 +46,7 @@ const sidebarOpen = ref(false)
 
 const user = computed(() => authStore.user)
 const fullName = computed(() => authStore.fullName)
+const isAdmin = computed(() => authStore.isAdmin)
 
 const navigation: NavItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
@@ -251,6 +253,12 @@ const handleSignOut = async () => {
                     </li>
 
                     <li class="mt-auto">
+                      <RouterLink v-if="isAdmin" to="/admin" @click="sidebarOpen = false"
+                        class="group -mx-2 mb-1 flex items-center gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-accent-dark bg-accent/5 hover:bg-accent/10 transition-all">
+                        <ShieldCheckIcon class="h-5 w-5 shrink-0 text-accent" />
+                        <span>Admin Console</span>
+                      </RouterLink>
+
                       <RouterLink to="/profile" @click="sidebarOpen = false"
                         class="group -mx-2 flex items-center gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-text-muted hover:bg-neutral-100 hover:text-primary transition-all">
                         <div
@@ -350,6 +358,12 @@ const handleSignOut = async () => {
             </li>
 
             <li class="mt-auto">
+              <RouterLink v-if="isAdmin" to="/admin"
+                class="group -mx-2 mb-1 flex items-center gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-accent-dark bg-accent/5 hover:bg-accent/10 transition-all">
+                <ShieldCheckIcon class="h-5 w-5 shrink-0 text-accent" />
+                <span>Admin Console</span>
+              </RouterLink>
+
               <RouterLink to="/profile"
                 class="group -mx-2 flex items-center gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-text-muted hover:bg-neutral-100 hover:text-primary transition-all">
                 <div

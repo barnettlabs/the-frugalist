@@ -235,6 +235,17 @@ Route::middleware('auth:sanctum')->group(function () {
     })->middleware('can:access-playground');
 });
 
+// Admin routes (auth + admin gate)
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::apiResource('retailers', \App\Http\Controllers\Admin\RetailerController::class);
+    Route::apiResource('announcements', \App\Http\Controllers\Admin\AnnouncementController::class);
+    Route::get('users', [\App\Http\Controllers\Admin\UserController::class, 'index']);
+    Route::get('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show']);
+    Route::patch('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update']);
+    Route::apiResource('bug-reports', \App\Http\Controllers\Admin\BugReportController::class)
+        ->except(['store']);
+});
+
 // Public routes (no auth required)
 Route::get('/announcements', [AnnouncementController::class, 'index']);
 Route::get('/announcements/{announcement}', [AnnouncementController::class, 'show']);

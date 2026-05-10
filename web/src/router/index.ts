@@ -5,6 +5,16 @@ import { useAuthStore } from '@/stores/auth'
 const AuthenticatedLayout = () => import('@/layouts/AuthenticatedLayout.vue')
 const GuestLayout = () => import('@/layouts/GuestLayout.vue')
 const AuthLayout = () => import('@/layouts/AuthLayout.vue')
+const AdminLayout = () => import('@/layouts/AdminLayout.vue')
+
+// Admin Pages (lazy-loaded)
+const AdminDashboard = () => import('@/pages/admin/Dashboard.vue')
+const AdminRetailers = () => import('@/pages/admin/retailers/Index.vue')
+const AdminAnnouncements = () => import('@/pages/admin/announcements/Index.vue')
+const AdminUsers = () => import('@/pages/admin/users/Index.vue')
+const AdminUserShow = () => import('@/pages/admin/users/Show.vue')
+const AdminBugReports = () => import('@/pages/admin/bug-reports/Index.vue')
+const AdminBugReportShow = () => import('@/pages/admin/bug-reports/Show.vue')
 
 // Auth Pages
 const Login = () => import('@/pages/auth/Login.vue')
@@ -264,6 +274,22 @@ const routes: RouteRecordRaw[] = [
     ],
   },
 
+  // Admin routes (auth + admin-gated)
+  {
+    path: '/admin',
+    component: AdminLayout,
+    meta: { requiresAuth: true, requiresAdmin: true },
+    children: [
+      { path: '', name: 'admin.dashboard', component: AdminDashboard },
+      { path: 'retailers', name: 'admin.retailers', component: AdminRetailers },
+      { path: 'announcements', name: 'admin.announcements', component: AdminAnnouncements },
+      { path: 'users', name: 'admin.users', component: AdminUsers },
+      { path: 'users/:id', name: 'admin.users.show', component: AdminUserShow, props: true },
+      { path: 'bug-reports', name: 'admin.bug-reports', component: AdminBugReports },
+      { path: 'bug-reports/:id', name: 'admin.bug-reports.show', component: AdminBugReportShow, props: true },
+    ],
+  },
+
   // Debug UI page (excluded from sitemap)
   {
     path: '/__ui',
@@ -303,11 +329,15 @@ router.beforeEach(async (to, from, next) => {
   }
 
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
+  const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin)
   const isGuestOnly = to.matched.some((record) => record.meta.guest)
 
   if (requiresAuth && !authStore.isAuthenticated) {
     // Redirect to login if trying to access protected route
     next({ name: 'login', query: { redirect: to.fullPath } })
+  } else if (requiresAdmin && !authStore.isAdmin) {
+    // Authenticated but not an admin — bounce to dashboard
+    next({ name: 'dashboard' })
   } else if (isGuestOnly && authStore.isAuthenticated && to.name !== 'welcome') {
     // Redirect to dashboard if authenticated user tries to access guest-only route
     next({ name: 'dashboard' })

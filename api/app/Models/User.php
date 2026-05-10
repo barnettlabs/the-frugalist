@@ -27,6 +27,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_name',
         'phone_number',
         'phone_verified_at',
+        'is_admin',
     ];
 
     /**
@@ -50,6 +51,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'phone_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
 

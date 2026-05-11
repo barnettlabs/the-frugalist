@@ -251,6 +251,17 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->name('admin.')->g
     Route::patch('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update']);
     Route::apiResource('bug-reports', \App\Http\Controllers\Admin\BugReportController::class)
         ->except(['store']);
+
+    // AI admin
+    Route::post('ai/providers/{provider}/test', [\App\Http\Controllers\Admin\AiProviderController::class, 'test']);
+    Route::apiResource('ai/providers', \App\Http\Controllers\Admin\AiProviderController::class);
+    Route::post('ai/agents/{agent}/preview', [\App\Http\Controllers\Admin\AiAgentController::class, 'preview']);
+    Route::get('ai/agents/{agent}/versions', [\App\Http\Controllers\Admin\AiAgentController::class, 'versions']);
+    Route::post('ai/agents/{agent}/rollback/{version}', [\App\Http\Controllers\Admin\AiAgentController::class, 'rollback']);
+    Route::apiResource('ai/agents', \App\Http\Controllers\Admin\AiAgentController::class);
+    Route::apiResource('ai/routes', \App\Http\Controllers\Admin\AiRouteController::class)->except(['show']);
+    Route::get('ai/invocations', [\App\Http\Controllers\Admin\AiInvocationController::class, 'index']);
+    Route::get('ai/invocations/{invocation}', [\App\Http\Controllers\Admin\AiInvocationController::class, 'show']);
 });
 
 // Calculators (public - same compute used by UI and AI agents)

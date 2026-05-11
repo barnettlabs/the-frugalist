@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 
 import { ActionFooter, Pressable, ScrollView, TabPageHeader, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
+import { DealGradeCard } from '@/components/ui/deal-grade-card';
 import { Book } from '@/components/ui/icons';
 import { SummaryRow } from '@/components/ui/summary-row';
 import { tw } from '@/components/ui/theme';
@@ -29,6 +30,11 @@ export function LeaseDetail({ sheet, onEdit, onDelete, isDeleting }: LeaseDetail
         <PaymentBreakdownCard summary={summary} />
         <FinancialSummaryCard summary={summary} sheet={sheet} />
         <LeaseDetailsCard sheet={sheet} summary={summary} />
+        <DealGradeCard
+          agentSlug="deal-grade-lease"
+          calculatorType="lease"
+          inputs={sheet}
+        />
         <ContactInfoCard sheet={sheet} />
         {sheet.notes && <NotesCard notes={sheet.notes} />}
       </ScrollView>

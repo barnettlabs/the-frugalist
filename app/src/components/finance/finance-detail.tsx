@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 
 import { ActionFooter, Pressable, ScrollView, TabPageHeader, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
+import { DealGradeCard } from '@/components/ui/deal-grade-card';
 import { Book } from '@/components/ui/icons';
 import { SummaryRow } from '@/components/ui/summary-row';
 import { tw } from '@/components/ui/theme';
@@ -42,6 +43,11 @@ export function FinanceDetail({
         {summary.amortization && (
           <AmortizationCard amortization={summary.amortization} />
         )}
+        <DealGradeCard
+          agentSlug="deal-grade-finance"
+          calculatorType="finance"
+          inputs={sheet}
+        />
         <ContactInfoCard sheet={sheet} />
         {sheet.notes && <NotesCard notes={sheet.notes} />}
       </ScrollView>

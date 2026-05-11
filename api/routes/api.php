@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AiAgentController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\CalculatorController;
 use App\Http\Controllers\NotificationController;
@@ -227,6 +228,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // User Devices (Push Notifications)
     Route::apiResource('devices', UserDeviceController::class)->except(['show']);
+
+    // AI agent invocation (deal grader, future chat, etc.)
+    Route::post('/ai/agents/{slug}/run', [AiAgentController::class, 'run'])
+        ->middleware('throttle:60,1');
 
     // Playground (Email Testing) - Local dev or admin only
     Route::prefix('playground')->group(function () {

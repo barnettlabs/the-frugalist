@@ -15,6 +15,9 @@ const AdminUsers = () => import('@/pages/admin/users/Index.vue')
 const AdminUserShow = () => import('@/pages/admin/users/Show.vue')
 const AdminBugReports = () => import('@/pages/admin/bug-reports/Index.vue')
 const AdminBugReportShow = () => import('@/pages/admin/bug-reports/Show.vue')
+const AdminAiProviders = () => import('@/pages/admin/ai/Providers.vue')
+const AdminAiAgents = () => import('@/pages/admin/ai/Agents.vue')
+const AdminAiInvocations = () => import('@/pages/admin/ai/Invocations.vue')
 
 // Auth Pages
 const Login = () => import('@/pages/auth/Login.vue')
@@ -287,6 +290,9 @@ const routes: RouteRecordRaw[] = [
       { path: 'users/:id', name: 'admin.users.show', component: AdminUserShow, props: true },
       { path: 'bug-reports', name: 'admin.bug-reports', component: AdminBugReports },
       { path: 'bug-reports/:id', name: 'admin.bug-reports.show', component: AdminBugReportShow, props: true },
+      { path: 'ai/providers', name: 'admin.ai.providers', component: AdminAiProviders },
+      { path: 'ai/agents', name: 'admin.ai.agents', component: AdminAiAgents },
+      { path: 'ai/invocations', name: 'admin.ai.invocations', component: AdminAiInvocations },
     ],
   },
 

@@ -12,6 +12,9 @@ import {
   ArrowLeftIcon,
   ArrowRightOnRectangleIcon,
   UserIcon,
+  CpuChipIcon,
+  SparklesIcon,
+  ClipboardDocumentListIcon,
 } from '@heroicons/vue/24/outline'
 import {
   Dialog,
@@ -36,6 +39,9 @@ const navigation = [
   { name: 'Announcements', href: '/admin/announcements', icon: MegaphoneIcon },
   { name: 'Users', href: '/admin/users', icon: UsersIcon },
   { name: 'Bug Reports', href: '/admin/bug-reports', icon: BugAntIcon },
+  { name: 'AI Providers', href: '/admin/ai/providers', icon: CpuChipIcon },
+  { name: 'AI Agents', href: '/admin/ai/agents', icon: SparklesIcon },
+  { name: 'AI Invocations', href: '/admin/ai/invocations', icon: ClipboardDocumentListIcon },
 ]
 
 const isActive = (href: string, exact = false) => {

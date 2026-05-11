@@ -7,6 +7,7 @@ import LeaseForm from '@/components/LeaseForm.vue'
 import PaymentAnalysis from '@/components/Lease/PaymentAnalysis.vue'
 import BuyoutAnalysis from '@/components/Lease/BuyoutAnalysis.vue'
 import AdvancedCalculations from '@/components/Lease/AdvancedCalculations.vue'
+import DealGradeCard from '@/components/DealGradeCard.vue'
 import { CurrencyDollarIcon, CalculatorIcon, ArrowLeftIcon } from '@heroicons/vue/24/outline'
 import { VehicleType } from '@/types'
 import type { LeaseFormData, FormErrors } from '@/types'
@@ -177,8 +178,9 @@ onMounted(() => {
           </div>
 
           <!-- Right sidebar -->
-          <aside class="lg:sticky lg:top-20">
+          <aside class="lg:sticky lg:top-20 space-y-4">
             <AdvancedCalculations :data="form" />
+            <DealGradeCard agent-slug="deal-grade-lease" calculator-type="lease" :inputs="form" />
           </aside>
         </div>
       </main>

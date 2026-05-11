@@ -8,6 +8,7 @@ import AmortizationTable from '@/components/Finance/AmortizationTable.vue'
 import PaymentCharts from '@/components/Finance/PaymentCharts.vue'
 import ExtraPayments from '@/components/Finance/ExtraPayments.vue'
 import AdvancedCalculations from '@/components/Finance/AdvancedCalculations.vue'
+import DealGradeCard from '@/components/DealGradeCard.vue'
 import { BanknotesIcon, CalculatorIcon, ArrowLeftIcon } from '@heroicons/vue/24/outline'
 import { VehicleType } from '@/types'
 import type { FinanceFormData, FormErrors } from '@/types'
@@ -177,8 +178,9 @@ onMounted(() => {
           </div>
 
           <!-- Right sidebar -->
-          <aside class="lg:sticky lg:top-20">
+          <aside class="lg:sticky lg:top-20 space-y-4">
             <AdvancedCalculations :data="form" />
+            <DealGradeCard agent-slug="deal-grade-finance" calculator-type="finance" :inputs="form" />
           </aside>
         </div>
       </main>

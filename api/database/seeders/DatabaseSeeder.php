@@ -21,5 +21,7 @@ class DatabaseSeeder extends Seeder
             'email' => env('SEED_USERNAME', 'test@example.com'),
             'password' => Hash::make(env('SEED_PASSWORD', 'password')),
         ]);
+
+        $this->call(AiSeeder::class);
     }
 }

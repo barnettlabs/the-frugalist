@@ -1,0 +1,7 @@
+dist
+node_modules
+coverage
+public
+*.d.ts
+pnpm-lock.yaml
+package-lock.json

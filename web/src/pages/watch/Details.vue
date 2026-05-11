@@ -1,699 +1,761 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter, RouterLink } from 'vue-router'
 import {
-  ArrowPathIcon,
-  EnvelopeIcon,
-  DevicePhoneMobileIcon,
-  ChevronLeftIcon,
-  BugAntIcon,
-  BuildingStorefrontIcon,
-  PauseIcon,
-  PlayIcon,
-} from '@heroicons/vue/24/outline'
-import { formatCurrency } from '@/utils/formatters'
-import { formatRelativeTime, formatDateTime, formatShortDate } from '@/utils/time'
-import { watchApi, watchDebugApi, type TrackedProduct, type NotificationMethod, type WatchType, type CheckInterval, type DebugInfo, CHECK_INTERVAL_OPTIONS, WATCH_TYPE_OPTIONS } from '@/api/watch'
-import { devicesApi } from '@/api/devices'
-import Card from '@/components/Card.vue'
-import Badge from '@/components/Badge.vue'
-import Spinner from '@/components/Spinner.vue'
-import Alert from '@/components/Alert.vue'
-import Checkbox from '@/components/Checkbox.vue'
-import InputLabel from '@/components/InputLabel.vue'
-import TextInput from '@/components/TextInput.vue'
-import PrimaryButton from '@/components/PrimaryButton.vue'
-import DangerButton from '@/components/DangerButton.vue'
-import SecondaryButton from '@/components/SecondaryButton.vue'
-import ConfirmDialog from '@/components/ConfirmDialog.vue'
+	ArrowPathIcon,
+	BugAntIcon,
+	BuildingStorefrontIcon,
+	ChevronLeftIcon,
+	DevicePhoneMobileIcon,
+	EnvelopeIcon,
+	PauseIcon,
+	PlayIcon,
+} from '@heroicons/vue/24/outline';
+import { computed, onMounted, ref } from 'vue';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 
-const route = useRoute()
-const router = useRouter()
+import { devicesApi } from '@/api/devices';
+import {
+	CHECK_INTERVAL_OPTIONS,
+	type CheckInterval,
+	type DebugInfo,
+	type NotificationMethod,
+	type TrackedProduct,
+	WATCH_TYPE_OPTIONS,
+	watchApi,
+	watchDebugApi,
+	type WatchType,
+} from '@/api/watch';
+import Alert from '@/components/Alert.vue';
+import Badge from '@/components/Badge.vue';
+import Card from '@/components/Card.vue';
+import Checkbox from '@/components/Checkbox.vue';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import DangerButton from '@/components/DangerButton.vue';
+import InputLabel from '@/components/InputLabel.vue';
+import PrimaryButton from '@/components/PrimaryButton.vue';
+import Spinner from '@/components/Spinner.vue';
+import TextInput from '@/components/TextInput.vue';
+import { formatCurrency } from '@/utils/formatters';
+import { formatDateTime, formatRelativeTime, formatShortDate } from '@/utils/time';
 
-const product = ref<TrackedProduct | null>(null)
-const loading = ref(true)
-const refreshing = ref(false)
-const saving = ref(false)
+const route = useRoute();
+const router = useRouter();
+
+const product = ref<TrackedProduct | null>(null);
+const loading = ref(true);
+const refreshing = ref(false);
+const saving = ref(false);
 
 // Debug mode state
-const canDebug = ref(false)
-const debugEnabled = ref(false)
-const debugInfo = ref<DebugInfo | null>(null)
+const canDebug = ref(false);
+const debugEnabled = ref(false);
+const debugInfo = ref<DebugInfo | null>(null);
 
 // Device registration status for push notifications
-const hasActiveDevices = ref(false)
+const hasActiveDevices = ref(false);
 
 // Edit form state
 const editForm = ref({
-  target_price: '',
-  notification_email: false,
-  notification_push: false,
-  watch_type: 'price' as WatchType,
-  check_interval: 60 as CheckInterval,
-})
+	target_price: '',
+	notification_email: false,
+	notification_push: false,
+	watch_type: 'price' as WatchType,
+	check_interval: 60 as CheckInterval,
+});
 
 // Confirmation dialog state
-const showDeleteDialog = ref(false)
-const showPauseDialog = ref(false)
-const actionLoading = ref(false)
+const showDeleteDialog = ref(false);
+const showPauseDialog = ref(false);
+const actionLoading = ref(false);
 
 const loadProduct = async () => {
-  try {
-    const data = await watchApi.get(route.params.id as string)
-    product.value = data
-    // Populate edit form
-    editForm.value.target_price = data.target_price?.toString() || ''
-    editForm.value.notification_email = data.notification_method?.includes('email') || false
-    editForm.value.notification_push = data.notification_method?.includes('push') || false
-    editForm.value.watch_type = data.watch_type || 'price'
-    editForm.value.check_interval = data.check_interval || 60
-  } catch (error) {
-    console.error('Error loading product:', error)
-    router.push('/watch')
-  } finally {
-    loading.value = false
-  }
-}
+	try {
+		const data = await watchApi.get(route.params.id as string);
+		product.value = data;
+		// Populate edit form
+		editForm.value.target_price = data.target_price?.toString() || '';
+		editForm.value.notification_email = data.notification_method?.includes('email') || false;
+		editForm.value.notification_push = data.notification_method?.includes('push') || false;
+		editForm.value.watch_type = data.watch_type || 'price';
+		editForm.value.check_interval = data.check_interval || 60;
+	} catch (error) {
+		console.error('Error loading product:', error);
+		router.push('/watch');
+	} finally {
+		loading.value = false;
+	}
+};
 
 const refreshPrice = async () => {
-  if (!product.value) return
+	if (!product.value) return;
 
-  refreshing.value = true
-  debugInfo.value = null
-  try {
-    if (debugEnabled.value) {
-      // Use separate debug endpoint
-      const response = await watchDebugApi.refresh(product.value.id)
-      if (response.tracked_product) {
-        product.value = response.tracked_product
-      }
-      debugInfo.value = response.debug
-    } else {
-      // Use production endpoint
-      const updated = await watchApi.refresh(product.value.id)
-      product.value = updated
-    }
-  } catch (error) {
-    console.error('Error refreshing price:', error)
-  } finally {
-    refreshing.value = false
-  }
-}
+	refreshing.value = true;
+	debugInfo.value = null;
+	try {
+		if (debugEnabled.value) {
+			// Use separate debug endpoint
+			const response = await watchDebugApi.refresh(product.value.id);
+			if (response.tracked_product) {
+				product.value = response.tracked_product;
+			}
+			debugInfo.value = response.debug;
+		} else {
+			// Use production endpoint
+			const updated = await watchApi.refresh(product.value.id);
+			product.value = updated;
+		}
+	} catch (error) {
+		console.error('Error refreshing price:', error);
+	} finally {
+		refreshing.value = false;
+	}
+};
 
 // Computed to check if target price is needed based on watch type
-const needsTargetPrice = computed(() => editForm.value.watch_type === 'price' || editForm.value.watch_type === 'both')
+const needsTargetPrice = computed(() => editForm.value.watch_type === 'price' || editForm.value.watch_type === 'both');
 
 const saveSettings = async () => {
-  if (!product.value) return
+	if (!product.value) return;
 
-  saving.value = true
-  try {
-    const notificationMethods: NotificationMethod[] = []
-    if (editForm.value.notification_email) notificationMethods.push('email')
-    if (editForm.value.notification_push) notificationMethods.push('push')
+	saving.value = true;
+	try {
+		const notificationMethods: NotificationMethod[] = [];
+		if (editForm.value.notification_email) notificationMethods.push('email');
+		if (editForm.value.notification_push) notificationMethods.push('push');
 
-    const updated = await watchApi.update(product.value.id, {
-      target_price: needsTargetPrice.value && editForm.value.target_price ? parseFloat(editForm.value.target_price) : undefined,
-      notification_method: notificationMethods,
-      watch_type: editForm.value.watch_type,
-      check_interval: editForm.value.check_interval,
-    })
-    product.value = updated
-  } catch (error) {
-    console.error('Error updating product:', error)
-  } finally {
-    saving.value = false
-  }
-}
+		const updated = await watchApi.update(product.value.id, {
+			target_price:
+				needsTargetPrice.value && editForm.value.target_price ? parseFloat(editForm.value.target_price) : undefined,
+			notification_method: notificationMethods,
+			watch_type: editForm.value.watch_type,
+			check_interval: editForm.value.check_interval,
+		});
+		product.value = updated;
+	} catch (error) {
+		console.error('Error updating product:', error);
+	} finally {
+		saving.value = false;
+	}
+};
 
 const confirmDelete = async () => {
-  if (!product.value) return
-  actionLoading.value = true
-  try {
-    await watchApi.delete(product.value.id)
-    router.push('/watch')
-  } catch (error) {
-    console.error('Error deleting product:', error)
-  } finally {
-    actionLoading.value = false
-  }
-}
+	if (!product.value) return;
+	actionLoading.value = true;
+	try {
+		await watchApi.delete(product.value.id);
+		router.push('/watch');
+	} catch (error) {
+		console.error('Error deleting product:', error);
+	} finally {
+		actionLoading.value = false;
+	}
+};
 
 const confirmTogglePause = async () => {
-  if (!product.value) return
-  actionLoading.value = true
-  try {
-    const updated = await watchApi.update(product.value.id, {
-      is_active: !product.value.is_active
-    })
-    product.value = updated
-    showPauseDialog.value = false
-  } catch (error) {
-    console.error('Error toggling pause:', error)
-  } finally {
-    actionLoading.value = false
-  }
-}
+	if (!product.value) return;
+	actionLoading.value = true;
+	try {
+		const updated = await watchApi.update(product.value.id, {
+			is_active: !product.value.is_active,
+		});
+		product.value = updated;
+		showPauseDialog.value = false;
+	} catch (error) {
+		console.error('Error toggling pause:', error);
+	} finally {
+		actionLoading.value = false;
+	}
+};
 
 // Check if target price has been reached (current price is at or below target)
 const isTargetReached = computed(() => {
-  if (!product.value || !product.value.target_price || !product.value.current_price) return false
-  return product.value.current_price <= product.value.target_price
-})
+	if (!product.value || !product.value.target_price || !product.value.current_price) return false;
+	return product.value.current_price <= product.value.target_price;
+});
 
 const progressPercent = computed(() => {
-  if (!product.value || !product.value.target_price || !product.value.retail_price) return 0
-  const retail = product.value.retail_price
-  const target = product.value.target_price
-  const current = product.value.current_price
+	if (!product.value || !product.value.target_price || !product.value.retail_price) return 0;
+	const retail = product.value.retail_price;
+	const target = product.value.target_price;
+	const current = product.value.current_price;
 
-  console.log({
-    retail,
-    target,
-    current
-  })
+	console.log({
+		retail,
+		target,
+		current,
+	});
 
-  if (retail <= target) return 100
-  if (current <= target) return 100
-  const progress = ((retail - current) / (retail - target)) * 100
-  return Math.min(100, Math.max(0, progress))
-})
+	if (retail <= target) return 100;
+	if (current <= target) return 100;
+	const progress = ((retail - current) / (retail - target)) * 100;
+	return Math.min(100, Math.max(0, progress));
+});
 
 // Chart data for price history
 const chartData = computed(() => {
-  if (!product.value?.price_history?.length) return null
+	if (!product.value?.price_history?.length) return null;
 
-  const history = [...product.value.price_history].reverse() // Oldest first
-  const prices = history.map(h => h.price)
-  const minPrice = Math.min(...prices) * 0.95
-  const maxPrice = Math.max(...prices) * 1.05
-  const priceRange = maxPrice - minPrice || 1
+	const history = [...product.value.price_history].reverse(); // Oldest first
+	const prices = history.map(h => h.price);
+	const minPrice = Math.min(...prices) * 0.95;
+	const maxPrice = Math.max(...prices) * 1.05;
+	const priceRange = maxPrice - minPrice || 1;
 
-  const points = history.map((entry, index) => {
-    const x = (index / (history.length - 1 || 1)) * 100
-    const y = 100 - ((entry.price - minPrice) / priceRange) * 100
-    return { x, y, price: entry.price, date: entry.checked_at, inStock: entry.in_stock }
-  })
+	const points = history.map((entry, index) => {
+		const x = (index / (history.length - 1 || 1)) * 100;
+		const y = 100 - ((entry.price - minPrice) / priceRange) * 100;
+		return { x, y, price: entry.price, date: entry.checked_at, inStock: entry.in_stock };
+	});
 
-  return { points, minPrice, maxPrice }
-})
+	return { points, minPrice, maxPrice };
+});
 
-const hoveredPoint = ref<{ x: number; y: number; price: number; date: string } | null>(null)
+const hoveredPoint = ref<{ x: number; y: number; price: number; date: string } | null>(null);
 
 const handlePointHover = (point: typeof hoveredPoint.value) => {
-  hoveredPoint.value = point
-}
+	hoveredPoint.value = point;
+};
 
 const checkDebugAccess = async () => {
-  canDebug.value = await watchDebugApi.canDebug()
-}
+	canDebug.value = await watchDebugApi.canDebug();
+};
 
 onMounted(async () => {
-  const [, , hasDevices] = await Promise.all([
-    loadProduct(),
-    checkDebugAccess(),
-    devicesApi.hasActiveDevices(),
-  ])
-  hasActiveDevices.value = hasDevices
-})
+	const [, , hasDevices] = await Promise.all([loadProduct(), checkDebugAccess(), devicesApi.hasActiveDevices()]);
+	hasActiveDevices.value = hasDevices;
+});
 </script>
 
 <template>
-  <main class="py-6 flex-1">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <!-- Loading -->
-      <div v-if="loading" class="flex items-center justify-center py-12">
-        <Spinner size="lg" color="accent" />
-      </div>
+	<main class="py-6 flex-1">
+		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+			<!-- Loading -->
+			<div v-if="loading" class="flex items-center justify-center py-12">
+				<Spinner size="lg" color="accent" />
+			</div>
 
-      <template v-else-if="product">
-        <!-- Header -->
-        <div class="mb-6">
-          <RouterLink
-            to="/watch"
-            class="inline-flex items-center gap-1 text-sm text-text-muted hover:text-primary transition-colors mb-4"
-          >
-            <ChevronLeftIcon class="h-4 w-4" />
-            Back to Watch
-          </RouterLink>
+			<template v-else-if="product">
+				<!-- Header -->
+				<div class="mb-6">
+					<RouterLink
+						to="/watch"
+						class="inline-flex items-center gap-1 text-sm text-text-muted hover:text-primary transition-colors mb-4"
+					>
+						<ChevronLeftIcon class="h-4 w-4" />
+						Back to Watch
+					</RouterLink>
 
-          <!-- Status Badge -->
-          <div class="mb-2">
-            <Badge v-if="product.is_active" variant="success">Active</Badge>
-            <Badge v-else variant="neutral">Paused</Badge>
-          </div>
+					<!-- Status Badge -->
+					<div class="mb-2">
+						<Badge v-if="product.is_active" variant="success">Active</Badge>
+						<Badge v-else variant="neutral">Paused</Badge>
+					</div>
 
-          <!-- Product Name -->
-          <h1 class="text-xl sm:text-2xl font-bold text-primary mb-2">
-            {{ product.product_name || 'Pending lookup...' }}
-          </h1>
+					<!-- Product Name -->
+					<h1 class="text-xl sm:text-2xl font-bold text-primary mb-2">
+						{{ product.product_name || 'Pending lookup...' }}
+					</h1>
 
-          <!-- Retailer -->
-          <div class="flex items-center gap-2 text-accent mb-4">
-            <BuildingStorefrontIcon class="h-5 w-5" />
-            <span class="font-medium sm:text-lg">{{ product.retailer?.name || 'Unknown' }}</span>
-          </div>
+					<!-- Retailer -->
+					<div class="flex items-center gap-2 text-accent mb-4">
+						<BuildingStorefrontIcon class="h-5 w-5" />
+						<span class="font-medium sm:text-lg">{{ product.retailer?.name || 'Unknown' }}</span>
+					</div>
 
-          <!-- Actions -->
-          <div class="flex items-center gap-2">
-            <button
-              v-if="canDebug"
-              @click="debugEnabled = !debugEnabled"
-              :class="[
-                'flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-sm',
-                debugEnabled
-                  ? 'bg-amber-500 hover:bg-amber-600 text-white'
-                  : 'bg-border hover:bg-border/80 text-text-muted'
-              ]"
-              title="Toggle debug mode"
-            >
-              <BugAntIcon class="h-4 w-4 sm:h-5 sm:w-5" />
-              <span>{{ debugEnabled ? 'Debug On' : 'Debug' }}</span>
-            </button>
-            <button
-              @click="showPauseDialog = true"
-              class="flex items-center gap-2 bg-border hover:bg-border/80 text-text-muted px-4 py-2 rounded-lg font-medium transition-colors text-sm"
-            >
-              <PlayIcon v-if="!product.is_active" class="h-4 w-4 sm:h-5 sm:w-5" />
-              <PauseIcon v-else class="h-4 w-4 sm:h-5 sm:w-5" />
-              <span>{{ product.is_active ? 'Pause' : 'Resume' }}</span>
-            </button>
-            <button
-              @click="refreshPrice"
-              :disabled="refreshing"
-              class="flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 text-sm"
-            >
-              <ArrowPathIcon class="h-4 w-4 sm:h-5 sm:w-5" :class="{ 'animate-spin': refreshing }" />
-              <span>{{ refreshing ? 'Refreshing...' : 'Refresh Price' }}</span>
-            </button>
-          </div>
-        </div>
+					<!-- Actions -->
+					<div class="flex items-center gap-2">
+						<button
+							v-if="canDebug"
+							:class="[
+								'flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-sm',
+								debugEnabled
+									? 'bg-amber-500 hover:bg-amber-600 text-white'
+									: 'bg-border hover:bg-border/80 text-text-muted',
+							]"
+							title="Toggle debug mode"
+							@click="debugEnabled = !debugEnabled"
+						>
+							<BugAntIcon class="h-4 w-4 sm:h-5 sm:w-5" />
+							<span>{{ debugEnabled ? 'Debug On' : 'Debug' }}</span>
+						</button>
+						<button
+							class="flex items-center gap-2 bg-border hover:bg-border/80 text-text-muted px-4 py-2 rounded-lg font-medium transition-colors text-sm"
+							@click="showPauseDialog = true"
+						>
+							<PlayIcon v-if="!product.is_active" class="h-4 w-4 sm:h-5 sm:w-5" />
+							<PauseIcon v-else class="h-4 w-4 sm:h-5 sm:w-5" />
+							<span>{{ product.is_active ? 'Pause' : 'Resume' }}</span>
+						</button>
+						<button
+							:disabled="refreshing"
+							class="flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 text-sm"
+							@click="refreshPrice"
+						>
+							<ArrowPathIcon class="h-4 w-4 sm:h-5 sm:w-5" :class="{ 'animate-spin': refreshing }" />
+							<span>{{ refreshing ? 'Refreshing...' : 'Refresh Price' }}</span>
+						</button>
+					</div>
+				</div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Main Content -->
-          <div class="lg:col-span-2 space-y-6">
-            <!-- Price Progress -->
-            <Card>
-              <h2 class="text-lg font-bold text-primary mb-4">Price Progress</h2>
+				<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+					<!-- Main Content -->
+					<div class="lg:col-span-2 space-y-6">
+						<!-- Price Progress -->
+						<Card>
+							<h2 class="text-lg font-bold text-primary mb-4">Price Progress</h2>
 
-              <!-- No price yet alert -->
-              <Alert v-if="!product.current_price" variant="info" class="mb-4">
-                Price not yet fetched. Click "Refresh Price" to check the current price.
-              </Alert>
+							<!-- No price yet alert -->
+							<Alert v-if="!product.current_price" variant="info" class="mb-4">
+								Price not yet fetched. Click "Refresh Price" to check the current price.
+							</Alert>
 
-              <template v-else>
-                <!-- Timeline Bar -->
-                <div class="relative mb-4">
-                  <!-- Labels above bar -->
-                  <div class="flex justify-between mb-2">
-                    <div class="text-left">
-                      <span class="text-xs text-text-muted block">Retail</span>
-                      <span class="text-lg font-semibold text-text-muted">
-                        {{ product.retail_price ? `$${formatCurrency(product.retail_price)}` : '·' }}
-                      </span>
-                    </div>
-                    <div class="text-center" v-if="product.target_price">
-                      <span class="text-xs text-text-muted block">Target</span>
-                      <span class="text-lg font-semibold text-success">${{ formatCurrency(product.target_price) }}</span>
-                    </div>
-                  </div>
+							<template v-else>
+								<!-- Timeline Bar -->
+								<div class="relative mb-4">
+									<!-- Labels above bar -->
+									<div class="flex justify-between mb-2">
+										<div class="text-left">
+											<span class="text-xs text-text-muted block">Retail</span>
+											<span class="text-lg font-semibold text-text-muted">
+												{{ product.retail_price ? `$${formatCurrency(product.retail_price)}` : '·' }}
+											</span>
+										</div>
+										<div v-if="product.target_price" class="text-center">
+											<span class="text-xs text-text-muted block">Target</span>
+											<span class="text-lg font-semibold text-success"
+												>${{ formatCurrency(product.target_price) }}</span
+											>
+										</div>
+									</div>
 
-                  <!-- Progress bar -->
-                  <div v-if="product.target_price && product.retail_price" class="relative h-4 bg-border rounded-full overflow-hidden">
-                    <div
-                      class="absolute left-0 top-0 h-full bg-gradient-to-r from-accent to-success rounded-full transition-all duration-500"
-                      :style="{ width: progressPercent + '%' }"
-                    ></div>
-                  </div>
+									<!-- Progress bar -->
+									<div
+										v-if="product.target_price && product.retail_price"
+										class="relative h-4 bg-border rounded-full overflow-hidden"
+									>
+										<div
+											class="absolute left-0 top-0 h-full bg-gradient-to-r from-accent to-success rounded-full transition-all duration-500"
+											:style="{ width: progressPercent + '%' }"
+										></div>
+									</div>
 
-                  <!-- Current price indicator -->
-                  <div
-                    v-if="product.target_price && product.retail_price"
-                    class="absolute -bottom-8 transition-all duration-500"
-                    :style="{ left: `calc(${Math.min(progressPercent, 95)}% - 40px)` }"
-                  >
-                    <div class="bg-primary text-white px-3 py-1 rounded-lg text-sm font-semibold whitespace-nowrap">
-                      ${{ formatCurrency(product.current_price) }}
-                    </div>
-                  </div>
+									<!-- Current price indicator -->
+									<div
+										v-if="product.target_price && product.retail_price"
+										class="absolute -bottom-8 transition-all duration-500"
+										:style="{ left: `calc(${Math.min(progressPercent, 95)}% - 40px)` }"
+									>
+										<div class="bg-primary text-white px-3 py-1 rounded-lg text-sm font-semibold whitespace-nowrap">
+											${{ formatCurrency(product.current_price) }}
+										</div>
+									</div>
 
-                  <!-- Simple current price display when no target -->
-                  <div v-else class="text-center py-4">
-                    <span class="text-xs text-text-muted block">Current Price</span>
-                    <span class="text-3xl font-bold text-success">${{ formatCurrency(product.current_price) }}</span>
-                  </div>
-                </div>
+									<!-- Simple current price display when no target -->
+									<div v-else class="text-center py-4">
+										<span class="text-xs text-text-muted block">Current Price</span>
+										<span class="text-3xl font-bold text-success">${{ formatCurrency(product.current_price) }}</span>
+									</div>
+								</div>
 
-                <div v-if="product.target_price && product.retail_price" class="mt-12 flex items-center justify-between text-sm text-text-muted">
-                  <span>Last checked: {{ product.last_checked_at ? formatRelativeTime(product.last_checked_at) : 'Never' }}</span>
-                  <span class="font-medium" :class="isTargetReached ? 'text-success' : 'text-primary'">
-                    {{ isTargetReached ? 'Target reached!' : `${Math.floor(progressPercent)}% to target` }}
-                  </span>
-                </div>
-                <div v-else class="text-center text-sm text-text-muted">
-                  Last checked: {{ product.last_checked_at ? formatRelativeTime(product.last_checked_at) : 'Never' }}
-                </div>
-              </template>
-            </Card>
+								<div
+									v-if="product.target_price && product.retail_price"
+									class="mt-12 flex items-center justify-between text-sm text-text-muted"
+								>
+									<span
+										>Last checked:
+										{{ product.last_checked_at ? formatRelativeTime(product.last_checked_at) : 'Never' }}</span
+									>
+									<span class="font-medium" :class="isTargetReached ? 'text-success' : 'text-primary'">
+										{{ isTargetReached ? 'Target reached!' : `${Math.floor(progressPercent)}% to target` }}
+									</span>
+								</div>
+								<div v-else class="text-center text-sm text-text-muted">
+									Last checked: {{ product.last_checked_at ? formatRelativeTime(product.last_checked_at) : 'Never' }}
+								</div>
+							</template>
+						</Card>
 
-            <!-- Price History Chart -->
-            <Card v-if="chartData && chartData.points.length > 1">
-              <h2 class="text-lg font-bold text-primary mb-4">Price History</h2>
+						<!-- Price History Chart -->
+						<Card v-if="chartData && chartData.points.length > 1">
+							<h2 class="text-lg font-bold text-primary mb-4">Price History</h2>
 
-              <!-- Chart -->
-              <div class="flex gap-2">
-                <!-- Y-axis labels -->
-                <div class="flex flex-col justify-between text-xs text-text-muted text-right shrink-0 h-48">
-                  <span>${{ formatCurrency(chartData.maxPrice) }}</span>
-                  <span>${{ formatCurrency((chartData.maxPrice + chartData.minPrice) / 2) }}</span>
-                  <span>${{ formatCurrency(chartData.minPrice) }}</span>
-                </div>
+							<!-- Chart -->
+							<div class="flex gap-2">
+								<!-- Y-axis labels -->
+								<div class="flex flex-col justify-between text-xs text-text-muted text-right shrink-0 h-48">
+									<span>${{ formatCurrency(chartData.maxPrice) }}</span>
+									<span>${{ formatCurrency((chartData.maxPrice + chartData.minPrice) / 2) }}</span>
+									<span>${{ formatCurrency(chartData.minPrice) }}</span>
+								</div>
 
-                <!-- Chart area -->
-                <div class="flex-1 flex flex-col">
-                  <div class="relative h-48 bg-tan-light rounded-xl" @mouseleave="hoveredPoint = null">
-                    <!-- Tooltip -->
-                    <div
-                      v-if="hoveredPoint"
-                      class="absolute z-20 bg-primary text-white px-3 py-2 rounded-lg text-sm shadow-lg pointer-events-none -translate-x-1/2 -translate-y-full"
-                      :style="{ left: `${hoveredPoint.x}%`, top: `calc(${hoveredPoint.y}% - 10px)` }"
-                    >
-                      <div class="font-bold">${{ formatCurrency(hoveredPoint.price) }}</div>
-                      <div class="text-xs opacity-80">{{ formatDateTime(hoveredPoint.date) }}</div>
-                      <!-- Arrow -->
-                      <div class="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 bg-primary rotate-45"></div>
-                    </div>
-                    <svg
-                      class="w-full h-full"
-                      viewBox="0 0 100 100"
-                      preserveAspectRatio="none"
-                    >
-                      <!-- Grid lines -->
-                      <line x1="0" y1="25" x2="100" y2="25" stroke="currentColor" class="text-border" stroke-width="0.5" />
-                      <line x1="0" y1="50" x2="100" y2="50" stroke="currentColor" class="text-border" stroke-width="0.5" />
-                      <line x1="0" y1="75" x2="100" y2="75" stroke="currentColor" class="text-border" stroke-width="0.5" />
+								<!-- Chart area -->
+								<div class="flex-1 flex flex-col">
+									<div class="relative h-48 bg-tan-light rounded-xl" @mouseleave="hoveredPoint = null">
+										<!-- Tooltip -->
+										<div
+											v-if="hoveredPoint"
+											class="absolute z-20 bg-primary text-white px-3 py-2 rounded-lg text-sm shadow-lg pointer-events-none -translate-x-1/2 -translate-y-full"
+											:style="{ left: `${hoveredPoint.x}%`, top: `calc(${hoveredPoint.y}% - 10px)` }"
+										>
+											<div class="font-bold">${{ formatCurrency(hoveredPoint.price) }}</div>
+											<div class="text-xs opacity-80">{{ formatDateTime(hoveredPoint.date) }}</div>
+											<!-- Arrow -->
+											<div class="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 bg-primary rotate-45"></div>
+										</div>
+										<svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+											<!-- Grid lines -->
+											<line
+												x1="0"
+												y1="25"
+												x2="100"
+												y2="25"
+												stroke="currentColor"
+												class="text-border"
+												stroke-width="0.5"
+											/>
+											<line
+												x1="0"
+												y1="50"
+												x2="100"
+												y2="50"
+												stroke="currentColor"
+												class="text-border"
+												stroke-width="0.5"
+											/>
+											<line
+												x1="0"
+												y1="75"
+												x2="100"
+												y2="75"
+												stroke="currentColor"
+												class="text-border"
+												stroke-width="0.5"
+											/>
 
-                      <!-- Target price line -->
-                      <line
-                        v-if="product.target_price && chartData"
-                        :y1="100 - ((product.target_price - chartData.minPrice) / (chartData.maxPrice - chartData.minPrice)) * 100"
-                        :y2="100 - ((product.target_price - chartData.minPrice) / (chartData.maxPrice - chartData.minPrice)) * 100"
-                        x1="0"
-                        x2="100"
-                        stroke="currentColor"
-                        class="text-success"
-                        stroke-width="1"
-                        stroke-dasharray="4,3"
-                      />
+											<!-- Target price line -->
+											<line
+												v-if="product.target_price && chartData"
+												:y1="
+													100 -
+													((product.target_price - chartData.minPrice) / (chartData.maxPrice - chartData.minPrice)) *
+														100
+												"
+												:y2="
+													100 -
+													((product.target_price - chartData.minPrice) / (chartData.maxPrice - chartData.minPrice)) *
+														100
+												"
+												x1="0"
+												x2="100"
+												stroke="currentColor"
+												class="text-success"
+												stroke-width="1"
+												stroke-dasharray="4,3"
+											/>
 
-                      <!-- Price trend line -->
-                      <polyline
-                        :points="chartData.points.map(p => `${p.x},${p.y}`).join(' ')"
-                        fill="none"
-                        stroke="currentColor"
-                        class="text-accent"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
+											<!-- Price trend line -->
+											<polyline
+												:points="chartData.points.map(p => `${p.x},${p.y}`).join(' ')"
+												fill="none"
+												stroke="currentColor"
+												class="text-accent"
+												stroke-width="2"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+											/>
+										</svg>
 
-                    <!-- Data points (rendered as HTML for proper circles) -->
-                    <div
-                      v-for="(point, index) in chartData.points"
-                      :key="index"
-                      class="absolute w-3 h-3 bg-accent rounded-full cursor-pointer hover:bg-accent-dark transition-colors -translate-x-1/2 -translate-y-1/2"
-                      :style="{ left: `${point.x}%`, top: `${point.y}%` }"
-                      @mouseenter="handlePointHover(point)"
-                    />
-                  </div>
+										<!-- Data points (rendered as HTML for proper circles) -->
+										<div
+											v-for="(point, index) in chartData.points"
+											:key="index"
+											class="absolute w-3 h-3 bg-accent rounded-full cursor-pointer hover:bg-accent-dark transition-colors -translate-x-1/2 -translate-y-1/2"
+											:style="{ left: `${point.x}%`, top: `${point.y}%` }"
+											@mouseenter="handlePointHover(point)"
+										/>
+									</div>
 
-                  <!-- X-axis date labels -->
-                  <div class="flex justify-between text-xs text-text-muted mt-2">
-                    <span>{{ formatShortDate(chartData.points[0]?.date) }}</span>
-                    <span v-if="chartData.points.length > 2">{{ formatShortDate(chartData.points[Math.floor(chartData.points.length / 2)]?.date) }}</span>
-                    <span>{{ formatShortDate(chartData.points[chartData.points.length - 1]?.date) }}</span>
-                  </div>
-                </div>
-              </div>
+									<!-- X-axis date labels -->
+									<div class="flex justify-between text-xs text-text-muted mt-2">
+										<span>{{ formatShortDate(chartData.points[0]?.date) }}</span>
+										<span v-if="chartData.points.length > 2">{{
+											formatShortDate(chartData.points[Math.floor(chartData.points.length / 2)]?.date)
+										}}</span>
+										<span>{{ formatShortDate(chartData.points[chartData.points.length - 1]?.date) }}</span>
+									</div>
+								</div>
+							</div>
 
-              <!-- Legend -->
-              <div class="flex flex-wrap gap-4 mt-4 text-xs text-text-muted">
-                <div class="flex items-center gap-2">
-                  <div class="w-4 h-0.5 bg-accent rounded"></div>
-                  <span>Price trend</span>
-                </div>
-                <div v-if="product.target_price" class="flex items-center gap-2">
-                  <div class="w-4 h-0.5 bg-success rounded"></div>
-                  <span>Target price</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <div class="w-4 h-0.5 bg-border rounded"></div>
-                  <span>Grid lines</span>
-                </div>
-              </div>
+							<!-- Legend -->
+							<div class="flex flex-wrap gap-4 mt-4 text-xs text-text-muted">
+								<div class="flex items-center gap-2">
+									<div class="w-4 h-0.5 bg-accent rounded"></div>
+									<span>Price trend</span>
+								</div>
+								<div v-if="product.target_price" class="flex items-center gap-2">
+									<div class="w-4 h-0.5 bg-success rounded"></div>
+									<span>Target price</span>
+								</div>
+								<div class="flex items-center gap-2">
+									<div class="w-4 h-0.5 bg-border rounded"></div>
+									<span>Grid lines</span>
+								</div>
+							</div>
 
-              <!-- History entries -->
-              <div class="mt-4 pt-4 border-t border-border space-y-2 max-h-48 overflow-y-auto">
-                <div
-                  v-for="entry in product.price_history"
-                  :key="entry.id"
-                  class="flex items-center justify-between py-1.5 text-sm"
-                >
-                  <div class="flex items-center gap-2">
-                    <span class="font-medium" :class="entry.price <= (product.target_price || 0) ? 'text-success' : 'text-primary'">
-                      ${{ formatCurrency(entry.price) }}
-                    </span>
-                    <Badge v-if="!entry.in_stock" variant="danger" size="sm">Out of stock</Badge>
-                  </div>
-                  <span class="text-text-muted">{{ formatDateTime(entry.checked_at) }}</span>
-                </div>
-              </div>
-            </Card>
+							<!-- History entries -->
+							<div class="mt-4 pt-4 border-t border-border space-y-2 max-h-48 overflow-y-auto">
+								<div
+									v-for="entry in product.price_history"
+									:key="entry.id"
+									class="flex items-center justify-between py-1.5 text-sm"
+								>
+									<div class="flex items-center gap-2">
+										<span
+											class="font-medium"
+											:class="entry.price <= (product.target_price || 0) ? 'text-success' : 'text-primary'"
+										>
+											${{ formatCurrency(entry.price) }}
+										</span>
+										<Badge v-if="!entry.in_stock" variant="danger" size="sm">Out of stock</Badge>
+									</div>
+									<span class="text-text-muted">{{ formatDateTime(entry.checked_at) }}</span>
+								</div>
+							</div>
+						</Card>
 
-            <!-- Single history entry - show as simple list -->
-            <Card v-else-if="product.price_history?.length === 1">
-              <h2 class="text-lg font-bold text-primary mb-4">Price History</h2>
-              <p class="text-text-muted text-sm mb-4">Only one price check recorded so far. More data points will show a chart.</p>
-              <div class="flex items-center justify-between py-2 text-sm border-t border-border">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium text-primary">
-                    ${{ formatCurrency(product.price_history[0].price) }}
-                  </span>
-                  <Badge v-if="!product.price_history[0].in_stock" variant="danger" size="sm">Out of stock</Badge>
-                </div>
-                <span class="text-text-muted">{{ formatDateTime(product.price_history[0].checked_at) }}</span>
-              </div>
-            </Card>
+						<!-- Single history entry - show as simple list -->
+						<Card v-else-if="product.price_history?.length === 1">
+							<h2 class="text-lg font-bold text-primary mb-4">Price History</h2>
+							<p class="text-text-muted text-sm mb-4">
+								Only one price check recorded so far. More data points will show a chart.
+							</p>
+							<div class="flex items-center justify-between py-2 text-sm border-t border-border">
+								<div class="flex items-center gap-2">
+									<span class="font-medium text-primary"> ${{ formatCurrency(product.price_history[0].price) }} </span>
+									<Badge v-if="!product.price_history[0].in_stock" variant="danger" size="sm">Out of stock</Badge>
+								</div>
+								<span class="text-text-muted">{{ formatDateTime(product.price_history[0].checked_at) }}</span>
+							</div>
+						</Card>
 
-            <!-- No history yet -->
-            <Card v-else>
-              <h2 class="text-lg font-bold text-primary mb-4">Price History</h2>
-              <p class="text-text-muted text-sm">No price history yet. Prices will be tracked over time.</p>
-            </Card>
+						<!-- No history yet -->
+						<Card v-else>
+							<h2 class="text-lg font-bold text-primary mb-4">Price History</h2>
+							<p class="text-text-muted text-sm">No price history yet. Prices will be tracked over time.</p>
+						</Card>
 
-            <!-- Debug Info Panel -->
-            <Card v-if="debugEnabled && debugInfo" class="border-amber-500/30">
-              <div class="flex items-center gap-2 mb-4">
-                <BugAntIcon class="h-5 w-5 text-amber-500" />
-                <h2 class="text-lg font-bold text-amber-500">Debug Information</h2>
-              </div>
+						<!-- Debug Info Panel -->
+						<Card v-if="debugEnabled && debugInfo" class="border-amber-500/30">
+							<div class="flex items-center gap-2 mb-4">
+								<BugAntIcon class="h-5 w-5 text-amber-500" />
+								<h2 class="text-lg font-bold text-amber-500">Debug Information</h2>
+							</div>
 
-              <!-- Raw API Response -->
-              <div v-if="debugInfo.raw_api_response" class="mb-6">
-                <h3 class="text-sm font-semibold text-primary mb-2">Raw API Response</h3>
-                <div class="text-xs text-text-muted mb-2">
-                  <span class="font-medium">Retailer:</span> {{ debugInfo.raw_api_response.retailer }}
-                </div>
-                <div class="text-xs text-text-muted mb-2">
-                  <span class="font-medium">Endpoint:</span> {{ debugInfo.raw_api_response.endpoint }}
-                </div>
-                <pre class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-96 overflow-y-auto">{{ JSON.stringify(debugInfo.raw_api_response.response, null, 2) }}</pre>
-              </div>
+							<!-- Raw API Response -->
+							<div v-if="debugInfo.raw_api_response" class="mb-6">
+								<h3 class="text-sm font-semibold text-primary mb-2">Raw API Response</h3>
+								<div class="text-xs text-text-muted mb-2">
+									<span class="font-medium">Retailer:</span> {{ debugInfo.raw_api_response.retailer }}
+								</div>
+								<div class="text-xs text-text-muted mb-2">
+									<span class="font-medium">Endpoint:</span> {{ debugInfo.raw_api_response.endpoint }}
+								</div>
+								<pre
+									class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-96 overflow-y-auto"
+									>{{ JSON.stringify(debugInfo.raw_api_response.response, null, 2) }}</pre
+								>
+							</div>
 
-              <!-- Parsed Data -->
-              <div class="mb-6">
-                <h3 class="text-sm font-semibold text-primary mb-2">Parsed Data</h3>
-                <pre class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-64 overflow-y-auto">{{ JSON.stringify(debugInfo.parsed_data, null, 2) }}</pre>
-              </div>
+							<!-- Parsed Data -->
+							<div class="mb-6">
+								<h3 class="text-sm font-semibold text-primary mb-2">Parsed Data</h3>
+								<pre
+									class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-64 overflow-y-auto"
+									>{{ JSON.stringify(debugInfo.parsed_data, null, 2) }}</pre
+								>
+							</div>
 
-              <!-- Saved to DB -->
-              <div v-if="debugInfo.saved_to_db">
-                <h3 class="text-sm font-semibold text-primary mb-2">Saved to Database</h3>
-                <pre class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-64 overflow-y-auto">{{ JSON.stringify(debugInfo.saved_to_db, null, 2) }}</pre>
-              </div>
-            </Card>
-          </div>
+							<!-- Saved to DB -->
+							<div v-if="debugInfo.saved_to_db">
+								<h3 class="text-sm font-semibold text-primary mb-2">Saved to Database</h3>
+								<pre
+									class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-64 overflow-y-auto"
+									>{{ JSON.stringify(debugInfo.saved_to_db, null, 2) }}</pre
+								>
+							</div>
+						</Card>
+					</div>
 
-          <!-- Sidebar -->
-          <div class="space-y-4">
-            <!-- Edit Settings -->
-            <Card class="!bg-surface">
-              <h2 class="text-lg font-bold text-primary mb-4">Edit Settings</h2>
-              <div class="space-y-4">
-                <!-- Watch Type -->
-                <div>
-                  <InputLabel value="Watch for" class="mb-2" />
-                  <div class="space-y-2">
-                    <button
-                      v-for="option in WATCH_TYPE_OPTIONS"
-                      :key="option.value"
-                      type="button"
-                      @click="editForm.watch_type = option.value"
-                      :class="[
-                        'w-full flex flex-col items-start p-3 rounded-lg border-2 transition-all text-left',
-                        editForm.watch_type === option.value
-                          ? 'border-accent bg-accent/5'
-                          : 'border-border hover:border-tan-dark hover:bg-tan-light'
-                      ]"
-                    >
-                      <span class="font-medium text-primary text-sm">{{ option.label }}</span>
-                      <span class="text-xs text-text-muted">{{ option.description }}</span>
-                    </button>
-                  </div>
-                </div>
+					<!-- Sidebar -->
+					<div class="space-y-4">
+						<!-- Edit Settings -->
+						<Card class="!bg-surface">
+							<h2 class="text-lg font-bold text-primary mb-4">Edit Settings</h2>
+							<div class="space-y-4">
+								<!-- Watch Type -->
+								<div>
+									<InputLabel value="Watch for" class="mb-2" />
+									<div class="space-y-2">
+										<button
+											v-for="option in WATCH_TYPE_OPTIONS"
+											:key="option.value"
+											type="button"
+											:class="[
+												'w-full flex flex-col items-start p-3 rounded-lg border-2 transition-all text-left',
+												editForm.watch_type === option.value
+													? 'border-accent bg-accent/5'
+													: 'border-border hover:border-tan-dark hover:bg-tan-light',
+											]"
+											@click="editForm.watch_type = option.value"
+										>
+											<span class="font-medium text-primary text-sm">{{ option.label }}</span>
+											<span class="text-xs text-text-muted">{{ option.description }}</span>
+										</button>
+									</div>
+								</div>
 
-                <!-- Target Price (conditional) -->
-                <div v-if="needsTargetPrice">
-                  <InputLabel for="target_price" value="Target Price" />
-                  <TextInput
-                    id="target_price"
-                    v-model="editForm.target_price"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    prefix="$"
-                    class="block w-full mt-1"
-                    placeholder="0.00"
-                  />
-                  <p class="text-xs text-text-muted mt-1">We'll notify you when the price drops to this amount</p>
-                </div>
+								<!-- Target Price (conditional) -->
+								<div v-if="needsTargetPrice">
+									<InputLabel for="target_price" value="Target Price" />
+									<TextInput
+										id="target_price"
+										v-model="editForm.target_price"
+										type="number"
+										step="0.01"
+										min="0"
+										prefix="$"
+										class="block w-full mt-1"
+										placeholder="0.00"
+									/>
+									<p class="text-xs text-text-muted mt-1">We'll notify you when the price drops to this amount</p>
+								</div>
 
-                <!-- Check Interval -->
-                <div>
-                  <InputLabel for="check_interval" value="Check frequency" />
-                  <select
-                    id="check_interval"
-                    v-model="editForm.check_interval"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary text-sm py-2"
-                  >
-                    <option v-for="option in CHECK_INTERVAL_OPTIONS" :key="option.value" :value="option.value">
-                      {{ option.label }}
-                    </option>
-                  </select>
-                  <p class="text-xs text-text-muted mt-1">How often to check for updates</p>
-                </div>
+								<!-- Check Interval -->
+								<div>
+									<InputLabel for="check_interval" value="Check frequency" />
+									<select
+										id="check_interval"
+										v-model="editForm.check_interval"
+										class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary text-sm py-2"
+									>
+										<option v-for="option in CHECK_INTERVAL_OPTIONS" :key="option.value" :value="option.value">
+											{{ option.label }}
+										</option>
+									</select>
+									<p class="text-xs text-text-muted mt-1">How often to check for updates</p>
+								</div>
 
-                <div>
-                  <InputLabel value="Notifications" class="mb-3" />
-                  <div class="space-y-3">
-                    <label
-                      :class="[
-                        'flex items-center gap-3 p-4 rounded-lg border-2 transition-all cursor-pointer',
-                        editForm.notification_email
-                          ? 'border-accent bg-accent/5'
-                          : 'border-border hover:bg-tan-light hover:border-tan-dark'
-                      ]"
-                    >
-                      <Checkbox v-model:checked="editForm.notification_email" />
-                      <EnvelopeIcon class="h-5 w-5 text-text-muted" />
-                      <div>
-                        <span class="font-medium text-primary">Email</span>
-                        <p class="text-xs text-text-muted">Receive alerts via email</p>
-                      </div>
-                    </label>
+								<div>
+									<InputLabel value="Notifications" class="mb-3" />
+									<div class="space-y-3">
+										<label
+											:class="[
+												'flex items-center gap-3 p-4 rounded-lg border-2 transition-all cursor-pointer',
+												editForm.notification_email
+													? 'border-accent bg-accent/5'
+													: 'border-border hover:bg-tan-light hover:border-tan-dark',
+											]"
+										>
+											<Checkbox v-model:checked="editForm.notification_email" />
+											<EnvelopeIcon class="h-5 w-5 text-text-muted" />
+											<div>
+												<span class="font-medium text-primary">Email</span>
+												<p class="text-xs text-text-muted">Receive alerts via email</p>
+											</div>
+										</label>
 
-                    <label
-                      :class="[
-                        'flex items-center gap-3 p-4 rounded-lg border-2 transition-all',
-                        !hasActiveDevices ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
-                        editForm.notification_push && hasActiveDevices
-                          ? 'border-accent bg-accent/5'
-                          : 'border-border hover:bg-tan-light hover:border-tan-dark'
-                      ]"
-                    >
-                      <Checkbox v-model:checked="editForm.notification_push" :disabled="!hasActiveDevices" />
-                      <DevicePhoneMobileIcon class="h-5 w-5 text-text-muted" />
-                      <div class="flex-1">
-                        <span class="font-medium text-primary">Push Notification</span>
-                        <p v-if="hasActiveDevices" class="text-xs text-text-muted">Instant alerts on your device</p>
-                        <p v-else class="text-xs text-warning">No devices registered. Use the mobile app to enable push notifications.</p>
-                      </div>
-                    </label>
-                  </div>
-                </div>
+										<label
+											:class="[
+												'flex items-center gap-3 p-4 rounded-lg border-2 transition-all',
+												!hasActiveDevices ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
+												editForm.notification_push && hasActiveDevices
+													? 'border-accent bg-accent/5'
+													: 'border-border hover:bg-tan-light hover:border-tan-dark',
+											]"
+										>
+											<Checkbox v-model:checked="editForm.notification_push" :disabled="!hasActiveDevices" />
+											<DevicePhoneMobileIcon class="h-5 w-5 text-text-muted" />
+											<div class="flex-1">
+												<span class="font-medium text-primary">Push Notification</span>
+												<p v-if="hasActiveDevices" class="text-xs text-text-muted">Instant alerts on your device</p>
+												<p v-else class="text-xs text-warning">
+													No devices registered. Use the mobile app to enable push notifications.
+												</p>
+											</div>
+										</label>
+									</div>
+								</div>
 
-                <PrimaryButton @click="saveSettings" :disabled="saving" class="w-full">
-                  {{ saving ? 'Saving...' : 'Save Changes' }}
-                </PrimaryButton>
-              </div>
-            </Card>
+								<PrimaryButton :disabled="saving" class="w-full" @click="saveSettings">
+									{{ saving ? 'Saving...' : 'Save Changes' }}
+								</PrimaryButton>
+							</div>
+						</Card>
 
-            <!-- Product Details -->
-            <Card class="!bg-surface">
-              <h2 class="text-lg font-bold text-primary mb-3">Product Details</h2>
-              <dl class="text-sm space-y-3">
-                <div class="flex justify-between items-center">
-                  <dt class="text-text-muted">Retailer</dt>
-                  <dd class="flex items-center gap-2 text-primary font-medium">
-                    <BuildingStorefrontIcon class="h-4 w-4 text-accent" />
-                    {{ product.retailer?.name || 'Unknown' }}
-                  </dd>
-                </div>
-                <div class="flex justify-between">
-                  <dt class="text-text-muted">SKU/UPC</dt>
-                  <dd class="font-mono text-primary">{{ product.sku_upc }}</dd>
-                </div>
-                <div class="flex justify-between">
-                  <dt class="text-text-muted">Tracking since</dt>
-                  <dd class="text-primary">{{ formatDateTime(product.created_at) }}</dd>
-                </div>
-                <div v-if="product.product_variant" class="flex justify-between">
-                  <dt class="text-text-muted">Variant</dt>
-                  <dd class="text-primary">{{ product.product_variant }}</dd>
-                </div>
-              </dl>
-            </Card>
+						<!-- Product Details -->
+						<Card class="!bg-surface">
+							<h2 class="text-lg font-bold text-primary mb-3">Product Details</h2>
+							<dl class="text-sm space-y-3">
+								<div class="flex justify-between items-center">
+									<dt class="text-text-muted">Retailer</dt>
+									<dd class="flex items-center gap-2 text-primary font-medium">
+										<BuildingStorefrontIcon class="h-4 w-4 text-accent" />
+										{{ product.retailer?.name || 'Unknown' }}
+									</dd>
+								</div>
+								<div class="flex justify-between">
+									<dt class="text-text-muted">SKU/UPC</dt>
+									<dd class="font-mono text-primary">{{ product.sku_upc }}</dd>
+								</div>
+								<div class="flex justify-between">
+									<dt class="text-text-muted">Tracking since</dt>
+									<dd class="text-primary">{{ formatDateTime(product.created_at) }}</dd>
+								</div>
+								<div v-if="product.product_variant" class="flex justify-between">
+									<dt class="text-text-muted">Variant</dt>
+									<dd class="text-primary">{{ product.product_variant }}</dd>
+								</div>
+							</dl>
+						</Card>
 
-            <!-- Danger Zone -->
-            <Card class="!bg-surface border-danger/30">
-              <h2 class="text-sm font-bold text-danger mb-2">Stop Tracking</h2>
-              <p class="text-xs text-text-muted mb-3">
-                Remove this product from your tracking list. This action cannot be undone.
-              </p>
-              <DangerButton @click="showDeleteDialog = true" class="w-full">
-                Stop Tracking
-              </DangerButton>
-            </Card>
-          </div>
-        </div>
-      </template>
-    </div>
+						<!-- Danger Zone -->
+						<Card class="!bg-surface border-danger/30">
+							<h2 class="text-sm font-bold text-danger mb-2">Stop Tracking</h2>
+							<p class="text-xs text-text-muted mb-3">
+								Remove this product from your tracking list. This action cannot be undone.
+							</p>
+							<DangerButton class="w-full" @click="showDeleteDialog = true"> Stop Tracking </DangerButton>
+						</Card>
+					</div>
+				</div>
+			</template>
+		</div>
 
-    <!-- Delete Confirmation Dialog -->
-    <ConfirmDialog
-      :show="showDeleteDialog"
-      title="Delete Tracker"
-      :message="`Are you sure you want to stop tracking '${product?.product_name || 'this product'}'? This action cannot be undone.`"
-      confirm-text="Delete"
-      variant="danger"
-      :loading="actionLoading"
-      @confirm="confirmDelete"
-      @close="showDeleteDialog = false"
-    />
+		<!-- Delete Confirmation Dialog -->
+		<ConfirmDialog
+			:show="showDeleteDialog"
+			title="Delete Tracker"
+			:message="`Are you sure you want to stop tracking '${product?.product_name || 'this product'}'? This action cannot be undone.`"
+			confirm-text="Delete"
+			variant="danger"
+			:loading="actionLoading"
+			@confirm="confirmDelete"
+			@close="showDeleteDialog = false"
+		/>
 
-    <!-- Pause/Resume Confirmation Dialog -->
-    <ConfirmDialog
-      :show="showPauseDialog"
-      :title="product?.is_active ? 'Pause Tracking' : 'Resume Tracking'"
-      :message="product?.is_active
-        ? `Are you sure you want to pause tracking for '${product?.product_name || 'this product'}'? You won't receive price alerts while paused.`
-        : `Are you sure you want to resume tracking for '${product?.product_name || 'this product'}'? You'll start receiving price alerts again.`"
-      :confirm-text="product?.is_active ? 'Pause' : 'Resume'"
-      variant="primary"
-      :loading="actionLoading"
-      @confirm="confirmTogglePause"
-      @close="showPauseDialog = false"
-    />
-  </main>
+		<!-- Pause/Resume Confirmation Dialog -->
+		<ConfirmDialog
+			:show="showPauseDialog"
+			:title="product?.is_active ? 'Pause Tracking' : 'Resume Tracking'"
+			:message="
+				product?.is_active
+					? `Are you sure you want to pause tracking for '${product?.product_name || 'this product'}'? You won't receive price alerts while paused.`
+					: `Are you sure you want to resume tracking for '${product?.product_name || 'this product'}'? You'll start receiving price alerts again.`
+			"
+			:confirm-text="product?.is_active ? 'Pause' : 'Resume'"
+			variant="primary"
+			:loading="actionLoading"
+			@confirm="confirmTogglePause"
+			@close="showPauseDialog = false"
+		/>
+	</main>
 </template>

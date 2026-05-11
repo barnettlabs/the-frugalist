@@ -38,7 +38,7 @@ class ProfileUpdateRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        if ($this->has('name') && !$this->has('first_name') && !$this->has('last_name')) {
+        if ($this->has('name') && ! $this->has('first_name') && ! $this->has('last_name')) {
             $nameParts = explode(' ', $this->name, 2);
             $this->merge([
                 'first_name' => $nameParts[0] ?? '',

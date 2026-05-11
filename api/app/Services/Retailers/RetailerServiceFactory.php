@@ -20,12 +20,12 @@ class RetailerServiceFactory
     {
         $slug = $retailer->slug;
 
-        if (!isset(self::$serviceMap[$slug])) {
+        if (! isset(self::$serviceMap[$slug])) {
             throw new InvalidArgumentException("No service available for retailer: {$retailer->name}");
         }
 
         $serviceClass = self::$serviceMap[$slug];
-        
+
         return new $serviceClass($retailer);
     }
 

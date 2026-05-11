@@ -1,189 +1,188 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import SectionHeader from '@/components/SectionHeader.vue'
-import Spinner from '@/components/Spinner.vue'
-import LeaseForm from '@/components/LeaseForm.vue'
-import PaymentAnalysis from '@/components/Lease/PaymentAnalysis.vue'
-import BuyoutAnalysis from '@/components/Lease/BuyoutAnalysis.vue'
-import AdvancedCalculations from '@/components/Lease/AdvancedCalculations.vue'
-import DealGradeCard from '@/components/DealGradeCard.vue'
-import { CurrencyDollarIcon, CalculatorIcon, ArrowLeftIcon } from '@heroicons/vue/24/outline'
-import { VehicleType } from '@/types'
-import type { LeaseFormData, FormErrors } from '@/types'
-import { leaseApi } from '@/api/lease'
+import { ArrowLeftIcon, CalculatorIcon, CurrencyDollarIcon } from '@heroicons/vue/24/outline';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-const route = useRoute()
-const router = useRouter()
+import { leaseApi } from '@/api/lease';
+import DealGradeCard from '@/components/DealGradeCard.vue';
+import AdvancedCalculations from '@/components/Lease/AdvancedCalculations.vue';
+import BuyoutAnalysis from '@/components/Lease/BuyoutAnalysis.vue';
+import PaymentAnalysis from '@/components/Lease/PaymentAnalysis.vue';
+import LeaseForm from '@/components/LeaseForm.vue';
+import SectionHeader from '@/components/SectionHeader.vue';
+import Spinner from '@/components/Spinner.vue';
+import type { FormErrors, LeaseFormData } from '@/types';
+import { VehicleType } from '@/types';
 
-const isEdit = computed(() => !!route.params.id)
-const sheetId = computed(() => route.params.id as string)
+const route = useRoute();
+const router = useRouter();
+
+const isEdit = computed(() => !!route.params.id);
+const sheetId = computed(() => route.params.id as string);
 
 const form = ref<LeaseFormData>({
-  sheet_name: '',
-  sales_consultant: '',
-  dealership_name: '',
-  vehicle_type: VehicleType.CAR,
-  vehicle_year: '',
-  vehicle_make: '',
-  vehicle_model: '',
-  vehicle_trim: '',
-  msrp: '',
-  capitalized_cost: '',
-  residual_percent: '',
-  money_factor: '',
-  lease_term: '',
-  down_payment: '',
-  acquisition_fee: '',
-  disposition_fee: '',
-  sales_tax_percent: '',
-  annual_mileage: '',
-  excess_mileage_rate: '',
-  start_date: '',
-  contact_email: '',
-  contact_phone: '',
-  notes: '',
-})
+	sheet_name: '',
+	sales_consultant: '',
+	dealership_name: '',
+	vehicle_type: VehicleType.CAR,
+	vehicle_year: '',
+	vehicle_make: '',
+	vehicle_model: '',
+	vehicle_trim: '',
+	msrp: '',
+	capitalized_cost: '',
+	residual_percent: '',
+	money_factor: '',
+	lease_term: '',
+	down_payment: '',
+	acquisition_fee: '',
+	disposition_fee: '',
+	sales_tax_percent: '',
+	annual_mileage: '',
+	excess_mileage_rate: '',
+	start_date: '',
+	contact_email: '',
+	contact_phone: '',
+	notes: '',
+});
 
-const loading = ref(false)
-const loadingSheet = ref(false)
-const errors = ref<FormErrors>({})
+const loading = ref(false);
+const loadingSheet = ref(false);
+const errors = ref<FormErrors>({});
 
 const vehicleTitle = computed(() => {
-  const parts = [
-    form.value.vehicle_year,
-    form.value.vehicle_make,
-    form.value.vehicle_model,
-    form.value.vehicle_trim,
-  ].filter((part) => part && String(part).trim())
-  return parts.length > 0 ? parts.join(' ') : 'Lease Estimate'
-})
+	const parts = [
+		form.value.vehicle_year,
+		form.value.vehicle_make,
+		form.value.vehicle_model,
+		form.value.vehicle_trim,
+	].filter(part => part && String(part).trim());
+	return parts.length > 0 ? parts.join(' ') : 'Lease Estimate';
+});
 
 const headerTitle = computed(() => {
-  return isEdit.value ? vehicleTitle.value : 'New lease estimate.'
-})
+	return isEdit.value ? vehicleTitle.value : 'New lease estimate.';
+});
 
 const headerEyebrow = computed(() => {
-  return isEdit.value ? 'Compute · Leasing · Edit' : 'Compute · Leasing · New'
-})
+	return isEdit.value ? 'Compute · Leasing · Edit' : 'Compute · Leasing · New';
+});
 
 const headerDescription = computed(() => {
-  return isEdit.value
-    ? 'Refine the numbers behind this lease. Changes save when you click update.'
-    : 'Run a lease offer through the math. Money factor, residual, total cost, all in one sheet.'
-})
+	return isEdit.value
+		? 'Refine the numbers behind this lease. Changes save when you click update.'
+		: 'Run a lease offer through the math. Money factor, residual, total cost, all in one sheet.';
+});
 
 const loadSheet = async () => {
-  if (!isEdit.value) return
+	if (!isEdit.value) return;
 
-  loadingSheet.value = true
-  try {
-    const sheet = await leaseApi.get(sheetId.value)
-    Object.assign(form.value, sheet)
-  } catch (error) {
-    console.error('Error loading sheet:', error)
-    router.push('/estimates/leasing')
-  } finally {
-    loadingSheet.value = false
-  }
-}
+	loadingSheet.value = true;
+	try {
+		const sheet = await leaseApi.get(sheetId.value);
+		Object.assign(form.value, sheet);
+	} catch (error) {
+		console.error('Error loading sheet:', error);
+		router.push('/estimates/leasing');
+	} finally {
+		loadingSheet.value = false;
+	}
+};
 
 const submitForm = async () => {
-  loading.value = true
-  errors.value = {}
+	loading.value = true;
+	errors.value = {};
 
-  try {
-    if (isEdit.value) {
-      await leaseApi.update(sheetId.value, form.value)
-    } else {
-      await leaseApi.create(form.value)
-    }
-    router.push('/estimates/leasing')
-  } catch (error: any) {
-    if (error.response?.data?.errors) {
-      errors.value = error.response.data.errors
-    } else {
-      console.error(`Error ${isEdit.value ? 'updating' : 'creating'} lease sheet:`, error)
-    }
-  } finally {
-    loading.value = false
-  }
-}
+	try {
+		if (isEdit.value) {
+			await leaseApi.update(sheetId.value, form.value);
+		} else {
+			await leaseApi.create(form.value);
+		}
+		router.push('/estimates/leasing');
+	} catch (error: any) {
+		if (error.response?.data?.errors) {
+			errors.value = error.response.data.errors;
+		} else {
+			console.error(`Error ${isEdit.value ? 'updating' : 'creating'} lease sheet:`, error);
+		}
+	} finally {
+		loading.value = false;
+	}
+};
 
 onMounted(() => {
-  loadSheet()
-})
+	loadSheet();
+});
 </script>
 
 <template>
-  <div class="pb-16">
-    <!-- Loading state for edit-mode initial fetch -->
-    <div v-if="loadingSheet" class="flex items-center justify-center py-32">
-      <Spinner size="lg" color="accent" />
-    </div>
+	<div class="pb-16">
+		<!-- Loading state for edit-mode initial fetch -->
+		<div v-if="loadingSheet" class="flex items-center justify-center py-32">
+			<Spinner size="lg" color="accent" />
+		</div>
 
-    <template v-else>
-      <!-- Editorial breadcrumb -->
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8">
-        <RouterLink
-          to="/estimates/leasing"
-          class="inline-flex items-center gap-1.5 text-xs eyebrow hover:text-primary transition-colors"
-        >
-          <ArrowLeftIcon class="h-3 w-3" />
-          All lease estimates
-        </RouterLink>
-      </div>
+		<template v-else>
+			<!-- Editorial breadcrumb -->
+			<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8">
+				<RouterLink
+					to="/estimates/leasing"
+					class="inline-flex items-center gap-1.5 text-xs eyebrow hover:text-primary transition-colors"
+				>
+					<ArrowLeftIcon class="h-3 w-3" />
+					All lease estimates
+				</RouterLink>
+			</div>
 
-      <SectionHeader
-        :eyebrow="headerEyebrow"
-        :title="headerTitle"
-        :description="headerDescription"
-        :icon="CurrencyDollarIcon"
-        variant="compact"
-      >
-        <template v-if="isEdit" #actions>
-          <button
-            @click="submitForm"
-            :disabled="loading"
-            :class="[
-              'inline-flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-medium transition-colors',
-              loading
-                ? 'bg-tan text-text-muted cursor-not-allowed'
-                : 'bg-primary hover:bg-primary-light text-surface',
-            ]"
-          >
-            <Spinner v-if="loading" size="sm" color="white" />
-            <CalculatorIcon v-else class="h-4 w-4" />
-            {{ loading ? 'Saving…' : 'Save changes' }}
-          </button>
-        </template>
-      </SectionHeader>
+			<SectionHeader
+				:eyebrow="headerEyebrow"
+				:title="headerTitle"
+				:description="headerDescription"
+				:icon="CurrencyDollarIcon"
+				variant="compact"
+			>
+				<template v-if="isEdit" #actions>
+					<button
+						:disabled="loading"
+						:class="[
+							'inline-flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-medium transition-colors',
+							loading ? 'bg-tan text-text-muted cursor-not-allowed' : 'bg-primary hover:bg-primary-light text-surface',
+						]"
+						@click="submitForm"
+					>
+						<Spinner v-if="loading" size="sm" color="white" />
+						<CalculatorIcon v-else class="h-4 w-4" />
+						{{ loading ? 'Saving…' : 'Save changes' }}
+					</button>
+				</template>
+			</SectionHeader>
 
-      <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-2">
-        <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
-          <!-- Main column -->
-          <div class="grid grid-cols-1 gap-4 lg:col-span-2">
-            <LeaseForm
-              :form="form"
-              :errors="errors"
-              :loading="loading"
-              :title="headerTitle"
-              back-url="/estimates/leasing"
-              :is-edit="isEdit"
-              @submit="submitForm"
-            />
+			<main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-2">
+				<div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
+					<!-- Main column -->
+					<div class="grid grid-cols-1 gap-4 lg:col-span-2">
+						<LeaseForm
+							:form="form"
+							:errors="errors"
+							:loading="loading"
+							:title="headerTitle"
+							back-url="/estimates/leasing"
+							:is-edit="isEdit"
+							@submit="submitForm"
+						/>
 
-            <PaymentAnalysis :data="form" />
-            <BuyoutAnalysis :data="form" />
-          </div>
+						<PaymentAnalysis :data="form" />
+						<BuyoutAnalysis :data="form" />
+					</div>
 
-          <!-- Right sidebar -->
-          <aside class="lg:sticky lg:top-20 space-y-4">
-            <AdvancedCalculations :data="form" />
-            <DealGradeCard agent-slug="deal-grade-lease" calculator-type="lease" :inputs="form" />
-          </aside>
-        </div>
-      </main>
-    </template>
-  </div>
+					<!-- Right sidebar -->
+					<aside class="lg:sticky lg:top-20 space-y-4">
+						<AdvancedCalculations :data="form" />
+						<DealGradeCard agent-slug="deal-grade-lease" calculator-type="lease" :inputs="form" />
+					</aside>
+				</div>
+			</main>
+		</template>
+	</div>
 </template>

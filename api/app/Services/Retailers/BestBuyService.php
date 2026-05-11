@@ -2,8 +2,6 @@
 
 namespace App\Services\Retailers;
 
-use Illuminate\Support\Facades\Log;
-
 class BestBuyService extends BaseRetailerService
 {
     protected function setupHeaders(): void
@@ -21,7 +19,7 @@ class BestBuyService extends BaseRetailerService
     public function searchProduct(string $skuUpc): ?array
     {
         // Best Buy API endpoint for product search
-        $endpoint = "/v1/products";
+        $endpoint = '/v1/products';
         $params = [
             'apiKey' => $this->retailer->api_key,
             'format' => 'json',
@@ -76,7 +74,7 @@ class BestBuyService extends BaseRetailerService
 
         $response = $this->makeRequest($endpoint, $params);
 
-        if (!$response || !$response->json('products')) {
+        if (! $response || ! $response->json('products')) {
             return null;
         }
 
@@ -89,7 +87,7 @@ class BestBuyService extends BaseRetailerService
         if ($this->debugMode) {
             $this->lastRawResponse = [
                 'retailer' => 'Best Buy',
-                'endpoint' => $this->retailer->api_base_url . $endpoint,
+                'endpoint' => $this->retailer->api_base_url.$endpoint,
                 'response' => $response->json(),
             ];
         }

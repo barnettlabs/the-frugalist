@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Mail\PriceDropAlert;
-use App\Models\PriceAlert;
 use App\Models\TrackedProduct;
 use App\Services\ExpoPushService;
 use App\Services\Retailers\RetailerServiceFactory;
@@ -40,7 +39,7 @@ class CheckProductPrices extends Command
         // Filter by end date
         $query->where(function ($q) {
             $q->whereNull('tracking_end_date')
-              ->orWhere('tracking_end_date', '>=', now());
+                ->orWhere('tracking_end_date', '>=', now());
         });
 
         // Apply filters
@@ -55,7 +54,7 @@ class CheckProductPrices extends Command
         }
 
         // Only check products that haven't been checked recently (unless forced)
-        if (!$force) {
+        if (! $force) {
             $query->needsCheck();
         }
 
@@ -63,6 +62,7 @@ class CheckProductPrices extends Command
 
         if ($products->isEmpty()) {
             $this->info('No products need price checking at this time.');
+
             return Command::SUCCESS;
         }
 
@@ -88,8 +88,8 @@ class CheckProductPrices extends Command
 
             } catch (\Exception $e) {
                 $errors++;
-                Log::error("Error checking price for product {$product->id}: " . $e->getMessage());
-                $this->error("Error checking {$product->product_name}: " . $e->getMessage());
+                Log::error("Error checking price for product {$product->id}: ".$e->getMessage());
+                $this->error("Error checking {$product->product_name}: ".$e->getMessage());
             }
 
             $progressBar->advance();
@@ -119,8 +119,9 @@ class CheckProductPrices extends Command
             $service = RetailerServiceFactory::create($product->retailer);
             $productData = $service->getProductDetails($product->sku_upc);
 
-            if (!$productData) {
+            if (! $productData) {
                 $this->warn("Product not found: {$product->product_name} ({$product->sku_upc})");
+
                 return ['checked' => false, 'alerts_created' => 0];
             }
 
@@ -196,13 +197,13 @@ class CheckProductPrices extends Command
                 // Auto-deactivate if target price reached
                 if ($alertType === 'target_reached') {
                     $product->update(['is_active' => false]);
-                    $this->line("  🎯 Target price reached - tracking auto-deactivated");
+                    $this->line('  🎯 Target price reached - tracking auto-deactivated');
                 }
             }
 
             // Check for stock alerts (only if watching for stock)
             if ($product->shouldCheckForStock()) {
-                if (!$oldInStock && $newInStock) {
+                if (! $oldInStock && $newInStock) {
                     // Back in stock
                     $alert = $product->priceAlerts()->create([
                         'old_price' => $oldPrice,
@@ -224,7 +225,7 @@ class CheckProductPrices extends Command
                     $this->sendPushAlert($product, 'back_in_stock', $oldPrice, $newPrice);
                     $this->createInAppNotification($product, 'back_in_stock', $oldPrice, $newPrice);
                     $alert->update(['notification_sent' => true]);
-                } elseif ($oldInStock && !$newInStock) {
+                } elseif ($oldInStock && ! $newInStock) {
                     // Went out of stock (just log, no alert)
                     $this->line("  ⚠️  {$product->product_name}: Out of stock");
                 }
@@ -246,12 +247,12 @@ class CheckProductPrices extends Command
 
     private function formatCurrency(float $amount): string
     {
-        return '$' . number_format($amount, 2);
+        return '$'.number_format($amount, 2);
     }
 
     private function sendPushAlert(TrackedProduct $product, string $alertType, float $oldPrice, float $newPrice): void
     {
-        if (!in_array('push', $product->notification_method ?? [])) {
+        if (! in_array('push', $product->notification_method ?? [])) {
             return;
         }
 
@@ -270,9 +271,9 @@ class CheckProductPrices extends Command
         );
 
         if ($result['success'] ?? false) {
-            $this->line("  🔔 Push notification sent to " . count($tokens) . " device(s)");
+            $this->line('  🔔 Push notification sent to '.count($tokens).' device(s)');
         } else {
-            $this->line("  ⚠️  Push failed: " . ($result['error'] ?? 'unknown'));
+            $this->line('  ⚠️  Push failed: '.($result['error'] ?? 'unknown'));
         }
     }
 

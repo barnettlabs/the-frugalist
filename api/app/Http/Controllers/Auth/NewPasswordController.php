@@ -19,7 +19,7 @@ class NewPasswordController extends Controller
      */
     public function create(Request $request): RedirectResponse
     {
-        return redirect('/reset-password/' . $request->route('token') . '?email=' . urlencode($request->email));
+        return redirect('/reset-password/'.$request->route('token').'?email='.urlencode($request->email));
     }
 
     /**

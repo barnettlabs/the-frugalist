@@ -6,7 +6,6 @@ use App\Models\AiAgent;
 use App\Models\AiInvocation;
 use App\Models\AiInvocationCache;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 class InvocationPipeline
 {

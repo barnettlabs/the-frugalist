@@ -57,7 +57,7 @@ class PhoneVerificationController extends Controller
             ->whereNull('verified_at')
             ->first();
 
-        if (!$verification) {
+        if (! $verification) {
             throw ValidationException::withMessages([
                 'code' => ['The verification code is invalid.'],
             ]);

@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\Http;
 abstract class BaseRetailerService
 {
     protected Retailer $retailer;
+
     protected array $headers = [];
+
     protected bool $debugMode = false;
+
     protected ?array $lastRawResponse = null;
 
     public function __construct(Retailer $retailer)
@@ -22,6 +25,7 @@ abstract class BaseRetailerService
     public function setDebugMode(bool $enabled): self
     {
         $this->debugMode = $enabled;
+
         return $this;
     }
 
@@ -31,8 +35,11 @@ abstract class BaseRetailerService
     }
 
     abstract protected function setupHeaders(): void;
+
     abstract public function searchProduct(string $skuUpc): ?array;
+
     abstract public function getProductDetails(string $skuUpc): ?array;
+
     abstract protected function parseProductData(array $apiResponse): array;
 
     protected function makeRequest(string $endpoint, array $params = []): ?Response
@@ -40,7 +47,7 @@ abstract class BaseRetailerService
         try {
             $response = Http::withHeaders($this->headers)
                 ->timeout(30)
-                ->get($this->retailer->api_base_url . $endpoint, $params);
+                ->get($this->retailer->api_base_url.$endpoint, $params);
 
             if ($response->successful()) {
                 return $response;
@@ -49,14 +56,14 @@ abstract class BaseRetailerService
             logger()->error("API request failed for {$this->retailer->name}", [
                 'endpoint' => $endpoint,
                 'status' => $response->status(),
-                'response' => $response->body()
+                'response' => $response->body(),
             ]);
 
             return null;
         } catch (\Exception $e) {
             logger()->error("API request exception for {$this->retailer->name}", [
                 'endpoint' => $endpoint,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return null;
@@ -82,6 +89,7 @@ abstract class BaseRetailerService
     public function validateProduct(string $skuUpc): bool
     {
         $product = $this->getProductDetails($skuUpc);
+
         return $product !== null;
     }
 }

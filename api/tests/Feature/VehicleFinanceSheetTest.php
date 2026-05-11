@@ -40,14 +40,14 @@ class VehicleFinanceSheetTest extends TestCase
             'finance_term' => 60,
             'contact_email' => 'test@example.com',
             'contact_phone' => '555-0123',
-            'notes' => 'Test notes'
+            'notes' => 'Test notes',
         ];
 
         $response = $this->actingAs($this->user)
             ->post(route('vehicle-finance-sheets.store'), $sheetData);
 
         $response->assertStatus(201);
-        
+
         $this->assertDatabaseHas('vehicle_finance_sheets', [
             'user_id' => $this->user->id,
             'sheet_name' => 'Test Finance Sheet',
@@ -61,7 +61,7 @@ class VehicleFinanceSheetTest extends TestCase
         $sheet = VehicleFinanceSheet::factory()->create([
             'user_id' => $this->user->id,
             'sheet_name' => 'Original Name',
-            'msrp' => 20000.00
+            'msrp' => 20000.00,
         ]);
 
         $updateData = [
@@ -74,7 +74,7 @@ class VehicleFinanceSheetTest extends TestCase
             ->put(route('vehicle-finance-sheets.update', $sheet), $updateData);
 
         $response->assertStatus(200);
-        
+
         $sheet->refresh();
         $this->assertEquals('Updated Name', $sheet->sheet_name);
         $this->assertEquals(25000.00, $sheet->msrp);
@@ -84,7 +84,7 @@ class VehicleFinanceSheetTest extends TestCase
     public function test_can_delete_finance_sheet(): void
     {
         $sheet = VehicleFinanceSheet::factory()->create([
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         $response = $this->actingAs($this->user)
@@ -98,7 +98,7 @@ class VehicleFinanceSheetTest extends TestCase
     {
         $otherUser = User::factory()->create();
         $sheet = VehicleFinanceSheet::factory()->create([
-            'user_id' => $otherUser->id
+            'user_id' => $otherUser->id,
         ]);
 
         $response = $this->actingAs($this->user)
@@ -126,7 +126,7 @@ class VehicleFinanceSheetTest extends TestCase
             'vehicle_make' => 'Honda',
             'vehicle_model' => 'Accord',
             'vehicle_trim' => 'EX',
-            'dealership_name' => 'Test Motors'
+            'dealership_name' => 'Test Motors',
         ]);
 
         $expectedTitle = '2024 Honda Accord EX - Test Motors';
@@ -137,12 +137,12 @@ class VehicleFinanceSheetTest extends TestCase
     {
         $extraPayments = [
             ['month' => 12, 'amount' => 1000],
-            ['month' => 24, 'amount' => 1500]
+            ['month' => 24, 'amount' => 1500],
         ];
 
         $sheet = VehicleFinanceSheet::factory()->create([
             'user_id' => $this->user->id,
-            'extra_payments_json' => json_encode($extraPayments)
+            'extra_payments_json' => json_encode($extraPayments),
         ]);
 
         $decodedPayments = json_decode($sheet->extra_payments_json, true);

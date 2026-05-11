@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class TrackedProduct extends Model
 {
     use SoftDeletes;
+
     protected $fillable = [
         'user_id',
         'retailer_id',
@@ -83,7 +84,7 @@ class TrackedProduct extends Model
     {
         return $query->where(function ($q) {
             $q->whereNull('last_checked_at')
-              ->orWhereRaw('last_checked_at < DATE_SUB(NOW(), INTERVAL check_interval MINUTE)');
+                ->orWhereRaw('last_checked_at < DATE_SUB(NOW(), INTERVAL check_interval MINUTE)');
         });
     }
 

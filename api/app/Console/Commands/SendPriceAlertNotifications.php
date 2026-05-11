@@ -32,6 +32,7 @@ class SendPriceAlertNotifications extends Command
 
         if ($pendingAlerts->isEmpty()) {
             $this->info('No pending price alerts to send.');
+
             return Command::SUCCESS;
         }
 
@@ -52,9 +53,10 @@ class SendPriceAlertNotifications extends Command
                 $user = $alert->trackedProduct->user;
                 $product = $alert->trackedProduct;
 
-                if (!$user) {
+                if (! $user) {
                     $this->warn("No user found for alert {$alert->id}");
                     $errors++;
+
                     continue;
                 }
 
@@ -74,14 +76,14 @@ class SendPriceAlertNotifications extends Command
 
             } catch (\Exception $e) {
                 $errors++;
-                Log::error("Error sending price alert notification for alert {$alert->id}: " . $e->getMessage());
-                $this->error("Error sending notification for alert {$alert->id}: " . $e->getMessage());
+                Log::error("Error sending price alert notification for alert {$alert->id}: ".$e->getMessage());
+                $this->error("Error sending notification for alert {$alert->id}: ".$e->getMessage());
             }
 
             $progressBar->advance();
-            
+
             // Small delay to avoid overwhelming email services
-            if (!$dryRun) {
+            if (! $dryRun) {
                 usleep(100000); // 100ms delay
             }
         }
@@ -90,10 +92,10 @@ class SendPriceAlertNotifications extends Command
         $this->newLine();
 
         $duration = round(microtime(true) - $startTime, 2);
-        
+
         $this->info("Notification process completed in {$duration} seconds");
         $this->table(['Metric', 'Count'], [
-            ['Notifications ' . ($dryRun ? 'Planned' : 'Sent'), $sentCount],
+            ['Notifications '.($dryRun ? 'Planned' : 'Sent'), $sentCount],
             ['Errors', $errors],
         ]);
 

@@ -13,14 +13,14 @@ class HomeDepotService extends BaseRetailerService
         ];
 
         if ($this->retailer->api_key) {
-            $this->headers['Authorization'] = 'Bearer ' . $this->retailer->api_key;
+            $this->headers['Authorization'] = 'Bearer '.$this->retailer->api_key;
         }
     }
 
     public function searchProduct(string $skuUpc): ?array
     {
         // Home Depot API typically uses different endpoints for SKU vs UPC
-        $endpoint = "/v1/products/search";
+        $endpoint = '/v1/products/search';
         $params = [
             'format' => 'json',
             'limit' => 1,
@@ -35,12 +35,12 @@ class HomeDepotService extends BaseRetailerService
 
         $response = $this->makeRequest($endpoint, $params);
 
-        if (!$response) {
+        if (! $response) {
             return null;
         }
 
         $data = $response->json();
-        if (!isset($data['products']) || empty($data['products'])) {
+        if (! isset($data['products']) || empty($data['products'])) {
             return null;
         }
 
@@ -48,7 +48,7 @@ class HomeDepotService extends BaseRetailerService
         if ($this->debugMode) {
             $this->lastRawResponse = [
                 'retailer' => 'Home Depot',
-                'endpoint' => $this->retailer->api_base_url . $endpoint,
+                'endpoint' => $this->retailer->api_base_url.$endpoint,
                 'response' => $data,
             ];
         }

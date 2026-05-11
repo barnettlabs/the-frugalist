@@ -67,12 +67,12 @@ class PlaygroundController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Test email sent successfully to ' . $user->email,
+                'message' => 'Test email sent successfully to '.$user->email,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to send test email: ' . $e->getMessage(),
+                'message' => 'Failed to send test email: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -130,7 +130,7 @@ class PlaygroundController extends Controller
         }
 
         // Create a mock product (not saved to DB)
-        $mock = new TrackedProduct();
+        $mock = new TrackedProduct;
         $mock->id = 0;
         $mock->user_id = $user->id;
         $mock->retailer_id = 1;

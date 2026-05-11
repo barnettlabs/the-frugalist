@@ -14,9 +14,9 @@ class VehicleLeaseSheetFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'sheet_name' => $this->faker->words(3, true) . ' Lease Sheet',
+            'sheet_name' => $this->faker->words(3, true).' Lease Sheet',
             'sales_consultant' => $this->faker->name(),
-            'dealership_name' => $this->faker->company() . ' Leasing',
+            'dealership_name' => $this->faker->company().' Leasing',
             'vehicle_type' => $this->faker->randomElement(['CAR', 'TRUCK', 'SUV']),
             'shareable_key' => $this->faker->uuid(),
             'vehicle_year' => $this->faker->numberBetween(2020, 2024),

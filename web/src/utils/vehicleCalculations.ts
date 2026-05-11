@@ -2,7 +2,7 @@
  * Shared utility functions for vehicle calculations
  */
 
-import { parseOrZero, formatNumber } from './formatters.js';
+import { formatNumber, parseOrZero } from './formatters.js';
 
 /**
  * Calculate net trade-in value
@@ -11,9 +11,9 @@ import { parseOrZero, formatNumber } from './formatters.js';
  * @returns {number} - Net trade-in value
  */
 export const calculateNetTradeIn = (tradeInValue, tradeInPayoff) => {
-    const value = parseOrZero(tradeInValue);
-    const payoff = parseOrZero(tradeInPayoff);
-    return value - payoff;
+	const value = parseOrZero(tradeInValue);
+	const payoff = parseOrZero(tradeInPayoff);
+	return value - payoff;
 };
 
 /**
@@ -24,10 +24,10 @@ export const calculateNetTradeIn = (tradeInValue, tradeInPayoff) => {
  * @returns {number} - Total rebates
  */
 export const calculateTotalRebates = (cashRebate, dealerRebate, otherIncentives) => {
-    const cash = parseOrZero(cashRebate);
-    const dealer = parseOrZero(dealerRebate);
-    const other = parseOrZero(otherIncentives);
-    return cash + dealer + other;
+	const cash = parseOrZero(cashRebate);
+	const dealer = parseOrZero(dealerRebate);
+	const other = parseOrZero(otherIncentives);
+	return cash + dealer + other;
 };
 
 /**
@@ -43,21 +43,21 @@ export const calculateTotalRebates = (cashRebate, dealerRebate, otherIncentives)
  * @returns {string} - Formatted amount financed
  */
 export const calculateAmountFinanced = ({
-    sellingPrice,
-    downPayment,
-    tradeInValue,
-    tradeInPayoff,
-    cashRebate,
-    dealerRebate,
-    otherIncentives
+	sellingPrice,
+	downPayment,
+	tradeInValue,
+	tradeInPayoff,
+	cashRebate,
+	dealerRebate,
+	otherIncentives,
 }) => {
-    const price = parseOrZero(sellingPrice);
-    const down = parseOrZero(downPayment);
-    const netTradeIn = calculateNetTradeIn(tradeInValue, tradeInPayoff);
-    const totalRebates = calculateTotalRebates(cashRebate, dealerRebate, otherIncentives);
+	const price = parseOrZero(sellingPrice);
+	const down = parseOrZero(downPayment);
+	const netTradeIn = calculateNetTradeIn(tradeInValue, tradeInPayoff);
+	const totalRebates = calculateTotalRebates(cashRebate, dealerRebate, otherIncentives);
 
-    const amountFinanced = price - down - netTradeIn - totalRebates;
-    return formatNumber(amountFinanced, 2);
+	const amountFinanced = price - down - netTradeIn - totalRebates;
+	return formatNumber(amountFinanced, 2);
 };
 
 /**
@@ -72,17 +72,17 @@ export const calculateAmountFinanced = ({
  * @returns {string} - Formatted capitalized cost
  */
 export const calculateCapitalizedCost = ({
-    msrp,
-    tradeInValue,
-    tradeInPayoff,
-    cashRebate,
-    dealerRebate,
-    otherIncentives
+	msrp,
+	tradeInValue,
+	tradeInPayoff,
+	cashRebate,
+	dealerRebate,
+	otherIncentives,
 }) => {
-    const price = parseOrZero(msrp);
-    const netTradeIn = calculateNetTradeIn(tradeInValue, tradeInPayoff);
-    const totalRebates = calculateTotalRebates(cashRebate, dealerRebate, otherIncentives);
+	const price = parseOrZero(msrp);
+	const netTradeIn = calculateNetTradeIn(tradeInValue, tradeInPayoff);
+	const totalRebates = calculateTotalRebates(cashRebate, dealerRebate, otherIncentives);
 
-    const capitalizedCost = price - netTradeIn - totalRebates;
-    return formatNumber(capitalizedCost, 2);
+	const capitalizedCost = price - netTradeIn - totalRebates;
+	return formatNumber(capitalizedCost, 2);
 };

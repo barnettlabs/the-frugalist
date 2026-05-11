@@ -44,14 +44,14 @@ class VehicleLeaseSheetTest extends TestCase
             'lease_term' => 36,
             'contact_email' => 'lease@example.com',
             'contact_phone' => '555-0456',
-            'notes' => 'Lease test notes'
+            'notes' => 'Lease test notes',
         ];
 
         $response = $this->actingAs($this->user)
             ->post(route('vehicle-lease-sheets.store'), $sheetData);
 
         $response->assertStatus(201);
-        
+
         $this->assertDatabaseHas('vehicle_lease_sheets', [
             'user_id' => $this->user->id,
             'sheet_name' => 'Test Lease Sheet',
@@ -66,7 +66,7 @@ class VehicleLeaseSheetTest extends TestCase
             'user_id' => $this->user->id,
             'sheet_name' => 'Original Lease',
             'msrp' => 40000.00,
-            'residual_percent' => 55.0
+            'residual_percent' => 55.0,
         ]);
 
         $updateData = [
@@ -80,7 +80,7 @@ class VehicleLeaseSheetTest extends TestCase
             ->put(route('vehicle-lease-sheets.update', $sheet), $updateData);
 
         $response->assertStatus(200);
-        
+
         $sheet->refresh();
         $this->assertEquals('Updated Lease', $sheet->sheet_name);
         $this->assertEquals(45000.00, $sheet->msrp);
@@ -91,7 +91,7 @@ class VehicleLeaseSheetTest extends TestCase
     public function test_can_delete_lease_sheet(): void
     {
         $sheet = VehicleLeaseSheet::factory()->create([
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         $response = $this->actingAs($this->user)
@@ -105,7 +105,7 @@ class VehicleLeaseSheetTest extends TestCase
     {
         $otherUser = User::factory()->create();
         $sheet = VehicleLeaseSheet::factory()->create([
-            'user_id' => $otherUser->id
+            'user_id' => $otherUser->id,
         ]);
 
         $response = $this->actingAs($this->user)
@@ -134,7 +134,7 @@ class VehicleLeaseSheetTest extends TestCase
             'vehicle_make' => 'Audi',
             'vehicle_model' => 'A4',
             'vehicle_trim' => 'Premium',
-            'dealership_name' => 'Luxury Motors'
+            'dealership_name' => 'Luxury Motors',
         ]);
 
         $expectedTitle = '2024 Audi A4 Premium - Luxury Motors';
@@ -148,7 +148,7 @@ class VehicleLeaseSheetTest extends TestCase
             'residual_percent' => 60.0,
             'money_factor' => 0.00125,
             'lease_term' => 36,
-            'sales_tax_percent' => 8.5
+            'sales_tax_percent' => 8.5,
         ]);
 
         // Test that all required fields for calculations are present
@@ -162,9 +162,9 @@ class VehicleLeaseSheetTest extends TestCase
     {
         $moneyFactor = 0.00125;
         $expectedAPR = $moneyFactor * 2400; // 3.0%
-        
+
         $sheet = VehicleLeaseSheet::factory()->create([
-            'money_factor' => $moneyFactor
+            'money_factor' => $moneyFactor,
         ]);
 
         // Money factor should convert to approximately 3% APR

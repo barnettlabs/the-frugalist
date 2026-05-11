@@ -8,17 +8,17 @@
  * @returns Formatted relative time string (e.g., "2h ago", "3d ago")
  */
 export const formatRelativeTime = (dateString: string): string => {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
-  
-  if (diffInSeconds < 60) return 'Just now'
-  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`
-  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`
-  if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)}d ago`
-  if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)}mo ago`
-  return `${Math.floor(diffInSeconds / 31536000)}y ago`
-}
+	const date = new Date(dateString);
+	const now = new Date();
+	const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+	if (diffInSeconds < 60) return 'Just now';
+	if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+	if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+	if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+	if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)}mo ago`;
+	return `${Math.floor(diffInSeconds / 31536000)}y ago`;
+};
 
 /**
  * Formats a date string into a standard date format
@@ -27,16 +27,16 @@ export const formatRelativeTime = (dateString: string): string => {
  * @returns Formatted date string
  */
 export const formatDate = (
-  dateString: string, 
-  options: Intl.DateTimeFormatOptions = { 
-    year: 'numeric', 
-    month: 'short', 
-    day: 'numeric' 
-  }
+	dateString: string,
+	options: Intl.DateTimeFormatOptions = {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+	}
 ): string => {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', options)
-}
+	const date = new Date(dateString);
+	return date.toLocaleDateString('en-US', options);
+};
 
 /**
  * Formats a date string into a standard date and time format
@@ -44,16 +44,16 @@ export const formatDate = (
  * @returns Formatted date and time string
  */
 export const formatDateTime = (dateString: string): string => {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true
-  })
-}
+	const date = new Date(dateString);
+	return date.toLocaleDateString('en-US', {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: '2-digit',
+		hour12: true,
+	});
+};
 
 /**
  * Formats a date string into a short format for chart axis labels
@@ -61,10 +61,10 @@ export const formatDateTime = (dateString: string): string => {
  * @returns Formatted short date string (e.g., "Jan 5")
  */
 export const formatShortDate = (dateString: string): string => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric'
-  })
-}
+	if (!dateString) return '';
+	const date = new Date(dateString);
+	return date.toLocaleDateString('en-US', {
+		month: 'short',
+		day: 'numeric',
+	});
+};

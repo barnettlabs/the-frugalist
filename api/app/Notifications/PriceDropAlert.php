@@ -14,6 +14,7 @@ class PriceDropAlert extends Notification implements ShouldQueue
     use Queueable;
 
     protected PriceAlert $priceAlert;
+
     protected TrackedProduct $trackedProduct;
 
     public function __construct(PriceAlert $priceAlert)
@@ -31,7 +32,7 @@ class PriceDropAlert extends Notification implements ShouldQueue
     {
         $subject = $this->getSubject();
         $greeting = $this->getGreeting();
-        
+
         $message = (new MailMessage)
             ->subject($subject)
             ->greeting($greeting)
@@ -83,13 +84,13 @@ class PriceDropAlert extends Notification implements ShouldQueue
     {
         switch ($this->priceAlert->alert_type) {
             case 'target_reached':
-                return "Great news! Your target price has been reached!";
+                return 'Great news! Your target price has been reached!';
             case 'price_drop':
                 return "Good news! The price has dropped on a product you're tracking!";
             case 'back_in_stock':
                 return "The product you're tracking is back in stock!";
             default:
-                return "Hello!";
+                return 'Hello!';
         }
     }
 
@@ -97,7 +98,7 @@ class PriceDropAlert extends Notification implements ShouldQueue
     {
         $productName = $this->trackedProduct->product_name;
         $retailer = $this->trackedProduct->retailer->name;
-        
+
         switch ($this->priceAlert->alert_type) {
             case 'target_reached':
                 return "The price for \"{$productName}\" at {$retailer} has reached your target price!";
@@ -118,7 +119,7 @@ class PriceDropAlert extends Notification implements ShouldQueue
         $percentageDrop = $this->calculatePercentageDrop();
 
         $details = "Price: {$oldPrice} → {$newPrice}";
-        
+
         if ($this->priceAlert->new_price < $this->priceAlert->old_price) {
             $details .= " (Save {$savings} - {$percentageDrop}% off)";
         }
@@ -136,7 +137,7 @@ class PriceDropAlert extends Notification implements ShouldQueue
         if ($this->priceAlert->old_price == 0) {
             return 0;
         }
-        
+
         return round(
             (($this->priceAlert->old_price - $this->priceAlert->new_price) / $this->priceAlert->old_price) * 100,
             1
@@ -145,6 +146,6 @@ class PriceDropAlert extends Notification implements ShouldQueue
 
     private function formatCurrency(float $amount): string
     {
-        return '$' . number_format($amount, 2);
+        return '$'.number_format($amount, 2);
     }
 }

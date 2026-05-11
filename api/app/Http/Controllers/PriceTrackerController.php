@@ -24,22 +24,22 @@ class PriceTrackerController extends Controller
 
             $productData = $service->getProductDetails($request->sku_upc);
 
-            if (!$productData) {
+            if (! $productData) {
                 return response()->json([
                     'valid' => false,
-                    'message' => 'Product not found or invalid SKU/UPC'
+                    'message' => 'Product not found or invalid SKU/UPC',
                 ], 404);
             }
 
             return response()->json([
                 'valid' => true,
-                'product' => $productData
+                'product' => $productData,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'valid' => false,
-                'message' => 'Error validating product: ' . $e->getMessage()
+                'message' => 'Error validating product: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -91,7 +91,7 @@ class PriceTrackerController extends Controller
 
         if ($existing) {
             throw ValidationException::withMessages([
-                'sku_upc' => 'You are already tracking this product.'
+                'sku_upc' => 'You are already tracking this product.',
             ]);
         }
 
@@ -100,23 +100,23 @@ class PriceTrackerController extends Controller
             $service = RetailerServiceFactory::create($retailer);
             $productData = $service->getProductDetails($request->sku_upc);
 
-            if (!$productData) {
+            if (! $productData) {
                 throw ValidationException::withMessages([
-                    'sku_upc' => 'Product not found or invalid SKU/UPC'
+                    'sku_upc' => 'Product not found or invalid SKU/UPC',
                 ]);
             }
 
             // Validate target price is required and valid for price-based watch types
             $needsTargetPrice = in_array($watchType, ['price', 'both']);
             if ($needsTargetPrice) {
-                if (!$request->target_price) {
+                if (! $request->target_price) {
                     throw ValidationException::withMessages([
-                        'target_price' => 'Target price is required when watching for price drops'
+                        'target_price' => 'Target price is required when watching for price drops',
                     ]);
                 }
                 if ($request->target_price >= $productData['current_price']) {
                     throw ValidationException::withMessages([
-                        'target_price' => 'Target price must be lower than current price ($' . number_format($productData['current_price'], 2) . ')'
+                        'target_price' => 'Target price must be lower than current price ($'.number_format($productData['current_price'], 2).')',
                     ]);
                 }
             }
@@ -160,7 +160,7 @@ class PriceTrackerController extends Controller
 
         } catch (\Exception $e) {
             throw ValidationException::withMessages([
-                'sku_upc' => 'Error setting up product tracking: ' . $e->getMessage()
+                'sku_upc' => 'Error setting up product tracking: '.$e->getMessage(),
             ]);
         }
     }
@@ -172,9 +172,9 @@ class PriceTrackerController extends Controller
             abort(403);
         }
 
-        $trackedProduct->load(['retailer', 'priceHistory' => function($query) {
+        $trackedProduct->load(['retailer', 'priceHistory' => function ($query) {
             $query->limit(50);
-        }, 'priceAlerts' => function($query) {
+        }, 'priceAlerts' => function ($query) {
             $query->orderBy('triggered_at', 'desc')->limit(10);
         }]);
 
@@ -208,7 +208,7 @@ class PriceTrackerController extends Controller
         if ($needsTargetPrice && $request->has('target_price') && $request->target_price !== null) {
             if ($request->target_price >= $trackedProduct->current_price) {
                 throw ValidationException::withMessages([
-                    'target_price' => 'Target price must be lower than current price ($' . number_format($trackedProduct->current_price, 2) . ')'
+                    'target_price' => 'Target price must be lower than current price ($'.number_format($trackedProduct->current_price, 2).')',
                 ]);
             }
         }
@@ -222,9 +222,9 @@ class PriceTrackerController extends Controller
             'notification_method',
         ]));
 
-        $trackedProduct->load(['retailer', 'priceHistory' => function($query) {
+        $trackedProduct->load(['retailer', 'priceHistory' => function ($query) {
             $query->limit(50);
-        }, 'priceAlerts' => function($query) {
+        }, 'priceAlerts' => function ($query) {
             $query->orderBy('triggered_at', 'desc')->limit(10);
         }]);
 
@@ -259,14 +259,15 @@ class PriceTrackerController extends Controller
             $service = RetailerServiceFactory::create($trackedProduct->retailer);
             $productData = $service->getProductDetails($trackedProduct->sku_upc);
 
-            if (!$productData) {
+            if (! $productData) {
                 // Save error to database
                 $trackedProduct->update([
                     'last_scraper_error' => 'Unable to fetch current product data',
                     'last_error_at' => now(),
                 ]);
+
                 return response()->json([
-                    'error' => 'Unable to fetch current product data'
+                    'error' => 'Unable to fetch current product data',
                 ], 400);
             }
 
@@ -306,7 +307,7 @@ class PriceTrackerController extends Controller
             }
 
             // Check for stock alerts (only if watching for stock)
-            if ($trackedProduct->shouldCheckForStock() && !$oldInStock && $newInStock) {
+            if ($trackedProduct->shouldCheckForStock() && ! $oldInStock && $newInStock) {
                 $trackedProduct->priceAlerts()->create([
                     'old_price' => $oldPrice,
                     'new_price' => $newPrice,
@@ -315,9 +316,9 @@ class PriceTrackerController extends Controller
                 ]);
             }
 
-            $trackedProduct->load(['retailer', 'priceHistory' => function($query) {
+            $trackedProduct->load(['retailer', 'priceHistory' => function ($query) {
                 $query->limit(50);
-            }, 'priceAlerts' => function($query) {
+            }, 'priceAlerts' => function ($query) {
                 $query->orderBy('triggered_at', 'desc')->limit(10);
             }]);
 
@@ -332,8 +333,9 @@ class PriceTrackerController extends Controller
                 'last_scraper_error' => $e->getMessage(),
                 'last_error_at' => now(),
             ]);
+
             return response()->json([
-                'error' => 'Error refreshing price: ' . $e->getMessage()
+                'error' => 'Error refreshing price: '.$e->getMessage(),
             ], 500);
         }
     }

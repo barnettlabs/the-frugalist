@@ -1,18 +1,19 @@
-import '@/assets/css/app.css'
+import '@/assets/css/app.css';
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import router from '@/router'
-import App from '@/App.vue'
+import { createPinia } from 'pinia';
+import { createApp } from 'vue';
 
-const app = createApp(App)
+import App from '@/App.vue';
+import router from '@/router';
+
+const app = createApp(App);
 
 // Setup Pinia for state management
-const pinia = createPinia()
-app.use(pinia)
+const pinia = createPinia();
+app.use(pinia);
 
 // Setup Vue Router
-app.use(router)
+app.use(router);
 
 // Mount the app
-app.mount('#app')
+app.mount('#app');

@@ -20,8 +20,7 @@ class PriceDropAlert extends Mailable implements ShouldQueue
     public function __construct(
         public TrackedProduct $trackedProduct,
         public string $alertType
-    ) {
-    }
+    ) {}
 
     /**
      * Get the message envelope.

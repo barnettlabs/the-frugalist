@@ -14,9 +14,9 @@ class VehicleFinanceSheetFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'sheet_name' => $this->faker->words(3, true) . ' Finance Sheet',
+            'sheet_name' => $this->faker->words(3, true).' Finance Sheet',
             'sales_consultant' => $this->faker->name(),
-            'dealership_name' => $this->faker->company() . ' Motors',
+            'dealership_name' => $this->faker->company().' Motors',
             'vehicle_type' => $this->faker->randomElement(['CAR', 'TRUCK', 'SUV']),
             'shareable_key' => $this->faker->uuid(),
             'vehicle_year' => $this->faker->numberBetween(2018, 2024),
@@ -46,12 +46,12 @@ class VehicleFinanceSheetFactory extends Factory
             for ($i = 0; $i < rand(1, 3); $i++) {
                 $extraPayments[] = [
                     'month' => $this->faker->numberBetween(6, 60),
-                    'amount' => $this->faker->randomFloat(2, 500, 3000)
+                    'amount' => $this->faker->randomFloat(2, 500, 3000),
                 ];
             }
-            
+
             return [
-                'extra_payments_json' => json_encode($extraPayments)
+                'extra_payments_json' => json_encode($extraPayments),
             ];
         });
     }

@@ -24,13 +24,13 @@ return new class extends Migration
             $table->string('dealership_name')->nullable();
             $table->enum('vehicle_type', ['CAR', 'TRUCK', 'SUV'])->default('CAR');
             $table->string('shareable_key')->nullable();
-            
+
             // Vehicle details
             $table->string('vehicle_year')->nullable();
             $table->string('vehicle_make')->nullable();
             $table->string('vehicle_model')->nullable();
             $table->string('vehicle_trim')->nullable();
-            
+
             // Financial fields - using float to match Supabase real type
             $table->float('msrp')->nullable();
             $table->float('fees')->nullable();
@@ -40,14 +40,14 @@ return new class extends Migration
             $table->float('sales_tax_percent')->nullable();
             $table->float('interest_rate')->nullable();
             $table->smallInteger('finance_term')->nullable();
-            
+
             // Contact and additional info
             $table->timestamp('start_date')->nullable();
             $table->string('contact_email')->nullable();
             $table->string('contact_phone')->nullable();
             $table->text('extra_payments_json')->nullable();
             $table->text('notes')->nullable();
-            
+
             $table->timestamps();
         });
 
@@ -60,13 +60,13 @@ return new class extends Migration
             $table->string('dealership_name')->nullable();
             $table->enum('vehicle_type', ['CAR', 'TRUCK', 'SUV'])->default('CAR');
             $table->string('shareable_key')->nullable();
-            
+
             // Vehicle details
             $table->string('vehicle_year')->nullable();
             $table->string('vehicle_make')->nullable();
             $table->string('vehicle_model')->nullable();
             $table->string('vehicle_trim')->nullable();
-            
+
             // Financial fields - using float to match Supabase real type
             $table->float('msrp')->nullable();
             $table->float('dealer_contribution')->nullable();
@@ -80,13 +80,13 @@ return new class extends Migration
             $table->float('sales_tax_percent')->nullable();
             $table->float('residual_percent')->nullable();
             $table->smallInteger('lease_term')->nullable();
-            
+
             // Contact and additional info
             $table->timestamp('start_date')->nullable();
             $table->string('contact_email')->nullable();
             $table->string('contact_phone')->nullable();
             $table->text('notes')->nullable();
-            
+
             $table->timestamps();
         });
     }

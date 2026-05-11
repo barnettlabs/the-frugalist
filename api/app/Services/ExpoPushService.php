@@ -12,10 +12,10 @@ class ExpoPushService
     /**
      * Send push notifications to one or more Expo push tokens.
      *
-     * @param array|string $tokens Single token or array of tokens
-     * @param string $title Notification title
-     * @param string $body Notification body
-     * @param array $data Additional data to send
+     * @param  array|string  $tokens  Single token or array of tokens
+     * @param  string  $title  Notification title
+     * @param  string  $body  Notification body
+     * @param  array  $data  Additional data to send
      * @return array Response data
      */
     public function send(array|string $tokens, string $title, string $body, array $data = []): array
@@ -23,7 +23,7 @@ class ExpoPushService
         $tokens = is_array($tokens) ? $tokens : [$tokens];
 
         // Filter out invalid tokens
-        $tokens = array_filter($tokens, fn($token) => $this->isValidExpoToken($token));
+        $tokens = array_filter($tokens, fn ($token) => $this->isValidExpoToken($token));
 
         if (empty($tokens)) {
             return [
@@ -130,7 +130,7 @@ class ExpoPushService
      */
     private function processResponse(array $response, array $tokens): void
     {
-        if (!isset($response['data'])) {
+        if (! isset($response['data'])) {
             return;
         }
 
@@ -158,7 +158,7 @@ class ExpoPushService
      */
     private function deactivateToken(?string $token): void
     {
-        if (!$token) {
+        if (! $token) {
             return;
         }
 

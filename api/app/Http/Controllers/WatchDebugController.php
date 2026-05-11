@@ -15,7 +15,7 @@ class WatchDebugController extends Controller
         $user = Auth::user();
         $adminEmail = config('app.admin_email');
 
-        if (!$user || !$adminEmail || $user->email !== $adminEmail) {
+        if (! $user || ! $adminEmail || $user->email !== $adminEmail) {
             abort(403, 'Debug access not authorized');
         }
     }
@@ -46,7 +46,7 @@ class WatchDebugController extends Controller
 
             $productData = $service->getProductDetails($request->sku_upc);
 
-            if (!$productData) {
+            if (! $productData) {
                 return response()->json([
                     'valid' => false,
                     'message' => 'Product not found or invalid SKU/UPC',
@@ -69,7 +69,7 @@ class WatchDebugController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'valid' => false,
-                'message' => 'Error validating product: ' . $e->getMessage(),
+                'message' => 'Error validating product: '.$e->getMessage(),
                 'debug' => [
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
@@ -93,7 +93,7 @@ class WatchDebugController extends Controller
 
             $productData = $service->getProductDetails($trackedProduct->sku_upc);
 
-            if (!$productData) {
+            if (! $productData) {
                 return response()->json([
                     'error' => 'Unable to fetch current product data',
                     'debug' => [
@@ -163,7 +163,7 @@ class WatchDebugController extends Controller
 
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Error refreshing price: ' . $e->getMessage(),
+                'error' => 'Error refreshing price: '.$e->getMessage(),
                 'debug' => [
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),

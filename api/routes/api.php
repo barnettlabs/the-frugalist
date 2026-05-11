@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\CalculatorController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PlaygroundController;
 use App\Http\Controllers\PriceTrackerController;
@@ -246,6 +247,10 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->name('admin.')->g
     Route::apiResource('bug-reports', \App\Http\Controllers\Admin\BugReportController::class)
         ->except(['store']);
 });
+
+// Calculators (public - same compute used by UI and AI agents)
+Route::post('/calculators/finance/compute', [CalculatorController::class, 'finance']);
+Route::post('/calculators/lease/compute', [CalculatorController::class, 'lease']);
 
 // Public routes (no auth required)
 Route::get('/announcements', [AnnouncementController::class, 'index']);

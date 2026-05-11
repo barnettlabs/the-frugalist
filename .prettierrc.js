@@ -1,6 +1,6 @@
 /** @type {import('prettier').Config} */
 const config = {
-  useTabs: false,
+  useTabs: true,
   arrowParens: 'avoid',
   bracketSpacing: true,
   singleQuote: true,

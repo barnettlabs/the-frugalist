@@ -1,0 +1,43 @@
+{
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "search.exclude": {
+    "yarn.lock": true,
+    "pnpm-lock.yaml": true,
+    "composer.lock": true
+  },
+  "[javascript][javascriptreact][typescript][typescriptreact]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.addMissingImports": "explicit",
+      "source.fixAll.eslint": "explicit"
+    }
+  },
+  "[json][jsonc]": {
+    "editor.formatOnSave": true,
+  },
+  "[vue]": {
+    "editor.formatOnSave": true,
+  },
+  "i18n-ally.localesPaths": [
+    "app/src/translations/"
+  ],
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.disabled": false,
+  "tailwindCSS.experimental.classRegex": [
+    [
+      "tv\\(([^)]*)\\)",
+      "[\"'`]([^\"'`]*).*?[\"'`]"
+    ]
+  ],
+  "cSpell.words": [
+    "Flashlist",
+    "Glassmorphism",
+    "Lato",
+    "Pressable"
+  ],
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

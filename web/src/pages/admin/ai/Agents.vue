@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ArrowUturnLeftIcon, BeakerIcon, ClockIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
-import { computed, onMounted, ref } from 'vue';
+import { ArrowPathIcon, ArrowUturnLeftIcon, BeakerIcon, ClockIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import { computed, onMounted, ref, watch } from 'vue';
 
 import {
 	adminAiAgentsApi,
@@ -27,6 +27,38 @@ const versions = ref<AiAgentVersion[]>([]);
 
 const errors = ref<Record<string, string[]>>({});
 
+const availableModels = ref<string[]>([]);
+const modelsLoading = ref(false);
+const modelsError = ref<string | null>(null);
+
+const selectedProvider = computed(() => providers.value.find(p => p.id === editing.value?.provider_id) || null);
+
+const loadModels = async (providerId: number | null | undefined) => {
+	availableModels.value = [];
+	modelsError.value = null;
+	if (!providerId) return;
+	modelsLoading.value = true;
+	try {
+		const res = await adminAiProvidersApi.models(providerId);
+		if (res.ok) {
+			availableModels.value = res.models;
+		} else {
+			modelsError.value = res.error || 'Could not fetch models from provider.';
+		}
+	} catch (e: any) {
+		modelsError.value = e.response?.data?.message || 'Could not fetch models from provider.';
+	} finally {
+		modelsLoading.value = false;
+	}
+};
+
+watch(
+	() => editing.value?.provider_id,
+	(id, prev) => {
+		if (id !== prev) loadModels(id ?? null);
+	}
+);
+
 const fetch = async () => {
 	loading.value = true;
 	try {
@@ -43,6 +75,7 @@ const openEdit = async (a: AiAgent) => {
 	errors.value = {};
 	previewResult.value = null;
 	versions.value = await adminAiAgentsApi.versions(a.id);
+	loadModels(a.provider_id);
 };
 
 const outputSchemaText = computed({
@@ -147,7 +180,10 @@ onMounted(fetch);
 							<p class="text-xs text-text-muted numeral">{{ a.slug }}</p>
 						</td>
 						<td class="px-4 py-3 text-text-muted text-xs">{{ a.provider?.name || '—' }}</td>
-						<td class="px-4 py-3 numeral text-text-muted text-xs">{{ a.model || a.provider?.slug || '—' }}</td>
+						<td class="px-4 py-3 numeral text-text-muted text-xs">
+							{{ a.model || a.provider?.default_model || '—' }}
+							<span v-if="!a.model && a.provider?.default_model" class="text-[10px] uppercase">(default)</span>
+						</td>
 						<td class="px-4 py-3 numeral">v{{ a.version }}</td>
 						<td class="px-4 py-3 text-xs">
 							<span v-if="a.enabled" class="text-success">enabled</span>
@@ -219,13 +255,44 @@ onMounted(fetch);
 								</select>
 							</div>
 							<div>
-								<label class="block text-sm font-medium text-text-muted mb-1">Model (override)</label>
+								<label class="flex items-center justify-between text-sm font-medium text-text-muted mb-1">
+									<span>
+										Model
+										<span v-if="selectedProvider?.default_model" class="text-text-muted/70 font-normal">
+											· default: <span class="numeral">{{ selectedProvider.default_model }}</span>
+										</span>
+									</span>
+									<button
+										v-if="editing.provider_id"
+										type="button"
+										class="text-[10px] uppercase tracking-wider text-text-muted hover:text-accent inline-flex items-center gap-1"
+										:disabled="modelsLoading"
+										@click="loadModels(editing.provider_id)"
+									>
+										<ArrowPathIcon class="h-3 w-3" :class="modelsLoading ? 'animate-spin' : ''" /> Refresh
+									</button>
+								</label>
+								<select
+									v-if="availableModels.length"
+									v-model="editing.model"
+									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+								>
+									<option :value="null">— use provider default —</option>
+									<option v-for="m in availableModels" :key="m" :value="m">{{ m }}</option>
+								</select>
 								<input
+									v-else
 									v-model="editing.model"
 									type="text"
-									placeholder="leave blank to use provider default"
+									:placeholder="
+										selectedProvider?.default_model
+											? `leave blank to use ${selectedProvider.default_model}`
+											: 'leave blank to use provider default'
+									"
 									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
 								/>
+								<p v-if="modelsError" class="text-[10px] text-danger mt-1">{{ modelsError }}</p>
+								<p v-else-if="modelsLoading" class="text-[10px] text-text-muted mt-1">Loading models…</p>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-text-muted mb-1">Response format</label>

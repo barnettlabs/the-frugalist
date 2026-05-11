@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BoltIcon, PencilSquareIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { ArrowPathIcon, BoltIcon, PencilSquareIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { onMounted, reactive, ref } from 'vue';
 
 import { adminAiProvidersApi, type AiProvider, type ProviderTestResult } from '@/api/admin-ai';
@@ -17,19 +17,48 @@ const testing = ref<AiProvider | null>(null);
 const testResult = ref<ProviderTestResult | null>(null);
 const testLoading = ref(false);
 
-const form = reactive<Partial<AiProvider> & { api_key?: string; keep_key?: boolean }>({
-	slug: '',
-	name: '',
-	base_url: '',
-	api_key: '',
-	default_model: '',
-	enabled: true,
-	is_default: false,
-	sends_data_externally: false,
-	timeout_seconds: 20,
-	keep_key: true,
-});
+type SystemHandling = 'message' | 'prepend_user';
+const form = reactive<Partial<AiProvider> & { api_key?: string; keep_key?: boolean; system_handling?: SystemHandling }>(
+	{
+		name: '',
+		base_url: '',
+		api_key: '',
+		default_model: '',
+		enabled: true,
+		is_default: false,
+		sends_data_externally: false,
+		timeout_seconds: 20,
+		keep_key: true,
+		system_handling: 'message',
+	}
+);
 const errors = ref<Record<string, string[]>>({});
+
+const availableModels = ref<string[]>([]);
+const modelsLoading = ref(false);
+const modelsError = ref<string | null>(null);
+
+const fetchModelsForEditing = async () => {
+	availableModels.value = [];
+	modelsError.value = null;
+	if (!editing.value) {
+		modelsError.value = 'Save the provider first to fetch available models.';
+		return;
+	}
+	modelsLoading.value = true;
+	try {
+		const res = await adminAiProvidersApi.models(editing.value.id);
+		if (res.ok) {
+			availableModels.value = res.models;
+		} else {
+			modelsError.value = res.error || 'Could not fetch models from provider.';
+		}
+	} catch (e: any) {
+		modelsError.value = e.response?.data?.message || 'Could not fetch models from provider.';
+	} finally {
+		modelsLoading.value = false;
+	}
+};
 
 const fetch = async () => {
 	loading.value = true;
@@ -42,8 +71,9 @@ const fetch = async () => {
 
 const openCreate = () => {
 	editing.value = null;
+	availableModels.value = [];
+	modelsError.value = null;
 	Object.assign(form, {
-		slug: '',
 		name: '',
 		base_url: '',
 		api_key: '',
@@ -53,6 +83,7 @@ const openCreate = () => {
 		sends_data_externally: false,
 		timeout_seconds: 20,
 		keep_key: false,
+		system_handling: 'message',
 	});
 	errors.value = {};
 	showForm.value = true;
@@ -60,8 +91,13 @@ const openCreate = () => {
 
 const openEdit = (p: AiProvider) => {
 	editing.value = p;
+	availableModels.value = [];
+	modelsError.value = null;
+	const sh =
+		p.settings && typeof p.settings === 'object' && 'system_handling' in p.settings
+			? (p.settings.system_handling as SystemHandling)
+			: 'message';
 	Object.assign(form, {
-		slug: p.slug,
 		name: p.name,
 		base_url: p.base_url,
 		api_key: '',
@@ -71,9 +107,11 @@ const openEdit = (p: AiProvider) => {
 		sends_data_externally: p.sends_data_externally,
 		timeout_seconds: p.timeout_seconds,
 		keep_key: p.has_api_key,
+		system_handling: sh,
 	});
 	errors.value = {};
 	showForm.value = true;
+	fetchModelsForEditing();
 };
 
 const save = async () => {
@@ -85,6 +123,8 @@ const save = async () => {
 			delete payload.api_key;
 		}
 		delete payload.keep_key;
+		payload.settings = { ...(payload.settings || {}), system_handling: form.system_handling };
+		delete payload.system_handling;
 
 		if (editing.value) {
 			await adminAiProvidersApi.update(editing.value.id, payload);
@@ -170,7 +210,6 @@ onMounted(fetch);
 					<tr v-for="p in providers" :key="p.id" class="border-t border-border">
 						<td class="px-4 py-3">
 							<p class="font-medium text-primary">{{ p.name }}</p>
-							<p class="text-xs text-text-muted numeral">{{ p.slug }}</p>
 						</td>
 						<td class="px-4 py-3 numeral text-text-muted text-xs">{{ p.base_url }}</td>
 						<td class="px-4 py-3 numeral text-text-muted text-xs">{{ p.default_model || '—' }}</td>
@@ -223,25 +262,14 @@ onMounted(fetch);
 				</h2>
 
 				<div class="space-y-4">
-					<div class="grid grid-cols-2 gap-4">
-						<div>
-							<label class="block text-sm font-medium text-text-muted mb-1">Slug</label>
-							<input
-								v-model="form.slug"
-								type="text"
-								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
-							/>
-							<p v-if="errors.slug" class="text-xs text-danger mt-1">{{ errors.slug[0] }}</p>
-						</div>
-						<div>
-							<label class="block text-sm font-medium text-text-muted mb-1">Name</label>
-							<input
-								v-model="form.name"
-								type="text"
-								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none"
-							/>
-							<p v-if="errors.name" class="text-xs text-danger mt-1">{{ errors.name[0] }}</p>
-						</div>
+					<div>
+						<label class="block text-sm font-medium text-text-muted mb-1">Name</label>
+						<input
+							v-model="form.name"
+							type="text"
+							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none"
+						/>
+						<p v-if="errors.name" class="text-xs text-danger mt-1">{{ errors.name[0] }}</p>
 					</div>
 
 					<div>
@@ -275,13 +303,37 @@ onMounted(fetch);
 
 					<div class="grid grid-cols-2 gap-4">
 						<div>
-							<label class="block text-sm font-medium text-text-muted mb-1">Default model</label>
+							<label class="flex items-center justify-between text-sm font-medium text-text-muted mb-1">
+								<span>Default model</span>
+								<button
+									v-if="editing"
+									type="button"
+									class="text-[10px] uppercase tracking-wider text-text-muted hover:text-accent inline-flex items-center gap-1"
+									:disabled="modelsLoading"
+									@click="fetchModelsForEditing"
+								>
+									<ArrowPathIcon class="h-3 w-3" :class="modelsLoading ? 'animate-spin' : ''" /> Refresh
+								</button>
+							</label>
+							<select
+								v-if="availableModels.length"
+								v-model="form.default_model"
+								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+							>
+								<option v-for="m in availableModels" :key="m" :value="m">{{ m }}</option>
+							</select>
 							<input
+								v-else
 								v-model="form.default_model"
 								type="text"
 								placeholder="qwen2.5-7b-instruct"
 								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
 							/>
+							<p v-if="modelsError" class="text-[10px] text-danger mt-1">{{ modelsError }}</p>
+							<p v-else-if="modelsLoading" class="text-[10px] text-text-muted mt-1">Loading models…</p>
+							<p v-else-if="!editing" class="text-[10px] text-text-muted mt-1">
+								Save the provider first, then refresh to pull the available models.
+							</p>
 						</div>
 						<div>
 							<label class="block text-sm font-medium text-text-muted mb-1">Timeout (s)</label>
@@ -293,6 +345,21 @@ onMounted(fetch);
 								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
 							/>
 						</div>
+					</div>
+
+					<div>
+						<label class="block text-sm font-medium text-text-muted mb-1">System message handling</label>
+						<select
+							v-model="form.system_handling"
+							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none"
+						>
+							<option value="message">Send as a system role (OpenAI/most local servers)</option>
+							<option value="prepend_user">Prepend into first user message (Anthropic-style endpoints)</option>
+						</select>
+						<p class="text-[10px] text-text-muted mt-1">
+							Switch to prepend mode if the provider rejects calls with a system role or requires strict user/assistant
+							alternation.
+						</p>
 					</div>
 
 					<div class="flex flex-wrap items-center gap-4 pt-2">

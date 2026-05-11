@@ -20,7 +20,7 @@ class OpenAiCompatibleClient
 
         $payload = array_filter([
             'model' => $options['model'] ?? $this->provider->default_model,
-            'messages' => $messages,
+            'messages' => $this->prepareMessages($messages),
             'temperature' => $options['temperature'] ?? null,
             'top_p' => $options['top_p'] ?? null,
             'max_tokens' => $options['max_tokens'] ?? null,
@@ -80,6 +80,47 @@ class OpenAiCompatibleClient
         $models = collect($response->json('data') ?? [])->pluck('id')->filter()->values()->all();
 
         return ['ok' => true, 'models' => $models];
+    }
+
+    /**
+     * Adjust the message list to match the provider's expected layout.
+     * Some providers (Anthropic-flavored gateways) reject the `system` role
+     * inside messages and require strict alternating user/assistant. In that
+     * mode we fold the system text into the first user message.
+     *
+     * @param  array<int, array{role: string, content: string}>  $messages
+     * @return array<int, array{role: string, content: string}>
+     */
+    private function prepareMessages(array $messages): array
+    {
+        $settings = $this->provider->settings;
+        $settingsArray = $settings instanceof \ArrayObject ? $settings->getArrayCopy() : (is_array($settings) ? $settings : []);
+        $mode = $settingsArray['system_handling'] ?? 'message';
+        if ($mode !== 'prepend_user') {
+            return $messages;
+        }
+
+        $system = '';
+        $rest = [];
+        foreach ($messages as $m) {
+            if (($m['role'] ?? null) === 'system') {
+                $system .= ($system === '' ? '' : "\n\n").$m['content'];
+            } else {
+                $rest[] = $m;
+            }
+        }
+
+        if ($system === '') {
+            return $rest;
+        }
+
+        if (! empty($rest) && ($rest[0]['role'] ?? null) === 'user') {
+            $rest[0]['content'] = $system."\n\n".$rest[0]['content'];
+
+            return $rest;
+        }
+
+        return array_merge([['role' => 'user', 'content' => $system]], $rest);
     }
 
     private function http(): PendingRequest

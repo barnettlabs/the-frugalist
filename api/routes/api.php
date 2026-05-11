@@ -254,6 +254,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->name('admin.')->g
 
     // AI admin
     Route::post('ai/providers/{provider}/test', [\App\Http\Controllers\Admin\AiProviderController::class, 'test']);
+    Route::get('ai/providers/{provider}/models', [\App\Http\Controllers\Admin\AiProviderController::class, 'models']);
     Route::apiResource('ai/providers', \App\Http\Controllers\Admin\AiProviderController::class);
     Route::post('ai/agents/{agent}/preview', [\App\Http\Controllers\Admin\AiAgentController::class, 'preview']);
     Route::get('ai/agents/{agent}/versions', [\App\Http\Controllers\Admin\AiAgentController::class, 'versions']);

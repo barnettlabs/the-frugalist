@@ -7,6 +7,7 @@ use App\Models\AiProvider;
 use App\Services\Ai\OpenAiCompatibleClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class AiProviderController extends Controller
 {
@@ -28,6 +29,10 @@ class AiProviderController extends Controller
         $data = $this->validateData($request, creating: true);
         $apiKey = $data['api_key'] ?? null;
         unset($data['api_key']);
+
+        if (empty($data['slug'])) {
+            $data['slug'] = $this->uniqueSlugFromName($data['name']);
+        }
 
         if (! empty($data['is_default'])) {
             AiProvider::where('is_default', true)->update(['is_default' => false]);
@@ -68,6 +73,11 @@ class AiProviderController extends Controller
         return response()->json(['message' => 'Provider deleted.']);
     }
 
+    public function models(AiProvider $provider): JsonResponse
+    {
+        return response()->json((new OpenAiCompatibleClient($provider))->listModels());
+    }
+
     public function test(Request $request, AiProvider $provider): JsonResponse
     {
         $model = $request->input('model') ?: $provider->default_model;
@@ -92,7 +102,7 @@ class AiProviderController extends Controller
     private function validateData(Request $request, bool $creating, ?int $providerId = null): array
     {
         $rules = [
-            'slug' => [($creating ? 'required' : 'sometimes'), 'string', 'max:64', 'alpha_dash',
+            'slug' => ['sometimes', 'nullable', 'string', 'max:64', 'alpha_dash',
                 'unique:ai_providers,slug'.($providerId ? ','.$providerId : '')],
             'name' => [($creating ? 'required' : 'sometimes'), 'string', 'max:255'],
             'base_url' => [($creating ? 'required' : 'sometimes'), 'string', 'max:1000'],
@@ -106,6 +116,18 @@ class AiProviderController extends Controller
         ];
 
         return $request->validate($rules);
+    }
+
+    private function uniqueSlugFromName(string $name): string
+    {
+        $base = Str::slug($name) ?: 'provider';
+        $slug = $base;
+        $i = 2;
+        while (AiProvider::where('slug', $slug)->exists()) {
+            $slug = $base.'-'.$i++;
+        }
+
+        return $slug;
     }
 
     private function present(AiProvider $p): array

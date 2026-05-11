@@ -16,7 +16,7 @@ class AiAgentController extends Controller
 
     public function index(): JsonResponse
     {
-        $agents = AiAgent::with('provider:id,slug,name')
+        $agents = AiAgent::with('provider:id,slug,name,default_model')
             ->orderBy('name')->get();
 
         return response()->json(['agents' => $agents]);
@@ -24,7 +24,7 @@ class AiAgentController extends Controller
 
     public function show(AiAgent $agent): JsonResponse
     {
-        $agent->load('provider:id,slug,name');
+        $agent->load('provider:id,slug,name,default_model');
 
         return response()->json(['agent' => $agent]);
     }

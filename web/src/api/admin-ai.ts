@@ -22,7 +22,7 @@ export interface AiAgent {
 	name: string;
 	description: string | null;
 	provider_id: number | null;
-	provider?: { id: number; slug: string; name: string };
+	provider?: { id: number; slug: string; name: string; default_model: string | null };
 	model: string | null;
 	system_prompt: string;
 	user_prompt_template: string;
@@ -100,6 +100,12 @@ export const adminAiProvidersApi = {
 	},
 	async test(id: number, model?: string): Promise<ProviderTestResult> {
 		const { data } = await apiClient.post<ProviderTestResult>(`/admin/ai/providers/${id}/test`, { model });
+		return data;
+	},
+	async models(id: number): Promise<{ ok: boolean; error?: string; models: string[] }> {
+		const { data } = await apiClient.get<{ ok: boolean; error?: string; models: string[] }>(
+			`/admin/ai/providers/${id}/models`
+		);
 		return data;
 	},
 };

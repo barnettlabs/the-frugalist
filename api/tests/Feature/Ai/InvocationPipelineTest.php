@@ -146,6 +146,48 @@ class InvocationPipelineTest extends TestCase
         $this->assertSame(1, AiInvocation::where('status', 'error')->count());
     }
 
+    public function test_prepend_user_system_handling_folds_system_into_first_user_message(): void
+    {
+        Http::fake([
+            '*/chat/completions' => Http::response($this->dealGradePayload(), 200),
+        ]);
+
+        $agent = \App\Models\AiAgent::where('slug', 'deal-grade-finance')->first();
+        $agent->provider->update(['settings' => ['system_handling' => 'prepend_user']]);
+
+        $this->pipeline()->run($agent, ['inputs' => ['msrp' => 35000], 'computed' => []]);
+
+        Http::assertSent(function ($request) {
+            $body = $request->data();
+            $messages = $body['messages'];
+            $this->assertCount(1, $messages, 'system should have been folded away');
+            $this->assertSame('user', $messages[0]['role']);
+            $this->assertStringContainsString('car deal grading assistant', $messages[0]['content']);
+            $this->assertStringContainsString('Grade this car finance deal', $messages[0]['content']);
+
+            return true;
+        });
+    }
+
+    public function test_default_message_system_handling_keeps_system_role(): void
+    {
+        Http::fake([
+            '*/chat/completions' => Http::response($this->dealGradePayload(), 200),
+        ]);
+
+        $agent = \App\Models\AiAgent::where('slug', 'deal-grade-finance')->first();
+
+        $this->pipeline()->run($agent, ['inputs' => [], 'computed' => []]);
+
+        Http::assertSent(function ($request) {
+            $messages = $request->data()['messages'];
+            $this->assertSame('system', $messages[0]['role']);
+            $this->assertSame('user', $messages[1]['role']);
+
+            return true;
+        });
+    }
+
     public function test_disabled_agent_returns_error_without_calling_provider(): void
     {
         Http::fake();

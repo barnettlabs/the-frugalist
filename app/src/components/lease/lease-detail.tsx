@@ -1,6 +1,7 @@
 import { Link } from 'expo-router';
 import React, { useMemo } from 'react';
 
+import { useProfile } from '@/api/auth/use-profile';
 import { ActionFooter, Pressable, ScrollView, TabPageHeader, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
 import { DealGradeCard } from '@/components/ui/deal-grade-card';
@@ -19,6 +20,7 @@ interface LeaseDetailProps {
 
 export function LeaseDetail({ sheet, onEdit, onDelete, isDeleting }: LeaseDetailProps) {
   const summary = useMemo(() => new LeaseCalculator(sheet).getSummary(), [sheet]);
+  const { data: user } = useProfile();
 
   return (
     <View className={`flex-1 ${tw.pageBg}`}>
@@ -30,11 +32,13 @@ export function LeaseDetail({ sheet, onEdit, onDelete, isDeleting }: LeaseDetail
         <PaymentBreakdownCard summary={summary} />
         <FinancialSummaryCard summary={summary} sheet={sheet} />
         <LeaseDetailsCard sheet={sheet} summary={summary} />
-        <DealGradeCard
-          agentSlug="deal-grade-lease"
-          calculatorType="lease"
-          inputs={sheet}
-        />
+        {user?.is_admin && (
+          <DealGradeCard
+            agentSlug="deal-grade-lease"
+            calculatorType="lease"
+            inputs={sheet}
+          />
+        )}
         <ContactInfoCard sheet={sheet} />
         {sheet.notes && <NotesCard notes={sheet.notes} />}
       </ScrollView>

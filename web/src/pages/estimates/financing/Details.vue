@@ -12,11 +12,14 @@ import PaymentCharts from '@/components/Finance/PaymentCharts.vue';
 import FinanceForm from '@/components/FinanceForm.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
+import { useAuthStore } from '@/stores/auth';
 import type { FinanceFormData, FormErrors } from '@/types';
 import { VehicleType } from '@/types';
 
 const route = useRoute();
 const router = useRouter();
+const authStore = useAuthStore();
+const isAdmin = computed(() => authStore.isAdmin);
 
 const isEdit = computed(() => !!route.params.id);
 const sheetId = computed(() => route.params.id as string);
@@ -179,7 +182,12 @@ onMounted(() => {
 					<!-- Right sidebar -->
 					<aside class="lg:sticky lg:top-20 space-y-4">
 						<AdvancedCalculations :data="form" />
-						<DealGradeCard agent-slug="deal-grade-finance" calculator-type="finance" :inputs="form" />
+						<DealGradeCard
+							v-if="isAdmin"
+							agent-slug="deal-grade-finance"
+							calculator-type="finance"
+							:inputs="form"
+						/>
 					</aside>
 				</div>
 			</main>

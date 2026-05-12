@@ -1,6 +1,7 @@
 import { Link } from 'expo-router';
 import React, { useMemo } from 'react';
 
+import { useProfile } from '@/api/auth/use-profile';
 import { ActionFooter, Pressable, ScrollView, TabPageHeader, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
 import { DealGradeCard } from '@/components/ui/deal-grade-card';
@@ -27,6 +28,7 @@ export function FinanceDetail({
     () => new FinanceCalculator(sheet).getSummary(),
     [sheet]
   );
+  const { data: user } = useProfile();
 
   return (
     <View className={`flex-1 ${tw.pageBg}`}>
@@ -43,11 +45,13 @@ export function FinanceDetail({
         {summary.amortization && (
           <AmortizationCard amortization={summary.amortization} />
         )}
-        <DealGradeCard
-          agentSlug="deal-grade-finance"
-          calculatorType="finance"
-          inputs={sheet}
-        />
+        {user?.is_admin && (
+          <DealGradeCard
+            agentSlug="deal-grade-finance"
+            calculatorType="finance"
+            inputs={sheet}
+          />
+        )}
         <ContactInfoCard sheet={sheet} />
         {sheet.notes && <NotesCard notes={sheet.notes} />}
       </ScrollView>

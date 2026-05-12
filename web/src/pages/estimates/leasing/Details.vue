@@ -11,11 +11,14 @@ import PaymentAnalysis from '@/components/Lease/PaymentAnalysis.vue';
 import LeaseForm from '@/components/LeaseForm.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
+import { useAuthStore } from '@/stores/auth';
 import type { FormErrors, LeaseFormData } from '@/types';
 import { VehicleType } from '@/types';
 
 const route = useRoute();
 const router = useRouter();
+const authStore = useAuthStore();
+const isAdmin = computed(() => authStore.isAdmin);
 
 const isEdit = computed(() => !!route.params.id);
 const sheetId = computed(() => route.params.id as string);
@@ -179,7 +182,12 @@ onMounted(() => {
 					<!-- Right sidebar -->
 					<aside class="lg:sticky lg:top-20 space-y-4">
 						<AdvancedCalculations :data="form" />
-						<DealGradeCard agent-slug="deal-grade-lease" calculator-type="lease" :inputs="form" />
+						<DealGradeCard
+							v-if="isAdmin"
+							agent-slug="deal-grade-lease"
+							calculator-type="lease"
+							:inputs="form"
+						/>
 					</aside>
 				</div>
 			</main>

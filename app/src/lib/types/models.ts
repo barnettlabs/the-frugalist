@@ -17,6 +17,7 @@ export interface User {
   phone?: string;
   phone_verified_at?: string | null;
   avatar_url?: string;
+  is_admin?: boolean;
   created_at: string;
   updated_at: string;
 }

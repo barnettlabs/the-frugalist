@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 
 interface Props {
 	modelValue: string | number | null | undefined;
@@ -31,6 +31,15 @@ const emit = defineEmits<{
 
 const focused = ref(false);
 const rawInput = ref('');
+const inputRef = ref<HTMLInputElement | null>(null);
+
+const CONTENT_RE = /[0-9.\-]/;
+
+function countContentChars(s: string): number {
+	let count = 0;
+	for (const c of s) if (CONTENT_RE.test(c)) count++;
+	return count;
+}
 
 function cleanNumeric(input: string): string {
 	let val = String(input).replace(/[^0-9.\-]/g, '');
@@ -85,14 +94,36 @@ watch(
 
 function onInput(e: Event) {
 	const target = e.target as HTMLInputElement;
+	const caret = target.selectionStart ?? target.value.length;
+	const contentBeforeCaret = countContentChars(target.value.slice(0, caret));
+
 	const cleaned = cleanNumeric(target.value);
-	rawInput.value = target.value;
+	const formatted = formatWithCommas(cleaned);
+
+	rawInput.value = formatted;
 	emit('update:modelValue', cleaned);
+
+	nextTick(() => {
+		if (!inputRef.value) return;
+		let newCaret = 0;
+		let count = 0;
+		for (let i = 0; i < formatted.length; i++) {
+			if (count >= contentBeforeCaret) break;
+			if (CONTENT_RE.test(formatted[i])) count++;
+			newCaret = i + 1;
+		}
+		if (count < contentBeforeCaret) newCaret = formatted.length;
+		try {
+			inputRef.value.setSelectionRange(newCaret, newCaret);
+		} catch {
+			// some browsers throw on non-text inputs; ignore
+		}
+	});
 }
 
 function onFocus() {
 	focused.value = true;
-	rawInput.value = modelToDisplay(props.modelValue, false);
+	rawInput.value = modelToDisplay(props.modelValue, true);
 	emit('focus');
 }
 
@@ -112,6 +143,7 @@ function onBlur() {
 			{{ prefix }}
 		</div>
 		<input
+			ref="inputRef"
 			type="text"
 			inputmode="decimal"
 			autocomplete="off"

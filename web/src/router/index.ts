@@ -45,6 +45,10 @@ const LeaseIndex = () => import('@/pages/estimates/leasing/Index.vue');
 const LeaseDetails = () => import('@/pages/estimates/leasing/Details.vue');
 const LeaseCompare = () => import('@/pages/estimates/leasing/Compare.vue');
 
+// Estimates - Mortgage
+const MortgageIndex = () => import('@/pages/estimates/mortgage/Index.vue');
+const MortgageDetails = () => import('@/pages/estimates/mortgage/Details.vue');
+
 // Learning
 const LearningIndex = () => import('@/pages/learning/Index.vue');
 const LearningShow = () => import('@/pages/learning/Show.vue');
@@ -220,6 +224,27 @@ const routes: RouteRecordRaw[] = [
 				name: 'estimates.leasing.compare',
 				component: LeaseCompare,
 				meta: { breadcrumb: 'Compare', parent: 'estimates.leasing.index' },
+			},
+
+			// Compute - Mortgage
+			{
+				path: 'estimates/mortgage',
+				name: 'estimates.mortgage.index',
+				component: MortgageIndex,
+				meta: { breadcrumb: 'Mortgage', parent: 'estimates.index' },
+			},
+			{
+				path: 'estimates/mortgage/create',
+				name: 'estimates.mortgage.create',
+				component: MortgageDetails,
+				meta: { breadcrumb: 'Create', parent: 'estimates.mortgage.index' },
+			},
+			{
+				path: 'estimates/mortgage/:id/edit',
+				name: 'estimates.mortgage.edit',
+				component: MortgageDetails,
+				props: true,
+				meta: { breadcrumb: 'Edit', parent: 'estimates.mortgage.index' },
 			},
 
 			// Guides Landing

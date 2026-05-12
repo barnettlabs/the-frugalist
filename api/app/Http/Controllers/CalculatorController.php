@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\Calculators\FinanceCalculator;
 use App\Services\Calculators\LeaseCalculator;
+use App\Services\Calculators\MortgageCalculator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -57,6 +58,30 @@ class CalculatorController extends Controller
         return response()->json([
             'inputs' => $data,
             'computed' => LeaseCalculator::fromArray($data)->summary($includeSchedule),
+        ]);
+    }
+
+    public function mortgage(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'property_value' => 'nullable|numeric',
+            'down_payment' => 'nullable|numeric',
+            'interest_rate' => 'nullable|numeric',
+            'loan_term_years' => 'nullable|numeric',
+            'monthly_hoa' => 'nullable|numeric',
+            'annual_insurance' => 'nullable|numeric',
+            'annual_property_tax' => 'nullable|numeric',
+            'extra_expenses_json' => 'nullable',
+            'extra_payments_json' => 'nullable',
+            'with_schedule' => 'nullable|boolean',
+        ]);
+
+        $includeSchedule = (bool) ($data['with_schedule'] ?? true);
+        unset($data['with_schedule']);
+
+        return response()->json([
+            'inputs' => $data,
+            'computed' => MortgageCalculator::fromArray($data)->summary($includeSchedule),
         ]);
     }
 }

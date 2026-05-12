@@ -1,4 +1,4 @@
-import { VehicleType } from './enums';
+import { PropertyType, VehicleType } from './enums';
 
 // Vehicle Finance Sheet Model
 export interface VehicleFinanceSheet {
@@ -100,6 +100,60 @@ export type FinanceFormData = Omit<
 >;
 
 export type LeaseFormData = Omit<VehicleLeaseSheet, 'id' | 'user_id' | 'shareable_key' | 'created_at' | 'updated_at'>;
+
+// Mortgage Sheet Model
+export interface MortgageSheet {
+	// Keys
+	id: number;
+	user_id: number;
+
+	// Basic Information
+	sheet_name: string;
+	property_address: string;
+	property_type: PropertyType;
+
+	// Loan core
+	property_value: number;
+	down_payment: number;
+	interest_rate: number;
+	loan_term_years: number;
+	start_date: string;
+
+	// Recurring expenses
+	monthly_hoa: number;
+	annual_insurance: number;
+	annual_property_tax: number;
+	extra_expenses_json: string;
+
+	// Extra principal payments
+	extra_payments_json: string;
+
+	// Contact
+	contact_email: string;
+	contact_phone: string;
+
+	// Additional
+	notes: string;
+	shareable_key: string;
+
+	// Dates
+	created_at: string;
+	updated_at: string;
+}
+
+export type MortgageFormData = Omit<MortgageSheet, 'id' | 'user_id' | 'shareable_key' | 'created_at' | 'updated_at'>;
+
+export interface MortgageExtraPayment {
+	paymentAmount: string | number;
+	startMonth: number | string;
+	endMonth: number | string;
+}
+
+export interface MortgageExtraExpense {
+	label: string;
+	amount: string | number;
+	frequency: 'monthly' | 'annual';
+}
 
 // API Response Models
 export interface ApiResponse<T> {

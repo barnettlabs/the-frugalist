@@ -37,7 +37,11 @@ const fullName = computed(() => authStore.fullName);
 const firstName = computed(() => fullName.value?.split(' ')[0] || '');
 
 const totalEstimates = computed(() => {
-	return (stats.value?.finance_sheets_count ?? 0) + (stats.value?.lease_sheets_count ?? 0);
+	return (
+		(stats.value?.finance_sheets_count ?? 0) +
+		(stats.value?.lease_sheets_count ?? 0) +
+		(stats.value?.mortgage_sheets_count ?? 0)
+	);
 });
 
 const hasRecentActivity = computed(() => {

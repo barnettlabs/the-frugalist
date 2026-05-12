@@ -8,6 +8,7 @@ use App\Http\Controllers\PlaygroundController;
 use App\Http\Controllers\PriceTrackerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserDeviceController;
+use App\Http\Controllers\MortgageSheetController;
 use App\Http\Controllers\VehicleFinanceSheetController;
 use App\Http\Controllers\VehicleLeaseSheetController;
 use App\Http\Controllers\WatchDebugController;
@@ -184,14 +185,17 @@ Route::middleware('auth:sanctum')->group(function () {
         $user = $request->user();
         $financeSheets = $user->vehicleFinanceSheets()->latest()->get();
         $leaseSheets = $user->vehicleLeaseSheets()->latest()->get();
+        $mortgageSheets = $user->mortgageSheets()->latest()->get();
         $trackedProducts = $user->trackedProducts()->with('retailer')->latest()->get();
 
         return response()->json([
             'finance_sheets_count' => $financeSheets->count(),
             'lease_sheets_count' => $leaseSheets->count(),
+            'mortgage_sheets_count' => $mortgageSheets->count(),
             'tracked_products_count' => $trackedProducts->count(),
             'recent_finance_sheets' => $financeSheets->take(3),
             'recent_lease_sheets' => $leaseSheets->take(3),
+            'recent_mortgage_sheets' => $mortgageSheets->take(3),
             'recent_tracked_products' => $trackedProducts->take(3),
         ]);
     });
@@ -201,6 +205,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Vehicle Lease Sheets
     Route::apiResource('vehicle-lease-sheets', VehicleLeaseSheetController::class);
+
+    // Mortgage Sheets
+    Route::apiResource('mortgage-sheets', MortgageSheetController::class);
 
     // Watch (Price Tracker)
     Route::prefix('watch')->group(function () {
@@ -268,6 +275,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->name('admin.')->g
 // Calculators (public - same compute used by UI and AI agents)
 Route::post('/calculators/finance/compute', [CalculatorController::class, 'finance']);
 Route::post('/calculators/lease/compute', [CalculatorController::class, 'lease']);
+Route::post('/calculators/mortgage/compute', [CalculatorController::class, 'mortgage']);
 
 // Public routes (no auth required)
 Route::get('/announcements', [AnnouncementController::class, 'index']);

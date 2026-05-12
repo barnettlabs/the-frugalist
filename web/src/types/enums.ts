@@ -96,3 +96,26 @@ export const vehicleTypeOptions = [
 	{ value: VehicleType.TRUCK, label: 'Truck' },
 	{ value: VehicleType.SUV, label: 'SUV' },
 ] as const;
+
+// Property Type Enum (mortgage)
+export enum PropertyType {
+	HOUSE = 'HOUSE',
+	CONDO = 'CONDO',
+	TOWNHOUSE = 'TOWNHOUSE',
+	MULTI_FAMILY = 'MULTI_FAMILY',
+	LAND = 'LAND',
+}
+
+export const propertyTypeOptions = [
+	{ value: PropertyType.HOUSE, label: 'House' },
+	{ value: PropertyType.CONDO, label: 'Condo' },
+	{ value: PropertyType.TOWNHOUSE, label: 'Townhouse' },
+	{ value: PropertyType.MULTI_FAMILY, label: 'Multi-family' },
+	{ value: PropertyType.LAND, label: 'Land' },
+] as const;
+
+// Expense frequency for mortgage extra expenses
+export const expenseFrequencyOptions = [
+	{ value: 'monthly', label: 'Monthly' },
+	{ value: 'annual', label: 'Annual' },
+] as const;

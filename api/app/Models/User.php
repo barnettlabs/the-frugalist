@@ -78,6 +78,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(VehicleLeaseSheet::class);
     }
 
+    public function mortgageSheets()
+    {
+        return $this->hasMany(MortgageSheet::class);
+    }
+
     public function phoneVerificationCodes()
     {
         return $this->hasMany(PhoneVerificationCode::class);

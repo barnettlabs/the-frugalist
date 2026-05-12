@@ -5,6 +5,7 @@ import {
 	CalculatorIcon,
 	ChartBarIcon,
 	CurrencyDollarIcon,
+	HomeModernIcon,
 	LightBulbIcon,
 	ScaleIcon,
 } from '@heroicons/vue/24/outline';
@@ -32,6 +33,16 @@ const calculators = [
 		href: '/estimates/leasing',
 		icon: CurrencyDollarIcon,
 		features: ['Money factor → APR', 'Residual value analysis', 'Total lease cost'],
+	},
+	{
+		number: '03',
+		eyebrow: 'Mortgage',
+		name: 'Home loans, opened up',
+		description:
+			'Principal, escrow, tax, insurance, HOA. Extra payments and term reduction. The full cost of a home, before you sign.',
+		href: '/estimates/mortgage',
+		icon: HomeModernIcon,
+		features: ['Principal, interest, escrow', 'Extra payment impact', 'Annual or monthly amortization'],
 	},
 ];
 
@@ -74,12 +85,12 @@ const benefits = [
 				<div>
 					<p class="eyebrow mb-3">Pick your tool</p>
 					<h2 class="font-display font-medium text-primary tracking-tightest text-3xl sm:text-4xl leading-[0.95]">
-						Two calculators. <span class="italic text-accent-dark">One discipline.</span>
+						Three calculators. <span class="italic text-accent-dark">One discipline.</span>
 					</h2>
 				</div>
 			</div>
 
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border rounded-md overflow-hidden">
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border rounded-md overflow-hidden">
 				<RouterLink
 					v-for="calc in calculators"
 					:key="calc.name"

@@ -11,6 +11,7 @@ import {
 	CurrencyDollarIcon,
 	EyeIcon,
 	HomeIcon,
+	HomeModernIcon,
 	ShieldCheckIcon,
 	UserIcon,
 	XMarkIcon,
@@ -54,6 +55,7 @@ const navigation: NavItem[] = [
 		children: [
 			{ name: 'Financing', href: '/estimates/financing', icon: BanknotesIcon },
 			{ name: 'Leasing', href: '/estimates/leasing', icon: CurrencyDollarIcon },
+			{ name: 'Mortgage', href: '/estimates/mortgage', icon: HomeModernIcon },
 		],
 	},
 	{

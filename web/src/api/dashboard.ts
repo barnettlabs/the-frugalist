@@ -1,13 +1,15 @@
-import type { VehicleFinanceSheet, VehicleLeaseSheet } from '@/types/models';
+import type { MortgageSheet, VehicleFinanceSheet, VehicleLeaseSheet } from '@/types/models';
 
 import apiClient from './client';
 
 export interface DashboardStats {
 	finance_sheets_count: number;
 	lease_sheets_count: number;
+	mortgage_sheets_count: number;
 	tracked_products_count: number;
 	recent_finance_sheets: VehicleFinanceSheet[];
 	recent_lease_sheets: VehicleLeaseSheet[];
+	recent_mortgage_sheets: MortgageSheet[];
 	recent_tracked_products: any[];
 }
 

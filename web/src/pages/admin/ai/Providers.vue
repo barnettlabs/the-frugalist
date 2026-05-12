@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ArrowPathIcon, BoltIcon, PencilSquareIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { ArrowPathIcon, BoltIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { onMounted, reactive, ref } from 'vue';
 
 import { adminAiProvidersApi, type AiProvider, type ProviderTestResult } from '@/api/admin-ai';
+import ActionMenu from '@/components/ActionMenu.vue';
+import ActionMenuItem from '@/components/ActionMenuItem.vue';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import Modal from '@/components/Modal.vue';
 import Spinner from '@/components/Spinner.vue';
@@ -198,16 +200,26 @@ onMounted(fetch);
 			<table class="w-full text-sm">
 				<thead class="bg-surface-dark/50">
 					<tr class="text-left">
+						<th class="px-4 py-3 eyebrow w-px whitespace-nowrap">Actions</th>
 						<th class="px-4 py-3 eyebrow">Provider</th>
 						<th class="px-4 py-3 eyebrow">Base URL</th>
 						<th class="px-4 py-3 eyebrow">Model</th>
 						<th class="px-4 py-3 eyebrow">Key</th>
 						<th class="px-4 py-3 eyebrow">Flags</th>
-						<th class="px-4 py-3 eyebrow text-right">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="p in providers" :key="p.id" class="border-t border-border">
+						<td class="px-4 py-3 whitespace-nowrap">
+							<ActionMenu primary-label="View" @primary="openEdit(p)">
+								<template #items>
+									<ActionMenuItem @click="openTest(p)"> <BoltIcon class="h-4 w-4" /> Test connection </ActionMenuItem>
+									<ActionMenuItem variant="danger" @click="deleting = p">
+										<TrashIcon class="h-4 w-4" /> Delete
+									</ActionMenuItem>
+								</template>
+							</ActionMenu>
+						</td>
 						<td class="px-4 py-3">
 							<p class="font-medium text-primary">{{ p.name }}</p>
 						</td>
@@ -223,29 +235,6 @@ onMounted(fetch);
 							<span v-if="p.sends_data_externally" class="px-2 py-0.5 rounded bg-warning/10 text-warning"
 								>external</span
 							>
-						</td>
-						<td class="px-4 py-3 text-right">
-							<button
-								class="p-2 text-text-muted hover:text-accent transition-colors"
-								title="Test connection"
-								@click="openTest(p)"
-							>
-								<BoltIcon class="h-4 w-4" />
-							</button>
-							<button
-								class="p-2 text-text-muted hover:text-primary transition-colors"
-								title="Edit"
-								@click="openEdit(p)"
-							>
-								<PencilSquareIcon class="h-4 w-4" />
-							</button>
-							<button
-								class="p-2 text-text-muted hover:text-danger transition-colors"
-								title="Delete"
-								@click="deleting = p"
-							>
-								<TrashIcon class="h-4 w-4" />
-							</button>
 						</td>
 					</tr>
 					<tr v-if="!providers.length">

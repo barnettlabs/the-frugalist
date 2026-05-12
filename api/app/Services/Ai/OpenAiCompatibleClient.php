@@ -30,7 +30,12 @@ class OpenAiCompatibleClient
         try {
             $response = $this->http()->post('/chat/completions', $payload);
         } catch (\Throwable $e) {
-            return ChatCompletionResult::failed($e->getMessage(), (int) ((microtime(true) - $startedAt) * 1000));
+            return ChatCompletionResult::failed(
+                $e->getMessage(),
+                (int) ((microtime(true) - $startedAt) * 1000),
+                null,
+                $payload,
+            );
         }
 
         $latencyMs = (int) ((microtime(true) - $startedAt) * 1000);
@@ -40,6 +45,7 @@ class OpenAiCompatibleClient
                 'http_'.$response->status().': '.$response->body(),
                 $latencyMs,
                 $response->body(),
+                $payload,
             );
         }
 
@@ -54,6 +60,7 @@ class OpenAiCompatibleClient
             promptTokens: $body['usage']['prompt_tokens'] ?? null,
             completionTokens: $body['usage']['completion_tokens'] ?? null,
             error: null,
+            requestPayload: $payload,
         );
     }
 

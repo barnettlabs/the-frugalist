@@ -12,9 +12,10 @@ class ChatCompletionResult
         public ?int $promptTokens,
         public ?int $completionTokens,
         public ?string $error,
+        public ?array $requestPayload = null,
     ) {}
 
-    public static function failed(string $error, int $latencyMs, ?string $rawBody = null): self
+    public static function failed(string $error, int $latencyMs, ?string $rawBody = null, ?array $requestPayload = null): self
     {
         return new self(
             success: false,
@@ -24,6 +25,7 @@ class ChatCompletionResult
             promptTokens: null,
             completionTokens: null,
             error: $error,
+            requestPayload: $requestPayload,
         );
     }
 }

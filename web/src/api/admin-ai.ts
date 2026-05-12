@@ -141,7 +141,17 @@ export const adminAiAgentsApi = {
 	async preview(
 		id: number,
 		context: Record<string, unknown>
-	): Promise<{ ok: boolean; response: any; cached: boolean; error: string | null; message: string | null }> {
+	): Promise<{
+		ok: boolean;
+		response: any;
+		cached: boolean;
+		error: string | null;
+		message: string | null;
+		messages: Array<{ role: string; content: string }> | null;
+		request_payload: Record<string, unknown> | null;
+		raw_response: string | null;
+		model: string | null;
+	}> {
 		const { data } = await apiClient.post(`/admin/ai/agents/${id}/preview`, { context, use_cache: false });
 		return data;
 	},

@@ -141,6 +141,10 @@ class AiAgentController extends Controller
             'cached' => $result->cached,
             'error' => $result->errorCode,
             'message' => $result->errorMessage,
+            'messages' => $result->messages,
+            'request_payload' => $result->requestPayload,
+            'raw_response' => $result->rawResponse,
+            'model' => $agent->resolveModel(),
         ]);
     }
 

@@ -43,6 +43,8 @@ class InvocationPipeline
             $requestHash,
         ]));
 
+        $messages = $this->buildMessages($agent, $context);
+
         if ($useCache) {
             $hit = AiInvocationCache::where('cache_key', $cacheKey)->first();
             if ($hit) {
@@ -51,11 +53,9 @@ class InvocationPipeline
 
                 $this->log($agent, $provider, $user, $contextKey, $cacheKey, $requestHash, $context, $hit->response->toArray(), 'success', null, 0, null, null, true);
 
-                return InvocationResult::ok($hit->response->toArray(), true, $cacheKey);
+                return InvocationResult::ok($hit->response->toArray(), true, $cacheKey, $messages);
             }
         }
-
-        $messages = $this->buildMessages($agent, $context);
 
         $client = new OpenAiCompatibleClient($provider);
         $options = [
@@ -73,7 +73,7 @@ class InvocationPipeline
         if (! $result->success) {
             $this->log($agent, $provider, $user, $contextKey, $cacheKey, $requestHash, $context, null, 'error', $result->error, $result->latencyMs, null, null, false, $result->rawBody);
 
-            return InvocationResult::error('provider_error', $result->error ?? 'Unknown provider error');
+            return InvocationResult::error('provider_error', $result->error ?? 'Unknown provider error', $messages, $result->requestPayload, $result->rawBody);
         }
 
         [$parsed, $parseError] = $this->parseAndValidate($result->content, $agent);
@@ -93,7 +93,7 @@ class InvocationPipeline
         if ($parseError !== null) {
             $this->log($agent, $provider, $user, $contextKey, $cacheKey, $requestHash, $context, null, 'invalid_json', $parseError, $result->latencyMs, $result->promptTokens, $result->completionTokens, false, $result->rawBody);
 
-            return InvocationResult::error('invalid_json', $parseError);
+            return InvocationResult::error('invalid_json', $parseError, $messages, $result->requestPayload, $result->rawBody);
         }
 
         if ($useCache) {
@@ -112,7 +112,7 @@ class InvocationPipeline
 
         $this->log($agent, $provider, $user, $contextKey, $cacheKey, $requestHash, $context, $parsed, 'success', null, $result->latencyMs, $result->promptTokens, $result->completionTokens, false);
 
-        return InvocationResult::ok($parsed, false, $cacheKey);
+        return InvocationResult::ok($parsed, false, $cacheKey, $messages, $result->requestPayload, $result->rawBody);
     }
 
     /**

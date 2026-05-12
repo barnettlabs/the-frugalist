@@ -161,6 +161,18 @@ class AiAdminEndpointsTest extends TestCase
 
         $this->assertTrue($response->json('ok'));
         $this->assertSame('A', $response->json('response.grade'));
+
+        $messages = $response->json('messages');
+        $this->assertIsArray($messages);
+        $this->assertSame('system', $messages[0]['role']);
+        $this->assertSame('user', $messages[1]['role']);
+        $this->assertNotNull($response->json('model'));
+
+        $payload = $response->json('request_payload');
+        $this->assertIsArray($payload);
+        $this->assertArrayHasKey('model', $payload);
+        $this->assertArrayHasKey('messages', $payload);
+        $this->assertNotEmpty($response->json('raw_response'));
     }
 
     public function test_routes_crud(): void

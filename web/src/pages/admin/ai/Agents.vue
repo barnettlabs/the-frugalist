@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { ArrowPathIcon, ArrowUturnLeftIcon, BeakerIcon, ClockIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import {
+	ArrowPathIcon,
+	ArrowUturnLeftIcon,
+	BeakerIcon,
+	CheckCircleIcon,
+	ClockIcon,
+	NoSymbolIcon,
+} from '@heroicons/vue/24/outline';
 import { computed, onMounted, ref, watch } from 'vue';
 
 import {
@@ -9,6 +16,8 @@ import {
 	type AiAgentVersion,
 	type AiProvider,
 } from '@/api/admin-ai';
+import ActionMenu from '@/components/ActionMenu.vue';
+import ActionMenuItem from '@/components/ActionMenuItem.vue';
 import Modal from '@/components/Modal.vue';
 import Spinner from '@/components/Spinner.vue';
 
@@ -135,6 +144,12 @@ const runPreview = async () => {
 	}
 };
 
+const toggleEnabled = async (a: AiAgent) => {
+	const updated = await adminAiAgentsApi.update(a.id, { enabled: !a.enabled });
+	const idx = agents.value.findIndex(x => x.id === a.id);
+	if (idx !== -1) agents.value[idx] = updated;
+};
+
 const rollback = async (v: AiAgentVersion) => {
 	if (!editing.value) return;
 	if (!confirm(`Roll back to version ${v.version}? This creates a new version with that prompt.`)) return;
@@ -165,16 +180,26 @@ onMounted(fetch);
 			<table class="w-full text-sm">
 				<thead class="bg-surface-dark/50">
 					<tr class="text-left">
+						<th class="px-4 py-3 eyebrow w-px whitespace-nowrap">Actions</th>
 						<th class="px-4 py-3 eyebrow">Agent</th>
 						<th class="px-4 py-3 eyebrow">Provider</th>
 						<th class="px-4 py-3 eyebrow">Model</th>
 						<th class="px-4 py-3 eyebrow">Version</th>
 						<th class="px-4 py-3 eyebrow">Status</th>
-						<th class="px-4 py-3 eyebrow text-right">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="a in agents" :key="a.id" class="border-t border-border">
+						<td class="px-4 py-3 whitespace-nowrap">
+							<ActionMenu primary-label="View" @primary="openEdit(a)">
+								<template #items>
+									<ActionMenuItem @click="toggleEnabled(a)">
+										<component :is="a.enabled ? NoSymbolIcon : CheckCircleIcon" class="h-4 w-4" />
+										{{ a.enabled ? 'Disable' : 'Enable' }}
+									</ActionMenuItem>
+								</template>
+							</ActionMenu>
+						</td>
 						<td class="px-4 py-3">
 							<p class="font-medium text-primary">{{ a.name }}</p>
 							<p class="text-xs text-text-muted numeral">{{ a.slug }}</p>
@@ -188,15 +213,6 @@ onMounted(fetch);
 						<td class="px-4 py-3 text-xs">
 							<span v-if="a.enabled" class="text-success">enabled</span>
 							<span v-else class="text-danger">disabled</span>
-						</td>
-						<td class="px-4 py-3 text-right">
-							<button
-								class="p-2 text-text-muted hover:text-primary transition-colors"
-								title="Edit"
-								@click="openEdit(a)"
-							>
-								<PencilSquareIcon class="h-4 w-4" />
-							</button>
 						</td>
 					</tr>
 					<tr v-if="!agents.length">
@@ -412,11 +428,113 @@ onMounted(fetch);
 							>
 								{{ previewLoading ? 'Running…' : 'Run preview' }}
 							</button>
-							<pre
-								v-if="previewResult"
-								class="mt-3 p-3 rounded-md bg-surface-dark/50 text-xs overflow-x-auto numeral max-h-72"
-								>{{ JSON.stringify(previewResult, null, 2) }}</pre
-							>
+
+							<div v-if="previewResult" class="mt-4 space-y-2">
+								<div class="flex flex-wrap items-center gap-2 text-xs">
+									<span
+										class="px-2.5 py-1 rounded font-medium uppercase tracking-wider text-[11px]"
+										:class="previewResult.ok ? 'bg-success/15 text-success' : 'bg-danger/15 text-danger'"
+									>
+										{{ previewResult.ok ? 'OK' : previewResult.error || 'error' }}
+									</span>
+									<span v-if="previewResult.model" class="numeral text-text-muted">
+										<span class="text-text-muted/60">model:</span> {{ previewResult.model }}
+									</span>
+									<span v-if="previewResult.cached" class="px-2 py-0.5 rounded bg-accent/10 text-accent text-[11px]">
+										cached
+									</span>
+								</div>
+
+								<p v-if="previewResult.message && !previewResult.ok" class="text-xs text-danger pb-2">
+									{{ previewResult.message }}
+								</p>
+
+								<details
+									v-if="previewResult.request_payload || previewResult.raw_response"
+									class="rounded-md border border-border bg-surface-dark/20 group"
+								>
+									<summary
+										class="cursor-pointer select-none px-3 py-2 text-xs font-medium text-primary flex items-center justify-between hover:bg-surface-dark/40"
+									>
+										<span class="flex items-center gap-2">
+											<span class="text-text-muted transition-transform group-open:rotate-90">▸</span>
+											Raw HTTP (request + response)
+										</span>
+										<span class="text-[10px] text-text-muted uppercase tracking-wider">POST /chat/completions</span>
+									</summary>
+									<div class="border-t border-border p-3 space-y-3">
+										<div v-if="previewResult.request_payload">
+											<p class="eyebrow mb-1">Request body</p>
+											<pre
+												class="p-3 rounded-md bg-surface-dark/60 text-xs overflow-x-auto numeral max-h-96 whitespace-pre-wrap break-words"
+												>{{ JSON.stringify(previewResult.request_payload, null, 2) }}</pre
+											>
+										</div>
+										<div v-if="previewResult.raw_response">
+											<p class="eyebrow mb-1">Response body</p>
+											<pre
+												class="p-3 rounded-md bg-surface-dark/60 text-xs overflow-x-auto numeral max-h-96 whitespace-pre-wrap break-words"
+												>{{ previewResult.raw_response }}</pre
+											>
+										</div>
+									</div>
+								</details>
+
+								<details
+									v-if="previewResult.messages?.length"
+									class="rounded-md border border-border bg-surface-dark/20 group"
+								>
+									<summary
+										class="cursor-pointer select-none px-3 py-2 text-xs font-medium text-primary flex items-center justify-between hover:bg-surface-dark/40"
+									>
+										<span class="flex items-center gap-2">
+											<span class="text-text-muted transition-transform group-open:rotate-90">▸</span>
+											Parsed request
+										</span>
+										<span class="text-[10px] text-text-muted">{{ previewResult.messages.length }} message(s)</span>
+									</summary>
+									<div class="border-t border-border p-3 space-y-2">
+										<div
+											v-for="(m, idx) in previewResult.messages"
+											:key="idx"
+											class="rounded-md border border-border bg-surface-dark/40 overflow-hidden"
+										>
+											<div
+												class="px-2 py-1 text-[10px] uppercase tracking-wider bg-surface-dark/60 text-text-muted"
+											>
+												{{ m.role }}
+											</div>
+											<pre
+												class="px-3 py-2 text-xs font-mono whitespace-pre-wrap break-words max-h-64 overflow-y-auto"
+												>{{ m.content }}</pre
+											>
+										</div>
+									</div>
+								</details>
+
+								<details open class="rounded-md border border-border bg-surface-dark/20 group">
+									<summary
+										class="cursor-pointer select-none px-3 py-2 text-xs font-medium text-primary flex items-center justify-between hover:bg-surface-dark/40"
+									>
+										<span class="flex items-center gap-2">
+											<span class="text-text-muted transition-transform group-open:rotate-90">▸</span>
+											Parsed response
+										</span>
+									</summary>
+									<div class="border-t border-border p-3">
+										<pre
+											class="p-3 rounded-md bg-surface-dark/60 text-xs overflow-x-auto numeral max-h-96 whitespace-pre-wrap break-words"
+											>{{
+												previewResult.response !== null && previewResult.response !== undefined
+													? JSON.stringify(previewResult.response, null, 2)
+													: previewResult.ok
+														? '(empty)'
+														: '(no response — see error above)'
+											}}</pre
+										>
+									</div>
+								</details>
+							</div>
 						</section>
 
 						<section>

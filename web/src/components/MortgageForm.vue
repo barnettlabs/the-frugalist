@@ -1,36 +1,21 @@
 <script setup lang="ts">
-import { CalculatorIcon } from '@heroicons/vue/24/outline';
 import { computed, ref, watch } from 'vue';
-import { RouterLink } from 'vue-router';
 
+import FormField from '@/components/FormField.vue';
+import MaskedNumberInput from '@/components/MaskedNumberInput.vue';
 import { MortgageFormData, FormErrors, propertyTypeOptions } from '@/types';
-import { parseOrZero } from '@/utils/formatters';
-
-import FormField from './FormField.vue';
-import Spinner from './Spinner.vue';
+import { formatCurrency, parseOrZero } from '@/utils/formatters';
 
 interface Props {
 	form: MortgageFormData;
 	errors: FormErrors;
-	loading: boolean;
-	title: string;
-	backUrl: string;
-	isEdit?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-	isEdit: false,
-});
+const props = defineProps<Props>();
 
-defineEmits<{
-	submit: [];
-}>();
-
-// Down payment can be entered as dollar OR percent.
 const downPaymentMode = ref<'dollar' | 'percent'>('dollar');
 const downPaymentPercent = ref<string>('');
 
-// Sync percent display with form down_payment / property_value
 watch(
 	() => [props.form.property_value, props.form.down_payment],
 	() => {
@@ -41,41 +26,47 @@ watch(
 	{ immediate: true }
 );
 
-// Editable principal — derives from property_value − down_payment.
-const principal = computed({
-	get: () => {
-		const pv = parseOrZero(props.form.property_value as any);
-		const dp = parseOrZero(props.form.down_payment as any);
-		return pv > 0 ? Math.max(0, pv - dp).toFixed(2) : '';
-	},
-	set: (val: string | number) => {
-		const newPrincipal = parseOrZero(val);
-		const pv = parseOrZero(props.form.property_value as any);
-		if (pv > 0) {
-			// Adjust down_payment to satisfy property_value - down_payment = principal
-			const newDp = Math.max(0, pv - newPrincipal);
-			(props.form as any).down_payment = newDp;
-		} else if (newPrincipal > 0) {
-			// No property value yet — set property_value = principal + current down_payment
-			const dp = parseOrZero(props.form.down_payment as any);
-			(props.form as any).property_value = newPrincipal + dp;
-		}
-	},
+const principalDisplay = computed(() => {
+	const pv = parseOrZero(props.form.property_value as any);
+	const dp = parseOrZero(props.form.down_payment as any);
+	return pv > 0 ? Math.max(0, pv - dp).toFixed(2) : '';
 });
 
-const onPercentInput = (event: Event) => {
-	const target = event.target as HTMLInputElement;
-	downPaymentPercent.value = target.value;
-	const pct = parseOrZero(target.value);
+const onPrincipalUpdate = (val: string) => {
+	const newPrincipal = parseOrZero(val);
 	const pv = parseOrZero(props.form.property_value as any);
 	if (pv > 0) {
-		(props.form as any).down_payment = Math.max(0, (pv * pct) / 100);
+		(props.form as any).down_payment = String(Math.max(0, pv - newPrincipal));
+	} else if (newPrincipal > 0) {
+		const dp = parseOrZero(props.form.down_payment as any);
+		(props.form as any).property_value = String(newPrincipal + dp);
 	}
 };
+
+const onPercentUpdate = (val: string) => {
+	downPaymentPercent.value = val;
+	const pct = parseOrZero(val);
+	const pv = parseOrZero(props.form.property_value as any);
+	if (pv > 0) {
+		(props.form as any).down_payment = String(Math.max(0, (pv * pct) / 100));
+	}
+};
+
+const downPaymentEquivPercent = computed(() => {
+	const pv = parseOrZero(props.form.property_value as any);
+	const dp = parseOrZero(props.form.down_payment as any);
+	return pv > 0 ? ((dp / pv) * 100).toFixed(2) : '0.00';
+});
+
+const downPaymentEquivDollars = computed(() => {
+	const pv = parseOrZero(props.form.property_value as any);
+	const pct = parseOrZero(downPaymentPercent.value);
+	return pv > 0 ? (pv * pct) / 100 : 0;
+});
 </script>
 
 <template>
-	<form class="space-y-4" @submit.prevent="$emit('submit')">
+	<div class="space-y-4">
 		<!-- 01 · Basic information -->
 		<section class="card overflow-hidden">
 			<div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
@@ -129,7 +120,7 @@ const onPercentInput = (event: Event) => {
 			</div>
 		</section>
 
-		<!-- 03 · Loan -->
+		<!-- 03 · Property + loan -->
 		<section class="card overflow-hidden">
 			<div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
 				<span class="numeral text-xs text-text-muted">№ 03</span>
@@ -137,18 +128,21 @@ const onPercentInput = (event: Event) => {
 			</div>
 			<div class="p-5 sm:p-6 space-y-6">
 				<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-					<FormField
-						v-model="form.property_value"
-						name="property_value"
-						label="Property value"
-						type="currency"
-						:error="errors.property_value"
-					/>
+					<div>
+						<label class="block text-sm font-medium text-primary mb-1.5">Property value</label>
+						<MaskedNumberInput
+							v-model="form.property_value"
+							prefix="$"
+							placeholder="0.00"
+							:error="!!errors.property_value"
+						/>
+						<p v-if="errors.property_value" class="mt-1.5 text-xs text-danger">{{ errors.property_value[0] }}</p>
+					</div>
 
 					<!-- Down payment with dollar/percent toggle -->
 					<div>
 						<div class="flex items-center justify-between mb-1.5">
-							<label class="block text-xs font-medium text-text-muted">Down payment</label>
+							<label class="block text-sm font-medium text-primary">Down payment</label>
 							<div class="flex items-center gap-1 border border-border rounded-md p-0.5">
 								<button
 									type="button"
@@ -172,68 +166,69 @@ const onPercentInput = (event: Event) => {
 								</button>
 							</div>
 						</div>
-						<FormField
+
+						<MaskedNumberInput
 							v-if="downPaymentMode === 'dollar'"
 							v-model="form.down_payment"
-							name="down_payment"
-							label=""
-							type="currency"
-							:error="errors.down_payment"
+							prefix="$"
+							placeholder="0.00"
+							:error="!!errors.down_payment"
 						/>
-						<div v-else>
-							<input
-								:value="downPaymentPercent"
-								type="number"
-								step="0.01"
-								min="0"
-								max="100"
-								class="block w-full rounded-md border-border bg-surface shadow-none focus:border-accent focus:ring-1 focus:ring-accent sm:text-sm"
-								placeholder="20.00"
-								@input="onPercentInput"
-							/>
-							<p class="numeral text-xs text-text-muted mt-1">
-								= ${{ Number(form.down_payment || 0).toLocaleString('en-US', { minimumFractionDigits: 2 }) }}
-							</p>
-						</div>
+						<MaskedNumberInput
+							v-else
+							:model-value="downPaymentPercent"
+							suffix="%"
+							placeholder="0.00"
+							:decimals="2"
+							@update:model-value="onPercentUpdate"
+						/>
+
+						<p class="numeral text-xs text-text-muted mt-1">
+							<template v-if="downPaymentMode === 'dollar'"> = {{ downPaymentEquivPercent }}% of property value </template>
+							<template v-else> = ${{ formatCurrency(downPaymentEquivDollars) }} </template>
+						</p>
+						<p v-if="errors.down_payment" class="mt-1.5 text-xs text-danger">{{ errors.down_payment[0] }}</p>
 					</div>
 				</div>
 
 				<!-- Principal (computed but editable) -->
 				<div class="rounded-md border border-accent/20 bg-accent/5 p-4">
 					<div class="flex items-center gap-2 mb-1.5">
-						<label class="block text-xs font-medium text-primary">Loan principal</label>
+						<label class="block text-sm font-medium text-primary">Loan principal</label>
 						<span class="numeral text-[0.625rem] text-text-muted">
 							= property − down payment · edit to back-solve down payment
 						</span>
 					</div>
-					<input
-						:value="principal"
-						type="number"
-						step="0.01"
-						min="0"
-						class="block w-full rounded-md border-accent/30 bg-surface shadow-none focus:border-accent focus:ring-1 focus:ring-accent sm:text-sm"
+					<MaskedNumberInput
+						:model-value="principalDisplay"
+						prefix="$"
 						placeholder="0.00"
-						@input="(e) => (principal = (e.target as HTMLInputElement).value)"
+						@update:model-value="onPrincipalUpdate"
 					/>
 				</div>
 
 				<div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
-					<FormField
-						v-model="form.interest_rate"
-						name="interest_rate"
-						label="Interest rate"
-						type="percentage"
-						:error="errors.interest_rate"
-					/>
-					<FormField
-						v-model="form.loan_term_years"
-						name="loan_term_years"
-						label="Loan term (years)"
-						type="number"
-						:min="1"
-						:max="50"
-						:error="errors.loan_term_years"
-					/>
+					<div>
+						<label class="block text-sm font-medium text-primary mb-1.5">Interest rate</label>
+						<MaskedNumberInput
+							v-model="form.interest_rate"
+							suffix="%"
+							placeholder="0.00"
+							:decimals="3"
+							:error="!!errors.interest_rate"
+						/>
+						<p v-if="errors.interest_rate" class="mt-1.5 text-xs text-danger">{{ errors.interest_rate[0] }}</p>
+					</div>
+					<div>
+						<label class="block text-sm font-medium text-primary mb-1.5">Loan term (years)</label>
+						<MaskedNumberInput
+							v-model="form.loan_term_years"
+							placeholder="30"
+							:allow-decimals="false"
+							:error="!!errors.loan_term_years"
+						/>
+						<p v-if="errors.loan_term_years" class="mt-1.5 text-xs text-danger">{{ errors.loan_term_years[0] }}</p>
+					</div>
 					<FormField
 						name="start_date"
 						label="Start date"
@@ -250,70 +245,15 @@ const onPercentInput = (event: Event) => {
 			</div>
 		</section>
 
-		<!-- 04 · Monthly + annual expenses -->
+		<!-- 04 · Notes -->
 		<section class="card overflow-hidden">
 			<div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
 				<span class="numeral text-xs text-text-muted">№ 04</span>
-				<h3 class="font-display text-xl text-primary tracking-tight">Recurring expenses</h3>
-			</div>
-			<div class="p-5 sm:p-6">
-				<div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
-					<FormField
-						v-model="form.monthly_hoa"
-						name="monthly_hoa"
-						label="Monthly HOA"
-						type="currency"
-						:error="errors.monthly_hoa"
-					/>
-					<FormField
-						v-model="form.annual_insurance"
-						name="annual_insurance"
-						label="Annual insurance"
-						type="currency"
-						:error="errors.annual_insurance"
-					/>
-					<FormField
-						v-model="form.annual_property_tax"
-						name="annual_property_tax"
-						label="Annual property tax"
-						type="currency"
-						:error="errors.annual_property_tax"
-					/>
-				</div>
-			</div>
-		</section>
-
-		<!-- 05 · Notes -->
-		<section class="card overflow-hidden">
-			<div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
-				<span class="numeral text-xs text-text-muted">№ 05</span>
 				<h3 class="font-display text-xl text-primary tracking-tight">Notes</h3>
 			</div>
 			<div class="p-5 sm:p-6">
 				<FormField v-model="form.notes" name="notes" label="Notes" type="textarea" :error="errors.notes" />
 			</div>
 		</section>
-
-		<!-- Submit (Create only) -->
-		<div v-if="!isEdit" class="flex items-center justify-end gap-3 pt-2">
-			<RouterLink
-				:to="backUrl"
-				class="px-5 py-2.5 rounded-md text-sm font-medium text-text-muted hover:text-primary hover:bg-tan/50 transition-colors"
-			>
-				Cancel
-			</RouterLink>
-			<button
-				type="submit"
-				:disabled="loading"
-				:class="[
-					'inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-medium transition-colors',
-					loading ? 'bg-tan text-text-muted cursor-not-allowed' : 'bg-primary hover:bg-primary-light text-surface',
-				]"
-			>
-				<Spinner v-if="loading" size="sm" color="white" />
-				<CalculatorIcon v-else class="h-4 w-4" />
-				{{ loading ? 'Creating…' : 'Create mortgage estimate' }}
-			</button>
-		</div>
-	</form>
+	</div>
 </template>

@@ -1,13 +1,33 @@
 <script setup lang="ts">
 import { EllipsisVerticalIcon } from '@heroicons/vue/24/outline';
-import { nextTick, onMounted, onUnmounted, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 
-defineProps<{
-	primaryLabel?: string;
-	disabled?: boolean;
-}>();
+const props = withDefaults(
+	defineProps<{
+		primaryLabel?: string;
+		disabled?: boolean;
+		variant?: 'default' | 'primary';
+	}>(),
+	{ variant: 'default' }
+);
 
 const emit = defineEmits<{ primary: [] }>();
+
+const primaryButtonClasses = computed(() =>
+	props.variant === 'primary'
+		? 'inline-flex items-center gap-1.5 rounded-l-md border border-r-0 border-primary bg-primary px-3 py-1.5 text-xs font-medium text-surface hover:bg-primary-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+		: 'inline-flex items-center gap-1.5 rounded-l-md border border-r-0 border-border bg-surface px-3 py-1.5 text-xs font-medium text-primary hover:bg-surface-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+);
+
+const chevronButtonClasses = computed(() =>
+	props.variant === 'primary'
+		? 'inline-flex items-center rounded-r-md border border-primary border-l-surface/30 bg-primary px-1.5 py-1.5 text-surface hover:bg-primary-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+		: 'inline-flex items-center rounded-r-md border border-border bg-surface px-1.5 py-1.5 text-text-muted hover:bg-surface-dark hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+);
+
+const chevronOpenClass = computed(() =>
+	props.variant === 'primary' ? 'bg-primary-light' : 'bg-surface-dark text-primary'
+);
 
 const PANEL_WIDTH = 176;
 
@@ -66,20 +86,14 @@ onUnmounted(() => {
 
 <template>
 	<div ref="root" class="relative inline-flex items-stretch">
-		<button
-			type="button"
-			:disabled="disabled"
-			class="inline-flex items-center gap-1.5 rounded-l-md border border-r-0 border-border bg-surface px-3 py-1.5 text-xs font-medium text-primary hover:bg-surface-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-			@click="emit('primary')"
-		>
+		<button type="button" :disabled="disabled" :class="primaryButtonClasses" @click="emit('primary')">
 			<slot name="primary-icon" />
 			<span>{{ primaryLabel || 'View' }}</span>
 		</button>
 		<button
 			type="button"
 			:disabled="disabled"
-			class="inline-flex items-center rounded-r-md border border-border bg-surface px-1.5 py-1.5 text-text-muted hover:bg-surface-dark hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-			:class="open ? 'bg-surface-dark text-primary' : ''"
+			:class="[chevronButtonClasses, open ? chevronOpenClass : '']"
 			aria-label="More actions"
 			:aria-expanded="open"
 			@click.stop="toggle"

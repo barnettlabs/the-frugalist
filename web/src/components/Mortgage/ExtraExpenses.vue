@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { PlusIcon } from '@heroicons/vue/24/outline';
 import { ref, watch } from 'vue';
 
-import TextInput from '@/components/TextInput.vue';
+import ActionMenu from '@/components/ActionMenu.vue';
+import ActionMenuItem from '@/components/ActionMenuItem.vue';
+import MaskedNumberInput from '@/components/MaskedNumberInput.vue';
 import { expenseFrequencyOptions } from '@/types';
 import { formatCurrency, parseOrZero } from '@/utils/formatters';
 
@@ -22,6 +25,15 @@ const emit = defineEmits(['update:modelValue']);
 
 const expenses = ref<ExtraExpense[]>([]);
 
+const PRESETS: { label: string; frequency: 'monthly' | 'annual' }[] = [
+	{ label: 'PMI', frequency: 'monthly' },
+	{ label: 'Flood insurance', frequency: 'annual' },
+	{ label: 'Earthquake insurance', frequency: 'annual' },
+	{ label: 'Umbrella policy', frequency: 'annual' },
+	{ label: 'Utilities', frequency: 'monthly' },
+	{ label: 'Maintenance reserve', frequency: 'monthly' },
+];
+
 watch(
 	() => props.modelValue,
 	newValue => {
@@ -39,10 +51,8 @@ watch(
 	{ immediate: true }
 );
 
-const PRESETS = ['PMI', 'Flood insurance', 'Earthquake insurance', 'Umbrella policy', 'Utilities', 'Maintenance reserve'];
-
-const addExpense = (label = '') => {
-	expenses.value.push({ label, amount: '', frequency: 'monthly' });
+const addExpense = (label = '', frequency: 'monthly' | 'annual' = 'monthly') => {
+	expenses.value.push({ label, amount: '', frequency });
 	emitUpdate();
 };
 
@@ -66,15 +76,24 @@ const totalMonthly = () => expenses.value.reduce((sum, e) => sum + monthlyOf(e),
 		<div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
 			<span class="numeral text-xs text-text-muted">Optional</span>
 			<h3 class="font-display text-xl text-primary tracking-tight">Other expenses</h3>
-			<button
-				class="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-primary hover:bg-primary-light text-surface transition-colors"
-				@click="addExpense('')"
-			>
-				<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-				</svg>
-				Add expense
-			</button>
+			<div class="ml-auto">
+				<ActionMenu primary-label="Add expense" variant="primary" @primary="addExpense('')">
+					<template #primary-icon>
+						<PlusIcon class="h-3.5 w-3.5" />
+					</template>
+					<template #items>
+						<p class="eyebrow !text-[0.625rem] px-3 pt-2 pb-1 text-text-muted">Quick add</p>
+						<ActionMenuItem
+							v-for="preset in PRESETS"
+							:key="preset.label"
+							@click="addExpense(preset.label, preset.frequency)"
+						>
+							<span class="numeral flex-1">{{ preset.label }}</span>
+							<span class="text-text-muted ml-2 text-[0.625rem]">{{ preset.frequency }}</span>
+						</ActionMenuItem>
+					</template>
+				</ActionMenu>
+			</div>
 		</div>
 
 		<div class="p-5 sm:p-6 space-y-4">
@@ -82,19 +101,22 @@ const totalMonthly = () => expenses.value.reduce((sum, e) => sum + monthlyOf(e),
 				<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 					<div>
 						<label class="eyebrow !text-[0.625rem] block mb-1.5">Label</label>
-						<TextInput v-model="expense.label" placeholder="PMI, utilities…" @input="emitUpdate" />
+						<input
+							v-model="expense.label"
+							type="text"
+							class="block w-full rounded-md border-border bg-surface shadow-none focus:border-accent focus:ring-1 focus:ring-accent text-sm px-3 py-2"
+							placeholder="PMI, utilities…"
+							@input="emitUpdate"
+						/>
 					</div>
 
 					<div>
 						<label class="eyebrow !text-[0.625rem] block mb-1.5">Amount</label>
-						<TextInput
+						<MaskedNumberInput
 							v-model="expense.amount"
-							type="number"
-							step="0.01"
-							min="0"
 							prefix="$"
 							placeholder="0.00"
-							@input="emitUpdate"
+							@update:model-value="emitUpdate"
 						/>
 					</div>
 
@@ -135,23 +157,13 @@ const totalMonthly = () => expenses.value.reduce((sum, e) => sum + monthlyOf(e),
 			</div>
 
 			<div v-if="expenses.length === 0" class="text-center py-8 text-text-muted">
-				<p class="font-display italic text-base text-primary tracking-tight mb-2">No additional expenses.</p>
-				<p class="text-xs mb-3">Quick add:</p>
-				<div class="flex flex-wrap items-center justify-center gap-2">
-					<button
-						v-for="preset in PRESETS"
-						:key="preset"
-						class="px-3 py-1 rounded-md text-xs border border-border text-text-muted hover:text-primary hover:border-primary/40 transition-colors"
-						@click="addExpense(preset)"
-					>
-						{{ preset }}
-					</button>
-				</div>
+				<p class="font-display italic text-base text-primary tracking-tight mb-1">No additional expenses.</p>
+				<p class="text-xs">Use Add expense, or pick a preset from the dropdown.</p>
 			</div>
 
 			<div v-if="expenses.length > 0" class="mt-2 pt-5 border-t border-border">
 				<div class="bg-surface border border-border rounded-md p-4 flex items-center justify-between">
-					<span class="eyebrow">Total monthly</span>
+					<span class="eyebrow">Total monthly (other)</span>
 					<span class="figure text-lg text-primary leading-none">${{ formatCurrency(totalMonthly()) }}</span>
 				</div>
 			</div>

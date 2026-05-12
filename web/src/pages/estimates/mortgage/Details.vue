@@ -9,6 +9,7 @@ import AmortizationTable from '@/components/Mortgage/AmortizationTable.vue';
 import ExtraExpenses from '@/components/Mortgage/ExtraExpenses.vue';
 import ExtraPayments from '@/components/Mortgage/ExtraPayments.vue';
 import PaymentCharts from '@/components/Mortgage/PaymentCharts.vue';
+import RecurringExpenses from '@/components/Mortgage/RecurringExpenses.vue';
 import MortgageForm from '@/components/MortgageForm.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
@@ -25,14 +26,14 @@ const form = ref<MortgageFormData>({
 	sheet_name: '',
 	property_address: '',
 	property_type: PropertyType.HOUSE,
-	property_value: 0,
-	down_payment: 0,
-	interest_rate: 0,
-	loan_term_years: 30,
+	property_value: '' as any,
+	down_payment: '' as any,
+	interest_rate: '' as any,
+	loan_term_years: '' as any,
 	start_date: '',
-	monthly_hoa: 0,
-	annual_insurance: 0,
-	annual_property_tax: 0,
+	monthly_hoa: '' as any,
+	annual_insurance: '' as any,
+	annual_property_tax: '' as any,
 	extra_expenses_json: '',
 	extra_payments_json: '',
 	contact_email: '',
@@ -142,20 +143,38 @@ onMounted(() => {
 			<main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-2">
 				<div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
 					<div class="order-2 lg:order-1 grid grid-cols-1 gap-4 lg:col-span-2">
-						<MortgageForm
-							:form="form"
-							:errors="errors"
-							:loading="loading"
-							:title="headerTitle"
-							back-url="/estimates/mortgage"
-							:is-edit="isEdit"
-							@submit="submitForm"
-						/>
+						<MortgageForm :form="form" :errors="errors" />
 
+						<RecurringExpenses :form="form" :errors="errors" />
 						<ExtraExpenses v-model="form.extra_expenses_json" />
 						<ExtraPayments v-model="form.extra_payments_json" :data="form" />
 						<AmortizationTable :data="form" />
 						<PaymentCharts :data="form" />
+
+						<!-- Submit/cancel at the very bottom -->
+						<div v-if="!isEdit" class="flex items-center justify-end gap-3 pt-2">
+							<RouterLink
+								to="/estimates/mortgage"
+								class="px-5 py-2.5 rounded-md text-sm font-medium text-text-muted hover:text-primary hover:bg-tan/50 transition-colors"
+							>
+								Cancel
+							</RouterLink>
+							<button
+								type="button"
+								:disabled="loading"
+								:class="[
+									'inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-medium transition-colors',
+									loading
+										? 'bg-tan text-text-muted cursor-not-allowed'
+										: 'bg-primary hover:bg-primary-light text-surface',
+								]"
+								@click="submitForm"
+							>
+								<Spinner v-if="loading" size="sm" color="white" />
+								<CalculatorIcon v-else class="h-4 w-4" />
+								{{ loading ? 'Creating…' : 'Create mortgage estimate' }}
+							</button>
+						</div>
 					</div>
 
 					<aside class="order-1 lg:order-2 lg:sticky lg:top-20 space-y-4">

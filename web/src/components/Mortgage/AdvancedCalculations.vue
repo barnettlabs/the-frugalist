@@ -19,7 +19,8 @@ const summary = computed(() => {
 });
 
 const hasExtraPayments = computed(() => {
-	return !!props.data.extra_payments_json && props.data.extra_payments_json !== '' && props.data.extra_payments_json !== '[]';
+	const json = props.data.extra_payments_json;
+	return !!json && json !== '' && json !== '[]';
 });
 
 const hasEscrow = computed(() => summary.value.monthlyEscrow > 0);
@@ -33,7 +34,7 @@ const interestRatio = computed(() => {
 const principalRatio = computed(() => {
 	const total = summary.value.paymentsTotal;
 	if (!total) return '0';
-	return (((summary.value.totalPrincipal) / total) * 100).toFixed(1);
+	return ((summary.value.totalPrincipal / total) * 100).toFixed(1);
 });
 
 const interestSaved = computed(() => {
@@ -42,6 +43,11 @@ const interestSaved = computed(() => {
 	const withExtra = new MortgageCalculator(props.data as any).calculateAmortization(true);
 	if (!without || !withExtra) return 0;
 	return Math.max(0, without.totalInterest - withExtra.totalInterest);
+});
+
+// Scheduled (non-extra) principal — i.e., what would have been paid without extras
+const scheduledPrincipal = computed(() => {
+	return Math.max(0, summary.value.totalPrincipal - summary.value.totalExtraPayments);
 });
 </script>
 
@@ -55,31 +61,35 @@ const interestSaved = computed(() => {
 		<div v-if="summary" class="p-5 sm:p-6">
 			<!-- Top tiles -->
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border rounded-md overflow-hidden">
-				<div class="bg-surface p-4">
+				<div class="bg-surface p-4 min-w-0">
 					<p class="eyebrow !text-[0.625rem] mb-1.5">Monthly (P&amp;I)</p>
-					<p class="figure text-2xl text-primary leading-none">
+					<p class="figure text-lg sm:text-xl text-primary leading-none truncate">
 						${{ formatCurrency(summary.monthlyPrincipalInterest) }}
 					</p>
 				</div>
-				<div class="bg-surface p-4">
+				<div class="bg-surface p-4 min-w-0">
 					<p class="eyebrow !text-[0.625rem] mb-1.5">Monthly (all-in)</p>
-					<p class="figure text-2xl text-primary leading-none">
+					<p class="figure text-lg sm:text-xl text-primary leading-none truncate">
 						${{ formatCurrency(summary.monthlyPaymentTotal) }}
 					</p>
 				</div>
-				<div class="bg-surface p-4">
+				<div class="bg-surface p-4 min-w-0">
 					<p class="eyebrow !text-[0.625rem] mb-1.5">Total interest</p>
-					<p class="figure text-2xl text-warning leading-none">${{ formatCurrency(summary.totalInterest) }}</p>
+					<p class="figure text-lg sm:text-xl text-warning leading-none truncate">
+						${{ formatCurrency(summary.totalInterest) }}
+					</p>
 				</div>
-				<div class="bg-surface p-4">
+				<div class="bg-surface p-4 min-w-0">
 					<p class="eyebrow !text-[0.625rem] mb-1.5">Grand total</p>
-					<p class="figure text-2xl text-primary leading-none">${{ formatCurrency(summary.grandTotal) }}</p>
+					<p class="figure text-lg sm:text-xl text-primary leading-none truncate">
+						${{ formatCurrency(summary.grandTotal) }}
+					</p>
 				</div>
 			</div>
 
 			<!-- Detailed (expandable) -->
 			<div v-if="expanded" class="mt-6 space-y-5">
-				<!-- Loan breakdown -->
+				<!-- Loan -->
 				<div>
 					<p class="eyebrow mb-3">Loan</p>
 					<dl class="divide-y divide-border border-y border-border">
@@ -132,31 +142,42 @@ const interestSaved = computed(() => {
 					</dl>
 				</div>
 
-				<!-- Loan totals -->
+				<!-- Lifetime totals (clearly grouped, no double-counting) -->
 				<div>
 					<p class="eyebrow mb-3">Lifetime totals</p>
 					<dl class="divide-y divide-border border-y border-border">
 						<div class="flex justify-between py-2">
-							<dt class="text-sm text-text-muted">Total of payments (P&amp;I)</dt>
-							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.paymentsTotal) }}</dd>
+							<dt class="text-sm text-text-muted">Principal paid</dt>
+							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.totalPrincipal) }}</dd>
+						</div>
+						<div v-if="summary.totalExtraPayments > 0" class="flex justify-between py-2 pl-4">
+							<dt class="text-xs text-text-muted/80">↳ scheduled portion</dt>
+							<dd class="text-xs numeral text-text-muted">${{ formatCurrency(scheduledPrincipal) }}</dd>
+						</div>
+						<div v-if="summary.totalExtraPayments > 0" class="flex justify-between py-2 pl-4">
+							<dt class="text-xs text-text-muted/80">↳ extra principal payments</dt>
+							<dd class="text-xs numeral text-success">${{ formatCurrency(summary.totalExtraPayments) }}</dd>
 						</div>
 						<div class="flex justify-between py-2">
-							<dt class="text-sm text-text-muted">Total interest</dt>
+							<dt class="text-sm text-text-muted">Interest paid</dt>
 							<dd class="text-sm numeral text-warning">${{ formatCurrency(summary.totalInterest) }}</dd>
 						</div>
 						<div v-if="hasEscrow" class="flex justify-between py-2">
-							<dt class="text-sm text-text-muted">Total escrow / expenses</dt>
+							<dt class="text-sm text-text-muted">Escrow / expenses paid</dt>
 							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.totalEscrow) }}</dd>
 						</div>
-						<div v-if="summary.totalExtraPayments > 0" class="flex justify-between py-2">
-							<dt class="text-sm text-text-muted">Total extra payments</dt>
-							<dd class="text-sm numeral text-success">${{ formatCurrency(summary.totalExtraPayments) }}</dd>
+						<div class="flex justify-between py-2">
+							<dt class="text-sm text-text-muted">Down payment (upfront)</dt>
+							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.downPayment) }}</dd>
 						</div>
 						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
-							<dt class="text-sm font-medium text-primary">Grand total (down + payments + escrow)</dt>
+							<dt class="text-sm font-medium text-primary">Total out-of-pocket</dt>
 							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.grandTotal) }}</dd>
 						</div>
 					</dl>
+					<p class="numeral text-[0.625rem] text-text-muted mt-2">
+						Total out-of-pocket = down payment + principal + interest{{ hasEscrow ? ' + escrow/expenses' : '' }}
+					</p>
 				</div>
 
 				<!-- Advanced metrics -->
@@ -169,21 +190,26 @@ const interestSaved = computed(() => {
 						</div>
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Loan term</dt>
-							<dd class="text-sm numeral text-primary">{{ data.loan_term_years || 0 }} yr · {{ summary.loanTermMonths }} mo</dd>
+							<dd class="text-sm numeral text-primary">
+								{{ data.loan_term_years || 0 }} yr · {{ summary.loanTermMonths }} mo
+							</dd>
 						</div>
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Down payment ratio</dt>
 							<dd class="text-sm numeral text-primary">{{ summary.downPaymentPercent.toFixed(2) }}%</dd>
 						</div>
 						<div class="flex justify-between py-2">
-							<dt class="text-sm text-text-muted">Interest / principal</dt>
+							<dt class="text-sm text-text-muted">Interest / principal of P&amp;I</dt>
 							<dd class="text-sm numeral text-primary">{{ interestRatio }}% / {{ principalRatio }}%</dd>
 						</div>
 					</dl>
 				</div>
 
 				<!-- Extra payment impact -->
-				<div v-if="hasExtraPayments && summary.monthsSaved > 0" class="border border-success/20 bg-success/5 rounded-md p-4">
+				<div
+					v-if="hasExtraPayments && summary.monthsSaved > 0"
+					class="border border-success/20 bg-success/5 rounded-md p-4"
+				>
 					<p class="eyebrow text-success mb-3">Extra payment impact</p>
 					<dl class="space-y-2">
 						<div class="flex justify-between">

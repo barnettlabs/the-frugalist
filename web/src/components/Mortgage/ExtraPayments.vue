@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
-import TextInput from '@/components/TextInput.vue';
+import MaskedNumberInput from '@/components/MaskedNumberInput.vue';
 import { formatCurrency, parseOrZero } from '@/utils/formatters';
 import { MortgageCalculator } from '@/utils/mortgageCalculator';
 
@@ -117,40 +117,39 @@ const timeSaved = () => {
 				<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 					<div>
 						<label class="eyebrow !text-[0.625rem] block mb-1.5">Monthly amount</label>
-						<TextInput
+						<MaskedNumberInput
 							v-model="payment.paymentAmount"
-							type="number"
-							step="0.01"
-							min="0"
 							prefix="$"
 							placeholder="0.00"
-							@input="updateExtraPayments"
+							@update:model-value="updateExtraPayments"
 						/>
 					</div>
 
 					<div>
 						<label class="eyebrow !text-[0.625rem] block mb-1.5">Start month</label>
-						<input
+						<MaskedNumberInput
 							v-model="payment.startMonth"
-							type="number"
-							min="1"
-							:max="termMonths || undefined"
-							class="block w-full rounded-md border-border bg-surface shadow-none focus:border-accent focus:ring-1 focus:ring-accent sm:text-sm"
 							placeholder="1"
-							@input="updateExtraPayments"
+							:allow-decimals="false"
+							@update:model-value="updateExtraPayments"
 						/>
 					</div>
 
 					<div>
-						<label class="eyebrow !text-[0.625rem] block mb-1.5">End month (blank = end of loan)</label>
-						<input
+						<div class="flex items-center gap-1.5 mb-1.5">
+							<label class="eyebrow !text-[0.625rem]">End month</label>
+							<span
+								class="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-tan/60 text-text-muted text-[0.5625rem] font-medium cursor-help"
+								title="Leave blank to run through the end of the loan"
+							>
+								?
+							</span>
+						</div>
+						<MaskedNumberInput
 							v-model="payment.endMonth"
-							type="number"
-							min="1"
-							:max="termMonths || undefined"
-							class="block w-full rounded-md border-border bg-surface shadow-none focus:border-accent focus:ring-1 focus:ring-accent sm:text-sm"
 							:placeholder="termMonths ? String(termMonths) : ''"
-							@input="updateExtraPayments"
+							:allow-decimals="false"
+							@update:model-value="updateExtraPayments"
 						/>
 					</div>
 

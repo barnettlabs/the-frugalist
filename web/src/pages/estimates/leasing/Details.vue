@@ -164,7 +164,7 @@ onMounted(() => {
 			<main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-2">
 				<div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
 					<!-- Main column -->
-					<div class="grid grid-cols-1 gap-4 lg:col-span-2">
+					<div class="order-2 lg:order-1 grid grid-cols-1 gap-4 lg:col-span-2">
 						<LeaseForm
 							:form="form"
 							:errors="errors"
@@ -180,7 +180,7 @@ onMounted(() => {
 					</div>
 
 					<!-- Right sidebar -->
-					<aside class="lg:sticky lg:top-20 space-y-4">
+					<aside class="order-1 lg:order-2 lg:sticky lg:top-20 space-y-4">
 						<AdvancedCalculations :data="form" />
 						<DealGradeCard
 							v-if="isAdmin"

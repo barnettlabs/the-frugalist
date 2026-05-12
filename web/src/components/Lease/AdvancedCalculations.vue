@@ -41,20 +41,6 @@ import { formatCurrency } from '@/utils/formatters.js';
 		<div class="flex items-center gap-3 px-5 sm:px-6 py-4 border-b border-border">
 			<span class="numeral text-xs text-text-muted">Summary</span>
 			<h3 class="font-display text-xl text-primary tracking-tight">At a glance</h3>
-			<button
-				class="ml-auto p-1.5 rounded-md text-text-muted hover:text-primary hover:bg-tan/40 transition-colors"
-				@click="expanded = !expanded"
-			>
-				<svg
-					class="w-4 h-4 transition-transform"
-					:class="{ 'rotate-180': expanded }"
-					fill="none"
-					stroke="currentColor"
-					viewBox="0 0 24 24"
-				>
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-				</svg>
-			</button>
 		</div>
 
 		<div v-if="summary" class="p-5 sm:p-6">
@@ -227,6 +213,23 @@ import { formatCurrency } from '@/utils/formatters.js';
 					</dl>
 				</div>
 			</div>
+
+			<button
+				class="mt-5 w-full inline-flex items-center justify-center gap-1.5 py-2.5 rounded-md border border-primary/20 bg-tan/40 text-sm font-medium text-primary hover:bg-tan/70 hover:border-primary/40 transition-colors"
+				:aria-expanded="expanded"
+				@click="expanded = !expanded"
+			>
+				<span>{{ expanded ? 'Hide details' : 'Show all details' }}</span>
+				<svg
+					class="w-4 h-4 transition-transform"
+					:class="{ 'rotate-180': expanded }"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+				</svg>
+			</button>
 		</div>
 
 		<div v-else class="p-10 text-center text-sm text-text-muted">Enter lease details to see advanced calculations.</div>

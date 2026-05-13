@@ -106,11 +106,11 @@ export default function RegisterScreen() {
             <View className="px-6 mt-8">
               <View className="relative">
                 <View
-                  className="absolute rounded-md bg-tan border border-border-light"
+                  className="absolute rounded-md bg-tan dark:bg-border-dark border border-border-light dark:border-border-strong-dark"
                   style={{ top: -10, bottom: -10, left: -10, right: -10, transform: [{ rotate: '-1.5deg' }] }}
                 />
                 <View
-                  className="absolute rounded-md bg-surface-dark-light border border-border-light"
+                  className="absolute rounded-md bg-surface-dark-light dark:bg-surface-dark-dark border border-border-light dark:border-border-dark"
                   style={{ top: -5, bottom: -5, left: -5, right: -5, transform: [{ rotate: '1deg' }] }}
                 />
 

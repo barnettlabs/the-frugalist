@@ -39,7 +39,9 @@ const principalRatio = computed(() => {
 
 const interestSaved = computed(() => {
 	if (!hasExtraPayments.value) return 0;
-	const without = new MortgageCalculator({ ...props.data, extra_payments_json: '' } as any).calculateAmortization(false);
+	const without = new MortgageCalculator({ ...props.data, extra_payments_json: '' } as any).calculateAmortization(
+		false
+	);
 	const withExtra = new MortgageCalculator(props.data as any).calculateAmortization(true);
 	if (!without || !withExtra) return 0;
 	return Math.max(0, without.totalInterest - withExtra.totalInterest);
@@ -49,6 +51,29 @@ const interestSaved = computed(() => {
 const scheduledPrincipal = computed(() => {
 	return Math.max(0, summary.value.totalPrincipal - summary.value.totalExtraPayments);
 });
+
+// Down payment + principal + interest (no escrow/expenses)
+const totalLoanCost = computed(() => summary.value.downPayment + summary.value.paymentsTotal);
+
+// Human-friendly label for the actual loan term (accounts for extra-payment payoff acceleration)
+const termLabel = computed(() => {
+	const months = summary.value.monthsPaid || 0;
+	const years = Math.floor(months / 12);
+	const remMonths = months % 12;
+	if (years === 0) return `${remMonths} mo`;
+	if (remMonths === 0) return `${years} yr`;
+	return `${years} yr ${remMonths} mo`;
+});
+
+// Shrink the figure size based on its formatted character length so big numbers stay readable.
+function figureSize(amount: number): string {
+	const len = formatCurrency(amount).length + 1; // include the "$" prefix
+	if (len <= 9) return 'text-xl sm:text-2xl';
+	if (len <= 11) return 'text-lg sm:text-xl';
+	if (len <= 13) return 'text-base sm:text-lg';
+	if (len <= 15) return 'text-sm sm:text-base';
+	return 'text-xs sm:text-sm';
+}
 </script>
 
 <template>
@@ -63,25 +88,27 @@ const scheduledPrincipal = computed(() => {
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border rounded-md overflow-hidden">
 				<div class="bg-surface p-4 min-w-0">
 					<p class="eyebrow !text-[0.625rem] mb-1.5">Monthly (P&amp;I)</p>
-					<p class="figure text-lg sm:text-xl text-primary leading-none truncate">
+					<p class="figure text-primary leading-none" :class="figureSize(summary.monthlyPrincipalInterest)">
 						${{ formatCurrency(summary.monthlyPrincipalInterest) }}
 					</p>
 				</div>
 				<div class="bg-surface p-4 min-w-0">
 					<p class="eyebrow !text-[0.625rem] mb-1.5">Monthly (all-in)</p>
-					<p class="figure text-lg sm:text-xl text-primary leading-none truncate">
+					<p class="figure text-primary leading-none" :class="figureSize(summary.monthlyPaymentTotal)">
 						${{ formatCurrency(summary.monthlyPaymentTotal) }}
 					</p>
 				</div>
 				<div class="bg-surface p-4 min-w-0">
 					<p class="eyebrow !text-[0.625rem] mb-1.5">Total interest</p>
-					<p class="figure text-lg sm:text-xl text-warning leading-none truncate">
+					<p class="figure text-warning leading-none" :class="figureSize(summary.totalInterest)">
 						${{ formatCurrency(summary.totalInterest) }}
 					</p>
 				</div>
 				<div class="bg-surface p-4 min-w-0">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Grand total</p>
-					<p class="figure text-lg sm:text-xl text-primary leading-none truncate">
+					<p class="eyebrow !text-[0.625rem] mb-1.5">
+						Grand total <span class="text-text-muted/70 normal-case">· over {{ termLabel }}</span>
+					</p>
+					<p class="figure text-primary leading-none" :class="figureSize(summary.grandTotal)">
 						${{ formatCurrency(summary.grandTotal) }}
 					</p>
 				</div>
@@ -137,14 +164,19 @@ const scheduledPrincipal = computed(() => {
 						</div>
 						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
 							<dt class="text-sm font-medium text-primary">Total monthly</dt>
-							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.monthlyPaymentTotal) }}</dd>
+							<dd class="text-sm numeral text-primary font-medium">
+								${{ formatCurrency(summary.monthlyPaymentTotal) }}
+							</dd>
 						</div>
 					</dl>
 				</div>
 
 				<!-- Lifetime totals (clearly grouped, no double-counting) -->
 				<div>
-					<p class="eyebrow mb-3">Lifetime totals</p>
+					<p class="eyebrow mb-3">
+						Lifetime totals
+						<span class="text-text-muted/70 normal-case tracking-normal">· over {{ termLabel }}</span>
+					</p>
 					<dl class="divide-y divide-border border-y border-border">
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Principal paid</dt>
@@ -162,22 +194,36 @@ const scheduledPrincipal = computed(() => {
 							<dt class="text-sm text-text-muted">Interest paid</dt>
 							<dd class="text-sm numeral text-warning">${{ formatCurrency(summary.totalInterest) }}</dd>
 						</div>
-						<div v-if="hasEscrow" class="flex justify-between py-2">
-							<dt class="text-sm text-text-muted">Escrow / expenses paid</dt>
-							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.totalEscrow) }}</dd>
+						<div class="flex justify-between py-2.5 bg-tan/20 -mx-2 px-2 rounded-sm">
+							<dt class="text-sm font-medium text-primary">Total of payments</dt>
+							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.paymentsTotal) }}</dd>
 						</div>
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Down payment (upfront)</dt>
 							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.downPayment) }}</dd>
 						</div>
 						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+							<dt class="text-sm font-medium text-primary">Total loan cost</dt>
+							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(totalLoanCost) }}</dd>
+						</div>
+						<div v-if="hasEscrow" class="flex justify-between py-2">
+							<dt class="text-sm text-text-muted">Escrow / expenses paid</dt>
+							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.totalEscrow) }}</dd>
+						</div>
+						<div v-if="hasEscrow" class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
 							<dt class="text-sm font-medium text-primary">Total out-of-pocket</dt>
 							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.grandTotal) }}</dd>
 						</div>
 					</dl>
-					<p class="numeral text-[0.625rem] text-text-muted mt-2">
-						Total out-of-pocket = down payment + principal + interest{{ hasEscrow ? ' + escrow/expenses' : '' }}
-					</p>
+					<div class="numeral text-[0.625rem] text-text-muted mt-2">
+						· <strong>Total of payments</strong> = principal + interest
+					</div>
+					<div class="numeral text-[0.625rem] text-text-muted">
+						· <strong>Total loan</strong> cost adds down payment
+					</div>
+					<div v-if="hasEscrow" class="numeral text-[0.625rem] text-text-muted">
+						· <strong>Total out-of-pocket</strong> adds escrow/expenses over term length
+					</div>
 				</div>
 
 				<!-- Advanced metrics -->
@@ -254,6 +300,8 @@ const scheduledPrincipal = computed(() => {
 			</button>
 		</div>
 
-		<div v-else class="p-10 text-center text-sm text-text-muted">Enter property details to see advanced calculations.</div>
+		<div v-else class="p-10 text-center text-sm text-text-muted">
+			Enter property details to see advanced calculations.
+		</div>
 	</section>
 </template>

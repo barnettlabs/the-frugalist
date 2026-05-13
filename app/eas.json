@@ -68,6 +68,12 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "jason@tensifi.com",
+        "ascAppId": "6768865204",
+        "appleTeamId": "44BTVU6QAF"
+      }
+    }
   }
 }

@@ -2,16 +2,16 @@
 import '../../global.css';
 
 import {
-  Fraunces_400Regular,
-  Fraunces_500Medium,
-  Fraunces_500Medium_Italic,
-  Fraunces_600SemiBold,
-  Fraunces_600SemiBold_Italic,
+	Fraunces_400Regular,
+	Fraunces_500Medium,
+	Fraunces_500Medium_Italic,
+	Fraunces_600SemiBold,
+	Fraunces_600SemiBold_Italic,
 } from '@expo-google-fonts/fraunces';
 import {
-  JetBrainsMono_400Regular,
-  JetBrainsMono_500Medium,
-  JetBrainsMono_600SemiBold,
+	JetBrainsMono_400Regular,
+	JetBrainsMono_500Medium,
+	JetBrainsMono_600SemiBold,
 } from '@expo-google-fonts/jetbrains-mono';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { ThemeProvider } from '@react-navigation/native';
@@ -31,69 +31,69 @@ import { useThemeConfig } from '@/lib/use-theme-config';
 export { ErrorBoundary } from 'expo-router';
 
 export const unstable_settings = {
-  initialRouteName: '(app)',
+	initialRouteName: '(app)',
 };
 
 hydrateAuth();
 loadSelectedTheme();
 SplashScreen.preventAutoHideAsync();
 SplashScreen.setOptions({
-  duration: 500,
-  fade: true,
+	duration: 500,
+	fade: true,
 });
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
-    // Editorial display serif (Fraunces)
-    Fraunces_400Regular,
-    Fraunces_500Medium,
-    Fraunces_500Medium_Italic,
-    Fraunces_600SemiBold,
-    Fraunces_600SemiBold_Italic,
-    // Tabular monospace (JetBrains Mono)
-    JetBrainsMono_400Regular,
-    JetBrainsMono_500Medium,
-    JetBrainsMono_600SemiBold,
-  });
+	const [fontsLoaded] = useFonts({
+		// Editorial display serif (Fraunces)
+		Fraunces_400Regular,
+		Fraunces_500Medium,
+		Fraunces_500Medium_Italic,
+		Fraunces_600SemiBold,
+		Fraunces_600SemiBold_Italic,
+		// Tabular monospace (JetBrains Mono)
+		JetBrainsMono_400Regular,
+		JetBrainsMono_500Medium,
+		JetBrainsMono_600SemiBold,
+	});
 
-  // Don't block on fonts — the platform serif/mono fallbacks render fine
-  // while the bundled fonts hydrate. Splash hides on (app) layout once auth
-  // resolves, so showing the splash a beat longer until fonts load is OK.
-  if (!fontsLoaded) return null;
+	// Don't block on fonts — the platform serif/mono fallbacks render fine
+	// while the bundled fonts hydrate. Splash hides on (app) layout once auth
+	// resolves, so showing the splash a beat longer until fonts load is OK.
+	if (!fontsLoaded) return null;
 
-  return (
-    <Providers>
-      <Stack>
-        <Stack.Screen name="(app)" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-        <Stack.Screen name="login" options={{ headerShown: false }} />
-      </Stack>
-      <KeyboardToolbar />
-    </Providers>
-  );
+	return (
+		<Providers>
+			<Stack>
+				<Stack.Screen name="(app)" options={{ headerShown: false }} />
+				<Stack.Screen name="(auth)" options={{ headerShown: false }} />
+				<Stack.Screen name="onboarding" options={{ headerShown: false }} />
+				<Stack.Screen name="login" options={{ headerShown: false }} />
+			</Stack>
+			<KeyboardToolbar />
+		</Providers>
+	);
 }
 
 function Providers({ children }: { children: React.ReactNode }) {
-  const theme = useThemeConfig();
-  return (
-    <GestureHandlerRootView style={styles.container} className={theme.dark ? `dark` : undefined}>
-      <KeyboardProvider>
-        <ThemeProvider value={theme}>
-          <APIProvider>
-            <BottomSheetModalProvider>
-              {children}
-              <FlashMessage position="top" />
-            </BottomSheetModalProvider>
-          </APIProvider>
-        </ThemeProvider>
-      </KeyboardProvider>
-    </GestureHandlerRootView>
-  );
+	const theme = useThemeConfig();
+	return (
+		<GestureHandlerRootView style={styles.container} className={theme.dark ? `dark` : undefined}>
+			<KeyboardProvider>
+				<ThemeProvider value={theme}>
+					<APIProvider>
+						<BottomSheetModalProvider>
+							{children}
+							<FlashMessage position="top" />
+						</BottomSheetModalProvider>
+					</APIProvider>
+				</ThemeProvider>
+			</KeyboardProvider>
+		</GestureHandlerRootView>
+	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+	container: {
+		flex: 1,
+	},
 });

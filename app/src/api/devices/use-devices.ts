@@ -6,9 +6,9 @@ import type { UserDevice } from './types';
 type Response = UserDevice[];
 
 export const useDevices = createQuery<Response, void>({
-  queryKey: ['devices'],
-  fetcher: async () => {
-    const response = await client.get('/devices');
-    return response.data;
-  },
+	queryKey: ['devices'],
+	fetcher: async () => {
+		const response = await client.get('/devices');
+		return response.data;
+	},
 });

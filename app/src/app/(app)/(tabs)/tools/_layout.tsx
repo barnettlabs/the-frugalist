@@ -2,5 +2,5 @@ import { Slot } from 'expo-router';
 import React from 'react';
 
 export default function ToolsLayout() {
-  return <Slot />;
+	return <Slot />;
 }

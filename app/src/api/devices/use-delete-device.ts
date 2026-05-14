@@ -6,10 +6,10 @@ type Response = void;
 type Variables = { id: number };
 
 export const useDeleteDevice = createMutation<Response, Variables>({
-  mutationFn: async ({ id }) => {
-    await client.delete(`/devices/${id}`);
-  },
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['devices'] });
-  },
+	mutationFn: async ({ id }) => {
+		await client.delete(`/devices/${id}`);
+	},
+	onSuccess: () => {
+		queryClient.invalidateQueries({ queryKey: ['devices'] });
+	},
 });

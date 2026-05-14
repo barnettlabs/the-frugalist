@@ -10,79 +10,69 @@ import type { Term } from '@/lib/data/learning-content';
 export type LearningContentVariant = 'finance' | 'lease';
 
 type LearningContentProps = {
-  variant: LearningContentVariant;
-  title: string;
-  description: string;
-  terms: Term[];
-  tips: string[];
-  /** Header title (defaults to "Field guide") */
-  headerTitle?: string;
-  /** Back button label in the inline header */
-  backLabel?: string;
+	variant: LearningContentVariant;
+	title: string;
+	description: string;
+	terms: Term[];
+	tips: string[];
+	/** Header title (defaults to "Field guide") */
+	headerTitle?: string;
+	/** Back button label in the inline header */
+	backLabel?: string;
 };
 
 export function LearningContent({
-  variant,
-  title,
-  description,
-  terms,
-  tips,
-  headerTitle = 'Field guide',
-  backLabel = 'Back',
+	variant,
+	title,
+	description,
+	terms,
+	tips,
+	headerTitle = 'Field guide',
+	backLabel = 'Back',
 }: LearningContentProps) {
-  const insets = useSafeAreaInsets();
+	const insets = useSafeAreaInsets();
 
-  const bottomPadding = Math.max(insets.bottom, 16);
+	const bottomPadding = Math.max(insets.bottom, 16);
 
-  const colorClasses = variant === 'finance'
-    ? {
-        introBg: 'bg-accent/5 dark:bg-accent/10',
-        introTitle: 'text-accent-dark dark:text-accent-light',
-      }
-    : {
-        introBg: 'bg-info/5 dark:bg-info/10',
-        introTitle: 'text-info-dark dark:text-info-light',
-      };
+	const colorClasses =
+		variant === 'finance'
+			? {
+					introBg: 'bg-accent/5 dark:bg-accent/10',
+					introTitle: 'text-accent-dark dark:text-accent-light',
+				}
+			: {
+					introBg: 'bg-info/5 dark:bg-info/10',
+					introTitle: 'text-info-dark dark:text-info-light',
+				};
 
-  return (
-    <View className={`flex-1 ${tw.pageBg}`}>
-      <TabPageHeader title={headerTitle} showBack backLabel={backLabel} />
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: bottomPadding }}
-      >
-      <View className="p-4">
-        {/* Introduction */}
-        <View className={`mb-6 rounded-xl p-4 ${colorClasses.introBg}`}>
-          <Text className={`text-lg font-semibold ${colorClasses.introTitle}`}>
-            {title}
-          </Text>
-          <Text className="mt-2 text-neutral-600 dark:text-neutral-400">
-            {description}
-          </Text>
-        </View>
+	return (
+		<View className={`flex-1 ${tw.pageBg}`}>
+			<TabPageHeader title={headerTitle} showBack backLabel={backLabel} />
+			<ScrollView className="flex-1" contentContainerStyle={{ paddingBottom: bottomPadding }}>
+				<View className="p-4">
+					{/* Introduction */}
+					<View className={`mb-6 rounded-xl p-4 ${colorClasses.introBg}`}>
+						<Text className={`text-lg font-semibold ${colorClasses.introTitle}`}>{title}</Text>
+						<Text className="mt-2 text-neutral-600 dark:text-neutral-400">{description}</Text>
+					</View>
 
-        {/* Key Terms */}
-        <Text className="mb-4 text-xl font-bold text-neutral-800 dark:text-neutral-200">
-          Key Terms
-        </Text>
-        <View className="mb-6 gap-3">
-          {terms.map((term, index) => (
-            <TermCard key={index} term={term.term} definition={term.definition} />
-          ))}
-        </View>
+					{/* Key Terms */}
+					<Text className="mb-4 text-xl font-bold text-neutral-800 dark:text-neutral-200">Key Terms</Text>
+					<View className="mb-6 gap-3">
+						{terms.map((term, index) => (
+							<TermCard key={index} term={term.term} definition={term.definition} />
+						))}
+					</View>
 
-        {/* Tips */}
-        <Text className="mb-4 text-xl font-bold text-neutral-800 dark:text-neutral-200">
-          Pro Tips
-        </Text>
-        <View className="gap-3">
-          {tips.map((tip, index) => (
-            <TipCard key={index} tip={tip} />
-          ))}
-        </View>
-      </View>
-      </ScrollView>
-    </View>
-  );
+					{/* Tips */}
+					<Text className="mb-4 text-xl font-bold text-neutral-800 dark:text-neutral-200">Pro Tips</Text>
+					<View className="gap-3">
+						{tips.map((tip, index) => (
+							<TipCard key={index} tip={tip} />
+						))}
+					</View>
+				</View>
+			</ScrollView>
+		</View>
+	);
 }

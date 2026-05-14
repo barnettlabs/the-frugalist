@@ -3,391 +3,308 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button, Image, ScrollView, TabPageHeader, Text, View } from '@/components/ui';
 import { tw } from '@/components/ui/theme';
-import {
-  formatCurrencyWithSymbol,
-  formatDate,
-  formatDateTime,
-  formatRelativeTime,
-} from '@/lib/calculators';
+import { formatCurrencyWithSymbol, formatDate, formatDateTime, formatRelativeTime } from '@/lib/calculators';
 import type { PriceTrackerItem } from '@/lib/types/models';
 
 interface ProductDetailProps {
-  product: PriceTrackerItem['tracked_product'];
-  onRefresh: () => void;
-  onTogglePause: () => void;
-  onDelete: () => void;
-  isRefreshing: boolean;
-  isUpdating: boolean;
-  isDeleting: boolean;
+	product: PriceTrackerItem['tracked_product'];
+	onRefresh: () => void;
+	onTogglePause: () => void;
+	onDelete: () => void;
+	isRefreshing: boolean;
+	isUpdating: boolean;
+	isDeleting: boolean;
 }
 
 export function ProductDetail({
-  product,
-  onRefresh,
-  onTogglePause,
-  onDelete,
-  isRefreshing,
-  isUpdating,
-  isDeleting,
+	product,
+	onRefresh,
+	onTogglePause,
+	onDelete,
+	isRefreshing,
+	isUpdating,
+	isDeleting,
 }: ProductDetailProps) {
-  const insets = useSafeAreaInsets();
-  const targetReached = product.current_price <= product.target_price;
+	const insets = useSafeAreaInsets();
+	const targetReached = product.current_price <= product.target_price;
 
-  const bottomPadding = Math.max(insets.bottom, 16);
+	const bottomPadding = Math.max(insets.bottom, 16);
 
-  return (
-    <View className={`flex-1 ${tw.pageBg}`}>
-      <TabPageHeader title="Product" showBack backLabel="Watch" />
-      <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
-        <ProductHeader product={product} targetReached={targetReached} />
-        <PriceTimelineCard product={product} targetReached={targetReached} />
-        <TrackingInfoCard product={product} />
-        {product.price_history && product.price_history.length > 0 && (
-          <PriceHistoryCard
-            priceHistory={product.price_history}
-            targetPrice={product.target_price}
-          />
-        )}
-        {product.last_scraper_error && (
-          <ErrorCard error={product.last_scraper_error} />
-        )}
-        <View className="h-20" />
-      </ScrollView>
-      <ActionBar
-        product={product}
-        onRefresh={onRefresh}
-        onTogglePause={onTogglePause}
-        onDelete={onDelete}
-        isRefreshing={isRefreshing}
-        isUpdating={isUpdating}
-        isDeleting={isDeleting}
-        bottomPadding={bottomPadding}
-      />
-    </View>
-  );
+	return (
+		<View className={`flex-1 ${tw.pageBg}`}>
+			<TabPageHeader title="Product" showBack backLabel="Watch" />
+			<ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
+				<ProductHeader product={product} targetReached={targetReached} />
+				<PriceTimelineCard product={product} targetReached={targetReached} />
+				<TrackingInfoCard product={product} />
+				{product.price_history && product.price_history.length > 0 && (
+					<PriceHistoryCard priceHistory={product.price_history} targetPrice={product.target_price} />
+				)}
+				{product.last_scraper_error && <ErrorCard error={product.last_scraper_error} />}
+				<View className="h-20" />
+			</ScrollView>
+			<ActionBar
+				product={product}
+				onRefresh={onRefresh}
+				onTogglePause={onTogglePause}
+				onDelete={onDelete}
+				isRefreshing={isRefreshing}
+				isUpdating={isUpdating}
+				isDeleting={isDeleting}
+				bottomPadding={bottomPadding}
+			/>
+		</View>
+	);
 }
 
 function ProductHeader({
-  product,
-  targetReached,
+	product,
+	targetReached,
 }: {
-  product: PriceTrackerItem['tracked_product'];
-  targetReached: boolean;
+	product: PriceTrackerItem['tracked_product'];
+	targetReached: boolean;
 }) {
-  return (
-    <View className={`mb-4 items-center p-4 ${tw.card}`}>
-      {product.product_image_url ? (
-        <Image
-          source={{ uri: product.product_image_url }}
-          className="mb-4 size-40 rounded-lg bg-neutral-100"
-          contentFit="contain"
-        />
-      ) : (
-        <View className="mb-4 size-40 items-center justify-center rounded-lg bg-tan-light dark:bg-charcoal-800">
-          <Text className="text-6xl">📦</Text>
-        </View>
-      )}
-      <Text className="text-center text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
-        {product.product_name}
-      </Text>
-      {product.product_variant && (
-        <Text className="text-center text-text-muted-light dark:text-text-muted-dark">
-          {product.product_variant}
-        </Text>
-      )}
-      <Text className="mt-1 text-sm text-text-muted-light dark:text-text-muted-dark">
-        {product.retailer.name} • {product.sku_upc}
-      </Text>
-      <StatusBadge targetReached={targetReached} isActive={product.is_active} />
-    </View>
-  );
+	return (
+		<View className={`mb-4 items-center p-4 ${tw.card}`}>
+			{product.product_image_url ? (
+				<Image
+					source={{ uri: product.product_image_url }}
+					className="mb-4 size-40 rounded-lg bg-neutral-100"
+					contentFit="contain"
+				/>
+			) : (
+				<View className="mb-4 size-40 items-center justify-center rounded-lg bg-tan-light dark:bg-charcoal-800">
+					<Text className="text-6xl">📦</Text>
+				</View>
+			)}
+			<Text className="text-center text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
+				{product.product_name}
+			</Text>
+			{product.product_variant && (
+				<Text className="text-center text-text-muted-light dark:text-text-muted-dark">{product.product_variant}</Text>
+			)}
+			<Text className="mt-1 text-sm text-text-muted-light dark:text-text-muted-dark">
+				{product.retailer.name} • {product.sku_upc}
+			</Text>
+			<StatusBadge targetReached={targetReached} isActive={product.is_active} />
+		</View>
+	);
 }
 
-function StatusBadge({
-  targetReached,
-  isActive,
-}: {
-  targetReached: boolean;
-  isActive: boolean;
-}) {
-  if (targetReached) {
-    return (
-      <View className="mt-3 rounded-full bg-green-100 px-4 py-2 dark:bg-green-900">
-        <Text className="font-semibold text-green-700 dark:text-green-300">
-          🎉 Target Price Reached!
-        </Text>
-      </View>
-    );
-  }
-  if (!isActive) {
-    return (
-      <View className="mt-3 rounded-full bg-neutral-200 px-4 py-2 dark:bg-neutral-600">
-        <Text className="font-medium text-text-muted-light dark:text-text-muted-dark">
-          Tracking Paused
-        </Text>
-      </View>
-    );
-  }
-  return (
-    <View className="mt-3 rounded-full bg-blue-100 px-4 py-2 dark:bg-blue-900">
-      <Text className="font-medium text-blue-700 dark:text-blue-300">
-        Actively Tracking
-      </Text>
-    </View>
-  );
+function StatusBadge({ targetReached, isActive }: { targetReached: boolean; isActive: boolean }) {
+	if (targetReached) {
+		return (
+			<View className="mt-3 rounded-full bg-green-100 px-4 py-2 dark:bg-green-900">
+				<Text className="font-semibold text-green-700 dark:text-green-300">🎉 Target Price Reached!</Text>
+			</View>
+		);
+	}
+	if (!isActive) {
+		return (
+			<View className="mt-3 rounded-full bg-neutral-200 px-4 py-2 dark:bg-neutral-600">
+				<Text className="font-medium text-text-muted-light dark:text-text-muted-dark">Tracking Paused</Text>
+			</View>
+		);
+	}
+	return (
+		<View className="mt-3 rounded-full bg-blue-100 px-4 py-2 dark:bg-blue-900">
+			<Text className="font-medium text-blue-700 dark:text-blue-300">Actively Tracking</Text>
+		</View>
+	);
 }
 
 function PriceTimelineCard({
-  product,
-  targetReached,
+	product,
+	targetReached,
 }: {
-  product: PriceTrackerItem['tracked_product'];
-  targetReached: boolean;
+	product: PriceTrackerItem['tracked_product'];
+	targetReached: boolean;
 }) {
-  const progress = Math.min(
-    Math.max(
-      ((product.retail_price - product.current_price) /
-        (product.retail_price - product.target_price)) *
-        100,
-      0
-    ),
-    100
-  );
+	const progress = Math.min(
+		Math.max(((product.retail_price - product.current_price) / (product.retail_price - product.target_price)) * 100, 0),
+		100
+	);
 
-  return (
-    <View className={`mb-4 p-4 ${tw.card}`}>
-      <Text className="mb-4 font-semibold text-text-primary-light dark:text-text-primary-dark">
-        Price Progress
-      </Text>
+	return (
+		<View className={`mb-4 p-4 ${tw.card}`}>
+			<Text className="mb-4 font-semibold text-text-primary-light dark:text-text-primary-dark">Price Progress</Text>
 
-      {/* Labels above bar */}
-      <View className="mb-2 flex-row justify-between">
-        <View>
-          <Text className="text-xs text-text-muted-light dark:text-text-muted-dark">
-            Retail
-          </Text>
-          <Text className="text-lg font-semibold text-neutral-400">
-            {formatCurrencyWithSymbol(product.retail_price)}
-          </Text>
-        </View>
-        <View className="items-end">
-          <Text className="text-xs text-text-muted-light dark:text-text-muted-dark">
-            Target
-          </Text>
-          <Text className="text-lg font-semibold text-success">
-            {formatCurrencyWithSymbol(product.target_price)}
-          </Text>
-        </View>
-      </View>
+			{/* Labels above bar */}
+			<View className="mb-2 flex-row justify-between">
+				<View>
+					<Text className="text-xs text-text-muted-light dark:text-text-muted-dark">Retail</Text>
+					<Text className="text-lg font-semibold text-neutral-400">
+						{formatCurrencyWithSymbol(product.retail_price)}
+					</Text>
+				</View>
+				<View className="items-end">
+					<Text className="text-xs text-text-muted-light dark:text-text-muted-dark">Target</Text>
+					<Text className="text-lg font-semibold text-success">{formatCurrencyWithSymbol(product.target_price)}</Text>
+				</View>
+			</View>
 
-      {/* Progress bar */}
-      <View className="relative mb-2">
-        <View className="h-4 rounded-full bg-border-light dark:bg-charcoal-800">
-          <View
-            className={`h-4 rounded-full ${targetReached ? 'bg-green-500' : 'bg-primary'}`}
-            style={{ width: `${progress}%` }}
-          />
-        </View>
-      </View>
+			{/* Progress bar */}
+			<View className="relative mb-2">
+				<View className="h-4 rounded-full bg-border-light dark:bg-charcoal-800">
+					<View
+						className={`h-4 rounded-full ${targetReached ? 'bg-green-500' : 'bg-primary'}`}
+						style={{ width: `${progress}%` }}
+					/>
+				</View>
+			</View>
 
-      {/* Current price indicator */}
-      <View className="mb-4 items-center">
-        <View className="rounded-lg bg-neutral-900 px-4 py-2 dark:bg-charcoal-800">
-          <Text className="text-center text-xs text-neutral-400 dark:text-neutral-400">
-            Current
-          </Text>
-          <Text className="text-lg font-bold text-white dark:text-white">
-            {formatCurrencyWithSymbol(product.current_price)}
-          </Text>
-        </View>
-      </View>
+			{/* Current price indicator */}
+			<View className="mb-4 items-center">
+				<View className="rounded-lg bg-neutral-900 px-4 py-2 dark:bg-charcoal-800">
+					<Text className="text-center text-xs text-neutral-400 dark:text-neutral-400">Current</Text>
+					<Text className="text-lg font-bold text-white dark:text-white">
+						{formatCurrencyWithSymbol(product.current_price)}
+					</Text>
+				</View>
+			</View>
 
-      {/* Progress status */}
-      <View className="flex-row items-center justify-between">
-        <Text className="text-sm text-text-muted-light dark:text-text-muted-dark">
-          Last checked:{' '}
-          {product.last_checked_at
-            ? formatRelativeTime(product.last_checked_at)
-            : 'Never'}
-        </Text>
-        <Text
-          className={`text-sm font-medium ${targetReached ? 'text-success' : 'text-text-muted-light dark:text-text-muted-dark'}`}
-        >
-          {targetReached ? 'Target reached!' : `${progress.toFixed(0)}% to target`}
-        </Text>
-      </View>
-    </View>
-  );
+			{/* Progress status */}
+			<View className="flex-row items-center justify-between">
+				<Text className="text-sm text-text-muted-light dark:text-text-muted-dark">
+					Last checked: {product.last_checked_at ? formatRelativeTime(product.last_checked_at) : 'Never'}
+				</Text>
+				<Text
+					className={`text-sm font-medium ${targetReached ? 'text-success' : 'text-text-muted-light dark:text-text-muted-dark'}`}
+				>
+					{targetReached ? 'Target reached!' : `${progress.toFixed(0)}% to target`}
+				</Text>
+			</View>
+		</View>
+	);
 }
 
-function TrackingInfoCard({
-  product,
-}: {
-  product: PriceTrackerItem['tracked_product'];
-}) {
-  return (
-    <View className={`mb-4 p-4 ${tw.card}`}>
-      <Text className="mb-3 font-semibold text-text-primary-light dark:text-text-primary-dark">
-        Tracking Info
-      </Text>
-      <View className="gap-2">
-        <InfoRow
-          label="Started Tracking"
-          value={formatDate(product.tracking_start_date)}
-        />
-        {product.last_checked_at && (
-          <InfoRow
-            label="Last Checked"
-            value={formatRelativeTime(product.last_checked_at)}
-          />
-        )}
-        {product.price_drop_percentage > 0 && (
-          <InfoRow
-            label="Price Drop"
-            value={`${product.price_drop_percentage.toFixed(1)}%`}
-            highlight
-          />
-        )}
-      </View>
-    </View>
-  );
+function TrackingInfoCard({ product }: { product: PriceTrackerItem['tracked_product'] }) {
+	return (
+		<View className={`mb-4 p-4 ${tw.card}`}>
+			<Text className="mb-3 font-semibold text-text-primary-light dark:text-text-primary-dark">Tracking Info</Text>
+			<View className="gap-2">
+				<InfoRow label="Started Tracking" value={formatDate(product.tracking_start_date)} />
+				{product.last_checked_at && (
+					<InfoRow label="Last Checked" value={formatRelativeTime(product.last_checked_at)} />
+				)}
+				{product.price_drop_percentage > 0 && (
+					<InfoRow label="Price Drop" value={`${product.price_drop_percentage.toFixed(1)}%`} highlight />
+				)}
+			</View>
+		</View>
+	);
 }
 
 function PriceHistoryCard({
-  priceHistory,
-  targetPrice,
+	priceHistory,
+	targetPrice,
 }: {
-  priceHistory: { checked_at: string; price: number; in_stock?: boolean }[];
-  targetPrice?: number;
+	priceHistory: { checked_at: string; price: number; in_stock?: boolean }[];
+	targetPrice?: number;
 }) {
-  return (
-    <View className={`mb-4 p-4 ${tw.card}`}>
-      <Text className="mb-3 font-semibold text-text-primary-light dark:text-text-primary-dark">
-        Price History
-      </Text>
-      <View className="gap-2">
-        {priceHistory.slice(0, 10).map((entry, index) => (
-          <View key={index} className="flex-row items-center justify-between">
-            <View className="flex-row items-center gap-2">
-              <Text
-                className={`font-medium ${
-                  targetPrice && entry.price <= targetPrice
-                    ? 'text-success'
-                    : 'text-text-primary-light dark:text-text-primary-dark'
-                }`}
-              >
-                {formatCurrencyWithSymbol(entry.price)}
-              </Text>
-              {entry.in_stock === false && (
-                <View className="rounded bg-red-100 px-1.5 py-0.5 dark:bg-red-900/30">
-                  <Text className="text-xs text-red-600 dark:text-red-400">
-                    Out of stock
-                  </Text>
-                </View>
-              )}
-            </View>
-            <Text className="text-sm text-text-muted-light dark:text-text-muted-dark">
-              {formatDateTime(entry.checked_at)}
-            </Text>
-          </View>
-        ))}
-      </View>
-    </View>
-  );
+	return (
+		<View className={`mb-4 p-4 ${tw.card}`}>
+			<Text className="mb-3 font-semibold text-text-primary-light dark:text-text-primary-dark">Price History</Text>
+			<View className="gap-2">
+				{priceHistory.slice(0, 10).map((entry, index) => (
+					<View key={index} className="flex-row items-center justify-between">
+						<View className="flex-row items-center gap-2">
+							<Text
+								className={`font-medium ${
+									targetPrice && entry.price <= targetPrice
+										? 'text-success'
+										: 'text-text-primary-light dark:text-text-primary-dark'
+								}`}
+							>
+								{formatCurrencyWithSymbol(entry.price)}
+							</Text>
+							{entry.in_stock === false && (
+								<View className="rounded bg-red-100 px-1.5 py-0.5 dark:bg-red-900/30">
+									<Text className="text-xs text-red-600 dark:text-red-400">Out of stock</Text>
+								</View>
+							)}
+						</View>
+						<Text className="text-sm text-text-muted-light dark:text-text-muted-dark">
+							{formatDateTime(entry.checked_at)}
+						</Text>
+					</View>
+				))}
+			</View>
+		</View>
+	);
 }
 
 function ErrorCard({ error }: { error: string }) {
-  return (
-    <View className="mb-4 rounded-xl bg-red-50 p-4 dark:bg-red-900/20">
-      <Text className="font-medium text-red-700 dark:text-red-400">
-        Last Error
-      </Text>
-      <Text className="mt-1 text-sm text-red-600 dark:text-red-300">
-        {error}
-      </Text>
-    </View>
-  );
+	return (
+		<View className="mb-4 rounded-xl bg-red-50 p-4 dark:bg-red-900/20">
+			<Text className="font-medium text-red-700 dark:text-red-400">Last Error</Text>
+			<Text className="mt-1 text-sm text-red-600 dark:text-red-300">{error}</Text>
+		</View>
+	);
 }
 
-function InfoRow({
-  label,
-  value,
-  highlight = false,
-}: {
-  label: string;
-  value: string;
-  highlight?: boolean;
-}) {
-  return (
-    <View className="flex-row justify-between">
-      <Text className="text-text-muted-light dark:text-text-muted-dark">{label}</Text>
-      <Text
-        className={`font-medium ${highlight ? 'text-success' : 'text-text-primary-light dark:text-text-primary-dark'}`}
-      >
-        {value}
-      </Text>
-    </View>
-  );
+function InfoRow({ label, value, highlight = false }: { label: string; value: string; highlight?: boolean }) {
+	return (
+		<View className="flex-row justify-between">
+			<Text className="text-text-muted-light dark:text-text-muted-dark">{label}</Text>
+			<Text
+				className={`font-medium ${highlight ? 'text-success' : 'text-text-primary-light dark:text-text-primary-dark'}`}
+			>
+				{value}
+			</Text>
+		</View>
+	);
 }
 
 type ActionBarProps = {
-  product: PriceTrackerItem['tracked_product'];
-  onRefresh: () => void;
-  onTogglePause: () => void;
-  onDelete: () => void;
-  isRefreshing: boolean;
-  isUpdating: boolean;
-  isDeleting: boolean;
-  bottomPadding: number;
+	product: PriceTrackerItem['tracked_product'];
+	onRefresh: () => void;
+	onTogglePause: () => void;
+	onDelete: () => void;
+	isRefreshing: boolean;
+	isUpdating: boolean;
+	isDeleting: boolean;
+	bottomPadding: number;
 };
 
 function ActionBar({
-  product,
-  onRefresh,
-  onTogglePause,
-  onDelete,
-  isRefreshing,
-  isUpdating,
-  isDeleting,
-  bottomPadding,
+	product,
+	onRefresh,
+	onTogglePause,
+	onDelete,
+	isRefreshing,
+	isUpdating,
+	isDeleting,
+	bottomPadding,
 }: ActionBarProps) {
-  return (
-    <View
-      className={tw.footerBar}
-      style={{ paddingBottom: bottomPadding }}
-    >
-      <View className="flex-row gap-3">
-        <View className="flex-1">
-          <Button
-            label={isRefreshing ? 'Refreshing...' : 'Refresh Price'}
-            variant="outline"
-            onPress={onRefresh}
-            disabled={isRefreshing}
-          />
-        </View>
-        <View className="flex-1">
-          <Button
-            label={
-              isUpdating
-                ? 'Updating...'
-                : product.is_active
-                  ? 'Pause'
-                  : 'Resume'
-            }
-            variant="secondary"
-            onPress={onTogglePause}
-            disabled={isUpdating}
-          />
-        </View>
-      </View>
-      <View className="mt-3">
-        <Button
-          label={isDeleting ? 'Removing...' : 'Stop Tracking'}
-          variant="destructive"
-          onPress={onDelete}
-          disabled={isDeleting}
-        />
-      </View>
-    </View>
-  );
+	return (
+		<View className={tw.footerBar} style={{ paddingBottom: bottomPadding }}>
+			<View className="flex-row gap-3">
+				<View className="flex-1">
+					<Button
+						label={isRefreshing ? 'Refreshing...' : 'Refresh Price'}
+						variant="outline"
+						onPress={onRefresh}
+						disabled={isRefreshing}
+					/>
+				</View>
+				<View className="flex-1">
+					<Button
+						label={isUpdating ? 'Updating...' : product.is_active ? 'Pause' : 'Resume'}
+						variant="secondary"
+						onPress={onTogglePause}
+						disabled={isUpdating}
+					/>
+				</View>
+			</View>
+			<View className="mt-3">
+				<Button
+					label={isDeleting ? 'Removing...' : 'Stop Tracking'}
+					variant="destructive"
+					onPress={onDelete}
+					disabled={isDeleting}
+				/>
+			</View>
+		</View>
+	);
 }

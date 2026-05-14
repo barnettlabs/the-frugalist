@@ -7,18 +7,14 @@ import { client } from '../common';
 
 type Variables = { id: string };
 
-export const useWatchItem = createQuery<PriceTrackerItem, Variables, AxiosError>(
-  {
-    queryKey: ['watch-item'],
-    fetcher: async (variables): Promise<PriceTrackerItem> => {
-      const response = await client.get<PriceTrackerItem>(
-        `/watch/${variables.id}`
-      );
-      const data = response.data;
-      if (!data) {
-        throw new Error('Watch item not found');
-      }
-      return data;
-    },
-  }
-);
+export const useWatchItem = createQuery<PriceTrackerItem, Variables, AxiosError>({
+	queryKey: ['watch-item'],
+	fetcher: async (variables): Promise<PriceTrackerItem> => {
+		const response = await client.get<PriceTrackerItem>(`/watch/${variables.id}`);
+		const data = response.data;
+		if (!data) {
+			throw new Error('Watch item not found');
+		}
+		return data;
+	},
+});

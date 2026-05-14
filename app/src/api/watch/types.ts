@@ -1,21 +1,21 @@
 export interface CreateWatchRequest {
-  sku_upc: string;
-  retailer_id: number;
-  target_price: number;
+	sku_upc: string;
+	retailer_id: number;
+	target_price: number;
 }
 
 export interface UpdateWatchRequest {
-  id: number;
-  data: {
-    target_price?: number;
-    is_active?: boolean;
-  };
+	id: number;
+	data: {
+		target_price?: number;
+		is_active?: boolean;
+	};
 }
 
 export interface DeleteWatchRequest {
-  id: number;
+	id: number;
 }
 
 export interface RefreshWatchRequest {
-  id: number;
+	id: number;
 }

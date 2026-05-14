@@ -3,5 +3,5 @@ import React from 'react';
 
 // This screen redirects to the proper auth login
 export default function Login() {
-  return <Redirect href="/(auth)/login" />;
+	return <Redirect href="/(auth)/login" />;
 }

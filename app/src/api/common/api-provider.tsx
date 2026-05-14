@@ -5,10 +5,10 @@ import * as React from 'react';
 export const queryClient = new QueryClient();
 
 export function APIProvider({ children }: { children: React.ReactNode }) {
-  // Temporarily disabled - may cause "NavigationContainer" errors
-  useReactQueryDevTools(queryClient);
-  return (
-    // Provide the client to your App
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
+	// Temporarily disabled - may cause "NavigationContainer" errors
+	useReactQueryDevTools(queryClient);
+	return (
+		// Provide the client to your App
+		<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+	);
 }

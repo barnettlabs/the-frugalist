@@ -5,15 +5,15 @@ import { tw } from '@/components/ui/theme';
 import type { TxKeyPath } from '@/lib';
 
 type Props = {
-  children: React.ReactNode;
-  title?: TxKeyPath;
+	children: React.ReactNode;
+	title?: TxKeyPath;
 };
 
 export const ItemsContainer = ({ children, title }: Props) => {
-  return (
-    <>
-      {title && <Text className="pb-2 pt-4 text-lg" tx={title} />}
-      {<View className={`py-1 ${tw.card}`}>{children}</View>}
-    </>
-  );
+	return (
+		<>
+			{title && <Text className="pb-2 pt-4 text-lg" tx={title} />}
+			{<View className={`py-1 ${tw.card}`}>{children}</View>}
+		</>
+	);
 };

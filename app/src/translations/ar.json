@@ -1,51 +1,51 @@
 {
-  "onboarding": {
-    "message": "أنفق بوعي."
-  },
-  "settings": {
-    "about": "حول التطبيق",
-    "account": "الحساب",
-    "app_info": "معلومات التطبيق",
-    "app_name": "TheFrugalist",
-    "arabic": "عربي",
-    "build": "بناء",
-    "company": "JayTech LLC",
-    "english": "إنجليزي",
-    "generale": "التفضيلات",
-    "github": "جيثب",
-    "language": "لغة",
-    "links": "الروابط",
-    "logout": "تسجيل خروج",
-    "more": "أكثر",
-    "privacy": "سياسة الخصوصية",
-    "profile": "تعديل الملف الشخصي",
-    "rate": "قيمنا",
-    "share": "شارك التطبيق",
-    "support": "اتصل بالدعم",
-    "support_us": "ادعمنا",
-    "terms": "شروط الخدمة",
-    "theme": {
-      "dark": "مظلم",
-      "light": "خفيفة",
-      "system": "النظام",
-      "title": "سمة"
-    },
-    "title": "الحساب",
-    "version": "إصدار",
-    "web_app": "تطبيق الويب",
-    "website": "موقع الكتروني"
-  },
-  "welcome": "أنفق بوعي.",
-  "navigation": {
-    "home": "الرئيسية",
-    "watch": "مراقبة",
-    "compute": "حساب",
-    "guides": "أدلة",
-    "account": "الحساب"
-  },
-  "brand": {
-    "name": "TheFrugalist",
-    "tagline": "أنفق بوعي.",
-    "description": "نساعدك على تجنب الدفع الزائد من خلال تتبع حركة الأسعار وشرح أساليب التسعير."
-  }
+	"onboarding": {
+		"message": "أنفق بوعي."
+	},
+	"settings": {
+		"about": "حول التطبيق",
+		"account": "الحساب",
+		"app_info": "معلومات التطبيق",
+		"app_name": "TheFrugalist",
+		"arabic": "عربي",
+		"build": "بناء",
+		"company": "JayTech LLC",
+		"english": "إنجليزي",
+		"generale": "التفضيلات",
+		"github": "جيثب",
+		"language": "لغة",
+		"links": "الروابط",
+		"logout": "تسجيل خروج",
+		"more": "أكثر",
+		"privacy": "سياسة الخصوصية",
+		"profile": "تعديل الملف الشخصي",
+		"rate": "قيمنا",
+		"share": "شارك التطبيق",
+		"support": "اتصل بالدعم",
+		"support_us": "ادعمنا",
+		"terms": "شروط الخدمة",
+		"theme": {
+			"dark": "مظلم",
+			"light": "خفيفة",
+			"system": "النظام",
+			"title": "سمة"
+		},
+		"title": "الحساب",
+		"version": "إصدار",
+		"web_app": "تطبيق الويب",
+		"website": "موقع الكتروني"
+	},
+	"welcome": "أنفق بوعي.",
+	"navigation": {
+		"home": "الرئيسية",
+		"watch": "مراقبة",
+		"compute": "حساب",
+		"guides": "أدلة",
+		"account": "الحساب"
+	},
+	"brand": {
+		"name": "TheFrugalist",
+		"tagline": "أنفق بوعي.",
+		"description": "نساعدك على تجنب الدفع الزائد من خلال تتبع حركة الأسعار وشرح أساليب التسعير."
+	}
 }

@@ -1,11 +1,5 @@
 import * as React from 'react';
-import {
-  Platform,
-  ScrollView,
-  type ScrollViewProps,
-  type StyleProp,
-  type ViewStyle,
-} from 'react-native';
+import { Platform, ScrollView, type ScrollViewProps, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 /**
@@ -19,37 +13,32 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const TAB_BAR_VISIBLE = Platform.select({ ios: 49, android: 56, default: 49 });
 
 interface TabAwareScrollViewProps extends ScrollViewProps {
-  /** When true, adds tab-bar-safe bottom padding. Set false on screens with no tab bar. */
-  tabAware?: boolean;
-  /** Breathing room above the tab bar. Defaults to 16pt. */
-  extraBottomPadding?: number;
-  contentContainerStyle?: StyleProp<ViewStyle>;
+	/** When true, adds tab-bar-safe bottom padding. Set false on screens with no tab bar. */
+	tabAware?: boolean;
+	/** Breathing room above the tab bar. Defaults to 16pt. */
+	extraBottomPadding?: number;
+	contentContainerStyle?: StyleProp<ViewStyle>;
 }
 
 export const TabAwareScrollView = React.forwardRef<ScrollView, TabAwareScrollViewProps>(
-  (
-    { tabAware = true, extraBottomPadding = 16, contentContainerStyle, children, ...rest },
-    ref,
-  ) => {
-    const insets = useSafeAreaInsets();
-    const bottomPadding = tabAware
-      ? TAB_BAR_VISIBLE + insets.bottom + extraBottomPadding
-      : extraBottomPadding;
+	({ tabAware = true, extraBottomPadding = 16, contentContainerStyle, children, ...rest }, ref) => {
+		const insets = useSafeAreaInsets();
+		const bottomPadding = tabAware ? TAB_BAR_VISIBLE + insets.bottom + extraBottomPadding : extraBottomPadding;
 
-    return (
-      <ScrollView
-        ref={ref}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-        contentInsetAdjustmentBehavior="never"
-        automaticallyAdjustContentInsets={false}
-        contentContainerStyle={[{ paddingBottom: bottomPadding }, contentContainerStyle]}
-        {...rest}
-      >
-        {children}
-      </ScrollView>
-    );
-  },
+		return (
+			<ScrollView
+				ref={ref}
+				showsVerticalScrollIndicator={false}
+				keyboardShouldPersistTaps="handled"
+				contentInsetAdjustmentBehavior="never"
+				automaticallyAdjustContentInsets={false}
+				contentContainerStyle={[{ paddingBottom: bottomPadding }, contentContainerStyle]}
+				{...rest}
+			>
+				{children}
+			</ScrollView>
+		);
+	}
 );
 
 TabAwareScrollView.displayName = 'TabAwareScrollView';
@@ -59,6 +48,6 @@ TabAwareScrollView.displayName = 'TabAwareScrollView';
  * Use when you need to apply the offset to a non-ScrollView (FlatList contentContainerStyle, etc.).
  */
 export function useTabBarBottomPadding(extra = 16) {
-  const insets = useSafeAreaInsets();
-  return TAB_BAR_VISIBLE + insets.bottom + extra;
+	const insets = useSafeAreaInsets();
+	return TAB_BAR_VISIBLE + insets.bottom + extra;
 }

@@ -81,9 +81,9 @@ describe('DealGradeCard', () => {
     expect(screen.getByText('Decent.')).toBeOnTheScreen();
     expect(screen.getByText('• watch the fees')).toBeOnTheScreen();
     expect(screen.getByText('• ask for a lower rate')).toBeOnTheScreen();
-    expect(mockPost.mock.calls[0][0]).toBe('/api/calculators/finance/compute');
+    expect(mockPost.mock.calls[0][0]).toBe('/calculators/finance/compute');
     expect(mockPost.mock.calls[1][0]).toBe(
-      '/api/ai/agents/deal-grade-finance/run'
+      '/ai/agents/deal-grade-finance/run'
     );
   });
 

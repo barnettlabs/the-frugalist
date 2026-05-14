@@ -15,7 +15,7 @@ export const useFinanceSheet = createQuery<
   queryKey: ['finance-sheet'],
   fetcher: async (variables): Promise<VehicleFinanceSheet> => {
     const response = await client.get<VehicleFinanceSheet>(
-      `/api/vehicle-finance-sheets/${variables.id}`
+      `/vehicle-finance-sheets/${variables.id}`
     );
     const data = response.data;
     if (!data) {

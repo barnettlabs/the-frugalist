@@ -12,7 +12,7 @@ export const useWatchItem = createQuery<PriceTrackerItem, Variables, AxiosError>
     queryKey: ['watch-item'],
     fetcher: async (variables): Promise<PriceTrackerItem> => {
       const response = await client.get<PriceTrackerItem>(
-        `/api/watch/${variables.id}`
+        `/watch/${variables.id}`
       );
       const data = response.data;
       if (!data) {

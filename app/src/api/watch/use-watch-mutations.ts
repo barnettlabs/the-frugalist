@@ -24,7 +24,7 @@ export const useAddWatchItem = createMutation<
   AxiosError
 >({
   mutationFn: async (data) => {
-    const response = await client.post<PriceTrackerItem>('/api/watch', data);
+    const response = await client.post<PriceTrackerItem>('/watch', data);
     return response.data;
   },
   onSuccess: invalidateWatchQueries,
@@ -37,7 +37,7 @@ export const useUpdateWatchItem = createMutation<
 >({
   mutationFn: async ({ id, data }) => {
     const response = await client.patch<PriceTrackerItem>(
-      `/api/watch/${id}`,
+      `/watch/${id}`,
       data
     );
     return response.data;
@@ -51,7 +51,7 @@ export const useDeleteWatchItem = createMutation<
   AxiosError
 >({
   mutationFn: async ({ id }) => {
-    await client.delete(`/api/watch/${id}`);
+    await client.delete(`/watch/${id}`);
   },
   onSuccess: invalidateWatchQueries,
 });
@@ -63,7 +63,7 @@ export const useRefreshWatchItem = createMutation<
 >({
   mutationFn: async ({ id }) => {
     const response = await client.post<PriceTrackerItem>(
-      `/api/watch/${id}/refresh`
+      `/watch/${id}/refresh`
     );
     return response.data;
   },

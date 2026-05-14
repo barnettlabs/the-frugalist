@@ -20,7 +20,7 @@ export const useAddLeaseSheet = createMutation<
 >({
   mutationFn: async (data) => {
     const response = await client.post<VehicleLeaseSheet>(
-      '/api/vehicle-lease-sheets',
+      '/vehicle-lease-sheets',
       data
     );
     return response.data;
@@ -35,7 +35,7 @@ export const useUpdateLeaseSheet = createMutation<
 >({
   mutationFn: async ({ id, data }) => {
     const response = await client.put<VehicleLeaseSheet>(
-      `/api/vehicle-lease-sheets/${id}`,
+      `/vehicle-lease-sheets/${id}`,
       data
     );
     return response.data;
@@ -49,7 +49,7 @@ export const useDeleteLeaseSheet = createMutation<
   AxiosError
 >({
   mutationFn: async ({ id }) => {
-    await client.delete(`/api/vehicle-lease-sheets/${id}`);
+    await client.delete(`/vehicle-lease-sheets/${id}`);
   },
   onSuccess: invalidateLeaseQueries,
 });

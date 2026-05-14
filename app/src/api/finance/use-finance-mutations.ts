@@ -23,7 +23,7 @@ export const useAddFinanceSheet = createMutation<
 >({
   mutationFn: async (data) => {
     const response = await client.post<VehicleFinanceSheet>(
-      '/api/vehicle-finance-sheets',
+      '/vehicle-finance-sheets',
       data
     );
     return response.data;
@@ -38,7 +38,7 @@ export const useUpdateFinanceSheet = createMutation<
 >({
   mutationFn: async ({ id, data }) => {
     const response = await client.put<VehicleFinanceSheet>(
-      `/api/vehicle-finance-sheets/${id}`,
+      `/vehicle-finance-sheets/${id}`,
       data
     );
     return response.data;
@@ -52,7 +52,7 @@ export const useDeleteFinanceSheet = createMutation<
   AxiosError
 >({
   mutationFn: async ({ id }) => {
-    await client.delete(`/api/vehicle-finance-sheets/${id}`);
+    await client.delete(`/vehicle-finance-sheets/${id}`);
   },
   onSuccess: invalidateFinanceQueries,
 });

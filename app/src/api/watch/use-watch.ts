@@ -9,7 +9,7 @@ export const useWatch = createQuery<PriceTracker | null, void, AxiosError>({
   queryKey: ['watch'],
   fetcher: async (): Promise<PriceTracker | null> => {
     try {
-      const response = await client.get<PriceTracker>('/api/watch');
+      const response = await client.get<PriceTracker>('/watch');
       return (
         response.data ?? {
           retailers: [],

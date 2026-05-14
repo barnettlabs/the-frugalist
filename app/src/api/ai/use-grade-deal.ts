@@ -12,8 +12,8 @@ export const useGradeDeal = createMutation<
   mutationFn: async ({ agentSlug, calculatorType, inputs }) => {
     const computePath =
       calculatorType === 'finance'
-        ? '/api/calculators/finance/compute'
-        : '/api/calculators/lease/compute';
+        ? '/calculators/finance/compute'
+        : '/calculators/lease/compute';
 
     const compute = await client.post<{
       inputs: Record<string, unknown>;
@@ -21,7 +21,7 @@ export const useGradeDeal = createMutation<
     }>(computePath, { ...inputs, with_schedule: false });
 
     const run = await client.post<GradeDealResult>(
-      `/api/ai/agents/${agentSlug}/run`,
+      `/ai/agents/${agentSlug}/run`,
       {
         context: {
           inputs: compute.data.inputs,

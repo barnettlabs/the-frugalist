@@ -14,7 +14,7 @@ export const useFinanceSheets = createQuery<
   fetcher: async (): Promise<VehicleFinanceSheet[]> => {
     try {
       const response = await client.get<VehicleFinanceSheet[]>(
-        '/api/vehicle-finance-sheets'
+        '/vehicle-finance-sheets'
       );
 
       return response.data ?? [];

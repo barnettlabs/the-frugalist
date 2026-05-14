@@ -28,7 +28,7 @@ export const useDashboardStats = createQuery<DashboardStats, void, AxiosError>({
     // Try to get stats from a dedicated endpoint, or calculate from individual endpoints
     try {
       const response =
-        await client.get<DashboardStatsApiResponse>('/api/dashboard/stats');
+        await client.get<DashboardStatsApiResponse>('/dashboard/stats');
       const data = response.data;
 
       return {
@@ -40,11 +40,9 @@ export const useDashboardStats = createQuery<DashboardStats, void, AxiosError>({
       // Fallback: fetch counts from individual endpoints
       try {
         const [financeRes, leaseRes, trackerRes] = await Promise.all([
-          client.get('/api/vehicle-finance-sheets').catch(() => ({ data: [] })),
-          client.get('/api/vehicle-lease-sheets').catch(() => ({ data: [] })),
-          client
-            .get('/api/price-tracker')
-            .catch(() => ({ data: { tracked_products: [] } })),
+          client.get('/vehicle-finance-sheets').catch(() => ({ data: [] })),
+          client.get('/vehicle-lease-sheets').catch(() => ({ data: [] })),
+          client.get('/price-tracker').catch(() => ({ data: { tracked_products: [] } })),
         ]);
 
         // Finance and Lease endpoints return arrays directly

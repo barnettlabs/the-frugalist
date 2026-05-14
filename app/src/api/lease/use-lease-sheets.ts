@@ -14,7 +14,7 @@ export const useLeaseSheets = createQuery<
   fetcher: async (): Promise<VehicleLeaseSheet[]> => {
     try {
       const response = await client.get<VehicleLeaseSheet[]>(
-        '/api/vehicle-lease-sheets'
+        '/vehicle-lease-sheets'
       );
       return response.data ?? [];
     } catch {

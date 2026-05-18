@@ -119,6 +119,21 @@ types/        # Shared TypeScript types
 - Follow Laravel conventions
 - Use Laravel Pint for code formatting
 
+### Git Workflow
+Always work on a branch — never commit directly to `main`. Follow git flow naming:
+
+| Type | When | Branch name pattern |
+|------|------|---------------------|
+| `feature/` | New functionality | `feature/ten-{N}-short-description` |
+| `fix/` | Bug fix | `fix/ten-{N}-short-description` |
+| `hotfix/` | Urgent production fix | `hotfix/ten-{N}-short-description` |
+| `chore/` | Non-functional (deps, config, cleanup) | `chore/ten-{N}-short-description` |
+| `refactor/` | Code restructure without behaviour change | `refactor/ten-{N}-short-description` |
+
+Example: `feature/ten-17-web-code-quality-fixes`
+
+After pushing the branch, open a GitHub PR referencing the Paperclip issue identifier in the PR title or body.
+
 ### Git Commits
 Use conventional commits: `fix:`, `feat:`, `perf:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`
 - Lowercase messages, max 100 characters

@@ -37,8 +37,10 @@ apiClient.interceptors.response.use(
 	(error: AxiosError) => {
 		if (error.response?.status === 401) {
 			const authStore = useAuthStore();
-			authStore.logout();
-			window.location.href = '/login';
+			authStore.clearAuth();
+			import('@/router').then(({ default: router }) => {
+				router.push({ name: 'login' });
+			});
 		}
 		return Promise.reject(error);
 	}

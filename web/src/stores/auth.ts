@@ -1,9 +1,11 @@
+import axios from 'axios';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
 import type { LoginCredentials, RegisterData } from '@/api/auth';
 import { authApi } from '@/api/auth';
 import type { User } from '@/types';
+import { useToastStore } from '@/stores/toast';
 
 const TOKEN_KEY = 'auth_token';
 const USER_KEY = 'auth_user';
@@ -43,8 +45,8 @@ export const useAuthStore = defineStore('auth', () => {
 				user.value = freshUser;
 				localStorage.setItem(USER_KEY, JSON.stringify(freshUser));
 			} catch {
-				// Token is invalid, clear everything
 				clearAuth();
+				useToastStore().add('Your session has expired. Please sign in again.', 'info');
 			}
 		}
 
@@ -59,11 +61,17 @@ export const useAuthStore = defineStore('auth', () => {
 			const response = await authApi.login(credentials);
 			setAuth(response.user, response.token);
 			return true;
-		} catch (error: any) {
-			if (error.response?.data?.errors) {
-				errors.value = error.response.data.errors;
-			} else if (error.response?.data?.message) {
-				errors.value = { email: [error.response.data.message] };
+		} catch (error: unknown) {
+			if (axios.isAxiosError(error)) {
+				if (error.response?.data?.errors) {
+					errors.value = error.response.data.errors;
+				} else if (error.response?.data?.message) {
+					errors.value = { email: [error.response.data.message] };
+				} else {
+					errors.value = { email: ['A network error occurred. Please try again.'] };
+				}
+			} else {
+				errors.value = { email: ['An unexpected error occurred. Please try again.'] };
 			}
 			return false;
 		} finally {
@@ -79,11 +87,17 @@ export const useAuthStore = defineStore('auth', () => {
 			const response = await authApi.register(data);
 			setAuth(response.user, response.token);
 			return true;
-		} catch (error: any) {
-			if (error.response?.data?.errors) {
-				errors.value = error.response.data.errors;
-			} else if (error.response?.data?.message) {
-				errors.value = { email: [error.response.data.message] };
+		} catch (error: unknown) {
+			if (axios.isAxiosError(error)) {
+				if (error.response?.data?.errors) {
+					errors.value = error.response.data.errors;
+				} else if (error.response?.data?.message) {
+					errors.value = { email: [error.response.data.message] };
+				} else {
+					errors.value = { email: ['A network error occurred. Please try again.'] };
+				}
+			} else {
+				errors.value = { email: ['An unexpected error occurred. Please try again.'] };
 			}
 			return false;
 		} finally {
@@ -112,6 +126,7 @@ export const useAuthStore = defineStore('auth', () => {
 			localStorage.setItem(USER_KEY, JSON.stringify(freshUser));
 		} catch {
 			clearAuth();
+			useToastStore().add('Your session has expired. Please sign in again.', 'info');
 		}
 	};
 

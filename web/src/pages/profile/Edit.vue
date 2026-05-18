@@ -12,10 +12,12 @@ import InputLabel from '@/components/InputLabel.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import PrimaryButton from '@/components/PrimaryButton.vue';
 import TextInput from '@/components/TextInput.vue';
+import { useToast } from '@/composables/useToast';
 import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const toast = useToast();
 
 // Profile form schema
 const profileSchema = toTypedSchema(
@@ -122,8 +124,8 @@ const loadProfile = async () => {
 				email: data.email || '',
 			},
 		});
-	} catch (error) {
-		console.error('Error loading profile:', error);
+	} catch {
+		toast.error('Failed to load profile. Please try again.');
 	}
 };
 
@@ -144,6 +146,8 @@ const updateProfile = handleProfileSubmit(async values => {
 				}
 			}
 			setProfileErrors(serverErrors);
+		} else {
+			toast.error(error.response?.data?.message || 'Failed to update profile. Please try again.');
 		}
 	} finally {
 		profileLoading.value = false;
@@ -167,6 +171,8 @@ const updatePassword = handlePasswordSubmit(async values => {
 				}
 			}
 			setPasswordErrors(serverErrors);
+		} else {
+			toast.error(error.response?.data?.message || 'Failed to update password. Please try again.');
 		}
 	} finally {
 		passwordLoading.value = false;
@@ -189,6 +195,8 @@ const deleteAccount = handleDeleteSubmit(async values => {
 				}
 			}
 			setDeleteErrors(serverErrors);
+		} else {
+			toast.error(error.response?.data?.message || 'Failed to delete account. Please try again.');
 		}
 	} finally {
 		deleteLoading.value = false;

@@ -22,8 +22,11 @@ import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import CopyText from '@/components/CopyText.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
+import { useToast } from '@/composables/useToast';
 import { formatCurrency } from '@/utils/formatters';
 import { formatRelativeTime } from '@/utils/time';
+
+const toast = useToast();
 
 type FilterType = 'all' | 'active' | 'paused';
 
@@ -56,8 +59,8 @@ const targetReachedCount = computed(
 const fetchProducts = async () => {
 	try {
 		products.value = await watchApi.getAll();
-	} catch (error) {
-		console.error('Error fetching tracked products:', error);
+	} catch {
+		toast.error('Failed to load tracked products. Please try again.');
 	} finally {
 		loading.value = false;
 	}
@@ -76,8 +79,8 @@ const confirmDelete = async () => {
 		await fetchProducts();
 		showDeleteDialog.value = false;
 		selectedProduct.value = null;
-	} catch (error) {
-		console.error('Error deleting product:', error);
+	} catch {
+		toast.error('Failed to delete product. Please try again.');
 	} finally {
 		actionLoading.value = false;
 	}
@@ -98,8 +101,8 @@ const confirmTogglePause = async () => {
 		await fetchProducts();
 		showPauseDialog.value = false;
 		selectedProduct.value = null;
-	} catch (error) {
-		console.error('Error toggling pause:', error);
+	} catch {
+		toast.error('Failed to update tracking status. Please try again.');
 	} finally {
 		actionLoading.value = false;
 	}
@@ -110,8 +113,8 @@ const refreshProduct = async (id: number) => {
 	try {
 		await watchApi.refresh(id);
 		await fetchProducts();
-	} catch (error) {
-		console.error('Error refreshing product:', error);
+	} catch {
+		toast.error('Failed to refresh price. Please try again.');
 	} finally {
 		refreshingId.value = null;
 	}

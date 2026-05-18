@@ -34,11 +34,13 @@ import InputLabel from '@/components/InputLabel.vue';
 import PrimaryButton from '@/components/PrimaryButton.vue';
 import Spinner from '@/components/Spinner.vue';
 import TextInput from '@/components/TextInput.vue';
+import { useToast } from '@/composables/useToast';
 import { formatCurrency } from '@/utils/formatters';
 import { formatDateTime, formatRelativeTime, formatShortDate } from '@/utils/time';
 
 const route = useRoute();
 const router = useRouter();
+const toast = useToast();
 
 const product = ref<TrackedProduct | null>(null);
 const loading = ref(true);
@@ -77,8 +79,7 @@ const loadProduct = async () => {
 		editForm.value.notification_push = data.notification_method?.includes('push') || false;
 		editForm.value.watch_type = data.watch_type || 'price';
 		editForm.value.check_interval = data.check_interval || 60;
-	} catch (error) {
-		console.error('Error loading product:', error);
+	} catch {
 		router.push('/watch');
 	} finally {
 		loading.value = false;
@@ -103,8 +104,8 @@ const refreshPrice = async () => {
 			const updated = await watchApi.refresh(product.value.id);
 			product.value = updated;
 		}
-	} catch (error) {
-		console.error('Error refreshing price:', error);
+	} catch {
+		toast.error('Failed to refresh price. Please try again.');
 	} finally {
 		refreshing.value = false;
 	}
@@ -130,8 +131,8 @@ const saveSettings = async () => {
 			check_interval: editForm.value.check_interval,
 		});
 		product.value = updated;
-	} catch (error) {
-		console.error('Error updating product:', error);
+	} catch {
+		toast.error('Failed to save settings. Please try again.');
 	} finally {
 		saving.value = false;
 	}
@@ -143,8 +144,8 @@ const confirmDelete = async () => {
 	try {
 		await watchApi.delete(product.value.id);
 		router.push('/watch');
-	} catch (error) {
-		console.error('Error deleting product:', error);
+	} catch {
+		toast.error('Failed to delete tracker. Please try again.');
 	} finally {
 		actionLoading.value = false;
 	}
@@ -159,8 +160,8 @@ const confirmTogglePause = async () => {
 		});
 		product.value = updated;
 		showPauseDialog.value = false;
-	} catch (error) {
-		console.error('Error toggling pause:', error);
+	} catch {
+		toast.error('Failed to update tracking status. Please try again.');
 	} finally {
 		actionLoading.value = false;
 	}
@@ -177,12 +178,6 @@ const progressPercent = computed(() => {
 	const retail = product.value.retail_price;
 	const target = product.value.target_price;
 	const current = product.value.current_price;
-
-	console.log({
-		retail,
-		target,
-		current,
-	});
 
 	if (retail <= target) return 100;
 	if (current <= target) return 100;

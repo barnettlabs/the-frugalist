@@ -51,6 +51,7 @@ const form = ref<FinanceFormData>({
 const loading = ref(false);
 const loadingSheet = ref(false);
 const errors = ref<FormErrors>({});
+const networkError = ref('');
 
 const vehicleTitle = computed(() => {
 	const parts = [
@@ -94,6 +95,7 @@ const loadSheet = async () => {
 const submitForm = async () => {
 	loading.value = true;
 	errors.value = {};
+	networkError.value = '';
 
 	try {
 		if (isEdit.value) {
@@ -106,7 +108,7 @@ const submitForm = async () => {
 		if (error.response?.data?.errors) {
 			errors.value = error.response.data.errors;
 		} else {
-			console.error(`Error ${isEdit.value ? 'updating' : 'creating'} finance sheet:`, error);
+			networkError.value = 'Something went wrong. Please check your connection and try again.';
 		}
 	} finally {
 		loading.value = false;
@@ -135,6 +137,12 @@ onMounted(() => {
 					<ArrowLeftIcon class="h-3 w-3" />
 					All finance estimates
 				</RouterLink>
+			</div>
+
+			<div v-if="networkError" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-4">
+				<div class="rounded-md bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+					{{ networkError }}
+				</div>
 			</div>
 
 			<SectionHeader

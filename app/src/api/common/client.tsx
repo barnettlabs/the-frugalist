@@ -1,8 +1,7 @@
 import { Env } from '@env';
 import axios from 'axios';
 
-import { signOut } from '@/lib/auth';
-import { getToken } from '@/lib/auth/utils';
+import { signOut, useAuth } from '@/lib/auth';
 
 export const client = axios.create({
 	baseURL: Env.API_URL,
@@ -23,7 +22,7 @@ client.interceptors.request.use(
 		(config as any)._startTime = Date.now();
 		console.log(`[API #${id}] → ${config.method?.toUpperCase()} ${fullUrl}`);
 
-		const token = getToken();
+		const token = useAuth.getState().token;
 		if (token?.access) {
 			config.headers.Authorization = `Bearer ${token.access}`;
 		}

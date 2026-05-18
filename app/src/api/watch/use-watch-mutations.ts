@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import { createMutation } from 'react-query-kit';
 
@@ -9,8 +8,7 @@ import type { CreateWatchRequest, DeleteWatchRequest, RefreshWatchRequest, Updat
 
 const invalidateWatchQueries = () => {
 	queryClient.invalidateQueries({ queryKey: ['watch'] });
-	queryClient.invalidateQueries({ queryKey: ['watch-item'] });
-	queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+	queryClient.invalidateQueries({ queryKey: ['dashboard', 'stats'] });
 };
 
 export const useAddWatchItem = createMutation<PriceTrackerItem, CreateWatchRequest, AxiosError>({
@@ -43,20 +41,3 @@ export const useRefreshWatchItem = createMutation<PriceTrackerItem, RefreshWatch
 	},
 	onSuccess: invalidateWatchQueries,
 });
-
-// Hook to invalidate watch queries after mutations
-export function useInvalidateWatchQueries() {
-	const queryClient = useQueryClient();
-
-	return {
-		invalidateAll: () => {
-			queryClient.invalidateQueries({ queryKey: ['watch'] });
-			queryClient.invalidateQueries({ queryKey: ['watch-item'] });
-			queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
-		},
-		invalidateList: () => {
-			queryClient.invalidateQueries({ queryKey: ['watch'] });
-			queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
-		},
-	};
-}

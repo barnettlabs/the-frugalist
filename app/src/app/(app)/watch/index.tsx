@@ -7,6 +7,7 @@ import { useWatch } from '@/api/watch';
 import { ProductCard } from '@/components/tracker/product-card';
 import {
 	Button,
+	colors,
 	FloatingAddButton,
 	Pressable,
 	ScreenContainer,
@@ -147,8 +148,8 @@ export default function TrackerListScreen() {
 							Pick a product.
 						</Text>
 						<Text
-							className="font-display italic tracking-tightest mt-1"
-							style={{ fontSize: 26, lineHeight: 28, color: '#E6B25A' }}
+							className="font-display italic tracking-tightest mt-1 text-signal-light"
+							style={{ fontSize: 26, lineHeight: 28 }}
 						>
 							Watch it breathe.
 						</Text>
@@ -160,7 +161,7 @@ export default function TrackerListScreen() {
 						{allProducts.length === 0 ? (
 							<Link href="/watch/create?from=watch" asChild>
 								<Pressable className="self-start rounded-md px-5 py-3 bg-surface-light flex-row items-center gap-2">
-									<PlusIcon color="#171B27" width={14} height={14} />
+									<PlusIcon color={colors.primary.DEFAULT} width={14} height={14} />
 									<Text className="text-sm font-medium text-primary">Track first product</Text>
 								</Pressable>
 							</Link>

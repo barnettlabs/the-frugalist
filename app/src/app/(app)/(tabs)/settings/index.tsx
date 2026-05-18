@@ -6,6 +6,7 @@ import { useColorScheme } from 'nativewind';
 import React, { useState } from 'react';
 import { Platform, Share } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
+import { useTranslation } from 'react-i18next';
 
 import { useProfile } from '@/api/auth/use-profile';
 import { Item } from '@/components/settings/item';
@@ -36,6 +37,7 @@ function isDevUser(email: string | undefined): boolean {
 }
 
 export default function Settings() {
+	const { t } = useTranslation();
 	const signOut = useAuth.use.signOut();
 	const { colorScheme } = useColorScheme();
 	const { data: profile } = useProfile();
@@ -57,8 +59,8 @@ export default function Settings() {
 			});
 		} catch {
 			showMessage({
-				message: 'Error',
-				description: 'Failed to share the app',
+				message: t('common.error'),
+				description: t('settings.share_failed'),
 				type: 'danger',
 			});
 		}
@@ -84,8 +86,8 @@ export default function Settings() {
 			await Linking.openURL(mailUrl);
 		} else {
 			showMessage({
-				message: 'Error',
-				description: 'Unable to open email client',
+				message: t('common.error'),
+				description: t('settings.email_client_error'),
 				type: 'danger',
 			});
 		}
@@ -203,7 +205,7 @@ function ProfileCard({
 			<View className="size-14 items-center justify-center rounded-full border border-border-light dark:border-border-dark bg-tan-light dark:bg-charcoal-800">
 				<Text
 					className="font-display text-text-primary-light dark:text-text-primary-dark"
-					style={{ fontSize: 18, lineHeight: 24, includeFontPadding: false } as any}
+					style={{ fontSize: 18, lineHeight: 24, includeFontPadding: false }}
 				>
 					{initials}
 				</Text>
@@ -212,7 +214,7 @@ function ProfileCard({
 			<View className="ml-4 flex-1">
 				<Text
 					className="font-display tracking-tight text-text-primary-light dark:text-text-primary-dark"
-					style={{ fontSize: 18, lineHeight: 24, includeFontPadding: false } as any}
+					style={{ fontSize: 18, lineHeight: 24, includeFontPadding: false }}
 				>
 					{profile ? `${profile.first_name} ${profile.last_name}` : 'Loading…'}
 				</Text>

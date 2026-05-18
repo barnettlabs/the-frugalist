@@ -9,6 +9,7 @@ import colors from '@/components/ui/colors';
 import { Chevron } from '@/components/ui/icons';
 import { TabAwareScrollView } from '@/components/ui/scroll-aware';
 import { getThemeColors } from '@/components/ui/theme';
+import type { AppHref } from '@/lib/navigation';
 
 type Tool = {
 	key: string;
@@ -18,9 +19,9 @@ type Tool = {
 	italic: string;
 	description: string;
 	countKey: 'watchCount' | 'financeCount' | 'leaseCount' | null;
-	viewRoute: string;
+	viewRoute: AppHref;
 	createLabel?: string;
-	createRoute?: string;
+	createRoute?: AppHref;
 };
 
 const TOOLS: Tool[] = [
@@ -96,7 +97,7 @@ export default function ToolsScreen() {
 							<Pressable
 								key={tool.key}
 								className="rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-5 active:opacity-70"
-								onPress={() => router.push(tool.viewRoute as any)}
+								onPress={() => router.push(tool.viewRoute)}
 							>
 								<View className="flex-row items-center justify-between mb-4">
 									<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
@@ -109,13 +110,13 @@ export default function ToolsScreen() {
 
 								<Text
 									className="font-display tracking-tightest text-text-primary-light dark:text-text-primary-dark"
-									style={{ fontSize: 32, lineHeight: 38, includeFontPadding: false } as any}
+									style={{ fontSize: 32, lineHeight: 38, includeFontPadding: false }}
 								>
 									{tool.title}
 								</Text>
 								<Text
 									className="font-display italic tracking-tightest"
-									style={{ fontSize: 32, lineHeight: 38, includeFontPadding: false, color: theme.accentDark } as any}
+									style={{ fontSize: 32, lineHeight: 38, includeFontPadding: false, color: theme.accentDark }}
 								>
 									{tool.italic}
 								</Text>
@@ -129,7 +130,7 @@ export default function ToolsScreen() {
 									<View className="flex-row items-baseline gap-2">
 										<Text
 											className="font-mono text-text-primary-light dark:text-text-primary-dark"
-											style={{ fontSize: 22, lineHeight: 26, includeFontPadding: false } as any}
+											style={{ fontSize: 22, lineHeight: 26, includeFontPadding: false }}
 										>
 											{count}
 										</Text>
@@ -139,7 +140,7 @@ export default function ToolsScreen() {
 									</View>
 									<View className="flex-1" />
 									<Pressable
-										onPress={() => router.push(tool.viewRoute as any)}
+										onPress={() => router.push(tool.viewRoute)}
 										className="flex-row items-center gap-1 active:opacity-60 px-2 py-2"
 										hitSlop={6}
 									>
@@ -150,7 +151,7 @@ export default function ToolsScreen() {
 									</Pressable>
 									{tool.createRoute ? (
 										<Pressable
-											onPress={() => router.push(tool.createRoute as any)}
+											onPress={() => router.push(tool.createRoute!)}
 											className="px-4 py-2.5 rounded-md bg-primary active:opacity-80"
 										>
 											<Text className="text-sm font-medium" style={{ color: colors.surface.light }}>
@@ -168,7 +169,7 @@ export default function ToolsScreen() {
 				{guides ? (
 					<View className="px-4 pb-4">
 						<Pressable
-							onPress={() => router.push(guides.viewRoute as any)}
+							onPress={() => router.push(guides.viewRoute)}
 							className="rounded-md overflow-hidden border border-primary-dark active:opacity-80"
 							style={{ backgroundColor: '#171B27' }}
 						>
@@ -180,13 +181,13 @@ export default function ToolsScreen() {
 							<View className="px-5 py-6">
 								<Text
 									className="font-display tracking-tightest text-white"
-									style={{ fontSize: 30, lineHeight: 36, includeFontPadding: false } as any}
+									style={{ fontSize: 30, lineHeight: 36, includeFontPadding: false }}
 								>
 									{guides.title}
 								</Text>
 								<Text
 									className="font-display italic tracking-tightest"
-									style={{ fontSize: 30, lineHeight: 36, includeFontPadding: false, color: colors.signal.light } as any}
+									style={{ fontSize: 30, lineHeight: 36, includeFontPadding: false, color: colors.signal.light }}
 								>
 									{guides.italic}
 								</Text>

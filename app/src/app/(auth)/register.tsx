@@ -5,6 +5,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
@@ -27,6 +28,7 @@ const registerSchema = z
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 export default function RegisterScreen() {
+	const { t } = useTranslation();
 	const { mutate: register, isPending } = useRegister();
 	const insets = useSafeAreaInsets();
 
@@ -45,15 +47,15 @@ export default function RegisterScreen() {
 		register(data, {
 			onSuccess: () => {
 				showMessage({
-					message: 'Account created',
-					description: 'Please check your email to verify your account',
+					message: t('auth.account_created'),
+					description: t('auth.account_created_description'),
 					type: 'success',
 				});
 				router.replace('/(auth)/verify-email');
 			},
 			onError: error => {
 				showMessage({
-					message: 'Registration failed',
+					message: t('auth.registration_failed'),
 					description: error.message || 'Could not create account',
 					type: 'danger',
 				});

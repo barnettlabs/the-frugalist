@@ -19,6 +19,7 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginScreen() {
+	const { t } = useTranslation();
 	const { mutate: login, isPending } = useLogin();
 	const insets = useSafeAreaInsets();
 
@@ -56,7 +57,7 @@ export default function LoginScreen() {
 				>
 					<MastheadBar
 						left="v 1.0.0"
-						center="A field guide to what things should cost"
+						center={t('auth.masthead_subtitle')}
 						right={`Est. ${Env.ESTABLISHED_YEAR}`}
 					/>
 
@@ -64,7 +65,7 @@ export default function LoginScreen() {
 						<View className="px-6 items-center">
 							<LogoImage variant="auto" className="!size-20" />
 							<Text className="font-display italic mt-4 text-accent dark:text-accent-light" style={{ fontSize: 18 }}>
-								Spend with intent.
+								{t('auth.login_tagline')}
 							</Text>
 						</View>
 
@@ -116,7 +117,7 @@ export default function LoginScreen() {
 										style={{ opacity: isPending ? 0.6 : 1 }}
 									>
 										<Text className="text-sm font-medium text-surface-light">
-											{isPending ? 'Signing in…' : 'Sign in'}
+											{isPending ? t('auth.signing_in') : t('auth.sign_in')}
 										</Text>
 									</Pressable>
 

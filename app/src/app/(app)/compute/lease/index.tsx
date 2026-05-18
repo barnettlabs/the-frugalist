@@ -7,6 +7,7 @@ import { useLeaseSheets } from '@/api/lease/use-lease-sheets';
 import { LeaseCard } from '@/components/lease/lease-card';
 import {
 	Button,
+	colors,
 	FloatingAddButton,
 	Pressable,
 	ScreenContainer,
@@ -102,10 +103,7 @@ export default function LeaseListScreen() {
 					</View>
 
 					{sheets.length === 0 ? (
-						<View
-							className="rounded-md p-6 mt-3 overflow-hidden"
-							style={{ backgroundColor: '#171B27', borderWidth: 1, borderColor: '#0C0E16' }}
-						>
+						<View className="rounded-md p-6 mt-3 overflow-hidden bg-primary border border-primary-dark">
 							<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-3">
 								No lease estimates yet
 							</Text>
@@ -113,8 +111,8 @@ export default function LeaseListScreen() {
 								Type the offer in.
 							</Text>
 							<Text
-								className="font-display italic tracking-tightest mt-1"
-								style={{ fontSize: 26, lineHeight: 28, color: '#E6B25A' }}
+								className="font-display italic tracking-tightest mt-1 text-signal-light"
+								style={{ fontSize: 26, lineHeight: 28 }}
 							>
 								Watch it tell on itself.
 							</Text>
@@ -122,10 +120,10 @@ export default function LeaseListScreen() {
 								Money factor, residual, term, fees. Every variable in the lease formula, made plain.
 							</Text>
 							<Pressable
-								onPress={() => router.push('/compute/lease/create?from=lease' as any)}
+								onPress={() => router.push('/compute/lease/create?from=lease')}
 								className="self-start rounded-md px-5 py-3 bg-surface-light flex-row items-center gap-2"
 							>
-								<PlusIcon color="#171B27" width={14} height={14} />
+								<PlusIcon color={colors.primary.DEFAULT} width={14} height={14} />
 								<Text className="text-sm font-medium text-primary">Create first estimate</Text>
 							</Pressable>
 						</View>

@@ -2,6 +2,8 @@ import type { AxiosError } from 'axios';
 import { Dimensions, Platform } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
 
+import i18n from '@/lib/i18n';
+
 export const IS_IOS = Platform.OS === 'ios';
 const { width, height } = Dimensions.get('screen');
 
@@ -13,7 +15,7 @@ export const showError = (error: AxiosError) => {
 	const description = extractError(error?.response?.data).trimEnd();
 
 	showMessage({
-		message: 'Error',
+		message: i18n.t('common.error'),
 		description,
 		type: 'danger',
 		duration: 4000,

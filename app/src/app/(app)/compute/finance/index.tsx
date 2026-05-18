@@ -7,6 +7,7 @@ import { useFinanceSheets } from '@/api/finance/use-finance-sheets';
 import { FinanceCard } from '@/components/finance/finance-card';
 import {
 	Button,
+	colors,
 	FloatingAddButton,
 	Pressable,
 	ScreenContainer,
@@ -111,8 +112,8 @@ export default function FinanceListScreen() {
 								Open a sheet.
 							</Text>
 							<Text
-								className="font-display italic tracking-tightest mt-1"
-								style={{ fontSize: 26, lineHeight: 28, color: '#E6B25A' }}
+								className="font-display italic tracking-tightest mt-1 text-signal-light"
+								style={{ fontSize: 26, lineHeight: 28 }}
 							>
 								Run any offer through it.
 							</Text>
@@ -120,10 +121,10 @@ export default function FinanceListScreen() {
 								Enter MSRP, term, rate, and fees. We’ll do the math the dealer hopes you won’t.
 							</Text>
 							<Pressable
-								onPress={() => router.push('/compute/finance/create?from=finance' as any)}
+								onPress={() => router.push('/compute/finance/create?from=finance')}
 								className="self-start rounded-md px-5 py-3 bg-surface-light flex-row items-center gap-2"
 							>
-								<PlusIcon color="#171B27" width={14} height={14} />
+								<PlusIcon color={colors.primary.DEFAULT} width={14} height={14} />
 								<Text className="text-sm font-medium text-primary">Create first estimate</Text>
 							</Pressable>
 						</View>

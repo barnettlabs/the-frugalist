@@ -20,6 +20,7 @@ import { computed, ref } from 'vue';
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 
 import ApplicationLogo from '@/components/ApplicationLogo.vue';
+import ToastContainer from '@/components/ToastContainer.vue';
 import { useAuthStore } from '@/stores/auth';
 
 interface NavChild {
@@ -535,5 +536,7 @@ const handleSignOut = async () => {
 				</div>
 			</footer>
 		</div>
+
+		<ToastContainer />
 	</div>
 </template>

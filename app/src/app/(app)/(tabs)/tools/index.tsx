@@ -73,7 +73,7 @@ const TOOLS: Tool[] = [
 ];
 
 export default function ToolsScreen() {
-	const { data: stats, refetch, isRefetching } = useDashboardStats();
+	const { data: stats, refetch, isRefetching, isError: statsError } = useDashboardStats();
 	const router = useRouter();
 	const { colorScheme } = useColorScheme();
 	const isDark = colorScheme === 'dark';
@@ -91,7 +91,7 @@ export default function ToolsScreen() {
 			>
 				<View className="px-4 pt-3 pb-4 gap-3">
 					{compute.map(tool => {
-						const count = tool.countKey ? (stats?.[tool.countKey] ?? 0) : 0;
+						const count = statsError ? '—' : (tool.countKey ? (stats?.[tool.countKey] ?? 0) : 0);
 						return (
 							<Pressable
 								key={tool.key}

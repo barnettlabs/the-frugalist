@@ -36,7 +36,7 @@ type RecentItem = {
 };
 
 export default function Dashboard() {
-	const { data: stats, refetch: refetchStats, isRefetching } = useDashboardStats();
+	const { data: stats, refetch: refetchStats, isRefetching, isError: statsError } = useDashboardStats();
 	const { data: user } = useProfile();
 	const { data: financeSheets } = useFinanceSheets();
 	const { data: leaseSheets } = useLeaseSheets();
@@ -169,21 +169,21 @@ export default function Dashboard() {
 					>
 						<FocusTile
 							label="Watch"
-							value={stats?.watchCount ?? 0}
+							value={statsError ? '—' : (stats?.watchCount ?? 0)}
 							onPress={() => router.push('/watch?from=home')}
 							theme={theme}
 						/>
 						<View style={{ width: 1, backgroundColor: theme.cardBorder }} />
 						<FocusTile
 							label="Finance"
-							value={stats?.financeCount ?? 0}
+							value={statsError ? '—' : (stats?.financeCount ?? 0)}
 							onPress={() => router.push('/compute/finance?from=home')}
 							theme={theme}
 						/>
 						<View style={{ width: 1, backgroundColor: theme.cardBorder }} />
 						<FocusTile
 							label="Lease"
-							value={stats?.leaseCount ?? 0}
+							value={statsError ? '—' : (stats?.leaseCount ?? 0)}
 							onPress={() => router.push('/compute/lease?from=home')}
 							theme={theme}
 						/>
@@ -294,7 +294,7 @@ function FocusTile({
 	theme,
 }: {
 	label: string;
-	value: number;
+	value: number | string;
 	onPress: () => void;
 	theme: ReturnType<typeof getThemeColors>;
 }) {

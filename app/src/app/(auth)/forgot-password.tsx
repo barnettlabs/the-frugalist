@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
@@ -17,6 +18,7 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export default function ForgotPasswordScreen() {
+	const { t } = useTranslation();
 	const [emailSent, setEmailSent] = useState(false);
 	const { mutate: forgotPassword, isPending } = useForgotPassword();
 	const insets = useSafeAreaInsets();
@@ -31,7 +33,7 @@ export default function ForgotPasswordScreen() {
 			onSuccess: () => setEmailSent(true),
 			onError: error => {
 				showMessage({
-					message: 'Error',
+					message: t('common.error'),
 					description: error.message || 'Could not send reset email',
 					type: 'danger',
 				});
@@ -43,7 +45,7 @@ export default function ForgotPasswordScreen() {
 		return (
 			<ScreenContainer>
 				<View style={{ paddingTop: insets.top + 12 }}>
-					<MastheadBar left="v 1.0.0" center="A field guide to what things should cost" />
+					<MastheadBar left="v 1.0.0" center={t('auth.masthead_subtitle')} />
 				</View>
 				<View className="flex-1 items-center justify-center px-6">
 					<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
@@ -90,7 +92,7 @@ export default function ForgotPasswordScreen() {
 				>
 					<MastheadBar
 						left="v 1.0.0"
-						center="A field guide to what things should cost"
+						center={t('auth.masthead_subtitle')}
 						right={
 							<Link href="/(auth)/login" asChild>
 								<Pressable>

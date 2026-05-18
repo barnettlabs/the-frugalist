@@ -2,6 +2,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { router } from 'expo-router';
 import React from 'react';
 import { showMessage } from 'react-native-flash-message';
+import { useTranslation } from 'react-i18next';
 
 import { useAddLeaseSheet } from '@/api/lease/use-lease-mutations';
 import { LeaseForm } from '@/components/lease/lease-form';
@@ -36,21 +37,22 @@ const defaultFormData: LeaseFormData = {
 };
 
 export default function LeaseCreateScreen() {
+	const { t } = useTranslation();
 	const { mutate: createSheet, isPending } = useAddLeaseSheet();
 
 	const handleSubmit = (data: LeaseFormData) => {
 		createSheet(data, {
 			onSuccess: () => {
 				showMessage({
-					message: 'Success',
-					description: 'Lease estimate created successfully',
+					message: t('common.success'),
+					description: t('estimate_toast.lease_created'),
 					type: 'success',
 				});
 				router.back();
 			},
 			onError: error => {
 				showMessage({
-					message: 'Error',
+					message: t('common.error'),
 					description: error.message || 'Failed to create estimate',
 					type: 'danger',
 				});

@@ -2,12 +2,14 @@ import { router } from 'expo-router';
 import React from 'react';
 import { Pressable } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useResendVerificationEmail } from '@/api/auth/use-auth';
 import { MastheadBar, ScreenContainer, Text, View } from '@/components/ui';
 
 export default function VerifyEmailScreen() {
+	const { t } = useTranslation();
 	const { mutate: resendEmail, isPending } = useResendVerificationEmail();
 	const insets = useSafeAreaInsets();
 
@@ -15,14 +17,14 @@ export default function VerifyEmailScreen() {
 		resendEmail(undefined, {
 			onSuccess: () => {
 				showMessage({
-					message: 'Email sent',
-					description: 'Verification email has been resent',
+					message: t('auth.email_sent'),
+					description: t('auth.email_sent_description'),
 					type: 'success',
 				});
 			},
 			onError: error => {
 				showMessage({
-					message: 'Error',
+					message: t('common.error'),
 					description: error.message || 'Could not resend email',
 					type: 'danger',
 				});
@@ -33,7 +35,7 @@ export default function VerifyEmailScreen() {
 	return (
 		<ScreenContainer>
 			<View style={{ paddingTop: insets.top + 12 }}>
-				<MastheadBar left="v 1.0.0" center="A field guide to what things should cost" />
+				<MastheadBar left="v 1.0.0" center={t('auth.masthead_subtitle')} />
 			</View>
 
 			<View className="flex-1 items-center justify-center px-6">

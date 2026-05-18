@@ -1,6 +1,7 @@
 import React from 'react';
 import { ActivityIndicator, Alert, Pressable } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
+import { useTranslation } from 'react-i18next';
 
 import { useDeleteAccount, useProfile, useUpdateProfile } from '@/api/auth/use-profile';
 import { ProfileForm } from '@/components/profile/profile-form';
@@ -14,6 +15,7 @@ export function ProfileContent({
 	backLabel = 'Account',
 	tabAware = true,
 }: { backLabel?: string; tabAware?: boolean } = {}) {
+	const { t } = useTranslation();
 	const { data: profile, isLoading, isError, refetch } = useProfile();
 	const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
 	const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount();
@@ -41,15 +43,15 @@ export function ProfileContent({
 		updateProfile(data, {
 			onSuccess: () => {
 				showMessage({
-					message: 'Profile updated',
-					description: 'Your profile has been updated successfully',
+					message: t('profile_toast.updated'),
+					description: t('profile_toast.updated_description'),
 					type: 'success',
 				});
 				refetch();
 			},
 			onError: error => {
 				showMessage({
-					message: 'Error',
+					message: t('common.error'),
 					description: error.message || 'Failed to update profile',
 					type: 'danger',
 				});
@@ -70,15 +72,15 @@ export function ProfileContent({
 						deleteAccount(undefined, {
 							onSuccess: () => {
 								showMessage({
-									message: 'Account deleted',
-									description: 'Your account has been deleted',
+									message: t('profile_toast.deleted'),
+									description: t('profile_toast.deleted_description'),
 									type: 'success',
 								});
 								signOut();
 							},
 							onError: error => {
 								showMessage({
-									message: 'Error',
+									message: t('common.error'),
 									description: error.message || 'Failed to delete account',
 									type: 'danger',
 								});

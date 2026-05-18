@@ -2,6 +2,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { router } from 'expo-router';
 import React from 'react';
 import { showMessage } from 'react-native-flash-message';
+import { useTranslation } from 'react-i18next';
 
 import { useAddFinanceSheet } from '@/api/finance/use-finance-mutations';
 import { FinanceForm } from '@/components/finance/finance-form';
@@ -33,21 +34,22 @@ const defaultFormData: FinanceFormData = {
 };
 
 export default function FinanceCreateScreen() {
+	const { t } = useTranslation();
 	const { mutate: createSheet, isPending } = useAddFinanceSheet();
 
 	const handleSubmit = (data: FinanceFormData) => {
 		createSheet(data, {
 			onSuccess: () => {
 				showMessage({
-					message: 'Success',
-					description: 'Finance estimate created successfully',
+					message: t('common.success'),
+					description: t('estimate_toast.finance_created'),
 					type: 'success',
 				});
 				router.back();
 			},
 			onError: error => {
 				showMessage({
-					message: 'Error',
+					message: t('common.error'),
 					description: error.message || 'Failed to create estimate',
 					type: 'danger',
 				});

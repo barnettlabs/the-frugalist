@@ -2,12 +2,14 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { router } from 'expo-router';
 import React from 'react';
 import { showMessage } from 'react-native-flash-message';
+import { useTranslation } from 'react-i18next';
 
 import { useAddWatchItem } from '@/api/watch';
 import { TrackerForm } from '@/components/tracker/tracker-form';
 import { useNotifications } from '@/lib/notifications/use-notifications';
 
 export default function TrackerCreateScreen() {
+	const { t } = useTranslation();
 	const { mutate: createProduct, isPending } = useAddWatchItem();
 	const { register: registerNotifications, isRegistered } = useNotifications();
 
@@ -19,15 +21,15 @@ export default function TrackerCreateScreen() {
 					registerNotifications();
 				}
 				showMessage({
-					message: 'Success',
-					description: 'Product is now being tracked',
+					message: t('common.success'),
+					description: t('watch_toast.tracking_started_description'),
 					type: 'success',
 				});
 				router.back();
 			},
 			onError: error => {
 				showMessage({
-					message: 'Error',
+					message: t('common.error'),
 					description: error.message || 'Failed to track product',
 					type: 'danger',
 				});

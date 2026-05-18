@@ -26,14 +26,13 @@ import { useAuth, useIsFirstTime, useSelectedTheme } from '@/lib';
 import type { ColorSchemeType } from '@/lib';
 import { openLinkInBrowser } from '@/lib/utils';
 
-// Developer emails that can access debug features
-const DEV_EMAILS = ['jason.barnett@jaytech.io'];
-
 function isDevUser(email: string | undefined): boolean {
-	if (!email) return false;
+	if (!email || !Env.DEV_EMAILS) return false;
 	const normalizedEmail = email.toLowerCase().trim();
 	const baseEmail = normalizedEmail.replace(/\+[^@]*@/, '@');
-	return DEV_EMAILS.some(devEmail => baseEmail === devEmail.toLowerCase());
+	return Env.DEV_EMAILS.split(',')
+		.map(e => e.trim().toLowerCase())
+		.some(devEmail => baseEmail === devEmail);
 }
 
 export default function Settings() {
@@ -109,7 +108,6 @@ export default function Settings() {
 					<ItemsContainer title="settings.app_info">
 						<Item text="settings.app_name" value={Env.NAME} />
 						<Item text="settings.version" value={Env.VERSION} />
-						{/* TODO: Uncomment after rebuilding dev client */}
 						{/* <Item text="settings.build" value={Application.nativeBuildVersion || 'N/A'} /> */}
 					</ItemsContainer>
 

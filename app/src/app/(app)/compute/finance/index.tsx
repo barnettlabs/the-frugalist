@@ -16,12 +16,14 @@ import {
 } from '@/components/ui';
 import { Book, Plus as PlusIcon } from '@/components/ui/icons';
 import { getThemeColors } from '@/components/ui/theme';
+import { safeFromParam } from '@/lib/types/navigation';
 
 const BACK_LABELS: Record<string, string> = { home: 'Home', tools: 'Toolkit' };
 
 export default function FinanceListScreen() {
 	const router = useRouter();
-	const { from } = useLocalSearchParams<{ from?: string }>();
+	const { from: fromRaw } = useLocalSearchParams<{ from?: string }>();
+	const from = safeFromParam(fromRaw);
 	const backLabel = BACK_LABELS[from ?? ''] ?? 'Back';
 	const { data, isLoading, isError, refetch, isRefetching } = useFinanceSheets();
 	const { colorScheme } = useColorScheme();
@@ -101,10 +103,7 @@ export default function FinanceListScreen() {
 					</View>
 
 					{sheets.length === 0 ? (
-						<View
-							className="rounded-md p-6 mt-3 overflow-hidden"
-							style={{ backgroundColor: '#171B27', borderWidth: 1, borderColor: '#0C0E16' }}
-						>
+						<View className="rounded-md p-6 mt-3 overflow-hidden bg-primary border border-primary-dark">
 							<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-3">
 								No estimates yet
 							</Text>

@@ -18,6 +18,7 @@ import {
 import { Plus as PlusIcon } from '@/components/ui/icons';
 import { getThemeColors } from '@/components/ui/theme';
 import type { PriceTrackerFilter } from '@/lib/types/models';
+import { safeFromParam } from '@/lib/types/navigation';
 
 const FILTERS: { key: PriceTrackerFilter; label: string }[] = [
 	{ key: 'all', label: 'All' },
@@ -31,7 +32,8 @@ const BACK_LABELS: Record<string, string> = { home: 'Home', tools: 'Toolkit' };
 
 export default function TrackerListScreen() {
 	const router = useRouter();
-	const { from } = useLocalSearchParams<{ from?: string }>();
+	const { from: fromRaw } = useLocalSearchParams<{ from?: string }>();
+	const from = safeFromParam(fromRaw);
 	const backLabel = BACK_LABELS[from ?? ''] ?? 'Back';
 	const [filter, setFilter] = useState<PriceTrackerFilter>('all');
 	const { data, isLoading, isError, refetch, isRefetching } = useWatch();
@@ -137,10 +139,7 @@ export default function TrackerListScreen() {
 				refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={theme.accent} />}
 			>
 				{filteredProducts.length === 0 ? (
-					<View
-						className="rounded-md p-8 mt-6"
-						style={{ backgroundColor: '#171B27', borderWidth: 1, borderColor: '#0C0E16' }}
-					>
+					<View className="rounded-md p-8 mt-6 bg-primary border border-primary-dark">
 						<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-3">
 							{allProducts.length === 0 ? 'Watchlist empty' : 'No matches'}
 						</Text>

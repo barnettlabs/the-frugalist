@@ -16,12 +16,14 @@ import {
 } from '@/components/ui';
 import { Book, Plus as PlusIcon } from '@/components/ui/icons';
 import { getThemeColors } from '@/components/ui/theme';
+import { safeFromParam } from '@/lib/types/navigation';
 
 const BACK_LABELS: Record<string, string> = { home: 'Home', tools: 'Toolkit' };
 
 export default function LeaseListScreen() {
 	const router = useRouter();
-	const { from } = useLocalSearchParams<{ from?: string }>();
+	const { from: fromRaw } = useLocalSearchParams<{ from?: string }>();
+	const from = safeFromParam(fromRaw);
 	const backLabel = BACK_LABELS[from ?? ''] ?? 'Back';
 	const { data, isLoading, isError, refetch, isRefetching } = useLeaseSheets();
 	const { colorScheme } = useColorScheme();

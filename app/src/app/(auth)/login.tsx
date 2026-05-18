@@ -4,14 +4,12 @@ import { Link, router } from 'expo-router';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import { useLogin } from '@/api/auth/use-auth';
 import { ControlledInput, LogoImage, MastheadBar, ScreenContainer, Text, View } from '@/components/ui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-const DEBUG_TAP_COUNT = 3;
-const DEBUG_TAP_WINDOW_MS = 1500;
 
 const loginSchema = z.object({
 	email: z.string().email('Invalid email address'),
@@ -23,24 +21,6 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function LoginScreen() {
 	const { mutate: login, isPending } = useLogin();
 	const insets = useSafeAreaInsets();
-	const [showDebug, setShowDebug] = React.useState(false);
-	const tapState = React.useRef<{ count: number; first: number }>({ count: 0, first: 0 });
-
-	const handleLogoTap = React.useCallback(() => {
-		const now = Date.now();
-		const state = tapState.current;
-		if (now - state.first > DEBUG_TAP_WINDOW_MS) {
-			state.first = now;
-			state.count = 1;
-		} else {
-			state.count += 1;
-		}
-		if (state.count >= DEBUG_TAP_COUNT) {
-			state.count = 0;
-			state.first = 0;
-			setShowDebug(s => !s);
-		}
-	}, []);
 
 	const { control, handleSubmit } = useForm<LoginFormData>({
 		resolver: zodResolver(loginSchema),
@@ -82,44 +62,11 @@ export default function LoginScreen() {
 
 					<View className="flex-1 justify-center py-8">
 						<View className="px-6 items-center">
-							<Pressable onPress={handleLogoTap} hitSlop={12}>
-								<LogoImage variant="auto" className="!size-20" />
-							</Pressable>
+							<LogoImage variant="auto" className="!size-20" />
 							<Text className="font-display italic mt-4 text-accent dark:text-accent-light" style={{ fontSize: 18 }}>
 								Spend with intent.
 							</Text>
 						</View>
-
-						{showDebug && (
-							<View className="px-6 mt-6">
-								<View className="rounded-md bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-4">
-									<View className="flex-row justify-between items-center mb-2">
-										<Text className="font-mono text-xs uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
-											Debug
-										</Text>
-										<Pressable onPress={() => setShowDebug(false)} hitSlop={8}>
-											<Text className="text-xs font-medium text-primary dark:text-text-primary-dark">Hide</Text>
-										</Pressable>
-									</View>
-									{[
-										['env', Env.APP_ENV],
-										['api', Env.API_URL],
-										['version', Env.VERSION],
-										['bundle', Env.BUNDLE_ID],
-										['scheme', Env.SCHEME],
-									].map(([k, v]) => (
-										<View key={k} className="flex-row py-0.5">
-											<Text className="font-mono text-xs text-text-muted-light dark:text-text-muted-dark w-16">
-												{k}
-											</Text>
-											<Text className="font-mono text-xs text-text-primary-light dark:text-text-primary-dark flex-1">
-												{String(v ?? '—')}
-											</Text>
-										</View>
-									))}
-								</View>
-							</View>
-						)}
 
 						{/* Floating paper card with stacked-paper depth */}
 						<View className="px-6 mt-8">

@@ -98,6 +98,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 				color: '#235892',
 			},
 		],
+		'expo-secure-store',
 		'expo-localization',
 		'expo-router',
 		['app-icon-badge', appIconBadgeConfig],

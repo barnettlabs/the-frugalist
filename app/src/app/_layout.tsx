@@ -34,7 +34,7 @@ export const unstable_settings = {
 	initialRouteName: '(app)',
 };
 
-hydrateAuth();
+hydrateAuth().catch(console.error);
 loadSelectedTheme();
 SplashScreen.preventAutoHideAsync();
 SplashScreen.setOptions({

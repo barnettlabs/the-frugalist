@@ -5,7 +5,7 @@ import { RouterLink } from 'vue-router';
 <template>
 	<main class="py-12 flex-1">
 		<div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-			<div class="bg-white rounded-lg border border-gray-200 shadow-sm p-8">
+			<div class="bg-white rounded-lg border border-gray-200 shadow-xs p-8">
 				<h1 class="text-3xl font-bold text-gray-900 mb-6">Disclaimers</h1>
 
 				<div class="prose prose-gray max-w-none">

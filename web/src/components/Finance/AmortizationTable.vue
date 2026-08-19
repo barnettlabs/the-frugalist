@@ -32,19 +32,19 @@
 			<!-- Summary stats -->
 			<div class="grid grid-cols-2 md:grid-cols-4 gap-px bg-border border border-border rounded-md overflow-hidden">
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Total interest</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Total interest</p>
 					<p class="figure text-xl text-warning leading-none">${{ formatCurrency(amortization.totalInterest) }}</p>
 				</div>
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Total principal</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Total principal</p>
 					<p class="figure text-xl text-primary leading-none">${{ formatCurrency(amortization.totalPrincipal) }}</p>
 				</div>
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Months to pay</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Months to pay</p>
 					<p class="figure text-xl text-primary leading-none">{{ amortization.monthsPaid }}</p>
 				</div>
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Months saved</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Months saved</p>
 					<p
 						class="figure text-xl leading-none"
 						:class="amortization.monthsSaved > 0 ? 'text-success' : 'text-text-muted'"

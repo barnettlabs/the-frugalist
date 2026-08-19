@@ -113,7 +113,7 @@ onUnmounted(() => {
 				<div
 					v-if="open"
 					ref="panel"
-					class="fixed z-[60] origin-top-right rounded-md border border-border bg-surface shadow-lg ring-1 ring-black/5"
+					class="fixed z-60 origin-top-right rounded-md border border-border bg-surface shadow-lg ring-1 ring-black/5"
 					:style="{ top: `${position.top}px`, left: `${position.left}px`, minWidth: `${PANEL_WIDTH}px` }"
 					@click="open = false"
 				>

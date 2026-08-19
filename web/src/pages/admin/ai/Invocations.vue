@@ -61,13 +61,13 @@ onMounted(async () => {
 		<div class="flex items-center gap-4 mb-4 text-sm">
 			<select
 				v-model="filterAgent"
-				class="rounded-md border border-border px-3 py-2 focus:border-accent focus:outline-none"
+				class="rounded-md border border-border px-3 py-2 focus:border-accent focus:outline-hidden"
 			>
 				<option value="">All agents</option>
 				<option v-for="a in agents" :key="a.id" :value="a.id">{{ a.name }}</option>
 			</select>
 			<label class="inline-flex items-center gap-2">
-				<input v-model="filterErrors" type="checkbox" class="rounded border-border" />
+				<input v-model="filterErrors" type="checkbox" class="rounded-sm border-border" />
 				<span>Errors only</span>
 			</label>
 		</div>
@@ -101,7 +101,7 @@ onMounted(async () => {
 							{{ i.agent?.slug || '—' }} <span class="text-text-muted">v{{ i.agent_version }}</span>
 						</td>
 						<td class="px-4 py-3">
-							<span :class="['px-2 py-0.5 rounded text-xs', statusColor(i.status)]">{{ i.status }}</span>
+							<span :class="['px-2 py-0.5 rounded-sm text-xs', statusColor(i.status)]">{{ i.status }}</span>
 						</td>
 						<td class="px-4 py-3 numeral text-xs">{{ fmtMs(i.latency_ms) }}</td>
 						<td class="px-4 py-3 numeral text-xs">{{ i.prompt_tokens || 0 }} / {{ i.completion_tokens || 0 }}</td>
@@ -118,7 +118,7 @@ onMounted(async () => {
 		<div class="flex items-center justify-end gap-2 mt-3 text-sm">
 			<button
 				:disabled="page <= 1"
-				class="px-3 py-1.5 rounded border border-border disabled:opacity-40"
+				class="px-3 py-1.5 rounded-sm border border-border disabled:opacity-40"
 				@click="page--"
 			>
 				Prev
@@ -126,7 +126,7 @@ onMounted(async () => {
 			<span class="numeral text-text-muted">{{ page }} / {{ lastPage }}</span>
 			<button
 				:disabled="page >= lastPage"
-				class="px-3 py-1.5 rounded border border-border disabled:opacity-40"
+				class="px-3 py-1.5 rounded-sm border border-border disabled:opacity-40"
 				@click="page++"
 			>
 				Next
@@ -154,7 +154,7 @@ onMounted(async () => {
 					<div>
 						<dt class="eyebrow">Status</dt>
 						<dd>
-							<span :class="['px-2 py-0.5 rounded text-xs', statusColor(showing.status)]">{{ showing.status }}</span>
+							<span :class="['px-2 py-0.5 rounded-sm text-xs', statusColor(showing.status)]">{{ showing.status }}</span>
 						</dd>
 					</div>
 					<div>
@@ -187,25 +187,27 @@ onMounted(async () => {
 					</div>
 				</dl>
 
-				<div v-if="showing.error" class="mb-4 p-3 rounded bg-danger/10 text-danger text-sm">
+				<div v-if="showing.error" class="mb-4 p-3 rounded-sm bg-danger/10 text-danger text-sm">
 					{{ showing.error }}
 				</div>
 
 				<section class="mb-6">
 					<h3 class="eyebrow mb-2">Request payload</h3>
-					<pre class="p-3 rounded bg-surface-dark/50 text-xs overflow-x-auto numeral">{{
+					<pre class="p-3 rounded-sm bg-surface-dark/50 text-xs overflow-x-auto numeral">{{
 						JSON.stringify(showing.request_payload, null, 2)
 					}}</pre>
 				</section>
 				<section class="mb-6">
 					<h3 class="eyebrow mb-2">Parsed response</h3>
-					<pre class="p-3 rounded bg-surface-dark/50 text-xs overflow-x-auto numeral">{{
+					<pre class="p-3 rounded-sm bg-surface-dark/50 text-xs overflow-x-auto numeral">{{
 						JSON.stringify(showing.response, null, 2)
 					}}</pre>
 				</section>
 				<section v-if="showing.raw_response">
 					<h3 class="eyebrow mb-2">Raw response</h3>
-					<pre class="p-3 rounded bg-surface-dark/50 text-xs overflow-x-auto numeral">{{ showing.raw_response }}</pre>
+					<pre class="p-3 rounded-sm bg-surface-dark/50 text-xs overflow-x-auto numeral">{{
+						showing.raw_response
+					}}</pre>
 				</section>
 			</div>
 		</Modal>

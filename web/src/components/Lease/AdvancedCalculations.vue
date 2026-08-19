@@ -50,11 +50,11 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 			<!-- Top tiles -->
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border rounded-md overflow-hidden">
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Monthly</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Monthly</p>
 					<p class="figure text-2xl text-primary leading-none">${{ formatCurrency(summary.leasePayment) }}</p>
 				</div>
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Due at signing</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Due at signing</p>
 					<p class="figure text-2xl text-primary leading-none">${{ formatCurrency(summary.cashDueAtSigning) }}</p>
 				</div>
 			</div>
@@ -76,7 +76,7 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 							<dt class="text-sm text-text-muted">Trade-in value</dt>
 							<dd class="text-sm numeral text-success">−${{ formatCurrency(data.trade_in) }}</dd>
 						</div>
-						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Final dealer price</dt>
 							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.finalDealerPrice) }}</dd>
 						</div>
@@ -103,7 +103,7 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 							<dt class="text-sm text-text-muted">Misc fees</dt>
 							<dd class="text-sm numeral text-primary">${{ formatCurrency(data.misc_fees) }}</dd>
 						</div>
-						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Gross cap cost</dt>
 							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.grossCapCost) }}</dd>
 						</div>
@@ -115,7 +115,7 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 							<dt class="text-sm text-text-muted">Lease cash</dt>
 							<dd class="text-sm numeral text-success">−${{ formatCurrency(data.lease_cash) }}</dd>
 						</div>
-						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Net cap cost</dt>
 							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.netCapCost) }}</dd>
 						</div>
@@ -134,7 +134,7 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 							<dt class="text-sm text-text-muted">Residual percentage</dt>
 							<dd class="text-sm numeral text-primary">{{ data.residual_percent }}%</dd>
 						</div>
-						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Residual amount</dt>
 							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.residualAmount) }}</dd>
 						</div>
@@ -159,7 +159,7 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 							<dt class="text-sm text-text-muted">Monthly sales tax</dt>
 							<dd class="text-sm numeral text-signal-dark">${{ formatCurrency(summary.monthlySalesTax) }}</dd>
 						</div>
-						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Total monthly</dt>
 							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.leasePayment) }}</dd>
 						</div>

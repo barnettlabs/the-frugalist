@@ -60,7 +60,7 @@ const config = computed(() => variantConfig[props.variant]);
 
 <template>
 	<div :class="[config.bg, config.border, 'border rounded-lg p-4 flex items-start gap-3']" role="alert">
-		<component :is="config.icon" :class="[config.iconColor, 'h-5 w-5 flex-shrink-0 mt-0.5']" aria-hidden="true" />
+		<component :is="config.icon" :class="[config.iconColor, 'h-5 w-5 shrink-0 mt-0.5']" aria-hidden="true" />
 		<div class="flex-1 min-w-0">
 			<p v-if="title" :class="[config.titleColor, 'font-medium']">{{ title }}</p>
 			<div class="text-sm text-gray-600">
@@ -70,7 +70,7 @@ const config = computed(() => variantConfig[props.variant]);
 		<button
 			v-if="dismissible"
 			type="button"
-			class="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+			class="shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
 			@click="emit('dismiss')"
 		>
 			<span class="sr-only">Dismiss</span>

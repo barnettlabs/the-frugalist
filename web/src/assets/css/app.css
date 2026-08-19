@@ -1,22 +1,412 @@
-@font-face {
-	font-family: 'Rubik';
-	font-style: normal;
-	font-weight: 100 900;
-	src: url('/fonts/rubik/rubik.ttf') format('truetype');
-	font-display: swap;
+@import 'tailwindcss';
+
+@config '../../../tailwind.config.js';
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+	*,
+	::after,
+	::before,
+	::backdrop,
+	::file-selector-button {
+		border-color: var(--color-gray-200, currentcolor);
+	}
 }
 
-@font-face {
-	font-family: 'Rubik';
-	font-style: italic;
-	font-weight: 100 900;
-	src: url('/fonts/rubik/rubik-italic.ttf') format('truetype');
-	font-display: swap;
+@utility loading-spinner {
+	transform-origin: center;
+	animation: spinner_StKS 0.75s infinite linear;
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@utility loading-spinner__path {
+	fill: currentColor;
+}
+
+@utility card {
+	/* Editorial card: warm cream with hairline border, subtle paper feel */
+	background: rgb(var(--color-surface));
+	border: 1px solid rgb(var(--color-border));
+	border-radius: 6px;
+	box-shadow: 0 1px 0 0 rgba(23, 27, 39, 0.02);
+	transition:
+		box-shadow 200ms ease,
+		border-color 200ms ease,
+		transform 200ms ease;
+
+	&:hover {
+		border-color: rgb(var(--color-border-strong));
+		box-shadow:
+			0 1px 0 0 rgba(23, 27, 39, 0.02),
+			0 12px 30px -16px rgba(23, 27, 39, 0.18);
+	}
+}
+
+@utility btn {
+	@apply inline-flex justify-center items-center font-medium rounded-md focus:outline-hidden focus:ring-2 focus:ring-offset-2;
+	@apply border border-transparent;
+	transition-duration: 200ms;
+}
+
+@utility btn--disabled {
+	@apply opacity-60 cursor-not-allowed;
+}
+
+@utility btn--primary {
+	@apply bg-primary hover:bg-primary-light text-surface focus:ring-primary;
+	&.btn--outline {
+		@apply bg-transparent hover:bg-primary/5 text-primary border-primary;
+	}
+}
+
+@utility btn--outline {
+	&.btn--primary {
+		@apply bg-transparent hover:bg-primary/5 text-primary border-primary;
+	}
+	&.btn--info {
+		@apply bg-transparent hover:bg-accent/10 text-accent border-accent;
+	}
+	&.btn--secondary {
+		@apply bg-transparent hover:bg-success/10 text-success border-success;
+	}
+	& .btn--success {
+		@apply bg-transparent hover:bg-success/10 text-success border-success;
+	}
+	&.btn--warning {
+		@apply bg-transparent hover:bg-warning/10 text-warning border-warning;
+	}
+	&.btn--danger {
+		@apply bg-transparent hover:bg-danger/10 text-danger border-danger;
+	}
+	&.btn--neutral {
+		@apply bg-transparent hover:bg-surface-dark text-primary border-border;
+	}
+}
+
+@utility btn--info {
+	@apply bg-accent hover:bg-accent-dark text-surface focus:ring-accent;
+	&.btn--outline {
+		@apply bg-transparent hover:bg-accent/10 text-accent border-accent;
+	}
+}
+
+@utility btn--secondary {
+	@apply bg-success hover:bg-success/90 text-surface focus:ring-success;
+	&.btn--outline {
+		@apply bg-transparent hover:bg-success/10 text-success border-success;
+	}
+}
+
+@utility btn--success {
+	@apply bg-success hover:bg-success/90 text-surface focus:ring-success;
+	&.btn--outline {
+		@apply bg-transparent hover:bg-success/10 text-success border-success;
+	}
+}
+
+@utility btn--warning {
+	@apply bg-warning hover:bg-warning/90 text-surface focus:ring-warning;
+	&.btn--outline {
+		@apply bg-transparent hover:bg-warning/10 text-warning border-warning;
+	}
+}
+
+@utility btn--danger {
+	@apply bg-danger hover:bg-danger/90 text-surface focus:ring-danger;
+	&.btn--outline {
+		@apply bg-transparent hover:bg-danger/10 text-danger border-danger;
+	}
+}
+
+@utility btn--neutral {
+	@apply bg-surface-dark hover:bg-border text-primary focus:ring-border;
+	&.btn--outline {
+		@apply bg-transparent hover:bg-surface-dark text-primary border-border;
+	}
+}
+
+@utility btn--xs {
+	@apply px-2 py-1 text-xs;
+}
+
+@utility btn--sm {
+	@apply px-3 py-1.5 text-xs;
+}
+
+@utility btn--md {
+	@apply px-4 py-2 text-sm;
+}
+
+@utility btn--lg {
+	@apply px-5 py-2.5 text-sm;
+}
+
+@utility btn--xl {
+	@apply px-6 py-3 text-sm;
+}
+
+@utility text-input {
+	@apply text-sm block w-full bg-transparent border-none p-0 text-primary focus:ring-0;
+	@apply md:text-base;
+}
+
+@utility text-input-label {
+	@apply block text-xs font-medium text-text-muted text-left;
+	font-feature-settings: 'ss01';
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+@utility text-input-container {
+	@apply flex-1 rounded-lg px-3 pt-2 pb-1.5 bg-surface;
+	@apply border border-border focus-within:border-accent;
+	@apply sm:pt-3 sm:pb-2 sm:px-4;
+}
+
+@utility text-input-container--disabled {
+	opacity: 0.5;
+	@apply bg-surface-dark cursor-not-allowed;
+	& * {
+		@apply bg-surface-dark cursor-not-allowed;
+	}
+}
+
+@utility eyebrow {
+	/* Editorial eyebrow: small caps section label */
+	font-family: var(--font-sans);
+	font-size: 0.6875rem;
+	font-weight: 600;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	color: rgb(var(--color-text-muted));
+}
+
+@utility eyebrow--ink {
+	color: rgb(var(--color-primary));
+}
+
+@utility rule {
+	/* Section rule: fine hairline divider with optional center character */
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	&::before {
+		content: '';
+		flex: 1;
+		height: 1px;
+		background: rgb(var(--color-border));
+	}
+	&::after {
+		content: '';
+		flex: 1;
+		height: 1px;
+		background: rgb(var(--color-border));
+	}
+}
+
+@utility tabular {
+	/* Tabular numerals for any numeric content */
+	font-variant-numeric: tabular-nums;
+	font-feature-settings: 'tnum';
+}
+
+@utility numeral {
+	font-family: var(--font-mono);
+	font-variant-numeric: tabular-nums;
+	font-feature-settings: 'tnum', 'ss03';
+	letter-spacing: -0.01em;
+}
+
+@utility dotted-background-light {
+	/* Legacy dotted utilities kept as light-touch ambient texture */
+	&::before {
+		content: '';
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-image: radial-gradient(circle, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+		background-size: 22px 22px;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	& > * {
+		position: relative;
+		z-index: 1;
+	}
+}
+
+@utility dotted-background-dark {
+	&::before {
+		content: '';
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-image: radial-gradient(circle, rgba(35, 88, 146, 0.06) 1px, transparent 1px);
+		background-size: 26px 26px;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	& > * {
+		position: relative;
+		z-index: 1;
+	}
+}
+
+@utility paper-grain {
+	/* Paper grain overlay: subtle warmth, applied to specific dark blocks */
+	position: relative;
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		opacity: 0.5;
+		mix-blend-mode: overlay;
+		background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+	}
+}
+
+@utility surface-ink {
+	/* Editorial dark surface for the inset accent card in section headers */
+	background: linear-gradient(180deg, rgb(var(--color-primary)) 0%, rgb(var(--color-primary-dark)) 100%);
+	color: rgb(var(--color-surface));
+}
+
+@utility surface-navy {
+	background: linear-gradient(
+		150deg,
+		rgb(var(--color-accent-dark)) 0%,
+		rgb(var(--color-accent)) 60%,
+		rgb(var(--color-accent-dark)) 100%
+	);
+	color: rgb(var(--color-surface));
+}
+
+@utility surface-parchment {
+	background: rgb(var(--color-surface));
+}
+
+@utility hairline {
+	/* Hairline rule */
+	height: 1px;
+	background: rgb(var(--color-border));
+}
+
+@utility hairline-strong {
+	height: 1px;
+	background: rgb(var(--color-border-strong));
+}
+
+@utility bg-gradient-subtle {
+	background: linear-gradient(180deg, rgb(var(--color-background)) 0%, rgb(var(--color-surface)) 100%);
+}
+
+@utility bg-gradient-accent {
+	background: linear-gradient(135deg, rgb(var(--color-accent-dark)) 0%, rgb(var(--color-accent)) 100%);
+}
+
+@utility glass {
+	background: rgb(var(--color-surface) / 0.85);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border: 1px solid rgb(var(--color-border));
+}
+
+@utility shadow-soft {
+	box-shadow:
+		0 4px 20px -2px rgba(23, 27, 39, 0.08),
+		0 2px 8px -2px rgba(23, 27, 39, 0.04);
+}
+
+@utility shadow-paper {
+	box-shadow:
+		0 1px 0 0 rgba(23, 27, 39, 0.04),
+		0 14px 38px -22px rgba(23, 27, 39, 0.22);
+}
+
+@utility shadow-accent {
+	box-shadow: 0 4px 20px -2px rgb(var(--color-accent) / 0.25);
+}
+
+@utility section-chip {
+	/* Section eyebrow chip used inside the inset accent card on headers */
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.25rem 0.6rem;
+	border-radius: 999px;
+	font-size: 0.6875rem;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	font-weight: 600;
+	background: rgba(255, 255, 255, 0.12);
+	color: rgba(255, 255, 255, 0.92);
+	border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+@utility figure {
+	/* Display-style number: large monospace numerals with optical sizing */
+	font-family: var(--font-mono);
+	font-variant-numeric: tabular-nums;
+	font-feature-settings: 'tnum', 'ss03';
+	letter-spacing: -0.025em;
+	font-weight: 500;
+}
+
+@utility fade-up {
+	/* Animation: staggered fade up for editorial hero entrances */
+	animation: fadeUp 0.6s ease-out both;
+}
+
+@utility fade-up-1 {
+	animation-delay: 0.05s;
+}
+
+@utility fade-up-2 {
+	animation-delay: 0.15s;
+}
+
+@utility fade-up-3 {
+	animation-delay: 0.25s;
+}
+
+@utility fade-up-4 {
+	animation-delay: 0.35s;
+}
+
+@utility fade-up-5 {
+	animation-delay: 0.45s;
+}
+
+@layer base {
+	@font-face {
+		font-family: 'Rubik';
+		font-style: normal;
+		font-weight: 100 900;
+		src: url('/fonts/rubik/rubik.ttf') format('truetype');
+		font-display: swap;
+	}
+
+	@font-face {
+		font-family: 'Rubik';
+		font-style: italic;
+		font-weight: 100 900;
+		src: url('/fonts/rubik/rubik-italic.ttf') format('truetype');
+		font-display: swap;
+	}
+}
 
 @layer base {
 	:root {
@@ -127,109 +517,13 @@
 }
 
 @layer components {
-	.loading-spinner {
-		transform-origin: center;
-		animation: spinner_StKS 0.75s infinite linear;
-	}
 	@keyframes spinner_StKS {
 		100% {
 			transform: rotate(360deg);
 		}
 	}
 
-	.loading-spinner__path {
-		fill: currentColor;
-	}
-
-	/* Editorial card: warm cream with hairline border, subtle paper feel */
-	.card {
-		background: rgb(var(--color-surface));
-		border: 1px solid rgb(var(--color-border));
-		border-radius: 6px;
-		box-shadow: 0 1px 0 0 rgba(23, 27, 39, 0.02);
-		transition:
-			box-shadow 200ms ease,
-			border-color 200ms ease,
-			transform 200ms ease;
-	}
-
-	.card:hover {
-		border-color: rgb(var(--color-border-strong));
-		box-shadow:
-			0 1px 0 0 rgba(23, 27, 39, 0.02),
-			0 12px 30px -16px rgba(23, 27, 39, 0.18);
-	}
-
-	.btn {
-		@apply inline-flex justify-center items-center font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2;
-		@apply border border-transparent;
-		transition-duration: 200ms;
-	}
-
 	.btn--loading {
-	}
-	.btn--disabled {
-		@apply opacity-60 cursor-not-allowed;
-	}
-
-	.btn--primary {
-		@apply bg-primary hover:bg-primary-light text-surface focus:ring-primary;
-	}
-	.btn--primary.btn--outline {
-		@apply bg-transparent hover:bg-primary/5 text-primary border-primary;
-	}
-
-	.btn--info {
-		@apply bg-accent hover:bg-accent-dark text-surface focus:ring-accent;
-	}
-	.btn--info.btn--outline {
-		@apply bg-transparent hover:bg-accent/10 text-accent border-accent;
-	}
-
-	.btn--secondary,
-	.btn--success {
-		@apply bg-success hover:bg-success/90 text-surface focus:ring-success;
-	}
-	.btn--secondary.btn--outline,
-	.btn--success.btn--outline {
-		@apply bg-transparent hover:bg-success/10 text-success border-success;
-	}
-
-	.btn--warning {
-		@apply bg-warning hover:bg-warning/90 text-surface focus:ring-warning;
-	}
-	.btn--warning.btn--outline {
-		@apply bg-transparent hover:bg-warning/10 text-warning border-warning;
-	}
-
-	.btn--danger {
-		@apply bg-danger hover:bg-danger/90 text-surface focus:ring-danger;
-	}
-	.btn--danger.btn--outline {
-		@apply bg-transparent hover:bg-danger/10 text-danger border-danger;
-	}
-
-	.btn--neutral {
-		@apply bg-surface-dark hover:bg-border text-primary focus:ring-border;
-	}
-	.btn--neutral.btn--outline {
-		@apply bg-transparent hover:bg-surface-dark text-primary border-border;
-	}
-
-	.btn--xs {
-		@apply px-2 py-1 text-xs;
-	}
-	.btn--sm {
-		@apply px-3 py-1.5 text-xs;
-	}
-	.btn--md {
-		@apply px-4 py-2 text-sm;
-	}
-	.btn--lg {
-		@apply px-5 py-2.5 text-sm;
-	}
-	.btn--xl {
-		@apply px-6 py-3 text-sm;
 	}
 
 	input:-webkit-autofill,
@@ -243,208 +537,9 @@
 	textarea::placeholder {
 		opacity: 0.5;
 	}
-
-	.text-input {
-		@apply text-sm block w-full bg-transparent border-none p-0 text-primary focus:ring-0;
-		@apply md:text-base;
-	}
-	.text-input-label {
-		@apply block text-xs font-medium text-text-muted text-left;
-		font-feature-settings: 'ss01';
-		letter-spacing: 0.06em;
-		text-transform: uppercase;
-	}
-	.text-input-container {
-		@apply flex-1 rounded-lg px-3 pt-2 pb-1.5 bg-surface;
-		@apply border border-border focus-within:border-accent;
-		@apply sm:pt-3 sm:pb-2 sm:px-4;
-	}
-	.text-input-container--disabled {
-		opacity: 0.5;
-	}
-	.text-input-container--disabled,
-	.text-input-container--disabled * {
-		@apply bg-surface-dark cursor-not-allowed;
-	}
-
-	/* Editorial eyebrow: small caps section label */
-	.eyebrow {
-		font-family: var(--font-sans);
-		font-size: 0.6875rem;
-		font-weight: 600;
-		letter-spacing: 0.18em;
-		text-transform: uppercase;
-		color: rgb(var(--color-text-muted));
-	}
-
-	.eyebrow--ink {
-		color: rgb(var(--color-primary));
-	}
-
-	/* Section rule: fine hairline divider with optional center character */
-	.rule {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-	}
-	.rule::before,
-	.rule::after {
-		content: '';
-		flex: 1;
-		height: 1px;
-		background: rgb(var(--color-border));
-	}
-
-	/* Tabular numerals for any numeric content */
-	.tabular {
-		font-variant-numeric: tabular-nums;
-		font-feature-settings: 'tnum';
-	}
-
-	.numeral {
-		font-family: var(--font-mono);
-		font-variant-numeric: tabular-nums;
-		font-feature-settings: 'tnum', 'ss03';
-		letter-spacing: -0.01em;
-	}
 }
 
 @layer utilities {
-	/* Legacy dotted utilities kept as light-touch ambient texture */
-	.dotted-background-light::before {
-		content: '';
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background-image: radial-gradient(circle, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
-		background-size: 22px 22px;
-		pointer-events: none;
-		z-index: 0;
-	}
-
-	.dotted-background-dark::before {
-		content: '';
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background-image: radial-gradient(circle, rgba(35, 88, 146, 0.06) 1px, transparent 1px);
-		background-size: 26px 26px;
-		pointer-events: none;
-		z-index: 0;
-	}
-
-	.dotted-background-light > *,
-	.dotted-background-dark > * {
-		position: relative;
-		z-index: 1;
-	}
-
-	/* Paper grain overlay: subtle warmth, applied to specific dark blocks */
-	.paper-grain {
-		position: relative;
-	}
-	.paper-grain::after {
-		content: '';
-		position: absolute;
-		inset: 0;
-		pointer-events: none;
-		opacity: 0.5;
-		mix-blend-mode: overlay;
-		background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-	}
-
-	/* Editorial dark surface for the inset accent card in section headers */
-	.surface-ink {
-		background: linear-gradient(180deg, rgb(var(--color-primary)) 0%, rgb(var(--color-primary-dark)) 100%);
-		color: rgb(var(--color-surface));
-	}
-
-	.surface-navy {
-		background: linear-gradient(
-			150deg,
-			rgb(var(--color-accent-dark)) 0%,
-			rgb(var(--color-accent)) 60%,
-			rgb(var(--color-accent-dark)) 100%
-		);
-		color: rgb(var(--color-surface));
-	}
-
-	.surface-parchment {
-		background: rgb(var(--color-surface));
-	}
-
-	/* Hairline rule */
-	.hairline {
-		height: 1px;
-		background: rgb(var(--color-border));
-	}
-
-	.hairline-strong {
-		height: 1px;
-		background: rgb(var(--color-border-strong));
-	}
-
-	.bg-gradient-subtle {
-		background: linear-gradient(180deg, rgb(var(--color-background)) 0%, rgb(var(--color-surface)) 100%);
-	}
-
-	.bg-gradient-accent {
-		background: linear-gradient(135deg, rgb(var(--color-accent-dark)) 0%, rgb(var(--color-accent)) 100%);
-	}
-
-	.glass {
-		background: rgb(var(--color-surface) / 0.85);
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
-		border: 1px solid rgb(var(--color-border));
-	}
-
-	.shadow-soft {
-		box-shadow:
-			0 4px 20px -2px rgba(23, 27, 39, 0.08),
-			0 2px 8px -2px rgba(23, 27, 39, 0.04);
-	}
-
-	.shadow-paper {
-		box-shadow:
-			0 1px 0 0 rgba(23, 27, 39, 0.04),
-			0 14px 38px -22px rgba(23, 27, 39, 0.22);
-	}
-
-	.shadow-accent {
-		box-shadow: 0 4px 20px -2px rgb(var(--color-accent) / 0.25);
-	}
-
-	/* Section eyebrow chip used inside the inset accent card on headers */
-	.section-chip {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.25rem 0.6rem;
-		border-radius: 999px;
-		font-size: 0.6875rem;
-		letter-spacing: 0.18em;
-		text-transform: uppercase;
-		font-weight: 600;
-		background: rgba(255, 255, 255, 0.12);
-		color: rgba(255, 255, 255, 0.92);
-		border: 1px solid rgba(255, 255, 255, 0.18);
-	}
-
-	/* Display-style number: large monospace numerals with optical sizing */
-	.figure {
-		font-family: var(--font-mono);
-		font-variant-numeric: tabular-nums;
-		font-feature-settings: 'tnum', 'ss03';
-		letter-spacing: -0.025em;
-		font-weight: 500;
-	}
-
-	/* Animation: staggered fade up for editorial hero entrances */
 	@keyframes fadeUp {
 		from {
 			opacity: 0;
@@ -454,24 +549,6 @@
 			opacity: 1;
 			transform: translateY(0);
 		}
-	}
-	.fade-up {
-		animation: fadeUp 0.6s ease-out both;
-	}
-	.fade-up-1 {
-		animation-delay: 0.05s;
-	}
-	.fade-up-2 {
-		animation-delay: 0.15s;
-	}
-	.fade-up-3 {
-		animation-delay: 0.25s;
-	}
-	.fade-up-4 {
-		animation-delay: 0.35s;
-	}
-	.fade-up-5 {
-		animation-delay: 0.45s;
 	}
 }
 
@@ -505,6 +582,6 @@ div#__nuxt {
 
 /* DATE PICKER OVERRIDES */
 .dp__input {
-	@apply focus:ring-0 border-0 pl-0 bg-transparent !important;
+	@apply focus:ring-0! border-0! pl-0! bg-transparent!;
 }
 /* END DATE PICKER OVERRIDES */

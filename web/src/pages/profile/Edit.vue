@@ -225,7 +225,7 @@ onMounted(() => {
 
 			<div class="space-y-6">
 				<!-- Profile Information -->
-				<div class="bg-surface/80 backdrop-blur-sm rounded-lg border border-border p-6">
+				<div class="bg-surface/80 backdrop-blur-xs rounded-lg border border-border p-6">
 					<h2 class="text-lg font-medium text-primary mb-4">Profile Information</h2>
 					<p class="text-sm text-text-muted mb-6">Update your account's profile information and email address.</p>
 
@@ -263,7 +263,7 @@ onMounted(() => {
 				</div>
 
 				<!-- Update Password -->
-				<div class="bg-surface/80 backdrop-blur-sm rounded-lg border border-border p-6">
+				<div class="bg-surface/80 backdrop-blur-xs rounded-lg border border-border p-6">
 					<h2 class="text-lg font-medium text-primary mb-4">Update Password</h2>
 					<p class="text-sm text-text-muted mb-6">Use a strong password to keep your account secure.</p>
 
@@ -304,7 +304,7 @@ onMounted(() => {
 				</div>
 
 				<!-- Delete Account -->
-				<div class="bg-surface/80 backdrop-blur-sm rounded-lg border border-danger/20 p-6">
+				<div class="bg-surface/80 backdrop-blur-xs rounded-lg border border-danger/20 p-6">
 					<h2 class="text-lg font-medium text-danger mb-4">Delete Account</h2>
 					<p class="text-sm text-text-muted mb-6">
 						Once your account is deleted, all of its resources and data will be permanently deleted.

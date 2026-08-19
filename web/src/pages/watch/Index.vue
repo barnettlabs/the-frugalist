@@ -188,12 +188,12 @@ onMounted(() => {
 					v-for="filter in ['all', 'active', 'paused'] as FilterType[]"
 					:key="filter"
 					:class="[
-						'inline-flex items-center gap-2 px-3.5 py-1.5 rounded text-xs font-medium transition-colors',
+						'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-sm text-xs font-medium transition-colors',
 						activeFilter === filter ? 'bg-primary text-surface' : 'text-text-muted hover:text-primary',
 					]"
 					@click="activeFilter = filter"
 				>
-					<span class="eyebrow !text-[0.625rem]" :class="activeFilter === filter ? '!text-surface' : ''">
+					<span class="eyebrow text-[0.625rem]!" :class="activeFilter === filter ? 'text-surface!' : ''">
 						{{ filter }}
 					</span>
 					<span class="numeral" :class="activeFilter === filter ? 'text-surface/80' : 'text-text-muted'">
@@ -258,10 +258,7 @@ onMounted(() => {
 						<div class="flex items-center justify-between px-4 pt-3 pb-2 border-b border-border">
 							<div class="flex items-center gap-2 min-w-0">
 								<span
-									:class="[
-										'w-1.5 h-1.5 rounded-full flex-shrink-0',
-										product.is_active ? 'bg-success' : 'bg-text-muted',
-									]"
+									:class="['w-1.5 h-1.5 rounded-full shrink-0', product.is_active ? 'bg-success' : 'bg-text-muted']"
 								/>
 								<span class="eyebrow truncate">{{ getRetailerName(product) }}</span>
 								<span class="inline-flex items-center gap-0.5 text-text-muted ml-1">
@@ -272,17 +269,17 @@ onMounted(() => {
 									/>
 								</span>
 							</div>
-							<div class="flex items-center gap-0.5 flex-shrink-0" @click.prevent>
+							<div class="flex items-center gap-0.5 shrink-0" @click.prevent>
 								<button
 									:disabled="refreshingId === product.id"
-									class="p-1.5 rounded text-text-muted hover:text-primary hover:bg-surface-dark transition-colors disabled:opacity-50"
+									class="p-1.5 rounded-sm text-text-muted hover:text-primary hover:bg-surface-dark transition-colors disabled:opacity-50"
 									title="Refresh price"
 									@click="refreshProduct(product.id)"
 								>
 									<ArrowPathIcon :class="['h-3.5 w-3.5', refreshingId === product.id && 'animate-spin']" />
 								</button>
 								<button
-									class="p-1.5 rounded text-text-muted hover:text-primary hover:bg-surface-dark transition-colors"
+									class="p-1.5 rounded-sm text-text-muted hover:text-primary hover:bg-surface-dark transition-colors"
 									:title="product.is_active ? 'Pause tracking' : 'Resume tracking'"
 									@click="openPauseDialog(product)"
 								>
@@ -290,7 +287,7 @@ onMounted(() => {
 									<PauseIcon v-else class="h-3.5 w-3.5" />
 								</button>
 								<button
-									class="p-1.5 rounded text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
+									class="p-1.5 rounded-sm text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
 									title="Delete tracker"
 									@click="openDeleteDialog(product)"
 								>
@@ -303,7 +300,7 @@ onMounted(() => {
 						<div class="flex gap-4 p-4">
 							<!-- Image anchor -->
 							<div
-								class="flex-shrink-0 w-20 h-20 rounded-md overflow-hidden bg-surface-dark border border-border flex items-center justify-center relative"
+								class="shrink-0 w-20 h-20 rounded-md overflow-hidden bg-surface-dark border border-border flex items-center justify-center relative"
 							>
 								<img
 									v-if="product.product_image_url"
@@ -368,7 +365,7 @@ onMounted(() => {
 								<!-- Progress -->
 								<div class="mt-2 h-[3px] bg-border rounded-full overflow-hidden">
 									<div
-										class="h-full rounded-full bg-gradient-to-r from-accent to-signal transition-all duration-500"
+										class="h-full rounded-full bg-linear-to-r from-accent to-signal transition-all duration-500"
 										:style="{ width: getProgressPercent(product) + '%' }"
 									/>
 								</div>

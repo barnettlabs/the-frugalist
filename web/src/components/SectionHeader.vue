@@ -66,7 +66,7 @@ const isCompact = computed(() => props.variant === 'compact');
 			<!-- Bottom hairline divider with optional action slot floating right -->
 			<div class="mt-8 lg:mt-10 flex items-center gap-4 fade-up fade-up-3">
 				<div class="h-px flex-1 bg-border" />
-				<div class="flex items-center gap-2 flex-shrink-0">
+				<div class="flex items-center gap-2 shrink-0">
 					<slot name="actions" />
 				</div>
 			</div>

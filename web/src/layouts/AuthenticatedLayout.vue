@@ -204,7 +204,7 @@ const handleSignOut = async () => {
 
 							<!-- Mobile sidebar content -->
 							<div
-								class="flex grow flex-col gap-y-5 overflow-y-auto bg-surface/95 backdrop-blur-sm px-6 pb-4 border-r border-border"
+								class="flex grow flex-col gap-y-5 overflow-y-auto bg-surface/95 backdrop-blur-xs px-6 pb-4 border-r border-border"
 							>
 								<div class="flex h-16 shrink-0 items-center">
 									<RouterLink to="/dashboard" class="flex items-center gap-2" @click="sidebarOpen = false">
@@ -311,7 +311,7 @@ const handleSignOut = async () => {
 												@click="sidebarOpen = false"
 											>
 												<div
-													class="h-8 w-8 rounded-full overflow-hidden bg-neutral-200 flex items-center justify-center flex-shrink-0"
+													class="h-8 w-8 rounded-full overflow-hidden bg-neutral-200 flex items-center justify-center shrink-0"
 												>
 													<img
 														v-if="(user as any)?.avatar_url"
@@ -344,7 +344,7 @@ const handleSignOut = async () => {
 		<!-- Static sidebar for desktop -->
 		<div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
 			<div
-				class="flex grow flex-col gap-y-5 overflow-y-auto bg-surface/90 backdrop-blur-sm border-r border-border px-6 pb-4"
+				class="flex grow flex-col gap-y-5 overflow-y-auto bg-surface/90 backdrop-blur-xs border-r border-border px-6 pb-4"
 			>
 				<!-- Logo -->
 				<div class="flex h-16 shrink-0 items-center">
@@ -446,7 +446,7 @@ const handleSignOut = async () => {
 								class="group -mx-2 flex items-center gap-x-3 rounded-lg p-2 text-sm font-medium leading-6 text-text-muted hover:bg-neutral-100 hover:text-primary transition-all"
 							>
 								<div
-									class="h-8 w-8 rounded-full overflow-hidden bg-neutral-200 flex items-center justify-center flex-shrink-0"
+									class="h-8 w-8 rounded-full overflow-hidden bg-neutral-200 flex items-center justify-center shrink-0"
 								>
 									<img
 										v-if="(user as any)?.avatar_url"
@@ -476,7 +476,7 @@ const handleSignOut = async () => {
 		<div class="lg:pl-64">
 			<!-- Top bar -->
 			<div
-				class="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-x-4 border-b border-border bg-surface/80 backdrop-blur-sm px-4 sm:gap-x-6 sm:px-6 lg:px-8"
+				class="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-x-4 border-b border-border bg-surface/80 backdrop-blur-xs px-4 sm:gap-x-6 sm:px-6 lg:px-8"
 			>
 				<button type="button" class="-m-2.5 p-2.5 text-text-muted lg:hidden" @click="sidebarOpen = true">
 					<span class="sr-only">Open sidebar</span>
@@ -492,7 +492,7 @@ const handleSignOut = async () => {
 						<li v-for="(crumb, index) in breadcrumbs" :key="crumb.href" class="flex items-center">
 							<ChevronRightIcon
 								v-if="Number(index) > 0"
-								class="h-4 w-4 flex-shrink-0 text-text-muted mx-2"
+								class="h-4 w-4 shrink-0 text-text-muted mx-2"
 								aria-hidden="true"
 							/>
 							<RouterLink

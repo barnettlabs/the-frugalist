@@ -57,7 +57,7 @@ onMounted(() => {
 			</div>
 
 			<!-- Comparison Table -->
-			<div v-else class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+			<div v-else class="bg-white rounded-lg border border-gray-200 shadow-xs overflow-hidden">
 				<div class="overflow-x-auto">
 					<table class="w-full">
 						<thead class="bg-gray-50">

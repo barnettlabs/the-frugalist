@@ -54,7 +54,7 @@ onMounted(fetchUsers);
 				v-model="search"
 				type="text"
 				placeholder="Search by name or email…"
-				class="w-full rounded-md border border-border pl-9 pr-3 py-2 text-sm focus:border-accent focus:outline-none"
+				class="w-full rounded-md border border-border pl-9 pr-3 py-2 text-sm focus:border-accent focus:outline-hidden"
 			/>
 		</div>
 
@@ -87,7 +87,7 @@ onMounted(fetchUsers);
 						<td class="px-4 py-3">
 							<span
 								v-if="u.is_admin"
-								class="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-accent/10 text-accent-dark"
+								class="inline-flex items-center gap-1 px-2 py-1 rounded-sm text-xs font-medium bg-accent/10 text-accent-dark"
 							>
 								<ShieldCheckIcon class="h-3.5 w-3.5" />
 								Admin

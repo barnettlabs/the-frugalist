@@ -112,7 +112,7 @@ const yTicks = computed(() => {
 			<div class="ml-auto flex items-center gap-1 border border-border rounded-md p-0.5">
 				<button
 					:class="[
-						'px-2.5 py-1 text-xs font-medium rounded transition-colors',
+						'px-2.5 py-1 text-xs font-medium rounded-sm transition-colors',
 						chartType === 'pi' ? 'bg-primary text-surface' : 'text-text-muted hover:text-primary',
 					]"
 					@click="chartType = 'pi'"
@@ -121,7 +121,7 @@ const yTicks = computed(() => {
 				</button>
 				<button
 					:class="[
-						'px-2.5 py-1 text-xs font-medium rounded transition-colors',
+						'px-2.5 py-1 text-xs font-medium rounded-sm transition-colors',
 						chartType === 'balance' ? 'bg-primary text-surface' : 'text-text-muted hover:text-primary',
 					]"
 					@click="chartType = 'balance'"
@@ -130,7 +130,7 @@ const yTicks = computed(() => {
 				</button>
 				<button
 					:class="[
-						'px-2.5 py-1 text-xs font-medium rounded transition-colors',
+						'px-2.5 py-1 text-xs font-medium rounded-sm transition-colors',
 						chartType === 'pie' ? 'bg-primary text-surface' : 'text-text-muted hover:text-primary',
 					]"
 					@click="chartType = 'pie'"
@@ -196,17 +196,17 @@ const yTicks = computed(() => {
 					<template v-if="chartType === 'pi'">
 						<div class="flex items-center gap-1.5">
 							<span class="inline-block w-3 h-0.5 bg-accent"></span>
-							<span class="eyebrow !text-[0.625rem]">Principal</span>
+							<span class="eyebrow text-[0.625rem]!">Principal</span>
 						</div>
 						<div class="flex items-center gap-1.5">
 							<span class="inline-block w-3 h-0.5 bg-danger"></span>
-							<span class="eyebrow !text-[0.625rem]">Interest</span>
+							<span class="eyebrow text-[0.625rem]!">Interest</span>
 						</div>
 					</template>
 					<template v-else>
 						<div class="flex items-center gap-1.5">
 							<span class="inline-block w-3 h-0.5 bg-accent"></span>
-							<span class="eyebrow !text-[0.625rem]">Remaining balance</span>
+							<span class="eyebrow text-[0.625rem]!">Remaining balance</span>
 						</div>
 					</template>
 				</div>
@@ -258,7 +258,7 @@ const yTicks = computed(() => {
 							<div class="flex items-center justify-between">
 								<div class="flex items-center gap-2">
 									<span class="w-3 h-3 rounded-full bg-accent"></span>
-									<span class="eyebrow !text-[0.625rem]">Principal</span>
+									<span class="eyebrow text-[0.625rem]!">Principal</span>
 								</div>
 								<div class="text-sm numeral text-primary">
 									${{ formatCurrency(breakdown.principal) }}
@@ -268,7 +268,7 @@ const yTicks = computed(() => {
 							<div class="flex items-center justify-between">
 								<div class="flex items-center gap-2">
 									<span class="w-3 h-3 rounded-full bg-danger"></span>
-									<span class="eyebrow !text-[0.625rem]">Interest</span>
+									<span class="eyebrow text-[0.625rem]!">Interest</span>
 								</div>
 								<div class="text-sm numeral text-primary">
 									${{ formatCurrency(breakdown.interest) }}
@@ -278,7 +278,7 @@ const yTicks = computed(() => {
 							<div v-if="breakdown.extraPayments > 0" class="flex items-center justify-between">
 								<div class="flex items-center gap-2">
 									<span class="w-3 h-3 rounded-full bg-success"></span>
-									<span class="eyebrow !text-[0.625rem]">Extra payments</span>
+									<span class="eyebrow text-[0.625rem]!">Extra payments</span>
 								</div>
 								<div class="text-sm numeral text-primary">
 									${{ formatCurrency(breakdown.extraPayments) }}
@@ -293,15 +293,15 @@ const yTicks = computed(() => {
 			<!-- Summary stats -->
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border rounded-md overflow-hidden">
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Total principal</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Total principal</p>
 					<p class="figure text-xl text-accent-dark leading-none">${{ formatCurrency(breakdown.principal) }}</p>
 				</div>
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Total interest</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Total interest</p>
 					<p class="figure text-xl text-warning leading-none">${{ formatCurrency(breakdown.interest) }}</p>
 				</div>
 				<div v-if="breakdown.extraPayments > 0" class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Extra payments</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Extra payments</p>
 					<p class="figure text-xl text-success leading-none">${{ formatCurrency(breakdown.extraPayments) }}</p>
 				</div>
 			</div>

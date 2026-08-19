@@ -108,7 +108,7 @@ const submit = handleSubmit(async values => {
 			<div class="flex items-center justify-end">
 				<RouterLink
 					to="/forgot-password"
-					class="rounded-md text-sm text-text-muted underline hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+					class="rounded-md text-sm text-text-muted underline hover:text-primary focus:outline-hidden focus:ring-2 focus:ring-accent focus:ring-offset-2"
 				>
 					Forgot your password?
 				</RouterLink>

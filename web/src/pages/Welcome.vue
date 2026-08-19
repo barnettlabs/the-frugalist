@@ -230,7 +230,7 @@ const tripledTickerItems = [...tickerItems, ...tickerItems, ...tickerItems];
 									</div>
 									<div class="h-1 rounded-full bg-white/10 overflow-hidden">
 										<div
-											class="h-full w-[81%] rounded-full bg-gradient-to-r from-accent-light via-signal-light to-signal"
+											class="h-full w-[81%] rounded-full bg-linear-to-r from-accent-light via-signal-light to-signal"
 										></div>
 									</div>
 								</div>
@@ -241,7 +241,7 @@ const tripledTickerItems = [...tickerItems, ...tickerItems, ...tickerItems];
 										<span
 											v-for="(h, i) in [54, 56, 53, 58, 60, 51, 49, 47, 44, 41, 38, 36, 34, 32, 30, 28, 25, 23, 21, 22]"
 											:key="i"
-											class="flex-1 rounded-sm bg-gradient-to-t from-accent-light/30 to-accent-light/80"
+											class="flex-1 rounded-xs bg-linear-to-t from-accent-light/30 to-accent-light/80"
 											:style="{ height: h + '%' }"
 										/>
 									</div>
@@ -252,7 +252,7 @@ const tripledTickerItems = [...tickerItems, ...tickerItems, ...tickerItems];
 
 						<!-- Floating annotation -->
 						<div
-							class="absolute -bottom-6 -left-4 sm:left-2 bg-surface border border-border rounded-md px-4 py-3 shadow-paper rotate-[-3deg] max-w-[220px]"
+							class="absolute -bottom-6 -left-4 sm:left-2 bg-surface border border-border rounded-md px-4 py-3 shadow-paper -rotate-3 max-w-[220px]"
 						>
 							<p class="eyebrow text-signal-dark mb-1">Today</p>
 							<p class="text-sm font-medium text-primary leading-snug">
@@ -447,7 +447,7 @@ const tripledTickerItems = [...tickerItems, ...tickerItems, ...tickerItems];
 							href="mailto:jason.barnett@jaytech.io"
 							class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-accent-dark transition-colors break-all"
 						>
-							<EnvelopeIcon class="h-3.5 w-3.5 flex-shrink-0" />
+							<EnvelopeIcon class="h-3.5 w-3.5 shrink-0" />
 							<span>jason.barnett@jaytech.io</span>
 						</a>
 					</div>

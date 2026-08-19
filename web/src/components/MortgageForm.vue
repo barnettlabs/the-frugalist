@@ -147,7 +147,7 @@ const downPaymentEquivDollars = computed(() => {
 								<button
 									type="button"
 									:class="[
-										'px-2 py-0.5 text-[0.625rem] font-medium rounded transition-colors',
+										'px-2 py-0.5 text-[0.625rem] font-medium rounded-sm transition-colors',
 										downPaymentMode === 'dollar' ? 'bg-primary text-surface' : 'text-text-muted hover:text-primary',
 									]"
 									@click="downPaymentMode = 'dollar'"
@@ -157,7 +157,7 @@ const downPaymentEquivDollars = computed(() => {
 								<button
 									type="button"
 									:class="[
-										'px-2 py-0.5 text-[0.625rem] font-medium rounded transition-colors',
+										'px-2 py-0.5 text-[0.625rem] font-medium rounded-sm transition-colors',
 										downPaymentMode === 'percent' ? 'bg-primary text-surface' : 'text-text-muted hover:text-primary',
 									]"
 									@click="downPaymentMode = 'percent'"

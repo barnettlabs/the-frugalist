@@ -89,19 +89,19 @@ import { formatCurrency, parseOrZero } from '@/utils/formatters.js';
 			<!-- Top tiles -->
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border rounded-md overflow-hidden">
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Monthly</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Monthly</p>
 					<p class="figure text-2xl text-primary leading-none">${{ formatCurrency(summary.monthlyPayment) }}</p>
 				</div>
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Due at signing</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Due at signing</p>
 					<p class="figure text-2xl text-primary leading-none">${{ formatCurrency(parseOrZero(data.down_payment)) }}</p>
 				</div>
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Total interest</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Total interest</p>
 					<p class="figure text-2xl text-warning leading-none">${{ formatCurrency(summary.interestAmount) }}</p>
 				</div>
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Total paid</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Total paid</p>
 					<p class="figure text-2xl text-primary leading-none">
 						${{ formatCurrency(summary.paymentsTotal + parseOrZero(data.down_payment)) }}
 					</p>
@@ -126,7 +126,7 @@ import { formatCurrency, parseOrZero } from '@/utils/formatters.js';
 							<dt class="text-sm text-text-muted">Rebates</dt>
 							<dd class="text-sm numeral text-success">−${{ formatCurrency(data.rebates) }}</dd>
 						</div>
-						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Purchase price</dt>
 							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.purchasePrice) }}</dd>
 						</div>
@@ -153,7 +153,7 @@ import { formatCurrency, parseOrZero } from '@/utils/formatters.js';
 							<dt class="text-sm text-text-muted">Down payment</dt>
 							<dd class="text-sm numeral text-success">−${{ formatCurrency(data.down_payment) }}</dd>
 						</div>
-						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Amount financed</dt>
 							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.loanAmount) }}</dd>
 						</div>

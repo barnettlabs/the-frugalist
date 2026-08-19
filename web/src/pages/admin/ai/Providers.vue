@@ -230,9 +230,9 @@ onMounted(fetch);
 							<span v-else class="text-text-muted">none</span>
 						</td>
 						<td class="px-4 py-3 text-xs space-x-1">
-							<span v-if="p.is_default" class="px-2 py-0.5 rounded bg-accent/10 text-accent-dark">default</span>
-							<span v-if="!p.enabled" class="px-2 py-0.5 rounded bg-danger/10 text-danger">disabled</span>
-							<span v-if="p.sends_data_externally" class="px-2 py-0.5 rounded bg-warning/10 text-warning"
+							<span v-if="p.is_default" class="px-2 py-0.5 rounded-sm bg-accent/10 text-accent-dark">default</span>
+							<span v-if="!p.enabled" class="px-2 py-0.5 rounded-sm bg-danger/10 text-danger">disabled</span>
+							<span v-if="p.sends_data_externally" class="px-2 py-0.5 rounded-sm bg-warning/10 text-warning"
 								>external</span
 							>
 						</td>
@@ -256,7 +256,7 @@ onMounted(fetch);
 						<input
 							v-model="form.name"
 							type="text"
-							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none"
+							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden"
 						/>
 						<p v-if="errors.name" class="text-xs text-danger mt-1">{{ errors.name[0] }}</p>
 					</div>
@@ -267,7 +267,7 @@ onMounted(fetch);
 							v-model="form.base_url"
 							type="text"
 							placeholder="https://your-tunnel/v1"
-							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden numeral"
 						/>
 						<p class="text-xs text-text-muted mt-1">OpenAI-compatible. Should end with /v1 (no trailing slash).</p>
 						<p v-if="errors.base_url" class="text-xs text-danger mt-1">{{ errors.base_url[0] }}</p>
@@ -277,7 +277,7 @@ onMounted(fetch);
 						<label class="flex items-center justify-between text-sm font-medium text-text-muted mb-1">
 							API Key
 							<label v-if="editing && editing.has_api_key" class="text-xs font-normal inline-flex items-center gap-1.5">
-								<input v-model="form.keep_key" type="checkbox" class="rounded border-border" />
+								<input v-model="form.keep_key" type="checkbox" class="rounded-sm border-border" />
 								Keep existing
 							</label>
 						</label>
@@ -285,7 +285,7 @@ onMounted(fetch);
 							v-model="form.api_key"
 							:disabled="!!editing && form.keep_key"
 							type="password"
-							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral disabled:bg-surface-dark disabled:cursor-not-allowed"
+							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden numeral disabled:bg-surface-dark disabled:cursor-not-allowed"
 						/>
 						<p class="text-xs text-text-muted mt-1">Leave blank to remove. Stored encrypted.</p>
 					</div>
@@ -307,7 +307,7 @@ onMounted(fetch);
 							<select
 								v-if="availableModels.length"
 								v-model="form.default_model"
-								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden numeral"
 							>
 								<option v-for="m in availableModels" :key="m" :value="m">{{ m }}</option>
 							</select>
@@ -316,7 +316,7 @@ onMounted(fetch);
 								v-model="form.default_model"
 								type="text"
 								placeholder="qwen2.5-7b-instruct"
-								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden numeral"
 							/>
 							<p v-if="modelsError" class="text-[10px] text-danger mt-1">{{ modelsError }}</p>
 							<p v-else-if="modelsLoading" class="text-[10px] text-text-muted mt-1">Loading models…</p>
@@ -331,7 +331,7 @@ onMounted(fetch);
 								type="number"
 								min="1"
 								max="120"
-								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden numeral"
 							/>
 						</div>
 					</div>
@@ -340,7 +340,7 @@ onMounted(fetch);
 						<label class="block text-sm font-medium text-text-muted mb-1">System message handling</label>
 						<select
 							v-model="form.system_handling"
-							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none"
+							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden"
 						>
 							<option value="message">Send as a system role (OpenAI/most local servers)</option>
 							<option value="prepend_user">Prepend into first user message (Anthropic-style endpoints)</option>
@@ -353,15 +353,15 @@ onMounted(fetch);
 
 					<div class="flex flex-wrap items-center gap-4 pt-2">
 						<label class="inline-flex items-center gap-2 text-sm">
-							<input v-model="form.enabled" type="checkbox" class="rounded border-border" />
+							<input v-model="form.enabled" type="checkbox" class="rounded-sm border-border" />
 							<span>Enabled</span>
 						</label>
 						<label class="inline-flex items-center gap-2 text-sm">
-							<input v-model="form.is_default" type="checkbox" class="rounded border-border" />
+							<input v-model="form.is_default" type="checkbox" class="rounded-sm border-border" />
 							<span>Default</span>
 						</label>
 						<label class="inline-flex items-center gap-2 text-sm">
-							<input v-model="form.sends_data_externally" type="checkbox" class="rounded border-border" />
+							<input v-model="form.sends_data_externally" type="checkbox" class="rounded-sm border-border" />
 							<span>Sends data externally</span>
 						</label>
 					</div>

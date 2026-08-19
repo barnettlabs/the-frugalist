@@ -113,7 +113,7 @@ const cards = [
 				class="card p-6 group hover:border-accent transition-colors"
 			>
 				<div class="flex items-start gap-4">
-					<div class="h-10 w-10 rounded-md bg-accent/10 flex items-center justify-center flex-shrink-0">
+					<div class="h-10 w-10 rounded-md bg-accent/10 flex items-center justify-center shrink-0">
 						<component :is="c.icon" class="h-5 w-5 text-accent" />
 					</div>
 					<div class="flex-1">

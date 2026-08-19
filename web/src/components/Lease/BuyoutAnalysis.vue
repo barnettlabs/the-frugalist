@@ -101,12 +101,12 @@ const earlyBuyoutScenarios = computed((): BuyoutScenario[] => {
 			<!-- Top tiles -->
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border rounded-md overflow-hidden">
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">End-of-lease buyout</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">End-of-lease buyout</p>
 					<p class="figure text-2xl text-primary leading-none">${{ formatCurrency(endOfLeaseBuyout) }}</p>
 					<p class="numeral text-[0.6875rem] text-text-muted mt-1.5">{{ props.data.residual_percent }}% of MSRP</p>
 				</div>
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Residual percentage</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Residual percentage</p>
 					<p class="figure text-2xl text-primary leading-none">{{ props.data.residual_percent || 0 }}%</p>
 					<p class="numeral text-[0.6875rem] text-text-muted mt-1.5">of original MSRP</p>
 				</div>
@@ -185,19 +185,19 @@ const earlyBuyoutScenarios = computed((): BuyoutScenario[] => {
 					<p class="eyebrow text-warning mb-3">Buyout considerations</p>
 					<ul class="space-y-2 text-sm text-text-muted">
 						<li class="flex items-start gap-2">
-							<span class="h-px w-3 bg-warning mt-2 flex-shrink-0"></span>
+							<span class="h-px w-3 bg-warning mt-2 shrink-0"></span>
 							<span>Check actual market value before buying. Get an appraisal.</span>
 						</li>
 						<li class="flex items-start gap-2">
-							<span class="h-px w-3 bg-warning mt-2 flex-shrink-0"></span>
+							<span class="h-px w-3 bg-warning mt-2 shrink-0"></span>
 							<span>Factor in sales tax, registration, and title fees for the purchase.</span>
 						</li>
 						<li class="flex items-start gap-2">
-							<span class="h-px w-3 bg-warning mt-2 flex-shrink-0"></span>
+							<span class="h-px w-3 bg-warning mt-2 shrink-0"></span>
 							<span>Consider warranty coverage differences between leased and owned vehicles.</span>
 						</li>
 						<li class="flex items-start gap-2">
-							<span class="h-px w-3 bg-warning mt-2 flex-shrink-0"></span>
+							<span class="h-px w-3 bg-warning mt-2 shrink-0"></span>
 							<span>Early buyout may require paying disposition fees and remaining payments.</span>
 						</li>
 					</ul>

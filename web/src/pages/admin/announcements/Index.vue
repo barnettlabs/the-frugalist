@@ -113,7 +113,7 @@ onMounted(fetchAll);
 						<p class="text-sm text-text-muted mt-1 whitespace-pre-wrap">{{ a.message }}</p>
 						<p class="numeral text-xs text-text-muted mt-3">{{ formatDate(a.created_at) }}</p>
 					</div>
-					<div class="flex items-center gap-1 flex-shrink-0">
+					<div class="flex items-center gap-1 shrink-0">
 						<button class="p-2 text-text-muted hover:text-primary transition-colors" @click="openEdit(a)">
 							<PencilSquareIcon class="h-4 w-4" />
 						</button>
@@ -136,7 +136,7 @@ onMounted(fetchAll);
 						<input
 							v-model="form.title"
 							type="text"
-							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none"
+							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden"
 						/>
 						<p v-if="errors.title" class="text-xs text-danger mt-1">{{ errors.title[0] }}</p>
 					</div>
@@ -145,7 +145,7 @@ onMounted(fetchAll);
 						<textarea
 							v-model="form.message"
 							rows="6"
-							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none"
+							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden"
 						></textarea>
 						<p v-if="errors.message" class="text-xs text-danger mt-1">{{ errors.message[0] }}</p>
 					</div>

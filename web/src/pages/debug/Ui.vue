@@ -100,7 +100,7 @@ const legacyColors = [
 			<section class="mb-12">
 				<h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">Logo Variants</h2>
 				<p class="text-sm text-gray-500 mb-4">
-					Component: <code class="bg-gray-100 px-1 rounded">ApplicationLogo</code>
+					Component: <code class="bg-gray-100 px-1 rounded-sm">ApplicationLogo</code>
 				</p>
 				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 					<Card>
@@ -147,7 +147,7 @@ const legacyColors = [
 			<section class="mb-12">
 				<h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">Color Palette</h2>
 				<p class="text-sm text-gray-500 mb-4">
-					Defined in: <code class="bg-gray-100 px-1 rounded">src/assets/css/app.css</code>
+					Defined in: <code class="bg-gray-100 px-1 rounded-sm">src/assets/css/app.css</code>
 				</p>
 
 				<!-- Primary -->
@@ -227,7 +227,7 @@ const legacyColors = [
 						<div
 							v-for="color in neutralColors"
 							:key="color.name"
-							class="bg-white rounded-lg shadow-sm overflow-hidden border"
+							class="bg-white rounded-lg shadow-xs overflow-hidden border"
 						>
 							<div :class="[color.class, 'h-20 border-b']"></div>
 							<div class="p-3">
@@ -259,7 +259,7 @@ const legacyColors = [
 						<div
 							v-for="color in legacyColors"
 							:key="color.name"
-							class="bg-white rounded-lg shadow-sm overflow-hidden border"
+							class="bg-white rounded-lg shadow-xs overflow-hidden border"
 						>
 							<div :class="[color.class, 'h-20 border-b']"></div>
 							<div class="p-3">
@@ -349,7 +349,7 @@ const legacyColors = [
 						<div>
 							<h4 class="font-semibold text-gray-900 mb-2">PrimaryButton</h4>
 							<p class="text-sm text-gray-500 mb-4">
-								Component: <code class="bg-gray-100 px-1 rounded">PrimaryButton</code>
+								Component: <code class="bg-gray-100 px-1 rounded-sm">PrimaryButton</code>
 							</p>
 							<div class="flex flex-wrap gap-4">
 								<PrimaryButton>Primary Button</PrimaryButton>
@@ -361,7 +361,7 @@ const legacyColors = [
 						<div>
 							<h4 class="font-semibold text-gray-900 mb-2">SecondaryButton</h4>
 							<p class="text-sm text-gray-500 mb-4">
-								Component: <code class="bg-gray-100 px-1 rounded">SecondaryButton</code>
+								Component: <code class="bg-gray-100 px-1 rounded-sm">SecondaryButton</code>
 							</p>
 							<div class="flex flex-wrap gap-4">
 								<SecondaryButton>Secondary Button</SecondaryButton>
@@ -373,7 +373,7 @@ const legacyColors = [
 						<div>
 							<h4 class="font-semibold text-gray-900 mb-2">DangerButton</h4>
 							<p class="text-sm text-gray-500 mb-4">
-								Component: <code class="bg-gray-100 px-1 rounded">DangerButton</code>
+								Component: <code class="bg-gray-100 px-1 rounded-sm">DangerButton</code>
 							</p>
 							<div class="flex flex-wrap gap-4">
 								<DangerButton>Danger Button</DangerButton>
@@ -385,7 +385,7 @@ const legacyColors = [
 						<div>
 							<h4 class="font-semibold text-gray-900 mb-2">Button Sizes</h4>
 							<p class="text-sm text-gray-500 mb-4">
-								CSS classes: <code class="bg-gray-100 px-1 rounded">btn btn--primary btn--{size}</code>
+								CSS classes: <code class="bg-gray-100 px-1 rounded-sm">btn btn--primary btn--{size}</code>
 							</p>
 							<div class="flex flex-wrap items-center gap-4">
 								<button class="btn btn--primary btn--xs">Extra Small</button>
@@ -400,7 +400,7 @@ const legacyColors = [
 						<div>
 							<h4 class="font-semibold text-gray-900 mb-2">Button Variants</h4>
 							<p class="text-sm text-gray-500 mb-4">
-								CSS classes: <code class="bg-gray-100 px-1 rounded">btn btn--{variant} btn--md</code>
+								CSS classes: <code class="bg-gray-100 px-1 rounded-sm">btn btn--{variant} btn--md</code>
 							</p>
 							<div class="flex flex-wrap gap-4">
 								<button class="btn btn--primary btn--md">Primary</button>
@@ -415,7 +415,7 @@ const legacyColors = [
 						<div>
 							<h4 class="font-semibold text-gray-900 mb-2">Outline Buttons</h4>
 							<p class="text-sm text-gray-500 mb-4">
-								CSS classes: <code class="bg-gray-100 px-1 rounded">btn btn--{variant} btn--outline btn--md</code>
+								CSS classes: <code class="bg-gray-100 px-1 rounded-sm">btn btn--{variant} btn--outline btn--md</code>
 							</p>
 							<div class="flex flex-wrap gap-4">
 								<button class="btn btn--primary btn--outline btn--md">Primary</button>
@@ -436,8 +436,8 @@ const legacyColors = [
 					<div class="max-w-md space-y-6">
 						<div>
 							<p class="text-sm text-gray-500 mb-4">
-								Components: <code class="bg-gray-100 px-1 rounded">InputLabel</code>,
-								<code class="bg-gray-100 px-1 rounded">TextInput</code>
+								Components: <code class="bg-gray-100 px-1 rounded-sm">InputLabel</code>,
+								<code class="bg-gray-100 px-1 rounded-sm">TextInput</code>
 							</p>
 							<InputLabel for="sample1" value="Default Input" />
 							<TextInput
@@ -450,7 +450,7 @@ const legacyColors = [
 						</div>
 
 						<div>
-							<p class="text-sm text-gray-500 mb-4">With <code class="bg-gray-100 px-1 rounded">InputError</code></p>
+							<p class="text-sm text-gray-500 mb-4">With <code class="bg-gray-100 px-1 rounded-sm">InputError</code></p>
 							<InputLabel for="sample2" value="Input with Error" />
 							<TextInput id="sample2" v-model="sampleInput" type="text" class="mt-1 block w-full" />
 							<InputError :message="sampleError" class="mt-2" />
@@ -470,7 +470,7 @@ const legacyColors = [
 
 						<div>
 							<p class="text-sm text-gray-500 mb-4">
-								Component: <code class="bg-gray-100 px-1 rounded">Checkbox</code>
+								Component: <code class="bg-gray-100 px-1 rounded-sm">Checkbox</code>
 							</p>
 							<label class="flex items-center gap-2">
 								<Checkbox v-model:checked="sampleCheckbox" />
@@ -480,9 +480,9 @@ const legacyColors = [
 
 						<div>
 							<p class="text-sm text-gray-500 mb-4">
-								CSS classes: <code class="bg-gray-100 px-1 rounded">text-input-container</code>,
-								<code class="bg-gray-100 px-1 rounded">text-input-label</code>,
-								<code class="bg-gray-100 px-1 rounded">text-input</code>
+								CSS classes: <code class="bg-gray-100 px-1 rounded-sm">text-input-container</code>,
+								<code class="bg-gray-100 px-1 rounded-sm">text-input-label</code>,
+								<code class="bg-gray-100 px-1 rounded-sm">text-input</code>
 							</p>
 							<div class="text-input-container">
 								<label class="text-input-label">Nested Label Style</label>
@@ -496,7 +496,7 @@ const legacyColors = [
 			<!-- Alerts -->
 			<section class="mb-12">
 				<h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">Alerts</h2>
-				<p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded">Alert</code></p>
+				<p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded-sm">Alert</code></p>
 				<div class="space-y-4">
 					<Alert variant="success" title="Success"> Your changes have been saved successfully. </Alert>
 
@@ -515,7 +515,7 @@ const legacyColors = [
 			<!-- Badges -->
 			<section class="mb-12">
 				<h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">Badges</h2>
-				<p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded">Badge</code></p>
+				<p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded-sm">Badge</code></p>
 				<Card>
 					<div class="space-y-6">
 						<div>
@@ -547,7 +547,7 @@ const legacyColors = [
 			<!-- Cards -->
 			<section class="mb-12">
 				<h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">Cards</h2>
-				<p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded">Card</code></p>
+				<p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded-sm">Card</code></p>
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 					<Card>
 						<h4 class="font-bold text-gray-900 mb-2">Default Card</h4>
@@ -584,7 +584,7 @@ const legacyColors = [
 			<!-- Spinners -->
 			<section class="mb-12">
 				<h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">Spinners</h2>
-				<p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded">Spinner</code></p>
+				<p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded-sm">Spinner</code></p>
 				<Card>
 					<div class="space-y-6">
 						<div>
@@ -637,7 +637,7 @@ const legacyColors = [
 			<!-- Modal -->
 			<section class="mb-12">
 				<h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">Modal</h2>
-				<p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded">Modal</code></p>
+				<p class="text-sm text-gray-500 mb-4">Component: <code class="bg-gray-100 px-1 rounded-sm">Modal</code></p>
 				<Card>
 					<PrimaryButton @click="showModal = true">Open Modal</PrimaryButton>
 
@@ -657,7 +657,9 @@ const legacyColors = [
 			<!-- Icons -->
 			<section class="mb-12">
 				<h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">Icons (Heroicons)</h2>
-				<p class="text-sm text-gray-500 mb-4">Package: <code class="bg-gray-100 px-1 rounded">@heroicons/vue</code></p>
+				<p class="text-sm text-gray-500 mb-4">
+					Package: <code class="bg-gray-100 px-1 rounded-sm">@heroicons/vue</code>
+				</p>
 				<Card>
 					<div class="grid grid-cols-4 md:grid-cols-8 gap-6">
 						<div class="flex flex-col items-center gap-2">

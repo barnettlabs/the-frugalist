@@ -26,7 +26,7 @@ const iconStyles: Record<ToastType, string> = {
 </script>
 
 <template>
-	<div class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 w-80 pointer-events-none">
+	<div class="fixed top-4 right-4 z-9999 flex flex-col gap-2 w-80 pointer-events-none">
 		<TransitionGroup name="toast" tag="div" class="flex flex-col gap-2">
 			<div
 				v-for="toast in store.toasts"

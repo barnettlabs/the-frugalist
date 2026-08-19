@@ -211,16 +211,16 @@ onMounted(() => {
 							<input
 								type="checkbox"
 								:checked="isSelected(sheet.id)"
-								class="w-3.5 h-3.5 text-primary border-2 border-border rounded-sm focus:ring-0 focus:outline-none bg-surface cursor-pointer"
+								class="w-3.5 h-3.5 text-primary border-2 border-border rounded-xs focus:ring-0 focus:outline-hidden bg-surface cursor-pointer"
 								@change="toggleSelection(sheet.id)"
 							/>
-							<span class="eyebrow !text-[0.625rem]" :class="isSelected(sheet.id) ? 'text-primary' : ''">
+							<span class="eyebrow text-[0.625rem]!" :class="isSelected(sheet.id) ? 'text-primary' : ''">
 								Compare
 							</span>
 						</label>
 						<div class="flex items-center gap-0.5" @click.stop>
 							<button
-								class="p-1.5 rounded text-text-muted hover:text-primary hover:bg-surface-dark transition-colors"
+								class="p-1.5 rounded-sm text-text-muted hover:text-primary hover:bg-surface-dark transition-colors"
 								:title="isCardExpanded(sheet.id) ? 'Show less' : 'Show more'"
 								@click="toggleCardDetails(sheet.id)"
 							>
@@ -229,7 +229,7 @@ onMounted(() => {
 								/>
 							</button>
 							<button
-								class="p-1.5 rounded text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
+								class="p-1.5 rounded-sm text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
 								title="Delete estimate"
 								@click="openDeleteDialog(sheet)"
 							>
@@ -268,19 +268,19 @@ onMounted(() => {
 						<div v-if="isCardExpanded(sheet.id)" class="mt-5 pt-5 border-t border-border space-y-3 text-sm" @click.stop>
 							<div class="grid grid-cols-2 gap-x-4 gap-y-3">
 								<div>
-									<p class="eyebrow !text-[0.625rem]">MSRP</p>
+									<p class="eyebrow text-[0.625rem]!">MSRP</p>
 									<p class="numeral text-primary">${{ formatCurrency(sheet.msrp || 0) }}</p>
 								</div>
 								<div>
-									<p class="eyebrow !text-[0.625rem]">Purchase</p>
+									<p class="eyebrow text-[0.625rem]!">Purchase</p>
 									<p class="numeral text-primary">${{ formatCurrency(getSheetCalculations(sheet).purchasePrice) }}</p>
 								</div>
 								<div>
-									<p class="eyebrow !text-[0.625rem]">Down</p>
+									<p class="eyebrow text-[0.625rem]!">Down</p>
 									<p class="numeral text-primary">${{ formatCurrency(sheet.down_payment || 0) }}</p>
 								</div>
 								<div>
-									<p class="eyebrow !text-[0.625rem]">Financed</p>
+									<p class="eyebrow text-[0.625rem]!">Financed</p>
 									<p class="numeral text-primary">${{ formatCurrency(getSheetCalculations(sheet).loanAmount) }}</p>
 								</div>
 							</div>

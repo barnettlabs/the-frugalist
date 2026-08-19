@@ -62,7 +62,7 @@ const showBackLink = computed(() => {
 				</p>
 				<slot name="subtitle"></slot>
 			</div>
-			<div class="flex items-center gap-2 flex-shrink-0">
+			<div class="flex items-center gap-2 shrink-0">
 				<slot name="actions"></slot>
 			</div>
 		</div>

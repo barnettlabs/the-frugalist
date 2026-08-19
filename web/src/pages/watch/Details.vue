@@ -328,7 +328,7 @@ onMounted(async () => {
 										class="relative h-4 bg-border rounded-full overflow-hidden"
 									>
 										<div
-											class="absolute left-0 top-0 h-full bg-gradient-to-r from-accent to-success rounded-full transition-all duration-500"
+											class="absolute left-0 top-0 h-full bg-linear-to-r from-accent to-success rounded-full transition-all duration-500"
 											:style="{ width: progressPercent + '%' }"
 										></div>
 									</div>
@@ -483,15 +483,15 @@ onMounted(async () => {
 							<!-- Legend -->
 							<div class="flex flex-wrap gap-4 mt-4 text-xs text-text-muted">
 								<div class="flex items-center gap-2">
-									<div class="w-4 h-0.5 bg-accent rounded"></div>
+									<div class="w-4 h-0.5 bg-accent rounded-sm"></div>
 									<span>Price trend</span>
 								</div>
 								<div v-if="product.target_price" class="flex items-center gap-2">
-									<div class="w-4 h-0.5 bg-success rounded"></div>
+									<div class="w-4 h-0.5 bg-success rounded-sm"></div>
 									<span>Target price</span>
 								</div>
 								<div class="flex items-center gap-2">
-									<div class="w-4 h-0.5 bg-border rounded"></div>
+									<div class="w-4 h-0.5 bg-border rounded-sm"></div>
 									<span>Grid lines</span>
 								</div>
 							</div>
@@ -580,7 +580,7 @@ onMounted(async () => {
 					<!-- Sidebar -->
 					<div class="space-y-4">
 						<!-- Edit Settings -->
-						<Card class="!bg-surface">
+						<Card class="bg-surface!">
 							<h2 class="text-lg font-bold text-primary mb-4">Edit Settings</h2>
 							<div class="space-y-4">
 								<!-- Watch Type -->
@@ -627,7 +627,7 @@ onMounted(async () => {
 									<select
 										id="check_interval"
 										v-model="editForm.check_interval"
-										class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary text-sm py-2"
+										class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-primary focus:ring-primary text-sm py-2"
 									>
 										<option v-for="option in CHECK_INTERVAL_OPTIONS" :key="option.value" :value="option.value">
 											{{ option.label }}
@@ -684,7 +684,7 @@ onMounted(async () => {
 						</Card>
 
 						<!-- Product Details -->
-						<Card class="!bg-surface">
+						<Card class="bg-surface!">
 							<h2 class="text-lg font-bold text-primary mb-3">Product Details</h2>
 							<dl class="text-sm space-y-3">
 								<div class="flex justify-between items-center">
@@ -710,7 +710,7 @@ onMounted(async () => {
 						</Card>
 
 						<!-- Danger Zone -->
-						<Card class="!bg-surface border-danger/30">
+						<Card class="bg-surface! border-danger/30">
 							<h2 class="text-sm font-bold text-danger mb-2">Stop Tracking</h2>
 							<p class="text-xs text-text-muted mb-3">
 								Remove this product from your tracking list. This action cannot be undone.

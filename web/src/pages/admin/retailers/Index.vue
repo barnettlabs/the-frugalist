@@ -146,7 +146,7 @@ onMounted(fetchRetailers);
 					<tr v-for="r in retailers" :key="r.id" class="border-t border-border">
 						<td class="px-4 py-3">
 							<div class="flex items-center gap-3">
-								<img v-if="r.logo_url" :src="r.logo_url" :alt="r.name" class="h-7 w-7 rounded object-contain" />
+								<img v-if="r.logo_url" :src="r.logo_url" :alt="r.name" class="h-7 w-7 rounded-sm object-contain" />
 								<div>
 									<p class="font-medium text-primary">{{ r.name }}</p>
 									<p class="text-xs text-text-muted">{{ r.api_base_url }}</p>
@@ -160,7 +160,7 @@ onMounted(fetchRetailers);
 						</td>
 						<td class="px-4 py-3">
 							<button
-								class="inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium transition-colors"
+								class="inline-flex items-center gap-1.5 px-2 py-1 rounded-sm text-xs font-medium transition-colors"
 								:class="
 									r.is_active
 										? 'bg-success/10 text-success hover:bg-success/20'
@@ -174,7 +174,7 @@ onMounted(fetchRetailers);
 							</button>
 							<span
 								v-if="r.coming_soon"
-								class="ml-2 inline-flex items-center px-2 py-1 rounded text-xs bg-accent/10 text-accent-dark"
+								class="ml-2 inline-flex items-center px-2 py-1 rounded-sm text-xs bg-accent/10 text-accent-dark"
 							>
 								Coming soon
 							</span>
@@ -216,7 +216,7 @@ onMounted(fetchRetailers);
 						<input
 							v-model="form.name"
 							type="text"
-							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none"
+							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden"
 						/>
 						<p v-if="errors.name" class="text-xs text-danger mt-1">{{ errors.name[0] }}</p>
 					</div>
@@ -232,7 +232,7 @@ onMounted(fetchRetailers);
 						<select
 							v-else-if="availableSlugs.length"
 							v-model="form.slug"
-							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden numeral"
 						>
 							<option v-for="s in availableSlugs" :key="s" :value="s">{{ s }}</option>
 						</select>
@@ -250,7 +250,7 @@ onMounted(fetchRetailers);
 						<input
 							v-model="form.api_base_url"
 							type="text"
-							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden numeral"
 						/>
 						<p v-if="errors.api_base_url" class="text-xs text-danger mt-1">{{ errors.api_base_url[0] }}</p>
 					</div>
@@ -259,7 +259,7 @@ onMounted(fetchRetailers);
 						<input
 							v-model="form.api_key"
 							type="text"
-							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden numeral"
 						/>
 					</div>
 					<div>
@@ -267,7 +267,7 @@ onMounted(fetchRetailers);
 						<input
 							v-model="form.logo_url"
 							type="text"
-							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden numeral"
 						/>
 					</div>
 					<div>
@@ -276,16 +276,16 @@ onMounted(fetchRetailers);
 							v-model.number="form.rate_limit_per_hour"
 							type="number"
 							min="0"
-							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+							class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden numeral"
 						/>
 					</div>
 					<div class="flex items-center gap-6 pt-2">
 						<label class="inline-flex items-center gap-2 text-sm">
-							<input v-model="form.is_active" type="checkbox" class="rounded border-border" />
+							<input v-model="form.is_active" type="checkbox" class="rounded-sm border-border" />
 							<span>Active</span>
 						</label>
 						<label class="inline-flex items-center gap-2 text-sm">
-							<input v-model="form.coming_soon" type="checkbox" class="rounded border-border" />
+							<input v-model="form.coming_soon" type="checkbox" class="rounded-sm border-border" />
 							<span>Coming soon</span>
 						</label>
 					</div>

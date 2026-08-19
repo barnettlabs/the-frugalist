@@ -193,7 +193,7 @@ onMounted(() => {
 						to="/watch/create"
 						class="group flex items-center gap-4 p-4 rounded-md border border-border bg-surface hover:border-primary/40 hover:bg-surface-dark transition-colors"
 					>
-						<div class="w-10 h-10 rounded-md bg-primary text-surface flex items-center justify-center flex-shrink-0">
+						<div class="w-10 h-10 rounded-md bg-primary text-surface flex items-center justify-center shrink-0">
 							<PlusIcon class="h-4 w-4" />
 						</div>
 						<div class="flex-1 min-w-0">
@@ -206,7 +206,7 @@ onMounted(() => {
 						to="/estimates/financing/create"
 						class="group flex items-center gap-4 p-4 rounded-md border border-border bg-surface hover:border-primary/40 hover:bg-surface-dark transition-colors"
 					>
-						<div class="w-10 h-10 rounded-md bg-primary text-surface flex items-center justify-center flex-shrink-0">
+						<div class="w-10 h-10 rounded-md bg-primary text-surface flex items-center justify-center shrink-0">
 							<CalculatorIcon class="h-4 w-4" />
 						</div>
 						<div class="flex-1 min-w-0">
@@ -219,7 +219,7 @@ onMounted(() => {
 						to="/estimates/leasing/create"
 						class="group flex items-center gap-4 p-4 rounded-md border border-border bg-surface hover:border-primary/40 hover:bg-surface-dark transition-colors"
 					>
-						<div class="w-10 h-10 rounded-md bg-primary text-surface flex items-center justify-center flex-shrink-0">
+						<div class="w-10 h-10 rounded-md bg-primary text-surface flex items-center justify-center shrink-0">
 							<CalculatorIcon class="h-4 w-4" />
 						</div>
 						<div class="flex-1 min-w-0">
@@ -249,7 +249,7 @@ onMounted(() => {
 							<li v-for="sheet in recentFinanceSheets" :key="'f-' + sheet.id">
 								<RouterLink
 									:to="`/estimates/financing/${sheet.id}/edit`"
-									class="group grid grid-cols-12 items-baseline gap-3 py-4 hover:bg-surface-dark/40 transition-colors -mx-2 px-2 rounded"
+									class="group grid grid-cols-12 items-baseline gap-3 py-4 hover:bg-surface-dark/40 transition-colors -mx-2 px-2 rounded-sm"
 								>
 									<span class="col-span-2 numeral text-xs text-text-muted">{{ sheet.vehicle_year }}</span>
 									<span
@@ -273,7 +273,7 @@ onMounted(() => {
 							<li v-for="sheet in recentLeaseSheets" :key="'l-' + sheet.id">
 								<RouterLink
 									:to="`/estimates/leasing/${sheet.id}/edit`"
-									class="group grid grid-cols-12 items-baseline gap-3 py-4 hover:bg-surface-dark/40 transition-colors -mx-2 px-2 rounded"
+									class="group grid grid-cols-12 items-baseline gap-3 py-4 hover:bg-surface-dark/40 transition-colors -mx-2 px-2 rounded-sm"
 								>
 									<span class="col-span-2 numeral text-xs text-text-muted">{{ sheet.vehicle_year }}</span>
 									<span

@@ -82,7 +82,7 @@ const totalMonthly = () => expenses.value.reduce((sum, e) => sum + monthlyOf(e),
 						<PlusIcon class="h-3.5 w-3.5" />
 					</template>
 					<template #items>
-						<p class="eyebrow !text-[0.625rem] px-3 pt-2 pb-1 text-text-muted">Quick add</p>
+						<p class="eyebrow text-[0.625rem]! px-3 pt-2 pb-1 text-text-muted">Quick add</p>
 						<ActionMenuItem
 							v-for="preset in PRESETS"
 							:key="preset.label"
@@ -100,7 +100,7 @@ const totalMonthly = () => expenses.value.reduce((sum, e) => sum + monthlyOf(e),
 			<div v-for="(expense, index) in expenses" :key="index" class="bg-tan/40 border border-border p-4 rounded-md">
 				<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 					<div>
-						<label class="eyebrow !text-[0.625rem] block mb-1.5">Label</label>
+						<label class="eyebrow text-[0.625rem]! block mb-1.5">Label</label>
 						<input
 							v-model="expense.label"
 							type="text"
@@ -111,7 +111,7 @@ const totalMonthly = () => expenses.value.reduce((sum, e) => sum + monthlyOf(e),
 					</div>
 
 					<div>
-						<label class="eyebrow !text-[0.625rem] block mb-1.5">Amount</label>
+						<label class="eyebrow text-[0.625rem]! block mb-1.5">Amount</label>
 						<MaskedNumberInput
 							v-model="expense.amount"
 							prefix="$"
@@ -121,7 +121,7 @@ const totalMonthly = () => expenses.value.reduce((sum, e) => sum + monthlyOf(e),
 					</div>
 
 					<div>
-						<label class="eyebrow !text-[0.625rem] block mb-1.5">Frequency</label>
+						<label class="eyebrow text-[0.625rem]! block mb-1.5">Frequency</label>
 						<select
 							v-model="expense.frequency"
 							class="block w-full rounded-md border-border bg-surface shadow-none focus:border-accent focus:ring-1 focus:ring-accent sm:text-sm"

@@ -15,13 +15,13 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const variantClasses = {
-	default: 'bg-surface/80 backdrop-blur-sm rounded-lg border border-border shadow-sm',
+	default: 'bg-surface/80 backdrop-blur-xs rounded-lg border border-border shadow-xs',
 	interactive:
-		'bg-surface/80 backdrop-blur-sm rounded-lg border border-border shadow-sm hover:shadow-md hover:border-accent/30 transition-all cursor-pointer',
+		'bg-surface/80 backdrop-blur-xs rounded-lg border border-border shadow-xs hover:shadow-md hover:border-accent/30 transition-all cursor-pointer',
 	futuristic: 'futuristic-card', // Uses CSS class from app.css
-	'gradient-primary': 'bg-gradient-to-br from-primary to-primary-dark rounded-lg text-white',
-	'gradient-secondary': 'bg-gradient-to-br from-secondary to-secondary-dark rounded-lg text-white',
-	'gradient-accent': 'bg-gradient-to-br from-accent to-accent-dark rounded-lg text-white',
+	'gradient-primary': 'bg-linear-to-br from-primary to-primary-dark rounded-lg text-white',
+	'gradient-secondary': 'bg-linear-to-br from-secondary to-secondary-dark rounded-lg text-white',
+	'gradient-accent': 'bg-linear-to-br from-accent to-accent-dark rounded-lg text-white',
 };
 
 const paddingClasses = {

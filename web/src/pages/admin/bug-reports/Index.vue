@@ -64,7 +64,7 @@ onMounted(fetchAll);
 			<button
 				v-for="s in STATUS_OPTIONS"
 				:key="s.value"
-				class="px-3 py-1.5 rounded text-xs font-medium transition-colors"
+				class="px-3 py-1.5 rounded-sm text-xs font-medium transition-colors"
 				:class="status === s.value ? 'bg-primary text-surface' : 'text-text-muted hover:text-primary'"
 				@click="status = s.value"
 			>
@@ -101,7 +101,7 @@ onMounted(fetchAll);
 						<td class="px-4 py-3 text-xs text-text-muted">{{ userLabel(b) }}</td>
 						<td class="px-4 py-3">
 							<span
-								class="inline-flex items-center px-2 py-1 rounded text-xs font-medium"
+								class="inline-flex items-center px-2 py-1 rounded-sm text-xs font-medium"
 								:class="STATUS_COLORS[b.status]"
 							>
 								{{ b.status.replace('_', ' ') }}

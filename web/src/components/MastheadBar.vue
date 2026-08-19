@@ -19,7 +19,7 @@ withDefaults(defineProps<Props>(), {
 
 <template>
 	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-		<div class="relative flex items-center justify-between border-y border-border-strong py-2 gap-4 min-h-[2.25rem]">
+		<div class="relative flex items-center justify-between border-y border-border-strong py-2 gap-4 min-h-9">
 			<!-- Left -->
 			<span class="eyebrow numeral relative z-10">
 				<slot name="left">v {{ appVersion }}</slot>

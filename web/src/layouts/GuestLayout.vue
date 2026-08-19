@@ -35,12 +35,12 @@ const navigation = [
 		<Popover
 			v-slot="{ open }"
 			as="header"
-			class="bg-surface/80 backdrop-blur-sm border-b border-border relative overflow-hidden"
+			class="bg-surface/80 backdrop-blur-xs border-b border-border relative overflow-hidden"
 		>
 			<div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8 z-10">
 				<div class="relative flex items-center justify-center py-4 lg:justify-between">
 					<!-- Logo -->
-					<div class="absolute left-0 flex-shrink-0 lg:static">
+					<div class="absolute left-0 shrink-0 lg:static">
 						<RouterLink to="/" class="flex items-center gap-2">
 							<span class="sr-only">TheFrugalist by JayTech LLC</span>
 							<ApplicationLogo />
@@ -77,10 +77,10 @@ const navigation = [
 					</div>
 
 					<!-- Menu button -->
-					<div class="absolute right-0 flex-shrink-0 lg:hidden">
+					<div class="absolute right-0 shrink-0 lg:hidden">
 						<!-- Mobile menu button -->
 						<PopoverButton
-							class="relative inline-flex items-center justify-center rounded-md bg-transparent p-2 text-text-muted hover:bg-border hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent"
+							class="relative inline-flex items-center justify-center rounded-md bg-transparent p-2 text-text-muted hover:bg-border hover:text-primary focus:outline-hidden focus:ring-2 focus:ring-accent"
 						>
 							<span class="absolute -inset-0.5" />
 							<span class="sr-only">Open main menu</span>
@@ -91,7 +91,7 @@ const navigation = [
 				</div>
 				<div v-if="breadcrumbs && breadcrumbs.length > 0" class="hidden border-border pt-2 pb-5 lg:block">
 					<!-- Breadcrumbs -->
-					<nav class="hidden lg:flex flex-row !justify-start" aria-label="Breadcrumb">
+					<nav class="hidden lg:flex flex-row justify-start!" aria-label="Breadcrumb">
 						<ol class="flex items-center space-x-2">
 							<li>
 								<RouterLink
@@ -153,7 +153,7 @@ const navigation = [
 										<div></div>
 										<div class="-mr-2">
 											<PopoverButton
-												class="relative inline-flex items-center justify-center rounded-md bg-surface p-2 text-text-muted hover:bg-neutral-100 hover:text-primary focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent"
+												class="relative inline-flex items-center justify-center rounded-md bg-surface p-2 text-text-muted hover:bg-neutral-100 hover:text-primary focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-accent"
 											>
 												<span class="absolute -inset-0.5" />
 												<span class="sr-only">Close menu</span>
@@ -209,7 +209,7 @@ const navigation = [
 			<RouterView />
 		</div>
 
-		<footer class="bg-surface/80 backdrop-blur-sm border-t border-border py-12">
+		<footer class="bg-surface/80 backdrop-blur-xs border-t border-border py-12">
 			<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 					<div>

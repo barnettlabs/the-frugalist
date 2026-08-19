@@ -138,7 +138,7 @@ const getTimeSavings = () => {
 			<div v-for="(payment, index) in extraPayments" :key="index" class="bg-tan/40 border border-border p-4 rounded-md">
 				<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 					<div>
-						<label class="eyebrow !text-[0.625rem] block mb-1.5">Payment amount</label>
+						<label class="eyebrow text-[0.625rem]! block mb-1.5">Payment amount</label>
 						<TextInput
 							v-model="payment.paymentAmount"
 							type="number"
@@ -151,7 +151,7 @@ const getTimeSavings = () => {
 					</div>
 
 					<div>
-						<label class="eyebrow !text-[0.625rem] block mb-1.5">Start month</label>
+						<label class="eyebrow text-[0.625rem]! block mb-1.5">Start month</label>
 						<input
 							v-model="payment.startMonth"
 							type="number"
@@ -164,7 +164,7 @@ const getTimeSavings = () => {
 					</div>
 
 					<div>
-						<label class="eyebrow !text-[0.625rem] block mb-1.5">End month</label>
+						<label class="eyebrow text-[0.625rem]! block mb-1.5">End month</label>
 						<input
 							v-model="payment.endMonth"
 							type="number"
@@ -211,15 +211,15 @@ const getTimeSavings = () => {
 			<div v-if="extraPayments.length > 0" class="mt-2 pt-5 border-t border-border">
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border rounded-md overflow-hidden">
 					<div class="bg-surface p-4">
-						<p class="eyebrow !text-[0.625rem] mb-1.5">Total extra</p>
+						<p class="eyebrow text-[0.625rem]! mb-1.5">Total extra</p>
 						<p class="figure text-lg text-primary leading-none">${{ formatCurrency(getTotalExtraPayments()) }}</p>
 					</div>
 					<div class="bg-surface p-4">
-						<p class="eyebrow !text-[0.625rem] mb-1.5">Interest saved</p>
+						<p class="eyebrow text-[0.625rem]! mb-1.5">Interest saved</p>
 						<p class="figure text-lg text-success leading-none">${{ formatCurrency(getInterestSavings()) }}</p>
 					</div>
 					<div class="bg-surface p-4">
-						<p class="eyebrow !text-[0.625rem] mb-1.5">Time saved</p>
+						<p class="eyebrow text-[0.625rem]! mb-1.5">Time saved</p>
 						<p class="figure text-lg text-success leading-none">
 							{{ getTimeSavings() }} <span class="text-text-muted text-sm">mo</span>
 						</p>

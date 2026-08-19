@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Repository Structure
 
 This is a monorepo with three main applications:
-- **`api/`** - Laravel 12 backend API
+- **`api/`** - Laravel 13 backend API
 - **`web/`** - Vue.js 3 web frontend (standalone SPA)
 - **`app/`** - React Native/Expo mobile application
 
@@ -48,11 +48,11 @@ pnpm build:production:android   # EAS build for Android prod
 ## Architecture Overview
 
 ### API (`api/`)
-Laravel 12 REST API handling vehicle finance and lease estimation.
+Laravel 13 REST API handling vehicle finance and lease estimation.
 
 **Key Models**: User, Profile, VehicleFinanceSheet, VehicleLeaseSheet, Announcement, Notification
 
-**Tech Stack**: Laravel 12, PHP 8.2+, MySQL, Sanctum, PHPUnit
+**Tech Stack**: Laravel 13, PHP 8.3+, MySQL, Sanctum, PHPUnit
 
 **Structure**:
 - Controllers: `app/Http/Controllers/`
@@ -63,7 +63,7 @@ Laravel 12 REST API handling vehicle finance and lease estimation.
 ### Web (`web/`)
 Vue.js 3 standalone SPA that communicates with the Laravel API.
 
-**Tech Stack**: Vue.js 3, Vue Router, Pinia, Vite, Tailwind CSS, TypeScript
+**Tech Stack**: Vue.js 3, Vue Router 5, Pinia 4, Vite 8, Tailwind CSS 4, TypeScript
 
 **Structure** (`web/src/`):
 ```
@@ -85,7 +85,7 @@ assets/       # CSS and static assets
 ### Mobile App (`app/`)
 React Native/Expo application using the Obytes starter template.
 
-**Tech Stack**: Expo SDK 53, React Native 0.79, TypeScript, Nativewind (Tailwind), Expo Router, React Query + React Query Kit, Zustand, Zod
+**Tech Stack**: Expo SDK 57, React Native 0.86, TypeScript, Nativewind (Tailwind), Expo Router, React Query + React Query Kit, Zustand, Zod
 
 **Structure** (`app/src/`):
 ```
@@ -122,17 +122,24 @@ types/        # Shared TypeScript types
 ### Git Workflow
 Always work on a branch — never commit directly to `main`. Follow git flow naming:
 
+Branch off `staging`, not `main`. `staging` is the integration branch; `main` holds
+released code only.
+
 | Type | When | Branch name pattern |
 |------|------|---------------------|
-| `feature/` | New functionality | `feature/ten-{N}-short-description` |
-| `fix/` | Bug fix | `fix/ten-{N}-short-description` |
-| `hotfix/` | Urgent production fix | `hotfix/ten-{N}-short-description` |
-| `chore/` | Non-functional (deps, config, cleanup) | `chore/ten-{N}-short-description` |
-| `refactor/` | Code restructure without behaviour change | `refactor/ten-{N}-short-description` |
+| `feature/` | New functionality | `feature/{N}-short-description` |
+| `fix/` | Bug fix | `fix/{N}-short-description` |
+| `hotfix/` | Urgent production fix | `hotfix/{N}-short-description` |
+| `chore/` | Non-functional (deps, config, cleanup) | `chore/{N}-short-description` |
+| `refactor/` | Code restructure without behaviour change | `refactor/{N}-short-description` |
 
-Example: `feature/ten-17-web-code-quality-fixes`
+`{N}` is the GitHub issue number. Example: `feature/12-web-code-quality-fixes`.
 
-After pushing the branch, open a GitHub PR referencing the Paperclip issue identifier in the PR title or body.
+Issues and the project board live on GitHub (`barnettlabs/the-frugalist`). Legacy
+`TEN-` identifiers in older commit messages refer to a retired tracker — ignore them.
+
+After pushing the branch, open a GitHub PR into `staging` referencing the issue
+number (for example `Closes #12`).
 
 ### Git Commits
 Use conventional commits: `fix:`, `feat:`, `perf:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`

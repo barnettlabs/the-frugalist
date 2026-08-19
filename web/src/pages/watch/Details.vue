@@ -556,8 +556,7 @@ onMounted(async () => {
 								</div>
 								<pre
 									class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-96 overflow-y-auto"
-									>{{ JSON.stringify(debugInfo.raw_api_response.response, null, 2) }}</pre
-								>
+									>{{ JSON.stringify(debugInfo.raw_api_response.response, null, 2) }}</pre>
 							</div>
 
 							<!-- Parsed Data -->
@@ -565,8 +564,7 @@ onMounted(async () => {
 								<h3 class="text-sm font-semibold text-primary mb-2">Parsed Data</h3>
 								<pre
 									class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-64 overflow-y-auto"
-									>{{ JSON.stringify(debugInfo.parsed_data, null, 2) }}</pre
-								>
+									>{{ JSON.stringify(debugInfo.parsed_data, null, 2) }}</pre>
 							</div>
 
 							<!-- Saved to DB -->
@@ -574,8 +572,7 @@ onMounted(async () => {
 								<h3 class="text-sm font-semibold text-primary mb-2">Saved to Database</h3>
 								<pre
 									class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-64 overflow-y-auto"
-									>{{ JSON.stringify(debugInfo.saved_to_db, null, 2) }}</pre
-								>
+									>{{ JSON.stringify(debugInfo.saved_to_db, null, 2) }}</pre>
 							</div>
 						</Card>
 					</div>

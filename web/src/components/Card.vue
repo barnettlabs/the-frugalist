@@ -2,12 +2,7 @@
 import { computed } from 'vue';
 
 type CardVariant =
-	| 'default'
-	| 'interactive'
-	| 'futuristic'
-	| 'gradient-primary'
-	| 'gradient-secondary'
-	| 'gradient-accent';
+	'default' | 'interactive' | 'futuristic' | 'gradient-primary' | 'gradient-secondary' | 'gradient-accent';
 
 interface Props {
 	variant?: CardVariant;

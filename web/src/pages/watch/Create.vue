@@ -557,8 +557,7 @@ onMounted(async () => {
 							</div>
 							<pre
 								class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-80 overflow-y-auto"
-								>{{ JSON.stringify(debugInfo.raw_api_response.response, null, 2) }}</pre
-							>
+								>{{ JSON.stringify(debugInfo.raw_api_response.response, null, 2) }}</pre>
 						</div>
 
 						<!-- Parsed Data -->
@@ -566,8 +565,7 @@ onMounted(async () => {
 							<h4 class="text-xs font-semibold text-primary mb-2">Parsed Data</h4>
 							<pre
 								class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-48 overflow-y-auto"
-								>{{ JSON.stringify(debugInfo.parsed_data, null, 2) }}</pre
-							>
+								>{{ JSON.stringify(debugInfo.parsed_data, null, 2) }}</pre>
 						</div>
 
 						<!-- Error Info (if any) -->

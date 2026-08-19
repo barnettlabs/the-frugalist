@@ -467,15 +467,13 @@ onMounted(fetch);
 											<p class="eyebrow mb-1">Request body</p>
 											<pre
 												class="p-3 rounded-md bg-surface-dark/60 text-xs overflow-x-auto numeral max-h-96 whitespace-pre-wrap break-words"
-												>{{ JSON.stringify(previewResult.request_payload, null, 2) }}</pre
-											>
+												>{{ JSON.stringify(previewResult.request_payload, null, 2) }}</pre>
 										</div>
 										<div v-if="previewResult.raw_response">
 											<p class="eyebrow mb-1">Response body</p>
 											<pre
 												class="p-3 rounded-md bg-surface-dark/60 text-xs overflow-x-auto numeral max-h-96 whitespace-pre-wrap break-words"
-												>{{ previewResult.raw_response }}</pre
-											>
+												>{{ previewResult.raw_response }}</pre>
 										</div>
 									</div>
 								</details>
@@ -504,8 +502,7 @@ onMounted(fetch);
 											</div>
 											<pre
 												class="px-3 py-2 text-xs font-mono whitespace-pre-wrap break-words max-h-64 overflow-y-auto"
-												>{{ m.content }}</pre
-											>
+												>{{ m.content }}</pre>
 										</div>
 									</div>
 								</details>
@@ -528,8 +525,7 @@ onMounted(fetch);
 													: previewResult.ok
 														? '(empty)'
 														: '(no response — see error above)'
-											}}</pre
-										>
+											}}</pre>
 									</div>
 								</details>
 							</div>

@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import type { PropType } from 'vue';
+
+import type { InputSize } from '@/types/ui';
+
 import BaseInput from './BaseInput.vue';
 
 defineEmits(['focus', 'blur']);
 
-const modelValue = defineModel({
-	type: [String, Number],
-	default: '',
-});
+const modelValue = defineModel<string | number>({ default: '' });
 
 defineProps({
 	id: {
@@ -58,9 +59,9 @@ defineProps({
 		default: '',
 	},
 	size: {
-		type: String,
+		type: String as PropType<InputSize>,
 		default: 'md',
-		validator: value => ['sm', 'md', 'lg'].includes(value),
+		validator: (value: unknown): boolean => ['sm', 'md', 'lg'].includes(value as string),
 	},
 });
 </script>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { CheckCircleIcon, InformationCircleIcon, XCircleIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 
-import { useToastStore } from '@/stores/toast';
 import type { ToastType } from '@/stores/toast';
+import { useToastStore } from '@/stores/toast';
 
 const store = useToastStore();
 
@@ -27,11 +27,7 @@ const iconStyles: Record<ToastType, string> = {
 
 <template>
 	<div class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 w-80 pointer-events-none">
-		<TransitionGroup
-			name="toast"
-			tag="div"
-			class="flex flex-col gap-2"
-		>
+		<TransitionGroup name="toast" tag="div" class="flex flex-col gap-2">
 			<div
 				v-for="toast in store.toasts"
 				:key="toast.id"
@@ -46,10 +42,7 @@ const iconStyles: Record<ToastType, string> = {
 					aria-hidden="true"
 				/>
 				<p class="flex-1 text-sm font-medium text-primary leading-snug">{{ toast.message }}</p>
-				<button
-					class="shrink-0 text-text-muted hover:text-primary transition-colors"
-					@click="store.remove(toast.id)"
-				>
+				<button class="shrink-0 text-text-muted hover:text-primary transition-colors" @click="store.remove(toast.id)">
 					<XMarkIcon class="h-4 w-4" />
 				</button>
 			</div>

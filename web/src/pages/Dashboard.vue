@@ -14,24 +14,17 @@ import { dashboardApi, type DashboardStats } from '@/api/dashboard';
 import MastheadBar from '@/components/MastheadBar.vue';
 import Spinner from '@/components/Spinner.vue';
 import { useAuthStore } from '@/stores/auth';
+import type { VehicleFinanceSheet, VehicleLeaseSheet } from '@/types/models';
 
 const authStore = useAuthStore();
 
-interface VehicleSheet {
-	id: number;
-	vehicle_year: number;
-	vehicle_make: string;
-	vehicle_model: string;
-	vehicle_price: number;
-	loan_term_months?: number;
-	lease_term_months?: number;
-	updated_at?: string;
-}
-
 const loading = ref(true);
 const stats = ref<DashboardStats | null>(null);
-const vehicleFinanceSheets = ref<VehicleSheet[]>([]);
-const vehicleLeaseSheets = ref<VehicleSheet[]>([]);
+const vehicleFinanceSheets = ref<VehicleFinanceSheet[]>([]);
+const vehicleLeaseSheets = ref<VehicleLeaseSheet[]>([]);
+
+const recentFinanceSheets = computed(() => vehicleFinanceSheets.value.slice(0, 4));
+const recentLeaseSheets = computed(() => vehicleLeaseSheets.value.slice(0, 4));
 
 const fullName = computed(() => authStore.fullName);
 const firstName = computed(() => fullName.value?.split(' ')[0] || '');
@@ -74,8 +67,8 @@ const loadDashboard = async () => {
 	try {
 		const data = await dashboardApi.getStats();
 		stats.value = data;
-		vehicleFinanceSheets.value = data.recent_finance_sheets as VehicleSheet[];
-		vehicleLeaseSheets.value = data.recent_lease_sheets as VehicleSheet[];
+		vehicleFinanceSheets.value = data.recent_finance_sheets;
+		vehicleLeaseSheets.value = data.recent_lease_sheets;
 	} catch (error) {
 		console.error('Failed to load dashboard:', error);
 	} finally {
@@ -253,7 +246,7 @@ onMounted(() => {
 					<div>
 						<p class="eyebrow text-text-muted/70 mb-4">Finance ledger</p>
 						<ul class="divide-y divide-border border-y border-border">
-							<li v-for="sheet in vehicleFinanceSheets.slice(0, 4)" :key="'f-' + sheet.id">
+							<li v-for="sheet in recentFinanceSheets" :key="'f-' + sheet.id">
 								<RouterLink
 									:to="`/estimates/financing/${sheet.id}/edit`"
 									class="group grid grid-cols-12 items-baseline gap-3 py-4 hover:bg-surface-dark/40 transition-colors -mx-2 px-2 rounded"
@@ -264,9 +257,9 @@ onMounted(() => {
 									>
 										{{ sheet.vehicle_make }} <span class="italic text-text-muted/80">{{ sheet.vehicle_model }}</span>
 									</span>
-									<span class="col-span-3 numeral text-sm text-primary text-right"
-										>${{ sheet.vehicle_price?.toLocaleString() }}</span
-									>
+									<span class="col-span-3 numeral text-sm text-primary text-right">{{
+										sheet.msrp ? `$${sheet.msrp.toLocaleString()}` : '—'
+									}}</span>
 								</RouterLink>
 							</li>
 							<li v-if="!vehicleFinanceSheets.length" class="py-4 text-sm text-text-muted">No finance sheets yet.</li>
@@ -277,7 +270,7 @@ onMounted(() => {
 					<div>
 						<p class="eyebrow text-text-muted/70 mb-4">Lease ledger</p>
 						<ul class="divide-y divide-border border-y border-border">
-							<li v-for="sheet in vehicleLeaseSheets.slice(0, 4)" :key="'l-' + sheet.id">
+							<li v-for="sheet in recentLeaseSheets" :key="'l-' + sheet.id">
 								<RouterLink
 									:to="`/estimates/leasing/${sheet.id}/edit`"
 									class="group grid grid-cols-12 items-baseline gap-3 py-4 hover:bg-surface-dark/40 transition-colors -mx-2 px-2 rounded"
@@ -288,9 +281,9 @@ onMounted(() => {
 									>
 										{{ sheet.vehicle_make }} <span class="italic text-text-muted/80">{{ sheet.vehicle_model }}</span>
 									</span>
-									<span class="col-span-3 numeral text-sm text-primary text-right"
-										>${{ sheet.vehicle_price?.toLocaleString() }}</span
-									>
+									<span class="col-span-3 numeral text-sm text-primary text-right">{{
+										sheet.msrp ? `$${sheet.msrp.toLocaleString()}` : '—'
+									}}</span>
 								</RouterLink>
 							</li>
 							<li v-if="!vehicleLeaseSheets.length" class="py-4 text-sm text-text-muted">No lease sheets yet.</li>

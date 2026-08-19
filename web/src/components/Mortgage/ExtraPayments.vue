@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 
 import MaskedNumberInput from '@/components/MaskedNumberInput.vue';
-import { formatCurrency, parseOrZero } from '@/utils/formatters';
+import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters';
 import { MortgageCalculator } from '@/utils/mortgageCalculator';
 
 const props = defineProps({
@@ -25,7 +25,7 @@ interface ExtraPayment {
 const emit = defineEmits(['update:modelValue']);
 
 const extraPayments = ref<ExtraPayment[]>([]);
-const termMonths = computed(() => (parseInt(props.data.loan_term_years as any) || 0) * 12);
+const termMonths = computed(() => (parseIntOrZero(props.data.loan_term_years) || 0) * 12);
 
 watch(
 	() => props.modelValue,
@@ -65,18 +65,20 @@ const updateExtraPayments = () => {
 const totalForPayment = (p: ExtraPayment) => {
 	const amount = parseOrZero(p.paymentAmount);
 	const start = parseOrZero(p.startMonth) || 1;
-	const end = p.endMonth === '' || p.endMonth === null || p.endMonth === undefined
-		? termMonths.value || start
-		: parseOrZero(p.endMonth) || start;
+	const end =
+		p.endMonth === '' || p.endMonth === null || p.endMonth === undefined
+			? termMonths.value || start
+			: parseOrZero(p.endMonth) || start;
 	const months = Math.max(0, end - start + 1);
 	return amount * months;
 };
 
-const totalExtra = () =>
-	extraPayments.value.reduce((sum, p) => sum + totalForPayment(p), 0);
+const totalExtra = () => extraPayments.value.reduce((sum, p) => sum + totalForPayment(p), 0);
 
 const interestSaved = () => {
-	const without = new MortgageCalculator({ ...props.data, extra_payments_json: '' } as any).calculateAmortization(false);
+	const without = new MortgageCalculator({ ...props.data, extra_payments_json: '' } as any).calculateAmortization(
+		false
+	);
 	const withExtra = new MortgageCalculator({
 		...props.data,
 		extra_payments_json: JSON.stringify(extraPayments.value),
@@ -86,7 +88,9 @@ const interestSaved = () => {
 };
 
 const timeSaved = () => {
-	const without = new MortgageCalculator({ ...props.data, extra_payments_json: '' } as any).calculateAmortization(false);
+	const without = new MortgageCalculator({ ...props.data, extra_payments_json: '' } as any).calculateAmortization(
+		false
+	);
 	const withExtra = new MortgageCalculator({
 		...props.data,
 		extra_payments_json: JSON.stringify(extraPayments.value),

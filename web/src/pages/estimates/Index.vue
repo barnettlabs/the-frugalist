@@ -90,7 +90,9 @@ const benefits = [
 				</div>
 			</div>
 
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border rounded-md overflow-hidden">
+			<div
+				class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border rounded-md overflow-hidden"
+			>
 				<RouterLink
 					v-for="calc in calculators"
 					:key="calc.name"

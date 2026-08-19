@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import type { PropType } from 'vue';
 import { computed, ref } from 'vue';
 
-import { formatCurrency } from '@/utils/formatters.js';
+import type { LeaseFormData } from '@/types/models';
+import { formatCurrency, parseIntOrZero } from '@/utils/formatters.js';
 
 import { LeaseCalculator } from '../../utils/leaseCalculator.js';
 
 const props = defineProps({
 	data: {
-		type: Object,
+		type: Object as PropType<LeaseFormData>,
 		required: true,
 	},
 });
@@ -23,9 +25,9 @@ const paymentBreakdown = computed(() => {
 	if (!summary.value) return null;
 
 	return {
-		principal: summary.value.monthlyPrincipalPayment * parseInt(props.data.lease_term || 0),
-		interest: summary.value.residualMonthlyInterestPayment * parseInt(props.data.lease_term || 0),
-		salesTax: summary.value.monthlySalesTax * parseInt(props.data.lease_term || 0),
+		principal: summary.value.monthlyPrincipalPayment * parseIntOrZero(props.data.lease_term),
+		interest: summary.value.residualMonthlyInterestPayment * parseIntOrZero(props.data.lease_term),
+		salesTax: summary.value.monthlySalesTax * parseIntOrZero(props.data.lease_term),
 	};
 });
 

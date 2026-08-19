@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import type { PropType } from 'vue';
 import { computed, ref } from 'vue';
 
-import { formatCurrency } from '@/utils/formatters.js';
+import type { LeaseFormData } from '@/types/models';
+import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.js';
 
 import { LeaseCalculator } from '../../utils/leaseCalculator.js';
 
 const props = defineProps({
 	data: {
-		type: Object,
+		type: Object as PropType<LeaseFormData>,
 		required: true,
 	},
 });
@@ -38,10 +40,10 @@ interface BuyoutScenario {
 const earlyBuyoutScenarios = computed((): BuyoutScenario[] => {
 	if (!summary.value || !props.data.lease_term) return [];
 
-	const leaseTerm = parseInt(props.data.lease_term);
+	const leaseTerm = parseIntOrZero(props.data.lease_term);
 	const monthlyPayment = summary.value.leasePayment;
 	const residualAmount = summary.value.residualAmount;
-	const msrp = parseFloat(props.data.msrp || 0);
+	const msrp = parseOrZero(props.data.msrp);
 
 	const scenarios: BuyoutScenario[] = [];
 
@@ -56,7 +58,7 @@ const earlyBuyoutScenarios = computed((): BuyoutScenario[] => {
 		const earlyBuyoutPrice = residualAmount + remainingPaymentValue * 0.5; // 50% of remaining payments
 
 		// Calculate depreciation rate for market value estimation
-		const depreciationRate = (100 - parseFloat(props.data.residual_percent || 0)) / 100;
+		const depreciationRate = (100 - parseOrZero(props.data.residual_percent)) / 100;
 		const additionalDepreciation = (monthsElapsed / leaseTerm) * depreciationRate * 0.1; // Additional 10% depreciation
 		const estimatedMarketValue = msrp * (1 - depreciationRate * (monthsElapsed / leaseTerm) - additionalDepreciation);
 
@@ -66,7 +68,7 @@ const earlyBuyoutScenarios = computed((): BuyoutScenario[] => {
 			buyoutPrice: earlyBuyoutPrice,
 			estimatedMarketValue,
 			equity: Math.max(0, estimatedMarketValue - earlyBuyoutPrice),
-			totalPaidSoFar: monthsElapsed * monthlyPayment + parseFloat(props.data.down_payment || 0),
+			totalPaidSoFar: monthsElapsed * monthlyPayment + parseOrZero(props.data.down_payment),
 		});
 	});
 

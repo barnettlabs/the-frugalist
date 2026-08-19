@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import MaskedNumberInput from '@/components/MaskedNumberInput.vue';
-import { MortgageFormData, FormErrors } from '@/types';
+import { FormErrors, MortgageFormData } from '@/types';
 
 interface Props {
 	form: MortgageFormData;
@@ -42,7 +42,9 @@ defineProps<Props>();
 						placeholder="0.00"
 						:error="!!errors.annual_property_tax"
 					/>
-					<p v-if="errors.annual_property_tax" class="mt-1.5 text-xs text-danger">{{ errors.annual_property_tax[0] }}</p>
+					<p v-if="errors.annual_property_tax" class="mt-1.5 text-xs text-danger">
+						{{ errors.annual_property_tax[0] }}
+					</p>
 				</div>
 			</div>
 		</div>

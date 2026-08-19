@@ -15,27 +15,9 @@ import { leaseApi } from '@/api/lease';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
+import type { VehicleLeaseSheet } from '@/types/models';
 import { formatCurrency } from '@/utils/formatters';
 import { LeaseCalculator } from '@/utils/leaseCalculator';
-
-interface VehicleLeaseSheet {
-	id: number;
-	sheet_name?: string;
-	dealership_name?: string;
-	msrp?: number;
-	capitalized_cost?: number;
-	down_payment?: number;
-	vehicle_year?: number;
-	vehicle_make?: string;
-	vehicle_model?: string;
-	vehicle_trim?: string;
-	money_factor?: number;
-	lease_term?: number;
-	residual_percent?: number;
-	monthly_payment?: number;
-	created_at?: string;
-	updated_at?: string;
-}
 
 const router = useRouter();
 
@@ -52,7 +34,7 @@ const actionLoading = ref(false);
 const fetchSheets = async () => {
 	try {
 		const data = await leaseApi.getAll();
-		vehicleLeaseSheets.value = data as VehicleLeaseSheet[];
+		vehicleLeaseSheets.value = data;
 	} catch (error) {
 		console.error('Error fetching lease sheets:', error);
 	} finally {
@@ -114,6 +96,13 @@ const isSelected = (sheetId: number) => {
 const getMonthlyPayment = (sheet: VehicleLeaseSheet) => {
 	const calculator = new LeaseCalculator(sheet as any);
 	return calculator.calculateLeasePayment();
+};
+
+// Cap cost is derived, not stored: the sheet has no capitalized_cost column,
+// so reading one rendered $0.00 for every lease.
+const getCapCost = (sheet: VehicleLeaseSheet) => {
+	const calculator = new LeaseCalculator(sheet as any);
+	return calculator.calculateNetCapCost();
 };
 
 const getResidualValue = (sheet: VehicleLeaseSheet) => {
@@ -273,7 +262,7 @@ onMounted(() => {
 								</div>
 								<div>
 									<p class="eyebrow !text-[0.625rem]">Cap cost</p>
-									<p class="numeral text-primary">${{ formatCurrency(sheet.capitalized_cost || 0) }}</p>
+									<p class="numeral text-primary">${{ formatCurrency(getCapCost(sheet)) }}</p>
 								</div>
 								<div>
 									<p class="eyebrow !text-[0.625rem]">Money factor</p>

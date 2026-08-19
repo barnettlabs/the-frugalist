@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import type { PropType } from 'vue';
 import { computed, ref, watch } from 'vue';
 
 import TextInput from '@/components/TextInput.vue';
-import { formatCurrency, parseOrZero } from '@/utils/formatters.js';
+import type { FinanceFormData } from '@/types/models';
+import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.js';
 
 import { FinanceCalculator } from '../../utils/financeCalculator.js';
 
@@ -12,7 +14,7 @@ const props = defineProps({
 		default: '',
 	},
 	data: {
-		type: Object,
+		type: Object as PropType<FinanceFormData>,
 		required: true,
 	},
 });
@@ -26,7 +28,7 @@ interface ExtraPayment {
 const emit = defineEmits(['update:modelValue']);
 
 const extraPayments = ref<ExtraPayment[]>([]);
-const financeTerm = computed(() => parseInt(props.data.finance_term) || 0);
+const financeTerm = computed(() => parseIntOrZero(props.data.finance_term) || 0);
 
 // Initialize extra payments from modelValue
 watch(

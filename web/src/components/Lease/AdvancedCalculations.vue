@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import type { PropType } from 'vue';
 import { computed, ref } from 'vue';
+
+import type { LeaseFormData } from '@/types/models';
 
 import { LeaseCalculator } from '../../utils/leaseCalculator.js';
 
 const props = defineProps({
 	data: {
-		type: Object,
+		type: Object as PropType<LeaseFormData>,
 		required: true,
 	},
 });
@@ -20,20 +23,20 @@ const summary = computed(() => {
 const costPerMile = computed(() => {
 	if (!summary.value) return '0.00';
 	const assumedMiles = 12000; // Typical annual mileage
-	const leaseTerm = parseInt(props.data.lease_term || 0);
+	const leaseTerm = parseIntOrZero(props.data.lease_term);
 	const totalMiles = assumedMiles * (leaseTerm / 12);
 	if (totalMiles === 0) return '0.00';
 	return (summary.value.totalLeaseCost / totalMiles).toFixed(2);
 });
 
 const depreciationRate = computed(() => {
-	const msrp = parseFloat(props.data.msrp || 0);
-	const residualPercent = parseFloat(props.data.residual_percent || 0);
+	const msrp = parseOrZero(props.data.msrp);
+	const residualPercent = parseOrZero(props.data.residual_percent);
 	if (msrp === 0) return '0.0';
 	return (100 - residualPercent).toFixed(1);
 });
 
-import { formatCurrency } from '@/utils/formatters.js';
+import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.js';
 </script>
 
 <template>
@@ -199,7 +202,7 @@ import { formatCurrency } from '@/utils/formatters.js';
 						<div class="flex justify-between">
 							<dt class="text-sm text-text-muted">Monthly × {{ data.lease_term }}</dt>
 							<dd class="text-sm numeral text-primary">
-								${{ formatCurrency(summary.leasePayment * parseInt(data.lease_term || 0)) }}
+								${{ formatCurrency(summary.leasePayment * parseIntOrZero(data.lease_term)) }}
 							</dd>
 						</div>
 						<div class="flex justify-between">

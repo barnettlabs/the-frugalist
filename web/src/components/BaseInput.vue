@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { PropType } from 'vue';
 import { computed, ref, useSlots } from 'vue';
+
+import type { InputSize } from '@/types/ui';
 
 const props = defineProps({
 	modelValue: {
@@ -67,9 +70,9 @@ const props = defineProps({
 		default: '',
 	},
 	size: {
-		type: String,
+		type: String as PropType<InputSize>,
 		default: 'md',
-		validator: value => ['sm', 'md', 'lg'].includes(value),
+		validator: (value: unknown): boolean => ['sm', 'md', 'lg'].includes(value as string),
 	},
 	inputClass: {
 		type: String,
@@ -78,14 +81,14 @@ const props = defineProps({
 });
 
 const slots = useSlots();
-const input = ref(null);
+const input = ref<HTMLInputElement | null>(null);
 
 // Check if slots are provided
 const hasPrefix = computed(() => !!slots.prefix || !!props.prefix);
 const hasSuffix = computed(() => !!slots.suffix || !!props.suffix);
 
 // Size classes
-const sizeClasses = {
+const sizeClasses: Record<InputSize, string> = {
 	sm: 'px-2 py-1 text-sm',
 	md: 'px-3 py-2 text-sm',
 	lg: 'px-4 py-2 text-base',
@@ -117,15 +120,15 @@ const getPaddingClass = () => {
 // Event handlers
 const emit = defineEmits(['update:modelValue', 'focus', 'blur']);
 
-const handleInput = event => {
-	emit('update:modelValue', event.target.value);
+const handleInput = (event: Event) => {
+	emit('update:modelValue', (event.target as HTMLInputElement).value);
 };
 
-const handleFocus = event => {
+const handleFocus = (event: FocusEvent) => {
 	emit('focus', event);
 };
 
-const handleBlur = event => {
+const handleBlur = (event: FocusEvent) => {
 	emit('blur', event);
 };
 

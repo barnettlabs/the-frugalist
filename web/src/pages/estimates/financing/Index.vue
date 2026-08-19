@@ -15,28 +15,9 @@ import { financeApi } from '@/api/finance';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
+import type { VehicleFinanceSheet } from '@/types/models';
 import { FinanceCalculator } from '@/utils/financeCalculator';
 import { formatCurrency } from '@/utils/formatters';
-
-interface VehicleFinanceSheet {
-	id: number;
-	sheet_name?: string;
-	dealership_name?: string;
-	msrp?: number;
-	down_payment?: number;
-	vehicle_year?: number;
-	vehicle_make?: string;
-	vehicle_model?: string;
-	vehicle_trim?: string;
-	interest_rate?: number;
-	finance_term?: number;
-	fees?: number;
-	discounts?: number;
-	rebates?: number;
-	sales_tax_percent?: number;
-	created_at?: string;
-	updated_at?: string;
-}
 
 const router = useRouter();
 
@@ -53,7 +34,7 @@ const actionLoading = ref(false);
 const fetchSheets = async () => {
 	try {
 		const data = await financeApi.getAll();
-		vehicleFinanceSheets.value = data as VehicleFinanceSheet[];
+		vehicleFinanceSheets.value = data;
 	} catch (error) {
 		console.error('Error fetching finance sheets:', error);
 	} finally {

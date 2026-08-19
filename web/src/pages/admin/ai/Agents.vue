@@ -499,9 +499,7 @@ onMounted(fetch);
 											:key="idx"
 											class="rounded-md border border-border bg-surface-dark/40 overflow-hidden"
 										>
-											<div
-												class="px-2 py-1 text-[10px] uppercase tracking-wider bg-surface-dark/60 text-text-muted"
-											>
+											<div class="px-2 py-1 text-[10px] uppercase tracking-wider bg-surface-dark/60 text-text-muted">
 												{{ m.role }}
 											</div>
 											<pre

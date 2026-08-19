@@ -33,16 +33,17 @@ const form = ref<LeaseFormData>({
 	vehicle_model: '',
 	vehicle_trim: '',
 	msrp: '',
-	capitalized_cost: '',
 	residual_percent: '',
 	money_factor: '',
 	lease_term: '',
 	down_payment: '',
 	acquisition_fee: '',
-	disposition_fee: '',
+	dealer_contribution: '',
+	trade_in: '',
+	doc_fee: '',
+	misc_fees: '',
+	lease_cash: '',
 	sales_tax_percent: '',
-	annual_mileage: '',
-	excess_mileage_rate: '',
 	start_date: '',
 	contact_email: '',
 	contact_phone: '',
@@ -190,12 +191,7 @@ onMounted(() => {
 					<!-- Right sidebar -->
 					<aside class="order-1 lg:order-2 lg:sticky lg:top-20 space-y-4">
 						<AdvancedCalculations :data="form" />
-						<DealGradeCard
-							v-if="isAdmin"
-							agent-slug="deal-grade-lease"
-							calculator-type="lease"
-							:inputs="form"
-						/>
+						<DealGradeCard v-if="isAdmin" agent-slug="deal-grade-lease" calculator-type="lease" :inputs="form" />
 					</aside>
 				</div>
 			</main>

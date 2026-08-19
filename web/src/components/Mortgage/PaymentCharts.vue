@@ -89,7 +89,8 @@ const xTicks = computed(() => {
 	const step = Math.max(1, Math.ceil(total / 8));
 	const ticks = [];
 	for (let i = 0; i < total; i += step) ticks.push({ index: i, label: `Y${annual.value[i].year}` });
-	if (ticks[ticks.length - 1]?.index !== total - 1) ticks.push({ index: total - 1, label: `Y${annual.value[total - 1].year}` });
+	if (ticks[ticks.length - 1]?.index !== total - 1)
+		ticks.push({ index: total - 1, label: `Y${annual.value[total - 1].year}` });
 	return ticks;
 });
 
@@ -154,7 +155,14 @@ const yTicks = computed(() => {
 							stroke-opacity="0.07"
 							stroke-dasharray="2 4"
 						/>
-						<text :x="padding.left - 6" :y="t.y + 3" font-size="9" text-anchor="end" fill="rgb(0,0,0)" fill-opacity="0.5">
+						<text
+							:x="padding.left - 6"
+							:y="t.y + 3"
+							font-size="9"
+							text-anchor="end"
+							fill="rgb(0,0,0)"
+							fill-opacity="0.5"
+						>
 							${{ formatCurrency(t.value) }}
 						</text>
 					</g>

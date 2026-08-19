@@ -190,12 +190,7 @@ onMounted(() => {
 					<!-- Right sidebar -->
 					<aside class="order-1 lg:order-2 lg:sticky lg:top-20 space-y-4">
 						<AdvancedCalculations :data="form" />
-						<DealGradeCard
-							v-if="isAdmin"
-							agent-slug="deal-grade-finance"
-							calculator-type="finance"
-							:inputs="form"
-						/>
+						<DealGradeCard v-if="isAdmin" agent-slug="deal-grade-finance" calculator-type="finance" :inputs="form" />
 					</aside>
 				</div>
 			</main>

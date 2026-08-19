@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import type { PropType } from 'vue';
 import { computed, ref } from 'vue';
+
+import type { FinanceFormData } from '@/types/models';
 
 import { FinanceCalculator } from '../../utils/financeCalculator.js';
 
 const props = defineProps({
 	data: {
-		type: Object,
+		type: Object as PropType<FinanceFormData>,
 		required: true,
 	},
 });
@@ -33,11 +36,11 @@ const principalRatio = computed(() => {
 
 const totalCost = computed(() => {
 	if (!summary.value) return 0;
-	return summary.value.paymentsTotal + parseFloat(props.data.down_payment || 0);
+	return summary.value.paymentsTotal + parseOrZero(props.data.down_payment);
 });
 
 const costVsMsrpRatio = computed(() => {
-	const msrp = parseFloat(props.data.msrp || 0);
+	const msrp = parseOrZero(props.data.msrp);
 	if (msrp === 0) return 0;
 	return ((totalCost.value / msrp) * 100).toFixed(1);
 });
@@ -72,7 +75,7 @@ const totalExtraPayments = computed(() => {
 	return summary.value.paymentBreakdown.extraPayments || 0;
 });
 
-import { formatCurrency } from '@/utils/formatters.js';
+import { formatCurrency, parseOrZero } from '@/utils/formatters.js';
 </script>
 
 <template>
@@ -91,9 +94,7 @@ import { formatCurrency } from '@/utils/formatters.js';
 				</div>
 				<div class="bg-surface p-4">
 					<p class="eyebrow !text-[0.625rem] mb-1.5">Due at signing</p>
-					<p class="figure text-2xl text-primary leading-none">
-						${{ formatCurrency(parseFloat(data.down_payment || 0)) }}
-					</p>
+					<p class="figure text-2xl text-primary leading-none">${{ formatCurrency(parseOrZero(data.down_payment)) }}</p>
 				</div>
 				<div class="bg-surface p-4">
 					<p class="eyebrow !text-[0.625rem] mb-1.5">Total interest</p>
@@ -102,7 +103,7 @@ import { formatCurrency } from '@/utils/formatters.js';
 				<div class="bg-surface p-4">
 					<p class="eyebrow !text-[0.625rem] mb-1.5">Total paid</p>
 					<p class="figure text-2xl text-primary leading-none">
-						${{ formatCurrency(summary.paymentsTotal + parseFloat(data.down_payment || 0)) }}
+						${{ formatCurrency(summary.paymentsTotal + parseOrZero(data.down_payment)) }}
 					</p>
 				</div>
 			</div>

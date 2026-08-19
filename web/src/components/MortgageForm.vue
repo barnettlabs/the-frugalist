@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue';
 
 import FormField from '@/components/FormField.vue';
 import MaskedNumberInput from '@/components/MaskedNumberInput.vue';
-import { MortgageFormData, FormErrors, propertyTypeOptions } from '@/types';
+import { FormErrors, MortgageFormData, propertyTypeOptions } from '@/types';
 import { formatCurrency, parseOrZero } from '@/utils/formatters';
 
 interface Props {
@@ -184,7 +184,9 @@ const downPaymentEquivDollars = computed(() => {
 						/>
 
 						<p class="numeral text-xs text-text-muted mt-1">
-							<template v-if="downPaymentMode === 'dollar'"> = {{ downPaymentEquivPercent }}% of property value </template>
+							<template v-if="downPaymentMode === 'dollar'">
+								= {{ downPaymentEquivPercent }}% of property value
+							</template>
 							<template v-else> = ${{ formatCurrency(downPaymentEquivDollars) }} </template>
 						</p>
 						<p v-if="errors.down_payment" class="mt-1.5 text-xs text-danger">{{ errors.down_payment[0] }}</p>

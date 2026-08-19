@@ -13,7 +13,7 @@ import RecurringExpenses from '@/components/Mortgage/RecurringExpenses.vue';
 import MortgageForm from '@/components/MortgageForm.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
-import type { MortgageFormData, FormErrors } from '@/types';
+import type { FormErrors, MortgageFormData } from '@/types';
 import { PropertyType } from '@/types';
 
 const route = useRoute();
@@ -50,9 +50,7 @@ const propertyTitle = computed(() => {
 });
 
 const headerTitle = computed(() => (isEdit.value ? propertyTitle.value : 'New mortgage estimate.'));
-const headerEyebrow = computed(() =>
-	isEdit.value ? 'Compute · Mortgage · Edit' : 'Compute · Mortgage · New'
-);
+const headerEyebrow = computed(() => (isEdit.value ? 'Compute · Mortgage · Edit' : 'Compute · Mortgage · New'));
 const headerDescription = computed(() =>
 	isEdit.value
 		? 'Refine the numbers behind this loan. Changes save when you click update.'

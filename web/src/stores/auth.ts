@@ -4,8 +4,8 @@ import { computed, ref } from 'vue';
 
 import type { LoginCredentials, RegisterData } from '@/api/auth';
 import { authApi } from '@/api/auth';
-import type { User } from '@/types';
 import { useToastStore } from '@/stores/toast';
+import type { User } from '@/types';
 
 const TOKEN_KEY = 'auth_token';
 const USER_KEY = 'auth_user';

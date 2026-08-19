@@ -136,7 +136,8 @@ onMounted(() => {
 							Open a sheet. <span class="italic text-signal-light">Run any mortgage through it.</span>
 						</h2>
 						<p class="mt-5 text-sm text-white/70 max-w-md">
-							Property value, down payment, rate. We&rsquo;ll do the math you&rsquo;d otherwise have to ask the lender for.
+							Property value, down payment, rate. We&rsquo;ll do the math you&rsquo;d otherwise have to ask the lender
+							for.
 						</p>
 					</div>
 					<div class="col-span-12 lg:col-span-4 lg:text-right">

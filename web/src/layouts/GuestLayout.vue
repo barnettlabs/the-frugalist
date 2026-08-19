@@ -22,6 +22,12 @@ defineProps<Props>();
 
 const authStore = useAuthStore();
 const isAuthenticated = computed(() => authStore.isAuthenticated);
+
+const navigation = [
+	{ name: 'Watch', href: '/watch' },
+	{ name: 'Compute', href: '/estimates' },
+	{ name: 'Guides', href: '/learning' },
+];
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { z } from 'zod';
 
@@ -9,10 +9,19 @@ import BaseButton from '@/components/BaseButton.vue';
 import Checkbox from '@/components/Checkbox.vue';
 import FormInput from '@/components/FormInput.vue';
 import { useAuthStore } from '@/stores/auth';
+import { useToastStore } from '@/stores/toast';
 
 const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
+const toast = useToastStore();
+
+// The API redirects here after a successful email verification.
+onMounted(() => {
+	if (route.query.verified === '1') {
+		toast.add('Your email address has been verified. You can sign in now.', 'success');
+	}
+});
 
 const loginSchema = toTypedSchema(
 	z.object({

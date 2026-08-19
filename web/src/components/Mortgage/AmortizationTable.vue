@@ -145,7 +145,9 @@ const yearOptions = computed(() => {
 							:max="totalYears"
 							class="flex-1 accent-primary"
 						/>
-						<span class="numeral text-xs text-text-muted whitespace-nowrap">Year {{ selectedYear }} of {{ totalYears }}</span>
+						<span class="numeral text-xs text-text-muted whitespace-nowrap"
+							>Year {{ selectedYear }} of {{ totalYears }}</span
+						>
 					</div>
 				</div>
 
@@ -170,10 +172,18 @@ const yearOptions = computed(() => {
 								<td v-if="showWithExtra" class="px-3 py-2.5 text-sm numeral text-success text-right">
 									${{ formatCurrency(row.extraPayment) }}
 								</td>
-								<td class="px-3 py-2.5 text-sm numeral text-primary text-right">${{ formatCurrency(row.escrowPayment) }}</td>
-								<td class="px-3 py-2.5 text-sm numeral text-accent-dark text-right">${{ formatCurrency(row.principalPayment) }}</td>
-								<td class="px-3 py-2.5 text-sm numeral text-warning text-right">${{ formatCurrency(row.interestPayment) }}</td>
-								<td class="px-3 py-2.5 text-sm numeral text-primary text-right">${{ formatCurrency(row.remainingBalance) }}</td>
+								<td class="px-3 py-2.5 text-sm numeral text-primary text-right">
+									${{ formatCurrency(row.escrowPayment) }}
+								</td>
+								<td class="px-3 py-2.5 text-sm numeral text-accent-dark text-right">
+									${{ formatCurrency(row.principalPayment) }}
+								</td>
+								<td class="px-3 py-2.5 text-sm numeral text-warning text-right">
+									${{ formatCurrency(row.interestPayment) }}
+								</td>
+								<td class="px-3 py-2.5 text-sm numeral text-primary text-right">
+									${{ formatCurrency(row.remainingBalance) }}
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -200,20 +210,33 @@ const yearOptions = computed(() => {
 								<td v-if="showWithExtra" class="px-3 py-2.5 text-sm numeral text-success text-right">
 									${{ formatCurrency(row.extraPayment) }}
 								</td>
-								<td class="px-3 py-2.5 text-sm numeral text-primary text-right">${{ formatCurrency(row.escrowPayment) }}</td>
-								<td class="px-3 py-2.5 text-sm numeral text-accent-dark text-right">${{ formatCurrency(row.principalPayment) }}</td>
-								<td class="px-3 py-2.5 text-sm numeral text-warning text-right">${{ formatCurrency(row.interestPayment) }}</td>
-								<td class="px-3 py-2.5 text-sm numeral text-primary text-right">${{ formatCurrency(row.remainingBalance) }}</td>
+								<td class="px-3 py-2.5 text-sm numeral text-primary text-right">
+									${{ formatCurrency(row.escrowPayment) }}
+								</td>
+								<td class="px-3 py-2.5 text-sm numeral text-accent-dark text-right">
+									${{ formatCurrency(row.principalPayment) }}
+								</td>
+								<td class="px-3 py-2.5 text-sm numeral text-warning text-right">
+									${{ formatCurrency(row.interestPayment) }}
+								</td>
+								<td class="px-3 py-2.5 text-sm numeral text-primary text-right">
+									${{ formatCurrency(row.remainingBalance) }}
+								</td>
 							</tr>
 						</tbody>
 					</table>
-					<p v-if="selectedYear === 'all' && amortization.schedule.length > 60" class="mt-3 text-center text-xs text-text-muted">
+					<p
+						v-if="selectedYear === 'all' && amortization.schedule.length > 60"
+						class="mt-3 text-center text-xs text-text-muted"
+					>
 						Showing all {{ amortization.schedule.length }} months · use the year filter to narrow
 					</p>
 				</div>
 			</div>
 		</div>
 
-		<div v-else class="p-10 text-center text-sm text-text-muted">Enter loan details to see the amortization schedule.</div>
+		<div v-else class="p-10 text-center text-sm text-text-muted">
+			Enter loan details to see the amortization schedule.
+		</div>
 	</section>
 </template>

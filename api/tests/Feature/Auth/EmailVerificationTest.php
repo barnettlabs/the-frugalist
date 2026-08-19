@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
@@ -42,7 +43,7 @@ class EmailVerificationTest extends TestCase
      */
     public function test_verification_success_route_resolves_and_lands_in_the_spa(): void
     {
-        $this->assertTrue(\Illuminate\Support\Facades\Route::has('verification.success'));
+        $this->assertTrue(Route::has('verification.success'));
 
         $this->get(route('verification.success'))
             ->assertRedirect('/login?verified=1');

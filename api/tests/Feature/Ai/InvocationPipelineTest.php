@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Ai;
 
+use App\Models\AiAgent;
 use App\Models\AiInvocation;
 use App\Models\AiInvocationCache;
 use App\Services\Ai\InvocationPipeline;
@@ -48,7 +49,7 @@ class InvocationPipelineTest extends TestCase
             '*/chat/completions' => Http::response($this->dealGradePayload(), 200),
         ]);
 
-        $agent = \App\Models\AiAgent::where('slug', 'deal-grade-finance')->first();
+        $agent = AiAgent::where('slug', 'deal-grade-finance')->first();
         $result = $this->pipeline()->run($agent, [
             'inputs' => ['msrp' => 35000, 'down_payment' => 3000],
             'computed' => ['monthly_payment' => 645, 'interest_amount' => 5000],
@@ -67,7 +68,7 @@ class InvocationPipelineTest extends TestCase
             '*/chat/completions' => Http::response($this->dealGradePayload(), 200),
         ]);
 
-        $agent = \App\Models\AiAgent::where('slug', 'deal-grade-finance')->first();
+        $agent = AiAgent::where('slug', 'deal-grade-finance')->first();
         $input = ['inputs' => ['msrp' => 35000], 'computed' => ['monthly_payment' => 645]];
 
         $first = $this->pipeline()->run($agent, $input);
@@ -87,7 +88,7 @@ class InvocationPipelineTest extends TestCase
                 ->push(['choices' => [['message' => ['content' => 'still not json']]]], 200),
         ]);
 
-        $agent = \App\Models\AiAgent::where('slug', 'deal-grade-finance')->first();
+        $agent = AiAgent::where('slug', 'deal-grade-finance')->first();
         $result = $this->pipeline()->run($agent, ['inputs' => [], 'computed' => []]);
 
         $this->assertFalse($result->ok);
@@ -105,7 +106,7 @@ class InvocationPipelineTest extends TestCase
                 ->push($this->dealGradePayload(), 200),
         ]);
 
-        $agent = \App\Models\AiAgent::where('slug', 'deal-grade-finance')->first();
+        $agent = AiAgent::where('slug', 'deal-grade-finance')->first();
         $result = $this->pipeline()->run($agent, ['inputs' => [], 'computed' => []]);
 
         $this->assertTrue($result->ok);
@@ -125,7 +126,7 @@ class InvocationPipelineTest extends TestCase
             ], 200),
         ]);
 
-        $agent = \App\Models\AiAgent::where('slug', 'deal-grade-finance')->first();
+        $agent = AiAgent::where('slug', 'deal-grade-finance')->first();
         $result = $this->pipeline()->run($agent, ['inputs' => [], 'computed' => []]);
 
         $this->assertTrue($result->ok);
@@ -138,7 +139,7 @@ class InvocationPipelineTest extends TestCase
             '*/chat/completions' => Http::response('boom', 500),
         ]);
 
-        $agent = \App\Models\AiAgent::where('slug', 'deal-grade-finance')->first();
+        $agent = AiAgent::where('slug', 'deal-grade-finance')->first();
         $result = $this->pipeline()->run($agent, ['inputs' => [], 'computed' => []]);
 
         $this->assertFalse($result->ok);
@@ -152,7 +153,7 @@ class InvocationPipelineTest extends TestCase
             '*/chat/completions' => Http::response($this->dealGradePayload(), 200),
         ]);
 
-        $agent = \App\Models\AiAgent::where('slug', 'deal-grade-finance')->first();
+        $agent = AiAgent::where('slug', 'deal-grade-finance')->first();
         $agent->provider->update(['settings' => ['system_handling' => 'prepend_user']]);
 
         $this->pipeline()->run($agent, ['inputs' => ['msrp' => 35000], 'computed' => []]);
@@ -175,7 +176,7 @@ class InvocationPipelineTest extends TestCase
             '*/chat/completions' => Http::response($this->dealGradePayload(), 200),
         ]);
 
-        $agent = \App\Models\AiAgent::where('slug', 'deal-grade-finance')->first();
+        $agent = AiAgent::where('slug', 'deal-grade-finance')->first();
 
         $this->pipeline()->run($agent, ['inputs' => [], 'computed' => []]);
 
@@ -192,7 +193,7 @@ class InvocationPipelineTest extends TestCase
     {
         Http::fake();
 
-        $agent = \App\Models\AiAgent::where('slug', 'deal-grade-finance')->first();
+        $agent = AiAgent::where('slug', 'deal-grade-finance')->first();
         $agent->update(['enabled' => false]);
 
         $result = $this->pipeline()->run($agent, ['inputs' => [], 'computed' => []]);

@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\AiInvocationController;
+use App\Http\Controllers\Admin\AiProviderController;
+use App\Http\Controllers\Admin\AiRouteController;
+use App\Http\Controllers\Admin\BugReportController;
+use App\Http\Controllers\Admin\RetailerController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AiAgentController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\CalculatorController;
@@ -12,10 +18,13 @@ use App\Http\Controllers\UserDeviceController;
 use App\Http\Controllers\VehicleFinanceSheetController;
 use App\Http\Controllers\VehicleLeaseSheetController;
 use App\Http\Controllers\WatchDebugController;
+use App\Models\Retailer;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
@@ -70,7 +79,7 @@ Route::post('/register', function (Request $request) {
         'password' => Hash::make($request->password),
     ]);
 
-    event(new \Illuminate\Auth\Events\Registered($user));
+    event(new Registered($user));
 
     // Create a token for the mobile app
     $token = $user->createToken('mobile-app')->plainTextToken;
@@ -86,11 +95,11 @@ Route::post('/forgot-password', function (Request $request) {
         'email' => 'required|email',
     ]);
 
-    $status = \Illuminate\Support\Facades\Password::sendResetLink(
+    $status = Password::sendResetLink(
         $request->only('email')
     );
 
-    if ($status === \Illuminate\Support\Facades\Password::RESET_LINK_SENT) {
+    if ($status === Password::RESET_LINK_SENT) {
         return response()->json([
             'message' => 'Password reset link sent to your email.',
         ]);
@@ -108,7 +117,7 @@ Route::post('/reset-password', function (Request $request) {
         'password' => ['required', 'confirmed', Rules\Password::defaults()],
     ]);
 
-    $status = \Illuminate\Support\Facades\Password::reset(
+    $status = Password::reset(
         $request->only('email', 'password', 'password_confirmation', 'token'),
         function ($user) use ($request) {
             $user->forceFill([
@@ -117,7 +126,7 @@ Route::post('/reset-password', function (Request $request) {
         }
     );
 
-    if ($status === \Illuminate\Support\Facades\Password::PASSWORD_RESET) {
+    if ($status === Password::PASSWORD_RESET) {
         return response()->json([
             'message' => 'Password has been reset successfully.',
         ]);
@@ -250,26 +259,26 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Admin routes (auth + admin gate)
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('retailers/available-slugs', [\App\Http\Controllers\Admin\RetailerController::class, 'availableSlugs']);
-    Route::apiResource('retailers', \App\Http\Controllers\Admin\RetailerController::class);
-    Route::apiResource('announcements', \App\Http\Controllers\Admin\AnnouncementController::class);
-    Route::get('users', [\App\Http\Controllers\Admin\UserController::class, 'index']);
-    Route::get('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show']);
-    Route::patch('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update']);
-    Route::apiResource('bug-reports', \App\Http\Controllers\Admin\BugReportController::class)
+    Route::get('retailers/available-slugs', [RetailerController::class, 'availableSlugs']);
+    Route::apiResource('retailers', RetailerController::class);
+    Route::apiResource('announcements', App\Http\Controllers\Admin\AnnouncementController::class);
+    Route::get('users', [UserController::class, 'index']);
+    Route::get('users/{user}', [UserController::class, 'show']);
+    Route::patch('users/{user}', [UserController::class, 'update']);
+    Route::apiResource('bug-reports', BugReportController::class)
         ->except(['store']);
 
     // AI admin
-    Route::post('ai/providers/{provider}/test', [\App\Http\Controllers\Admin\AiProviderController::class, 'test']);
-    Route::get('ai/providers/{provider}/models', [\App\Http\Controllers\Admin\AiProviderController::class, 'models']);
-    Route::apiResource('ai/providers', \App\Http\Controllers\Admin\AiProviderController::class);
-    Route::post('ai/agents/{agent}/preview', [\App\Http\Controllers\Admin\AiAgentController::class, 'preview']);
-    Route::get('ai/agents/{agent}/versions', [\App\Http\Controllers\Admin\AiAgentController::class, 'versions']);
-    Route::post('ai/agents/{agent}/rollback/{version}', [\App\Http\Controllers\Admin\AiAgentController::class, 'rollback']);
-    Route::apiResource('ai/agents', \App\Http\Controllers\Admin\AiAgentController::class);
-    Route::apiResource('ai/routes', \App\Http\Controllers\Admin\AiRouteController::class)->except(['show']);
-    Route::get('ai/invocations', [\App\Http\Controllers\Admin\AiInvocationController::class, 'index']);
-    Route::get('ai/invocations/{invocation}', [\App\Http\Controllers\Admin\AiInvocationController::class, 'show']);
+    Route::post('ai/providers/{provider}/test', [AiProviderController::class, 'test']);
+    Route::get('ai/providers/{provider}/models', [AiProviderController::class, 'models']);
+    Route::apiResource('ai/providers', AiProviderController::class);
+    Route::post('ai/agents/{agent}/preview', [App\Http\Controllers\Admin\AiAgentController::class, 'preview']);
+    Route::get('ai/agents/{agent}/versions', [App\Http\Controllers\Admin\AiAgentController::class, 'versions']);
+    Route::post('ai/agents/{agent}/rollback/{version}', [App\Http\Controllers\Admin\AiAgentController::class, 'rollback']);
+    Route::apiResource('ai/agents', App\Http\Controllers\Admin\AiAgentController::class);
+    Route::apiResource('ai/routes', AiRouteController::class)->except(['show']);
+    Route::get('ai/invocations', [AiInvocationController::class, 'index']);
+    Route::get('ai/invocations/{invocation}', [AiInvocationController::class, 'show']);
 });
 
 // Calculators (public - same compute used by UI and AI agents)
@@ -284,6 +293,6 @@ Route::get('/announcements/{announcement}', [AnnouncementController::class, 'sho
 // Retailers (public - for displaying available stores)
 Route::get('/retailers', function () {
     return response()->json([
-        'retailers' => \App\Models\Retailer::orderBy('name')->get(),
+        'retailers' => Retailer::orderBy('name')->get(),
     ]);
 });

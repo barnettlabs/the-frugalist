@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\UserDevice;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -162,7 +163,7 @@ class ExpoPushService
             return;
         }
 
-        \App\Models\UserDevice::where('push_token', $token)
+        UserDevice::where('push_token', $token)
             ->update(['is_active' => false]);
 
         Log::info('Deactivated invalid push token', ['token' => $token]);

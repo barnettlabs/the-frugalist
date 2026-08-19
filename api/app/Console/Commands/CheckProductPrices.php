@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Mail\PriceDropAlert;
+use App\Models\Notification;
 use App\Models\TrackedProduct;
 use App\Services\ExpoPushService;
 use App\Services\Retailers\RetailerServiceFactory;
@@ -293,7 +294,7 @@ class CheckProductPrices extends Command
             default => $product->product_name,
         };
 
-        \App\Models\Notification::create([
+        Notification::create([
             'user_id' => $product->user_id,
             'title' => $title,
             'message' => $message,

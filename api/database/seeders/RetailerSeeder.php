@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Retailer;
 use Illuminate\Database\Seeder;
 
 class RetailerSeeder extends Seeder
@@ -81,7 +82,7 @@ class RetailerSeeder extends Seeder
         ];
 
         foreach ($retailers as $retailer) {
-            \App\Models\Retailer::updateOrCreate(
+            Retailer::updateOrCreate(
                 ['slug' => $retailer['slug']],
                 $retailer
             );

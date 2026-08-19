@@ -62,8 +62,8 @@ export default function LeaseListScreen() {
 				refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={theme.accent} />}
 			>
 				{/* Editorial header */}
-				<View className="px-4 pt-6 pb-5">
-					<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+				<View className="px-4 pb-5 pt-6">
+					<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 						Compute · Leasing
 					</Text>
 					<Text
@@ -81,10 +81,10 @@ export default function LeaseListScreen() {
 					<View className="mt-5 h-px bg-border-light dark:bg-border-dark" />
 				</View>
 
-				<View className="px-4 gap-3">
+				<View className="gap-3 px-4">
 					<View className="flex-row gap-2">
 						<Link href="/compute/lease/learn?from=lease" asChild>
-							<Pressable className="flex-1 flex-row items-center rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark px-3 py-2.5 active:opacity-80">
+							<Pressable className="flex-1 flex-row items-center rounded-md border border-border-light bg-surface-light px-3 py-2.5 active:opacity-80 dark:border-border-dark dark:bg-surface-dark">
 								<Book color={theme.textMuted} size={14} />
 								<Text className="ml-2 text-xs font-medium text-text-primary-light dark:text-text-primary-dark">
 									Read the leasing guide
@@ -94,7 +94,7 @@ export default function LeaseListScreen() {
 						{sheets.length >= 2 ? (
 							<Link href="/compute/lease/compare?from=lease" asChild>
 								<Pressable className="flex-row items-center rounded-md bg-signal px-3 py-2.5 active:opacity-80">
-									<Text className="text-xs font-semibold tracking-wider uppercase text-white">
+									<Text className="text-xs font-semibold uppercase tracking-wider text-white">
 										Compare ({sheets.length})
 									</Text>
 								</Pressable>
@@ -103,25 +103,25 @@ export default function LeaseListScreen() {
 					</View>
 
 					{sheets.length === 0 ? (
-						<View className="rounded-md p-6 mt-3 overflow-hidden bg-primary border border-primary-dark">
-							<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-3">
+						<View className="mt-3 overflow-hidden rounded-md border border-primary-dark bg-primary p-6">
+							<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">
 								No lease estimates yet
 							</Text>
 							<Text className="font-display tracking-tightest text-white" style={{ fontSize: 26, lineHeight: 28 }}>
 								Type the offer in.
 							</Text>
 							<Text
-								className="font-display italic tracking-tightest mt-1 text-signal-light"
+								className="mt-1 font-display italic tracking-tightest text-signal-light"
 								style={{ fontSize: 26, lineHeight: 28 }}
 							>
 								Watch it tell on itself.
 							</Text>
-							<Text className="text-sm text-white/70 mt-4 mb-5">
+							<Text className="mb-5 mt-4 text-sm text-white/70">
 								Money factor, residual, term, fees. Every variable in the lease formula, made plain.
 							</Text>
 							<Pressable
 								onPress={() => router.push('/compute/lease/create?from=lease')}
-								className="self-start rounded-md px-5 py-3 bg-surface-light flex-row items-center gap-2"
+								className="flex-row items-center gap-2 self-start rounded-md bg-surface-light px-5 py-3"
 							>
 								<PlusIcon color={colors.primary.DEFAULT} width={14} height={14} />
 								<Text className="text-sm font-medium text-primary">Create first estimate</Text>

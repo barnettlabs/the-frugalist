@@ -15,31 +15,31 @@ export function FinanceCard({ sheet }: FinanceCardProps) {
 
 	return (
 		<Link href={`/compute/finance/${sheet.id}?from=finance`} asChild>
-			<Pressable className="rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark overflow-hidden active:opacity-90">
+			<Pressable className="overflow-hidden rounded-md border border-border-light bg-surface-light active:opacity-90 dark:border-border-dark dark:bg-surface-dark">
 				{/* Header strip */}
-				<View className="px-4 py-2.5 border-b border-border-light dark:border-border-dark flex-row items-center">
+				<View className="flex-row items-center border-b border-border-light px-4 py-2.5 dark:border-border-dark">
 					<Text
-						className="flex-1 text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark"
+						className="flex-1 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark"
 						numberOfLines={1}
 					>
 						{sheet.dealership_name || 'No dealership'}
 					</Text>
-					<Text className="text-[10px] font-mono uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
+					<Text className="font-mono text-[10px] uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
 						{sheet.vehicle_type}
 					</Text>
 				</View>
 
 				{/* Body */}
 				<View className="p-4">
-					<Text className="text-xs text-text-muted-light dark:text-text-muted-dark mb-1">
+					<Text className="mb-1 text-xs text-text-muted-light dark:text-text-muted-dark">
 						{sheet.sheet_name || 'Untitled estimate'}
 					</Text>
 					<View className="flex-row items-baseline">
-						<Text className="font-mono text-text-muted-light dark:text-text-muted-dark mr-2" style={{ fontSize: 14 }}>
+						<Text className="mr-2 font-mono text-text-muted-light dark:text-text-muted-dark" style={{ fontSize: 14 }}>
 							{sheet.vehicle_year}
 						</Text>
 						<Text
-							className="font-display tracking-tight text-text-primary-light dark:text-text-primary-dark flex-1"
+							className="flex-1 font-display tracking-tight text-text-primary-light dark:text-text-primary-dark"
 							style={{ fontSize: 22, lineHeight: 24 }}
 							numberOfLines={1}
 						>
@@ -51,9 +51,9 @@ export function FinanceCard({ sheet }: FinanceCardProps) {
 					</View>
 
 					{/* Monthly hero figure */}
-					<View className="flex-row items-baseline justify-between mt-5">
+					<View className="mt-5 flex-row items-baseline justify-between">
 						<View>
-							<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-1.5">
+							<Text className="mb-1.5 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 								Monthly
 							</Text>
 							<Text
@@ -75,7 +75,7 @@ export function FinanceCard({ sheet }: FinanceCardProps) {
 				</View>
 
 				{/* Footer */}
-				<View className="px-4 py-3 border-t border-border-light dark:border-border-dark flex-row justify-between">
+				<View className="flex-row justify-between border-t border-border-light px-4 py-3 dark:border-border-dark">
 					<Text className="font-mono text-xs text-text-muted-light dark:text-text-muted-dark">
 						{formatCurrencyWithSymbol(calculator.calculateLoanAmount())} financed
 					</Text>

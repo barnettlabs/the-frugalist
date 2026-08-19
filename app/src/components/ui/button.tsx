@@ -58,7 +58,7 @@ const button = tv({
 			},
 			link: {
 				container: 'bg-transparent',
-				label: 'text-primary dark:text-text-primary-dark underline',
+				label: 'text-primary underline dark:text-text-primary-dark',
 				indicator: 'text-primary',
 			},
 			glass: {
@@ -134,7 +134,7 @@ export const Button = React.forwardRef<View, Props>(
 			() =>
 				button({
 					variant,
-					// disabled,
+					disabled,
 					size,
 				}),
 			[variant, disabled, size]

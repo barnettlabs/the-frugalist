@@ -66,7 +66,7 @@ export const CheckboxIcon = ({ checked = false }: IconProps) => {
 				width: SIZE,
 				borderColor: color,
 			}}
-			className="items-center justify-center rounded-[5px] border-2"
+			className="items-center justify-center rounded border-2"
 			from={{ backgroundColor: 'transparent', borderColor: '#CCCFD6' }}
 			animate={{
 				backgroundColor: checked ? color : 'transparent',
@@ -139,7 +139,7 @@ export const RadioIcon = ({ checked = false }: IconProps) => {
 			transition={{ borderColor: { duration: 100, type: 'timing' } }}
 		>
 			<MotiView
-				className={`size-[10px] rounded-[10px] ${checked && 'bg-accent'} `}
+				className={`size-[10px] rounded-xl ${checked && 'bg-accent'} `}
 				from={{ opacity: 0 }}
 				animate={{ opacity: checked ? 1 : 0 }}
 				transition={{ opacity: { duration: 50, type: 'timing' } }}

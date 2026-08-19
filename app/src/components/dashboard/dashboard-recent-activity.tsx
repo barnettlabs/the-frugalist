@@ -86,11 +86,11 @@ export const DashboardRecentActivity = React.memo(function DashboardRecentActivi
 
 	return (
 		<>
-			<View className="flex-row items-center gap-3 mb-3">
-				<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+			<View className="mb-3 flex-row items-center gap-3">
+				<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 					Recently filed
 				</Text>
-				<View className="flex-1 h-px bg-border-light dark:bg-border-dark" />
+				<View className="h-px flex-1 bg-border-light dark:bg-border-dark" />
 				{recentItems.length > 0 ? (
 					<Pressable onPress={() => router.push('/(app)/(tabs)/tools')}>
 						<Text className="text-xs font-medium text-primary dark:text-text-primary-dark">View all</Text>
@@ -119,20 +119,17 @@ export const DashboardRecentActivity = React.memo(function DashboardRecentActivi
 								>
 									{item.title}
 								</Text>
-								<View className="flex-row items-center gap-2 mt-0.5">
-									<Text className="text-[10px] font-mono uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
+								<View className="mt-0.5 flex-row items-center gap-2">
+									<Text className="font-mono text-[10px] uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
 										{labelFor(item.type)}
 									</Text>
 									<Text className="text-[10px] text-text-muted-light dark:text-text-muted-dark">·</Text>
-									<Text
-										className="text-xs text-text-muted-light dark:text-text-muted-dark flex-1"
-										numberOfLines={1}
-									>
+									<Text className="flex-1 text-xs text-text-muted-light dark:text-text-muted-dark" numberOfLines={1}>
 										{item.subtitle}
 									</Text>
 								</View>
 							</View>
-							<Text className="text-[10px] font-mono text-text-muted-light dark:text-text-muted-dark">
+							<Text className="font-mono text-[10px] text-text-muted-light dark:text-text-muted-dark">
 								{formatRelativeTime(item.updatedAt)}
 							</Text>
 							<Chevron direction="right" color={theme.textMuted} size={14} />

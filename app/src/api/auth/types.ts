@@ -1,56 +1,65 @@
 import type { User } from '@/lib/types/models';
 
-export interface LoginRequest {
+export type LoginRequest = {
 	email: string;
 	password: string;
-}
+};
 
-export interface LoginResponse {
+export type LoginResponse = {
 	token: string;
 	user: User;
-}
+};
 
-export interface RegisterRequest {
+export type RegisterRequest = {
 	first_name: string;
 	last_name: string;
 	email: string;
 	password: string;
 	password_confirmation: string;
-}
+};
 
-export interface RegisterResponse {
+export type RegisterResponse = {
 	token: string;
 	user: User;
-}
+};
 
-export interface ForgotPasswordRequest {
+export type ForgotPasswordRequest = {
 	email: string;
-}
+};
 
-export interface ForgotPasswordResponse {
+export type ForgotPasswordResponse = {
 	message: string;
-}
+};
 
-export interface ResetPasswordRequest {
+export type ResetPasswordRequest = {
 	token: string;
 	email: string;
 	password: string;
 	password_confirmation: string;
-}
+};
 
-export interface ResetPasswordResponse {
+export type ResetPasswordResponse = {
 	message: string;
-}
+};
 
-export interface UpdateProfileRequest {
+export type UpdateProfileRequest = {
 	first_name?: string;
 	last_name?: string;
 	email?: string;
 	password?: string;
 	password_confirmation?: string;
 	current_password?: string;
-}
+};
 
-export interface ProfileResponse {
-	data: User;
-}
+/**
+ * Shape returned by GET and PUT /api/profile (ProfileController@show / @update).
+ * Note: this is a flat projection of the user, not the full User model.
+ */
+export type ProfileResponse = {
+	username: string | null;
+	avatar_url: string | null;
+	website: string | null;
+	first_name: string | null;
+	last_name: string | null;
+	email: string;
+};

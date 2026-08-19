@@ -33,11 +33,11 @@ export function ProfileForm({ profile, onSubmit, isSubmitting }: ProfileFormProp
 
 	return (
 		<View>
-			<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+			<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 				Personal information
 			</Text>
 
-			<View className="rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark p-5">
+			<View className="rounded-md border border-border-light bg-surface-light p-5 dark:border-border-dark dark:bg-surface-dark">
 				<View className="flex-row gap-3">
 					<View className="flex-1">
 						<ControlledInput
@@ -71,7 +71,7 @@ export function ProfileForm({ profile, onSubmit, isSubmitting }: ProfileFormProp
 				<Pressable
 					onPress={handleSubmit(onSubmit)}
 					disabled={isSubmitting}
-					className="rounded-md bg-primary px-5 py-3.5 items-center mt-2 active:opacity-80"
+					className="mt-2 items-center rounded-md bg-primary px-5 py-3.5 active:opacity-80"
 					style={{ opacity: isSubmitting ? 0.6 : 1 }}
 				>
 					<Text className="text-sm font-medium text-surface-light">{isSubmitting ? 'Saving…' : 'Save changes'}</Text>
@@ -80,17 +80,17 @@ export function ProfileForm({ profile, onSubmit, isSubmitting }: ProfileFormProp
 
 			{/* Email Verification Status */}
 			<View className="mt-5">
-				<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+				<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 					Email verification
 				</Text>
 				{profile.email_verified_at ? (
 					<View className="rounded-md border border-success/30 bg-success/5 px-4 py-3">
-						<Text className="text-sm text-success font-medium">Your email has been verified.</Text>
+						<Text className="text-sm font-medium text-success">Your email has been verified.</Text>
 					</View>
 				) : (
 					<View className="rounded-md border border-warning/30 bg-warning/5 px-4 py-3">
-						<Text className="font-medium text-sm text-warning">Email not verified</Text>
-						<Text className="mt-1 text-xs text-text-muted-light dark:text-text-muted-dark leading-5">
+						<Text className="text-sm font-medium text-warning">Email not verified</Text>
+						<Text className="mt-1 text-xs leading-5 text-text-muted-light dark:text-text-muted-dark">
 							Check your inbox for the verification email. You may need to check spam.
 						</Text>
 					</View>

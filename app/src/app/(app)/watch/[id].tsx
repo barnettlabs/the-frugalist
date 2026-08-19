@@ -1,10 +1,10 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
-import { useTranslation } from 'react-i18next';
 
-import { useDeleteWatchItem, useWatchItem, useRefreshWatchItem, useUpdateWatchItem } from '@/api/watch';
+import { useDeleteWatchItem, useRefreshWatchItem, useUpdateWatchItem, useWatchItem } from '@/api/watch';
 import { ProductDetail } from '@/components/tracker/product-detail';
 import { Button, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';

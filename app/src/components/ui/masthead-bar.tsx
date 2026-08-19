@@ -28,13 +28,13 @@ export function MastheadBar({
 
 	return (
 		<View className="px-4 sm:px-6 lg:px-8">
-			<View className="relative flex-row items-center justify-between border-y border-border-strong-light dark:border-border-strong-dark py-2 min-h-[2.25rem]">
+			<View className="relative min-h-9 flex-row items-center justify-between border-y border-border-strong-light py-2 dark:border-border-strong-dark">
 				{/* Left */}
 				<View className="z-10 max-w-[40%]">
 					{typeof left === 'string' ? (
 						<Text
 							numberOfLines={1}
-							className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark font-mono"
+							className="font-mono text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark"
 						>
 							{left}
 						</Text>
@@ -45,10 +45,10 @@ export function MastheadBar({
 
 				{/* Center — only shown when there's room */}
 				{showCenter && (
-					<View className="absolute left-0 right-0 items-center" pointerEvents="none">
+					<View className="absolute inset-x-0 items-center" pointerEvents="none">
 						<Text
 							numberOfLines={1}
-							className="text-[9px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark text-center"
+							className="text-center text-[9px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark"
 						>
 							{center}
 						</Text>
@@ -60,7 +60,7 @@ export function MastheadBar({
 					{typeof right === 'string' ? (
 						<Text
 							numberOfLines={1}
-							className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark"
+							className="text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark"
 						>
 							{right}
 						</Text>

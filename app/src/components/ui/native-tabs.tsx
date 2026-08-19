@@ -1,7 +1,7 @@
 import {
 	createNativeBottomTabNavigator,
-	NativeBottomTabNavigationEventMap,
-	NativeBottomTabNavigationOptions,
+	type NativeBottomTabNavigationEventMap,
+	type NativeBottomTabNavigationOptions,
 } from '@bottom-tabs/react-navigation';
 import type { ParamListBase, TabNavigationState } from '@react-navigation/native';
 import { withLayoutContext } from 'expo-router';

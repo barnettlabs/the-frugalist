@@ -16,29 +16,29 @@ export function ProductCard({ product }: ProductCardProps) {
 
 	return (
 		<Link href={`/watch/${product.id}?from=watch`} asChild>
-			<Pressable className="rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark overflow-hidden active:opacity-90">
+			<Pressable className="overflow-hidden rounded-md border border-border-light bg-surface-light active:opacity-90 dark:border-border-dark dark:bg-surface-dark">
 				{/* Top metadata strip */}
-				<View className="flex-row items-center px-4 py-2.5 border-b border-border-light dark:border-border-dark">
+				<View className="flex-row items-center border-b border-border-light px-4 py-2.5 dark:border-border-dark">
 					<View
-						className="w-1.5 h-1.5 rounded-full mr-2"
+						className="mr-2 size-1.5 rounded-full"
 						style={{ backgroundColor: product.is_active ? '#437A59' : '#857C6B' }}
 					/>
-					<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark flex-1">
+					<Text className="flex-1 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 						{product.retailer.name}
 					</Text>
 					{targetReached ? (
 						<View className="rounded-sm bg-signal/15 px-2 py-0.5">
-							<Text className="text-[10px] font-mono uppercase tracking-wider text-signal-dark">Target</Text>
+							<Text className="font-mono text-[10px] uppercase tracking-wider text-signal-dark">Target</Text>
 						</View>
 					) : product.price_drop_percentage > 0 ? (
 						<View className="rounded-sm bg-success/15 px-2 py-0.5">
-							<Text className="text-[10px] font-mono uppercase tracking-wider text-success">
+							<Text className="font-mono text-[10px] uppercase tracking-wider text-success">
 								−{product.price_drop_percentage.toFixed(0)}%
 							</Text>
 						</View>
 					) : !product.is_active ? (
 						<View className="rounded-sm bg-tan-dark/40 px-2 py-0.5">
-							<Text className="text-[10px] font-mono uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
+							<Text className="font-mono text-[10px] uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
 								Paused
 							</Text>
 						</View>
@@ -46,22 +46,22 @@ export function ProductCard({ product }: ProductCardProps) {
 				</View>
 
 				{/* Body — image anchor + content */}
-				<View className="flex-row p-4 gap-4">
+				<View className="flex-row gap-4 p-4">
 					{/* Image */}
 					<View className="relative">
 						{product.product_image_url ? (
 							<Image
 								source={{ uri: product.product_image_url }}
-								className="size-20 rounded-md bg-tan-light dark:bg-charcoal-800 border border-border-light dark:border-border-dark"
+								className="size-20 rounded-md border border-border-light bg-tan-light dark:border-border-dark dark:bg-charcoal-800"
 								contentFit="contain"
 							/>
 						) : (
-							<View className="size-20 items-center justify-center rounded-md bg-tan-light dark:bg-charcoal-800 border border-border-light dark:border-border-dark">
+							<View className="size-20 items-center justify-center rounded-md border border-border-light bg-tan-light dark:border-border-dark dark:bg-charcoal-800">
 								<Text className="text-2xl">📦</Text>
 							</View>
 						)}
 						{targetReached ? (
-							<View className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-signal items-center justify-center">
+							<View className="absolute -right-1.5 -top-1.5 size-5 items-center justify-center rounded-full bg-signal">
 								<Text className="text-[10px] font-bold text-white">↗</Text>
 							</View>
 						) : null}
@@ -85,7 +85,7 @@ export function ProductCard({ product }: ProductCardProps) {
 								{formatCurrencyWithSymbol(product.current_price)}
 							</Text>
 							{product.current_price < product.retail_price && (
-								<Text className="text-xs font-mono text-text-muted-light dark:text-text-muted-dark line-through">
+								<Text className="font-mono text-xs text-text-muted-light line-through dark:text-text-muted-dark">
 									{formatCurrencyWithSymbol(product.retail_price)}
 								</Text>
 							)}
@@ -96,15 +96,15 @@ export function ProductCard({ product }: ProductCardProps) {
 				{/* Target progress */}
 				{!targetReached && product.target_price ? (
 					<View className="px-4 pb-3">
-						<View className="flex-row items-baseline justify-between mb-1.5">
-							<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+						<View className="mb-1.5 flex-row items-baseline justify-between">
+							<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 								Target {formatCurrencyWithSymbol(product.target_price)}
 							</Text>
-							<Text className="text-[10px] font-mono text-text-muted-light dark:text-text-muted-dark">
+							<Text className="font-mono text-[10px] text-text-muted-light dark:text-text-muted-dark">
 								{Math.max(progress, 0).toFixed(0)}%
 							</Text>
 						</View>
-						<View className="h-[3px] rounded-full bg-border-light dark:bg-border-dark overflow-hidden">
+						<View className="h-[3px] overflow-hidden rounded-full bg-border-light dark:bg-border-dark">
 							<View
 								className="h-full rounded-full bg-accent"
 								style={{ width: `${Math.min(Math.max(progress, 0), 100)}%` }}
@@ -114,12 +114,12 @@ export function ProductCard({ product }: ProductCardProps) {
 				) : null}
 
 				{/* Footer */}
-				<View className="flex-row items-center justify-between px-4 py-2.5 border-t border-border-light dark:border-border-dark">
-					<Text className="text-[10px] font-mono uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
+				<View className="flex-row items-center justify-between border-t border-border-light px-4 py-2.5 dark:border-border-dark">
+					<Text className="font-mono text-[10px] uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
 						SKU {product.sku_upc}
 					</Text>
 					{product.last_checked_at ? (
-						<Text className="text-[10px] font-mono text-text-muted-light dark:text-text-muted-dark">
+						<Text className="font-mono text-[10px] text-text-muted-light dark:text-text-muted-dark">
 							{formatRelativeTime(product.last_checked_at)}
 						</Text>
 					) : null}

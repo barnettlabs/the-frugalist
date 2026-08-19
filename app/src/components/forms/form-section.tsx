@@ -56,14 +56,14 @@ export function FormSection({
 	const numberLabel = number !== undefined && number !== null ? `№ ${String(number).padStart(2, '0')}` : null;
 
 	return (
-		<View className="mb-3 rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark overflow-hidden">
+		<View className="mb-3 overflow-hidden rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark">
 			<Pressable
 				onPress={toggleCollapse}
 				disabled={!collapsible}
-				className="flex-row items-center gap-3 px-5 py-4 border-b border-border-light dark:border-border-dark"
+				className="flex-row items-center gap-3 border-b border-border-light px-5 py-4 dark:border-border-dark"
 			>
 				{numberLabel ? (
-					<Text className="text-[11px] font-mono tracking-tight text-text-muted-light dark:text-text-muted-dark">
+					<Text className="font-mono text-[11px] tracking-tight text-text-muted-light dark:text-text-muted-dark">
 						{numberLabel}
 					</Text>
 				) : null}

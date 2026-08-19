@@ -19,7 +19,7 @@ export const FocusTile = React.memo(function FocusTile({ label, value, onPress, 
 			onPress={onPress}
 			android_ripple={{ color: theme.cardBorder }}
 		>
-			<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+			<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 				{label}
 			</Text>
 			<Text

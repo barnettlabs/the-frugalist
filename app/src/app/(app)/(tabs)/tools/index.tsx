@@ -90,20 +90,20 @@ export default function ToolsScreen() {
 				style={{ flex: 1 }}
 				refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={theme.accent} />}
 			>
-				<View className="px-4 pt-3 pb-4 gap-3">
+				<View className="gap-3 px-4 pb-4 pt-3">
 					{compute.map(tool => {
-						const count = statsError ? '—' : (tool.countKey ? (stats?.[tool.countKey] ?? 0) : 0);
+						const count = statsError ? '—' : tool.countKey ? (stats?.[tool.countKey] ?? 0) : 0;
 						return (
 							<Pressable
 								key={tool.key}
-								className="rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-5 active:opacity-70"
+								className="rounded-md border border-border-light bg-surface-light p-5 active:opacity-70 dark:border-border-dark dark:bg-surface-dark"
 								onPress={() => router.push(tool.viewRoute)}
 							>
-								<View className="flex-row items-center justify-between mb-4">
-									<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+								<View className="mb-4 flex-row items-center justify-between">
+									<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 										{tool.eyebrow}
 									</Text>
-									<Text className="text-xs font-mono text-text-muted-light dark:text-text-muted-dark">
+									<Text className="font-mono text-xs text-text-muted-light dark:text-text-muted-dark">
 										{tool.number}
 									</Text>
 								</View>
@@ -121,12 +121,12 @@ export default function ToolsScreen() {
 									{tool.italic}
 								</Text>
 
-								<Text className="text-sm leading-5 text-text-muted-light dark:text-text-muted-dark mt-4">
+								<Text className="mt-4 text-sm leading-5 text-text-muted-light dark:text-text-muted-dark">
 									{tool.description}
 								</Text>
 
 								{/* Footer */}
-								<View className="flex-row items-center mt-5 pt-4 border-t border-border-light dark:border-border-dark gap-3">
+								<View className="mt-5 flex-row items-center gap-3 border-t border-border-light pt-4 dark:border-border-dark">
 									<View className="flex-row items-baseline gap-2">
 										<Text
 											className="font-mono text-text-primary-light dark:text-text-primary-dark"
@@ -134,14 +134,14 @@ export default function ToolsScreen() {
 										>
 											{count}
 										</Text>
-										<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+										<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 											On file
 										</Text>
 									</View>
 									<View className="flex-1" />
 									<Pressable
 										onPress={() => router.push(tool.viewRoute)}
-										className="flex-row items-center gap-1 active:opacity-60 px-2 py-2"
+										className="flex-row items-center gap-1 p-2 active:opacity-60"
 										hitSlop={6}
 									>
 										<Text className="text-xs font-medium text-text-primary-light dark:text-text-primary-dark">
@@ -152,7 +152,7 @@ export default function ToolsScreen() {
 									{tool.createRoute ? (
 										<Pressable
 											onPress={() => router.push(tool.createRoute!)}
-											className="px-4 py-2.5 rounded-md bg-primary active:opacity-80"
+											className="rounded-md bg-primary px-4 py-2.5 active:opacity-80"
 										>
 											<Text className="text-sm font-medium" style={{ color: colors.surface.light }}>
 												{tool.createLabel}
@@ -170,11 +170,11 @@ export default function ToolsScreen() {
 					<View className="px-4 pb-4">
 						<Pressable
 							onPress={() => router.push(guides.viewRoute)}
-							className="rounded-md overflow-hidden border border-primary-dark active:opacity-80"
+							className="overflow-hidden rounded-md border border-primary-dark active:opacity-80"
 							style={{ backgroundColor: '#171B27' }}
 						>
-							<View className="px-5 py-3 border-b border-white/10">
-								<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60">
+							<View className="border-b border-white/10 px-5 py-3">
+								<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">
 									{guides.number} · {guides.eyebrow}
 								</Text>
 							</View>
@@ -191,7 +191,7 @@ export default function ToolsScreen() {
 								>
 									{guides.italic}
 								</Text>
-								<Text className="text-sm text-white/70 mt-3 leading-5">{guides.description}</Text>
+								<Text className="mt-3 text-sm leading-5 text-white/70">{guides.description}</Text>
 								<View className="mt-5 flex-row items-center gap-2">
 									<Text className="text-xs font-medium text-white">Open the guides</Text>
 									<Chevron direction="right" color="white" size={12} />

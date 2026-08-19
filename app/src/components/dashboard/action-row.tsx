@@ -17,14 +17,14 @@ export const ActionRow = React.memo(function ActionRow({ label, hint, icon, onPr
 	return (
 		<Pressable
 			onPress={onPress}
-			className="flex-row items-center gap-3 px-4 py-3.5 rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark active:opacity-60"
+			className="flex-row items-center gap-3 rounded-md border border-border-light bg-surface-light px-4 py-3.5 active:opacity-60 dark:border-border-dark dark:bg-surface-dark"
 		>
-			<View className="w-10 h-10 items-center justify-center rounded-md bg-primary dark:bg-text-primary-dark">
+			<View className="size-10 items-center justify-center rounded-md bg-primary dark:bg-text-primary-dark">
 				{icon}
 			</View>
 			<View className="flex-1">
 				<Text className="text-[15px] font-medium text-text-primary-light dark:text-text-primary-dark">{label}</Text>
-				<Text className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">{hint}</Text>
+				<Text className="mt-0.5 text-xs text-text-muted-light dark:text-text-muted-dark">{hint}</Text>
 			</View>
 			<Chevron direction="right" color={theme.textMuted} size={14} />
 		</Pressable>

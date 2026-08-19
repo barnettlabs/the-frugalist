@@ -4,9 +4,9 @@ import * as Linking from 'expo-linking';
 import { router } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Platform, Share } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
-import { useTranslation } from 'react-i18next';
 
 import { useProfile } from '@/api/auth/use-profile';
 import { Item } from '@/components/settings/item';
@@ -21,10 +21,10 @@ import {
 	Text,
 	View,
 } from '@/components/ui';
-import { TabAwareScrollView } from '@/components/ui/scroll-aware';
 import { Bug, Chevron, Rate, Share as ShareIcon, Support, Website } from '@/components/ui/icons';
-import { useAuth, useIsFirstTime, useSelectedTheme } from '@/lib';
+import { TabAwareScrollView } from '@/components/ui/scroll-aware';
 import type { ColorSchemeType } from '@/lib';
+import { useAuth, useIsFirstTime, useSelectedTheme } from '@/lib';
 import { openLinkInBrowser } from '@/lib/utils';
 
 function isDevUser(email: string | undefined): boolean {
@@ -133,7 +133,7 @@ export default function Settings() {
 					</ItemsContainer>
 
 					{/* Debug Section - Only for developers */}
-					{showDebug && <DebugSection iconColor={iconColor} />}
+					{showDebug && <DebugSection />}
 
 					{/* Sign Out Button */}
 					<View className="mt-8">
@@ -160,7 +160,7 @@ function ThemeButtonGroup() {
 	];
 
 	return (
-		<View className="flex-row p-1 rounded-md bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark">
+		<View className="flex-row rounded-md border border-border-light bg-surface-light p-1 dark:border-border-dark dark:bg-surface-dark">
 			{themes.map(theme => {
 				const isSelected = selectedTheme === theme.value;
 				return (
@@ -200,9 +200,9 @@ function ProfileCard({
 	return (
 		<Pressable
 			onPress={() => router.push('/settings/profile')}
-			className="mb-5 flex-row items-center rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark p-4 active:opacity-80"
+			className="mb-5 flex-row items-center rounded-md border border-border-light bg-surface-light p-4 active:opacity-80 dark:border-border-dark dark:bg-surface-dark"
 		>
-			<View className="size-14 items-center justify-center rounded-full border border-border-light dark:border-border-dark bg-tan-light dark:bg-charcoal-800">
+			<View className="size-14 items-center justify-center rounded-full border border-border-light bg-tan-light dark:border-border-dark dark:bg-charcoal-800">
 				<Text
 					className="font-display text-text-primary-light dark:text-text-primary-dark"
 					style={{ fontSize: 18, lineHeight: 24, includeFontPadding: false }}
@@ -218,10 +218,10 @@ function ProfileCard({
 				>
 					{profile ? `${profile.first_name} ${profile.last_name}` : 'Loading…'}
 				</Text>
-				<Text className="text-sm text-text-muted-light dark:text-text-muted-dark mt-0.5">{profile?.email || ''}</Text>
+				<Text className="mt-0.5 text-sm text-text-muted-light dark:text-text-muted-dark">{profile?.email || ''}</Text>
 			</View>
 			<View className="flex-row items-center gap-1.5">
-				<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+				<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 					View
 				</Text>
 				<Chevron direction="right" color={isDark ? colors.text.muted.dark : colors.text.muted.light} size={12} />
@@ -230,7 +230,7 @@ function ProfileCard({
 	);
 }
 
-function DebugSection({ iconColor }: { iconColor: string }) {
+function DebugSection() {
 	const [isSending, setIsSending] = useState(false);
 	const [, setIsFirstTime] = useIsFirstTime();
 

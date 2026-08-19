@@ -6,7 +6,12 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
 
 import { CurrencyInput, ExtraPaymentsField, FormSection, PercentageInput } from '@/components/forms';
-import { ContactSection, EstimateInfoSection, NotesSection, VehicleInfoSection } from '@/components/shared/form-sections';
+import {
+	ContactSection,
+	EstimateInfoSection,
+	NotesSection,
+	VehicleInfoSection,
+} from '@/components/shared/form-sections';
 import { ActionFooter, ControlledInput, Select, TabPageHeader, Text, View } from '@/components/ui';
 import { tw } from '@/components/ui/theme';
 import { FinanceCalculator, formatCurrencyWithSymbol } from '@/lib/calculators';
@@ -105,28 +110,28 @@ export function FinanceForm({
 
 function SummaryCard({ summary }: { summary: ReturnType<FinanceCalculator['getSummary']> }) {
 	return (
-		<View className="mb-5 rounded-md overflow-hidden border border-primary-dark bg-primary">
-			<View className="px-5 py-3 border-b border-white/10">
-				<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60">At a glance</Text>
+		<View className="mb-5 overflow-hidden rounded-md border border-primary-dark bg-primary">
+			<View className="border-b border-white/10 px-5 py-3">
+				<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">At a glance</Text>
 			</View>
-			<View className="px-5 py-5">
-				<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1.5">Monthly</Text>
+			<View className="p-5">
+				<Text className="mb-1.5 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Monthly</Text>
 				<Text className="font-mono tracking-tight text-white" style={{ fontSize: 36, lineHeight: 38 }}>
 					{formatCurrencyWithSymbol(summary.monthlyPayment)}
 				</Text>
-				<View className="mt-5 pt-4 border-t border-white/10 flex-row justify-between">
+				<View className="mt-5 flex-row justify-between border-t border-white/10 pt-4">
 					<View>
-						<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1">Financed</Text>
+						<Text className="mb-1 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Financed</Text>
 						<Text className="font-mono text-sm text-white">{formatCurrencyWithSymbol(summary.loanAmount)}</Text>
 					</View>
 					<View>
-						<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1">Interest</Text>
+						<Text className="mb-1 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Interest</Text>
 						<Text className="font-mono text-sm text-signal-light">
 							{formatCurrencyWithSymbol(summary.interestAmount)}
 						</Text>
 					</View>
 					<View>
-						<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1">Total</Text>
+						<Text className="mb-1 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Total</Text>
 						<Text className="font-mono text-sm text-white">{formatCurrencyWithSymbol(summary.grandTotal)}</Text>
 					</View>
 				</View>

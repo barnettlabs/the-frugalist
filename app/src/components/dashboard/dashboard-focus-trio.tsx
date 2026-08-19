@@ -21,7 +21,7 @@ export const DashboardFocusTrio = React.memo(function DashboardFocusTrio({ stats
 	const router = useRouter();
 	return (
 		<View
-			className="flex-row rounded-md overflow-hidden border border-border-light dark:border-border-dark"
+			className="flex-row overflow-hidden rounded-md border border-border-light dark:border-border-dark"
 			style={{ backgroundColor: theme.cardBorder }}
 		>
 			<FocusTile

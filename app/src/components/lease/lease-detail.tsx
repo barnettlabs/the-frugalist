@@ -49,15 +49,15 @@ export function LeaseDetail({ sheet, onEdit, onDelete, isDeleting }: LeaseDetail
 
 function PaymentHeader({ payment, term, residual }: { payment: number; term: number; residual: number }) {
 	return (
-		<View className="mb-4 rounded-md overflow-hidden border border-primary-dark" style={{ backgroundColor: '#171B27' }}>
-			<View className="px-5 py-3 border-b border-white/10">
-				<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60">Monthly payment</Text>
+		<View className="mb-4 overflow-hidden rounded-md border border-primary-dark" style={{ backgroundColor: '#171B27' }}>
+			<View className="border-b border-white/10 px-5 py-3">
+				<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Monthly payment</Text>
 			</View>
-			<View className="px-5 py-5">
+			<View className="p-5">
 				<Text className="font-mono tracking-tight text-white" style={{ fontSize: 42, lineHeight: 44 }}>
 					{formatCurrencyWithSymbol(payment)}
 				</Text>
-				<Text className="font-mono text-xs text-white/60 mt-2">
+				<Text className="mt-2 font-mono text-xs text-white/60">
 					{term} months · {residual}% residual
 				</Text>
 			</View>
@@ -68,7 +68,7 @@ function PaymentHeader({ payment, term, residual }: { payment: number; term: num
 function VehicleInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
 	return (
 		<View className={`mb-3 p-5 ${tw.card}`}>
-			<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-2">
+			<Text className="mb-2 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 				{sheet.sheet_name || 'Untitled estimate'}
 			</Text>
 			<Text
@@ -85,13 +85,13 @@ function VehicleInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
 				</Text>
 			</Text>
 			<View className="mt-3 flex-row gap-2">
-				<View className="rounded-sm bg-tan-light dark:bg-charcoal-800 px-2 py-0.5 border border-border-light dark:border-border-dark">
-					<Text className="text-[10px] font-mono uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
+				<View className="rounded-sm border border-border-light bg-tan-light px-2 py-0.5 dark:border-border-dark dark:bg-charcoal-800">
+					<Text className="font-mono text-[10px] uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
 						{sheet.vehicle_type}
 					</Text>
 				</View>
 				<View className="rounded-sm bg-accent/10 px-2 py-0.5">
-					<Text className="text-[10px] font-mono uppercase tracking-wider text-accent dark:text-accent-light">
+					<Text className="font-mono text-[10px] uppercase tracking-wider text-accent dark:text-accent-light">
 						Lease
 					</Text>
 				</View>
@@ -103,7 +103,7 @@ function VehicleInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
 function PaymentBreakdownCard({ summary }: { summary: ReturnType<LeaseCalculator['getSummary']> }) {
 	return (
 		<View className={`mb-3 p-5 ${tw.card}`}>
-			<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+			<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 				Payment breakdown
 			</Text>
 			<View className="gap-2">
@@ -126,7 +126,7 @@ function FinancialSummaryCard({
 }) {
 	return (
 		<View className={`mb-3 p-5 ${tw.card}`}>
-			<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+			<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 				Financial summary
 			</Text>
 			<View className="gap-3">
@@ -167,7 +167,7 @@ function LeaseDetailsCard({
 }) {
 	return (
 		<View className={`mb-3 p-5 ${tw.card}`}>
-			<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+			<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 				Lease details
 			</Text>
 			<View className="gap-2">
@@ -185,7 +185,7 @@ function ContactInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
 	if (!sheet.dealership_name && !sheet.sales_consultant && !sheet.contact_email) return null;
 	return (
 		<View className={`mb-3 p-5 ${tw.card}`}>
-			<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+			<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 				Contact information
 			</Text>
 			{sheet.dealership_name && (
@@ -194,13 +194,13 @@ function ContactInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
 				</Text>
 			)}
 			{sheet.sales_consultant && (
-				<Text className="text-sm text-text-muted-light dark:text-text-muted-dark mt-1">{sheet.sales_consultant}</Text>
+				<Text className="mt-1 text-sm text-text-muted-light dark:text-text-muted-dark">{sheet.sales_consultant}</Text>
 			)}
 			{sheet.contact_email && (
-				<Text className="text-sm text-accent dark:text-accent-light mt-1 underline">{sheet.contact_email}</Text>
+				<Text className="mt-1 text-sm text-accent underline dark:text-accent-light">{sheet.contact_email}</Text>
 			)}
 			{sheet.contact_phone && (
-				<Text className="text-sm text-text-muted-light dark:text-text-muted-dark mt-1 font-mono">
+				<Text className="mt-1 font-mono text-sm text-text-muted-light dark:text-text-muted-dark">
 					{sheet.contact_phone}
 				</Text>
 			)}
@@ -211,10 +211,10 @@ function ContactInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
 function NotesCard({ notes }: { notes: string }) {
 	return (
 		<View className={`mb-3 p-5 ${tw.card}`}>
-			<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-2">
+			<Text className="mb-2 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 				Notes
 			</Text>
-			<Text className="text-sm text-text-muted-light dark:text-text-muted-dark leading-5">{notes}</Text>
+			<Text className="text-sm leading-5 text-text-muted-light dark:text-text-muted-dark">{notes}</Text>
 		</View>
 	);
 }
@@ -222,7 +222,7 @@ function NotesCard({ notes }: { notes: string }) {
 function TermsLink() {
 	return (
 		<Link href="/(app)/learning/leasing" asChild>
-			<Pressable className="mb-4 flex-row items-center rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark px-3 py-2.5 active:opacity-80">
+			<Pressable className="mb-4 flex-row items-center rounded-md border border-border-light bg-surface-light px-3 py-2.5 active:opacity-80 dark:border-border-dark dark:bg-surface-dark">
 				<Book color={colors.text.muted.light} size={14} />
 				<Text className="ml-2 text-xs font-medium text-text-primary-light dark:text-text-primary-dark">
 					Read the leasing guide

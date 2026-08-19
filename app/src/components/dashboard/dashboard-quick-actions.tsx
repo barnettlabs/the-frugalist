@@ -16,11 +16,11 @@ export const DashboardQuickActions = React.memo(function DashboardQuickActions({
 	const router = useRouter();
 	return (
 		<>
-			<View className="flex-row items-center gap-3 mb-3">
-				<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+			<View className="mb-3 flex-row items-center gap-3">
+				<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 					Begin something
 				</Text>
-				<View className="flex-1 h-px bg-border-light dark:bg-border-dark" />
+				<View className="h-px flex-1 bg-border-light dark:bg-border-dark" />
 			</View>
 			<View className="gap-2.5">
 				<ActionRow

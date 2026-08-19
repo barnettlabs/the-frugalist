@@ -14,5 +14,4 @@ export const getToken = async (): Promise<TokenType | null> => {
 
 export const removeToken = () => SecureStore.deleteItemAsync(TOKEN_KEY);
 
-export const setToken = (value: TokenType) =>
-	SecureStore.setItemAsync(TOKEN_KEY, JSON.stringify(value));
+export const setToken = (value: TokenType) => SecureStore.setItemAsync(TOKEN_KEY, JSON.stringify(value));

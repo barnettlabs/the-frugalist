@@ -14,9 +14,9 @@ export const useProfile = createQuery<User, void, AxiosError>({
 	},
 });
 
-export const useUpdateProfile = createMutation<User, UpdateProfileRequest, AxiosError>({
+export const useUpdateProfile = createMutation<ProfileResponse, UpdateProfileRequest, AxiosError>({
 	mutationFn: async data => {
-		const response = await client.put<ProfileResponse>('/user/profile', data);
+		const response = await client.put<ProfileResponse>('/profile', data);
 		return response.data;
 	},
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['auth', 'profile'] }),

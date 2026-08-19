@@ -167,7 +167,7 @@ function ComparisonTable({ sheets }: { sheets: VehicleFinanceSheet[] }) {
 				</View>
 			</ScrollView>
 			<View className="border-t border-neutral-200 bg-success/10 p-3 dark:border-charcoal-700 dark:bg-success/20">
-				<Text className="text-xs font-semibold text-success-700 dark:text-success-light">
+				<Text className="dark:text-success-light text-xs font-semibold text-success-700">
 					Lowest monthly payment: {sheets[bestIdx].sheet_name || 'Untitled'} at{' '}
 					{formatCurrencyWithSymbol(monthlyPayments[bestIdx])}/mo
 				</Text>
@@ -215,7 +215,7 @@ function ValueCell({ value, width, highlight }: { value: string; width: number; 
 			<Text
 				className={`text-sm ${
 					highlight
-						? 'font-bold text-success-700 dark:text-success-light'
+						? 'dark:text-success-light font-bold text-success-700'
 						: 'text-text-primary-light dark:text-text-primary-dark'
 				}`}
 			>

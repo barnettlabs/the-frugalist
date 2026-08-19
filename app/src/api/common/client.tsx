@@ -1,6 +1,6 @@
 import { Env } from '@env';
-import axios from 'axios';
 import type { InternalAxiosRequestConfig } from 'axios';
+import axios from 'axios';
 
 import { signOut, useAuth } from '@/lib/auth';
 

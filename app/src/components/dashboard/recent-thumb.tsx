@@ -24,14 +24,14 @@ type RecentThumbProps = {
 export const RecentThumb = React.memo(function RecentThumb({ item, theme }: RecentThumbProps) {
 	if (item.type === 'watch' && item.imageUrl) {
 		return (
-			<View className="size-12 rounded-md overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark">
+			<View className="size-12 overflow-hidden rounded-md border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark">
 				<Image source={{ uri: item.imageUrl }} style={styles.thumbImage} contentFit="cover" />
 			</View>
 		);
 	}
 	const Icon = item.type === 'finance' ? CalculatorIcon : item.type === 'lease' ? CarIcon : EyeIcon;
 	return (
-		<View className="size-12 items-center justify-center rounded-md border border-border-light dark:border-border-dark bg-tan-light dark:bg-charcoal-800">
+		<View className="size-12 items-center justify-center rounded-md border border-border-light bg-tan-light dark:border-border-dark dark:bg-charcoal-800">
 			<Icon color={theme.textMuted} size={18} />
 		</View>
 	);

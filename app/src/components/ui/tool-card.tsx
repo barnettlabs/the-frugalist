@@ -1,11 +1,10 @@
 import { useColorScheme } from 'nativewind';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
-import colors from './colors';
 import { Chevron, Plus } from './icons';
-import { Pressable, Text } from './index';
+import { Text } from './text';
 import { getThemeColors } from './theme';
 
 type ToolCardProps = {

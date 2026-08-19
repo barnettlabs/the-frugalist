@@ -4,13 +4,11 @@ import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/ui';
-import type { getThemeColors } from '@/components/ui/theme';
 import type { User } from '@/lib/types/models';
 
 type DashboardGreetingProps = {
 	user?: User;
 	isFresh: boolean;
-	theme: ReturnType<typeof getThemeColors>;
 };
 
 function getGreeting() {
@@ -21,14 +19,14 @@ function getGreeting() {
 	return 'Good evening';
 }
 
-export const DashboardGreeting = React.memo(function DashboardGreeting({ user, isFresh, theme }: DashboardGreetingProps) {
+export const DashboardGreeting = React.memo(function DashboardGreeting({ user, isFresh }: DashboardGreetingProps) {
 	const firstName = user?.first_name || 'Welcome';
 	const greeting = getGreeting();
 
 	return (
 		<View className="flex-row items-start justify-between gap-4">
 			<View className="flex-1">
-				<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+				<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 					{greeting}
 				</Text>
 				<Text
@@ -38,15 +36,15 @@ export const DashboardGreeting = React.memo(function DashboardGreeting({ user, i
 					{firstName}
 				</Text>
 				<Text
-					className="font-display italic tracking-tight text-accent dark:text-accent-light mt-1"
+					className="mt-1 font-display italic tracking-tight text-accent dark:text-accent-light"
 					style={{ fontSize: 26, lineHeight: 34, includeFontPadding: false }}
 				>
-					{isFresh ? 'Let's start small.' : 'Here's where you stand.'}
+					{isFresh ? "Let's start small." : "Here's where you stand."}
 				</Text>
 			</View>
 			<Link href="/(app)/profile" asChild>
 				<Pressable className="active:opacity-70">
-					<View className="w-12 h-12 rounded-full items-center justify-center border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark overflow-hidden">
+					<View className="size-12 items-center justify-center overflow-hidden rounded-full border border-border-light bg-surface-light dark:border-border-dark dark:bg-surface-dark">
 						{user?.avatar_url ? (
 							<Image source={{ uri: user.avatar_url }} style={styles.avatarImage} />
 						) : (

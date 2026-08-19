@@ -65,7 +65,7 @@ export function TabPageHeader({ title, showBack = false, backLabel = 'Back', onB
 					<Pressable
 						onPress={handleBack}
 						hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-						className="-ml-1.5 flex-row items-center pr-2 active:opacity-60 z-10"
+						className="z-10 -ml-1.5 flex-row items-center pr-2 active:opacity-60"
 						accessibilityRole="button"
 						accessibilityLabel="Back"
 					>

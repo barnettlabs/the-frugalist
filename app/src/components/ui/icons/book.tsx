@@ -1,9 +1,12 @@
 import * as React from 'react';
+import type { SvgProps } from 'react-native-svg';
 import Svg, { Path } from 'react-native-svg';
 
-import type { SvgProps } from './types';
+type BookProps = SvgProps & {
+	size?: number;
+};
 
-export function Book({ color = '#000', size = 24 }: SvgProps) {
+export function Book({ color = '#000', size = 24 }: BookProps) {
 	return (
 		<Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
 			<Path

@@ -46,23 +46,23 @@ export default function Dashboard() {
 					<MastheadBar left={TODAY_LABEL} right={`v ${Env.VERSION}`} />
 				</Animated.View>
 
-				<Animated.View entering={anim.greeting} className="px-4 mt-8 mb-8">
-					<DashboardGreeting user={user} isFresh={totalActivity === 0} theme={theme} />
+				<Animated.View entering={anim.greeting} className="my-8 px-4">
+					<DashboardGreeting user={user} isFresh={totalActivity === 0} />
 				</Animated.View>
 
-				<Animated.View entering={anim.focus} className="px-4 mb-8">
+				<Animated.View entering={anim.focus} className="mb-8 px-4">
 					<DashboardFocusTrio stats={stats} theme={theme} />
 				</Animated.View>
 
-				<Animated.View entering={anim.actions} className="px-4 mb-8">
+				<Animated.View entering={anim.actions} className="mb-8 px-4">
 					<DashboardQuickActions theme={theme} />
 				</Animated.View>
 
-				<Animated.View entering={anim.recent} className="px-4 mb-4">
+				<Animated.View entering={anim.recent} className="mb-4 px-4">
 					<DashboardRecentActivity
 						financeSheets={financeSheets}
 						leaseSheets={leaseSheets}
-						watchData={watchData}
+						watchData={watchData ?? undefined}
 						theme={theme}
 					/>
 				</Animated.View>

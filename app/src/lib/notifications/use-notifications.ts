@@ -1,5 +1,5 @@
-import { router } from 'expo-router';
 import * as Notifications from 'expo-notifications';
+import { router } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useRegisterDevice } from '@/api/devices';
@@ -30,8 +30,8 @@ export function useNotifications() {
 		token: null,
 	});
 
-	const notificationListener = useRef<Notifications.EventSubscription>();
-	const responseListener = useRef<Notifications.EventSubscription>();
+	const notificationListener = useRef<Notifications.EventSubscription | undefined>(undefined);
+	const responseListener = useRef<Notifications.EventSubscription | undefined>(undefined);
 	const hasRegistered = useRef(false);
 
 	const register = useCallback(async () => {

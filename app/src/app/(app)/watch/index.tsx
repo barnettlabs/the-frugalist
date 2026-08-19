@@ -83,8 +83,8 @@ export default function TrackerListScreen() {
 		<ScreenContainer>
 			<TabPageHeader title="Watch" showBack backLabel={backLabel} />
 			{/* Editorial header */}
-			<View className="px-4 pt-6 pb-4">
-				<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+			<View className="px-4 pb-4 pt-6">
+				<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 					Watch · Price ledger
 				</Text>
 				<Text
@@ -124,7 +124,7 @@ export default function TrackerListScreen() {
 						}`}
 					>
 						<Text
-							className={`text-[11px] font-semibold tracking-[0.12em] uppercase ${
+							className={`text-[11px] font-semibold uppercase tracking-[0.12em] ${
 								filter === f.key ? 'text-surface-light' : 'text-text-muted-light dark:text-text-muted-dark'
 							}`}
 						>
@@ -140,27 +140,27 @@ export default function TrackerListScreen() {
 				refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={theme.accent} />}
 			>
 				{filteredProducts.length === 0 ? (
-					<View className="rounded-md p-8 mt-6 bg-primary border border-primary-dark">
-						<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-3">
+					<View className="mt-6 rounded-md border border-primary-dark bg-primary p-8">
+						<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">
 							{allProducts.length === 0 ? 'Watchlist empty' : 'No matches'}
 						</Text>
 						<Text className="font-display tracking-tightest text-white" style={{ fontSize: 26, lineHeight: 28 }}>
 							Pick a product.
 						</Text>
 						<Text
-							className="font-display italic tracking-tightest mt-1 text-signal-light"
+							className="mt-1 font-display italic tracking-tightest text-signal-light"
 							style={{ fontSize: 26, lineHeight: 28 }}
 						>
 							Watch it breathe.
 						</Text>
-						<Text className="text-sm text-white/70 mt-4 mb-5">
+						<Text className="mb-5 mt-4 text-sm text-white/70">
 							{allProducts.length === 0
 								? 'Drop in a SKU or product link. We’ll log every price change and ping you when motion matters.'
 								: 'Try selecting a different filter.'}
 						</Text>
 						{allProducts.length === 0 ? (
 							<Link href="/watch/create?from=watch" asChild>
-								<Pressable className="self-start rounded-md px-5 py-3 bg-surface-light flex-row items-center gap-2">
+								<Pressable className="flex-row items-center gap-2 self-start rounded-md bg-surface-light px-5 py-3">
 									<PlusIcon color={colors.primary.DEFAULT} width={14} height={14} />
 									<Text className="text-sm font-medium text-primary">Track first product</Text>
 								</Pressable>

@@ -47,8 +47,11 @@ Route::get('/.well-known/assetlinks.json', function () {
 
 require __DIR__.'/auth.php';
 
-// Catch-all route for Vue SPA - serves the built Vue app for all non-API routes
-Route::get('/{any?}', function () {
+/*
+ * Serves the built Vue SPA. Shared by the catch-all below and by the named
+ * routes that framework redirects target.
+ */
+$serveSpa = function () {
     $indexPath = public_path('web/index.html');
 
     if (! file_exists($indexPath)) {
@@ -58,4 +61,22 @@ Route::get('/{any?}', function () {
     return response()->file($indexPath, [
         'Content-Type' => 'text/html',
     ]);
-})->where('any', '^(?!api|sanctum|web).*$');
+};
+
+/*
+ * Named SPA entry points.
+ *
+ * The framework resolves these by name, not by path: the `auth` middleware
+ * redirects guests to route('login'), and VerifyEmailController redirects to
+ * route('verification.success'). Without them Laravel throws
+ * RouteNotFoundException and returns a 500 - which is what happened to every
+ * user who clicked the link in their verification email.
+ */
+Route::get('/login', $serveSpa)->name('login');
+
+Route::get('/email-verified', function () {
+    return redirect('/login?verified=1');
+})->name('verification.success');
+
+// Catch-all route for Vue SPA - serves the built Vue app for all non-API routes
+Route::get('/{any?}', $serveSpa)->where('any', '^(?!api|sanctum|web).*$');

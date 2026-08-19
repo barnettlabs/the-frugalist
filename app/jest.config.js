@@ -1,6 +1,11 @@
 module.exports = {
 	preset: 'jest-expo',
 	setupFilesAfterEnv: ['<rootDir>/jest-setup.ts'],
+	// Reanimated 4 runs on react-native-worklets, whose native module is absent
+	// under Jest. The shipped mock stands in for it, and the worklets resolver
+	// keeps Jest off the .native entry points.
+	setupFiles: ['<rootDir>/node_modules/react-native-reanimated/mock.js'],
+	resolver: '<rootDir>/node_modules/react-native-worklets/jest/resolver.js',
 	testMatch: ['**/?(*.)+(spec|test).ts?(x)'],
 	collectCoverageFrom: [
 		'src/**/*.{ts,tsx}',
@@ -13,7 +18,7 @@ module.exports = {
 	],
 	moduleFileExtensions: ['js', 'ts', 'tsx'],
 	transformIgnorePatterns: [
-		`node_modules/(?!(?:.pnpm/)?((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|@sentry/.*|native-base|react-native-svg))`,
+		`node_modules/(?!(?:.pnpm/)?((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|@sentry/.*|native-base|react-native-svg|standard-navigation))`,
 	],
 	coverageReporters: ['json-summary', ['text', { file: 'coverage.txt' }]],
 	reporters: [

@@ -94,18 +94,14 @@ export function useNotifications() {
 			console.log('Notification tapped:', data);
 
 			// Handle navigation based on notification type
-			if (data.type === 'price_alert' && data.tracked_product_id) {
+			if (data?.type === 'price_alert' && data?.tracked_product_id) {
 				router.push(`/watch/${data.tracked_product_id}?from=notification`);
 			}
 		});
 
 		return () => {
-			if (notificationListener.current) {
-				Notifications.removeNotificationSubscription(notificationListener.current);
-			}
-			if (responseListener.current) {
-				Notifications.removeNotificationSubscription(responseListener.current);
-			}
+			notificationListener.current?.remove();
+			responseListener.current?.remove();
 		};
 	}, []);
 

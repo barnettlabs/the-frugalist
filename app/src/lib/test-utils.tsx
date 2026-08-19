@@ -1,7 +1,6 @@
 import '@shopify/flash-list/jestSetup';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { NavigationContainer } from '@react-navigation/native';
 import type { RenderOptions } from '@testing-library/react-native';
 import { render, userEvent } from '@testing-library/react-native';
 import type { ReactElement } from 'react';
@@ -18,9 +17,7 @@ const initialMetrics = {
 const createAppWrapper = () => {
 	return ({ children }: { children: React.ReactNode }) => (
 		<SafeAreaProvider initialMetrics={initialMetrics}>
-			<BottomSheetModalProvider>
-				<NavigationContainer>{children}</NavigationContainer>
-			</BottomSheetModalProvider>
+			<BottomSheetModalProvider>{children}</BottomSheetModalProvider>
 		</SafeAreaProvider>
 	);
 };

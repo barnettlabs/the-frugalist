@@ -30,7 +30,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	orientation: 'portrait',
 	icon: './assets/icons/app-icon.png',
 	userInterfaceStyle: 'automatic',
-	newArchEnabled: true,
 	runtimeVersion: { policy: 'appVersion' },
 	updates: {
 		url: `https://u.expo.dev/${Env.EAS_PROJECT_ID}`,
@@ -103,7 +102,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		'expo-router',
 		['app-icon-badge', appIconBadgeConfig],
 		['react-native-edge-to-edge'],
-		'react-native-bottom-tabs',
+		'expo-image',
+		'expo-status-bar',
 	],
 	extra: {
 		...ClientEnv,

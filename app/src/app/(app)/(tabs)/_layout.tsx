@@ -1,8 +1,8 @@
 import { Redirect, SplashScreen } from 'expo-router';
+import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { useColorScheme } from 'nativewind';
 import React, { useCallback, useEffect } from 'react';
 
-import { NativeTabs } from '@/components/ui/native-tabs';
 import { useAuth, useIsFirstTime } from '@/lib';
 
 export default function TabLayout() {
@@ -30,50 +30,32 @@ export default function TabLayout() {
 		return <Redirect href="/(auth)/login" />;
 	}
 
+	const activeTint = isDark ? '#F0EADE' : '#171B27';
+	const inactiveTint = isDark ? '#9F9889' : '#857C6B';
+
 	return (
 		<NativeTabs
-			tabBarActiveTintColor={isDark ? '#F0EADE' : '#171B27'}
-			tabBarInactiveTintColor={isDark ? '#9F9889' : '#857C6B'}
-			hapticFeedbackEnabled
-			translucent
+			tintColor={activeTint}
+			iconColor={{ default: inactiveTint, selected: activeTint }}
+			labelStyle={{ default: { color: inactiveTint }, selected: { color: activeTint } }}
 		>
-			<NativeTabs.Screen
-				name="index"
-				options={{
-					title: 'Home',
-					tabBarIcon: ({ focused }) => ({
-						sfSymbol: focused ? 'house.fill' : 'house',
-					}),
-				}}
-			/>
+			<NativeTabs.Trigger name="index">
+				<NativeTabs.Trigger.Icon sf={{ default: 'house', selected: 'house.fill' }} />
+				<NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+			</NativeTabs.Trigger>
 
-			<NativeTabs.Screen
-				name="tools"
-				options={{
-					title: 'Toolkit',
-					tabBarIcon: ({ focused }) => ({
-						sfSymbol: focused ? 'wrench.and.screwdriver.fill' : 'wrench.and.screwdriver',
-					}),
-				}}
-			/>
+			<NativeTabs.Trigger name="tools">
+				<NativeTabs.Trigger.Icon sf={{ default: 'wrench.and.screwdriver', selected: 'wrench.and.screwdriver.fill' }} />
+				<NativeTabs.Trigger.Label>Toolkit</NativeTabs.Trigger.Label>
+			</NativeTabs.Trigger>
 
-			<NativeTabs.Screen
-				name="settings"
-				options={{
-					title: 'Account',
-					tabBarIcon: ({ focused }) => ({
-						sfSymbol: focused ? 'person.crop.circle.fill' : 'person.crop.circle',
-					}),
-				}}
-			/>
+			<NativeTabs.Trigger name="settings">
+				<NativeTabs.Trigger.Icon sf={{ default: 'person.crop.circle', selected: 'person.crop.circle.fill' }} />
+				<NativeTabs.Trigger.Label>Account</NativeTabs.Trigger.Label>
+			</NativeTabs.Trigger>
 
-			{/* Hidden screens */}
-			<NativeTabs.Screen
-				name="style"
-				options={{
-					tabBarItemHidden: true,
-				}}
-			/>
+			{/* Reachable by route, but not shown in the tab bar. */}
+			<NativeTabs.Trigger name="style" hidden />
 		</NativeTabs>
 	);
 }

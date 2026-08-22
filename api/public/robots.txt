@@ -1,2 +1,16 @@
 User-agent: *
-Disallow:
+Allow: /
+
+# Never worth crawling: an internal component gallery, an admin area, and a
+# dev-only mail preview. Everything else that requires an account already
+# serves "noindex, nofollow", so it is left crawlable — a page blocked here can
+# still be indexed URL-only, because the crawler never gets to read the tag.
+Disallow: /__ui
+Disallow: /admin
+Disallow: /playground
+
+# Prerendered HTML is an implementation detail of the deploy. Each file also
+# carries a canonical tag pointing at its clean URL, so this is belt and braces.
+Disallow: /web/prerendered/
+
+Sitemap: https://thefrugalist.io/sitemap.xml

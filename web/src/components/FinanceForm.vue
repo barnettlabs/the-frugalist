@@ -14,10 +14,12 @@ interface Props {
 	title: string;
 	backUrl: string;
 	isEdit?: boolean;
+	submitLabel?: string;
 }
 
 withDefaults(defineProps<Props>(), {
 	isEdit: false,
+	submitLabel: 'Create finance estimate',
 });
 
 defineEmits<{
@@ -215,7 +217,7 @@ defineEmits<{
 			>
 				<Spinner v-if="loading" size="sm" color="white" />
 				<CalculatorIcon v-else class="h-4 w-4" />
-				{{ loading ? 'Creating…' : 'Create finance estimate' }}
+				{{ loading ? 'Creating…' : submitLabel }}
 			</button>
 		</div>
 	</form>

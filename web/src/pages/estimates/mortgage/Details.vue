@@ -13,11 +13,22 @@ import RecurringExpenses from '@/components/Mortgage/RecurringExpenses.vue';
 import MortgageForm from '@/components/MortgageForm.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
-import type { MortgageFormData, FormErrors } from '@/types';
+import { useEstimateAccess } from '@/composables/useEstimateAccess';
+import type { FormErrors, MortgageFormData } from '@/types';
 import { PropertyType } from '@/types';
 
 const route = useRoute();
 const router = useRouter();
+
+const { isAuthenticated, backUrl, backLabel, ensureAccount } = useEstimateAccess({
+	savedListPath: '/estimates/mortgage',
+	savedListLabel: 'All mortgage estimates',
+});
+
+// Guests get the calculator but not the save action.
+const submitLabel = computed(() =>
+	isAuthenticated.value ? 'Create mortgage estimate' : 'Sign in to save this estimate'
+);
 
 const isEdit = computed(() => !!route.params.id);
 const sheetId = computed(() => route.params.id as string);
@@ -50,9 +61,7 @@ const propertyTitle = computed(() => {
 });
 
 const headerTitle = computed(() => (isEdit.value ? propertyTitle.value : 'New mortgage estimate.'));
-const headerEyebrow = computed(() =>
-	isEdit.value ? 'Compute · Mortgage · Edit' : 'Compute · Mortgage · New'
-);
+const headerEyebrow = computed(() => (isEdit.value ? 'Compute · Mortgage · Edit' : 'Compute · Mortgage · New'));
 const headerDescription = computed(() =>
 	isEdit.value
 		? 'Refine the numbers behind this loan. Changes save when you click update.'
@@ -74,6 +83,8 @@ const loadSheet = async () => {
 };
 
 const submitForm = async () => {
+	if (!ensureAccount()) return;
+
 	loading.value = true;
 	errors.value = {};
 
@@ -109,11 +120,11 @@ onMounted(() => {
 		<template v-else>
 			<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8">
 				<RouterLink
-					to="/estimates/mortgage"
+					:to="backUrl"
 					class="inline-flex items-center gap-1.5 text-xs eyebrow hover:text-primary transition-colors"
 				>
 					<ArrowLeftIcon class="h-3 w-3" />
-					All mortgage estimates
+					{{ backLabel }}
 				</RouterLink>
 			</div>
 
@@ -154,7 +165,7 @@ onMounted(() => {
 						<!-- Submit/cancel at the very bottom -->
 						<div v-if="!isEdit" class="flex items-center justify-end gap-3 pt-2">
 							<RouterLink
-								to="/estimates/mortgage"
+								:to="backUrl"
 								class="px-5 py-2.5 rounded-md text-sm font-medium text-text-muted hover:text-primary hover:bg-tan/50 transition-colors"
 							>
 								Cancel
@@ -172,7 +183,7 @@ onMounted(() => {
 							>
 								<Spinner v-if="loading" size="sm" color="white" />
 								<CalculatorIcon v-else class="h-4 w-4" />
-								{{ loading ? 'Creating…' : 'Create mortgage estimate' }}
+								{{ loading ? 'Creating…' : submitLabel }}
 							</button>
 						</div>
 					</div>

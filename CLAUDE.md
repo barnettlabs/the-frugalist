@@ -81,6 +81,31 @@ assets/       # CSS and static assets
 
 **Environment Configuration**:
 - `VITE_API_URL` - API base URL (defaults to `/api` for same-domain deployment)
+- `VITE_SITE_URL` - Absolute site origin used for canonical URLs, Open Graph tags,
+  and `sitemap.xml`. Defaults to `https://thefrugalist.io`.
+
+**SEO and prerendering**:
+
+The SPA's public pages are prerendered to static HTML at build time so crawlers and
+social-card scrapers - neither of which reliably runs JavaScript - get real content
+and per-page metadata.
+
+- A route is public and indexable **only** if it carries `meta.seo` in
+  `src/router/routes.ts`. That single flag drives the `<title>`/description/canonical/
+  Open Graph tags, the JSON-LD, prerendering, and `sitemap.xml`. Routes without it
+  resolve to `noindex, nofollow` and are omitted from the sitemap.
+- Dynamic routes cannot be enumerated from their pattern, so they also declare
+  `meta.seoPaths` with the concrete URLs to render.
+- `pnpm build` runs three steps: the client build, an SSR build of
+  `src/entry-server.ts`, then `scripts/prerender.mjs`, which writes
+  `api/public/web/prerendered/` and `api/public/sitemap.xml`. A route that fails to
+  render fails the build rather than silently shipping an empty page.
+- Laravel serves a prerendered file when one exists for the request path, otherwise
+  the SPA shell (`api/routes/web.php`). The client does a clean mount rather than
+  hydrating - signed-in and signed-out chrome differ, so hydration would mismatch.
+- Guides and calculators are public; saving an estimate still requires an account
+  (`src/composables/useEstimateAccess.ts`). `src/router/__tests__/seo.spec.ts` locks
+  that in - it fails if a public route slips back behind the auth guard.
 
 ### Mobile App (`app/`)
 React Native/Expo application using the Obytes starter template.

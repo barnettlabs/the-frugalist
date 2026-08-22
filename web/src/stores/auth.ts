@@ -4,8 +4,8 @@ import { computed, ref } from 'vue';
 
 import type { LoginCredentials, RegisterData } from '@/api/auth';
 import { authApi } from '@/api/auth';
-import type { User } from '@/types';
 import { useToastStore } from '@/stores/toast';
+import type { User } from '@/types';
 
 const TOKEN_KEY = 'auth_token';
 const USER_KEY = 'auth_user';
@@ -31,6 +31,14 @@ export const useAuthStore = defineStore('auth', () => {
 	// Actions
 	const initialize = async () => {
 		if (initialized.value) return;
+
+		// Build-time prerendering runs in Node, where there is no storage to restore
+		// from. Render those pages as a signed-out visitor, which is what a crawler
+		// sees anyway.
+		if (typeof localStorage === 'undefined') {
+			initialized.value = true;
+			return;
+		}
 
 		// Try to restore from localStorage
 		const storedToken = localStorage.getItem(TOKEN_KEY);

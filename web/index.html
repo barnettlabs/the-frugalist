@@ -4,22 +4,65 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#171B27">
 
-    <title>TheFrugalist</title>
+    <!--
+      Defaults only. Every tag marked `data-seo` is replaced per route: at build
+      time by scripts/prerender.mjs for public pages, and in the browser by the
+      router's afterEach hook (see src/utils/seo.ts).
+
+      There is deliberately no default `robots` tag. Private app routes get
+      `noindex, nofollow` applied client-side, while public pages ship an
+      explicit `index, follow` in their prerendered HTML — so a deploy that
+      somehow skips prerendering degrades to "indexable" rather than silently
+      de-indexing the whole site.
+    -->
+    <title data-seo>TheFrugalist — Track prices, run the numbers, stop overpaying</title>
+    <meta name="description" data-seo
+        content="Free vehicle finance, lease, and mortgage calculators plus plain-language guides to dealer pricing tactics. Track price drops and know what a deal should actually cost.">
+    <link rel="canonical" href="https://thefrugalist.io/" data-seo>
+
+    <meta property="og:site_name" content="TheFrugalist" data-seo>
+    <meta property="og:type" content="website" data-seo>
+    <meta property="og:title" content="TheFrugalist — Track prices, run the numbers, stop overpaying" data-seo>
+    <meta property="og:description"
+        content="Free vehicle finance, lease, and mortgage calculators plus plain-language guides to dealer pricing tactics." data-seo>
+    <meta property="og:url" content="https://thefrugalist.io/" data-seo>
+    <meta property="og:image" content="https://thefrugalist.io/og-image.png" data-seo>
+    <meta property="og:image:alt" content="TheFrugalist — spend with intent, not impulse" data-seo>
+    <meta property="og:image:width" content="1200" data-seo>
+    <meta property="og:image:height" content="630" data-seo>
+    <meta property="og:locale" content="en_US" data-seo>
+
+    <meta name="twitter:card" content="summary_large_image" data-seo>
+    <meta name="twitter:title" content="TheFrugalist — Track prices, run the numbers, stop overpaying" data-seo>
+    <meta name="twitter:description"
+        content="Free vehicle finance, lease, and mortgage calculators plus plain-language guides to dealer pricing tactics." data-seo>
+    <meta name="twitter:image" content="https://thefrugalist.io/og-image.png" data-seo>
+    <meta name="twitter:image:alt" content="TheFrugalist — spend with intent, not impulse" data-seo>
 
     <link rel="icon" type="image/x-icon" href="/web/favicon/favicon.ico">
-    <!-- <link rel="icon" type="image/png" sizes="32x32" href="/web/favicon/favicon-32x32.png"> -->
-    <!-- <link rel="icon" type="image/png" sizes="16x16" href="/web/favicon/favicon-16x16.png"> -->
-    <!-- <link rel="apple-touch-icon" href="/web/favicon/apple-touch-icon.png"> -->
-    <!-- <link rel="manifest" href="/web/favicon/site.webmanifest"> -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/web/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/web/favicon/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/web/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/web/favicon/site.webmanifest">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
     <link href="https://fonts.bunny.net/css?family=fraunces:400,500,600,700,400i,500i,600i,700i|jetbrains-mono:400,500,600&display=swap" rel="stylesheet" />
 </head>
 
 <body class="font-sans antialiased">
     <div id="app"></div>
+    <noscript>
+        <p style="font-family: Georgia, serif; max-width: 40rem; margin: 4rem auto; padding: 0 1.5rem; line-height: 1.6;">
+            TheFrugalist needs JavaScript to run its calculators and price tracking.
+            Please enable JavaScript, or read the guides at
+            <a href="/learning/financing">/learning/financing</a> and
+            <a href="/learning/leasing">/learning/leasing</a>.
+        </p>
+    </noscript>
     <script type="module" src="/src/main.ts"></script>
 </body>
 

@@ -1,0 +1,120 @@
+# Render Blueprint - the whole environment as code.
+#
+# Declares the API, the background worker and both datastores, so the
+# environment can be recreated or reviewed in a pull request rather than being
+# clicked together in a dashboard.
+#
+# The API and worker deliberately share one Dockerfile and one environment
+# group, differing only in start command. Postgres is Render's own rather than
+# an external provider: it sits on the same private network as the services,
+# so queries do not take a public-internet hop.
+
+databases:
+  - name: frugalist-postgres
+    databaseName: frugalist
+    user: frugalist
+    plan: basic-256mb
+    postgresMajorVersion: '17'
+
+services:
+  # ---- API ------------------------------------------------------------------
+  - type: web
+    name: frugalist-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /up
+    # Migrations run once here rather than per-instance on boot, which would
+    # race when more than one instance starts.
+    preDeployCommand: node dist/scripts/migrate.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_ENV
+        value: production
+      - key: PORT
+        value: 8787
+      - key: DATABASE_URL
+        fromDatabase:
+          name: frugalist-postgres
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: frugalist-cache
+          property: connectionString
+      - fromGroup: frugalist-secrets
+
+  # ---- Worker ---------------------------------------------------------------
+  # Same image, different command. Scheduled work lives here as BullMQ
+  # repeatable jobs rather than as a separate Render cron service, so overlap
+  # prevention, retries and observability stay in one system.
+  - type: worker
+    name: frugalist-worker
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerCommand: node dist/worker.js
+    plan: starter
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: frugalist-postgres
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: frugalist-cache
+          property: connectionString
+      - fromGroup: frugalist-secrets
+
+  # ---- Redis ----------------------------------------------------------------
+  # BullMQ cannot behave correctly if Redis evicts keys, so the policy is
+  # noeviction rather than an LRU default. The free tier is not usable here:
+  # it is ephemeral, and a queue that loses its jobs on restart is not a queue.
+  - type: keyvalue
+    name: frugalist-cache
+    plan: starter
+    maxmemoryPolicy: noeviction
+    ipAllowList: []
+
+  # ---- SPA ------------------------------------------------------------------
+  # Splitting the Vue build off the API decouples frontend releases from
+  # backend ones. It was previously served by Laravel's catch-all route, which
+  # meant every UI change required an API deploy.
+  - type: web
+    name: frugalist-web
+    runtime: static
+    buildCommand: pnpm install --frozen-lockfile && pnpm --filter thefrugalist-web build
+    staticPublishPath: ./web/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+envVarGroups:
+  - name: frugalist-secrets
+    envVars:
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: APP_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: RESEND_KEY
+        sync: false
+      - key: MAIL_TRANSPORT
+        value: resend
+      - key: TWILIO_SID
+        sync: false
+      - key: TWILIO_TOKEN
+        sync: false
+      - key: TWILIO_FROM
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+      - key: POSTHOG_KEY
+        sync: false

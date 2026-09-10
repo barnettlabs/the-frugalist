@@ -80,11 +80,23 @@ class TrackedProduct extends Model
         return $query->where('tracking_end_date', '<', now());
     }
 
+    /**
+     * Products whose check interval has fully elapsed since the last check.
+     *
+     * The interval lives in a column rather than being a constant, so the
+     * comparison has to be expressed in SQL. This was previously MySQL-only:
+     *
+     *     last_checked_at < DATE_SUB(NOW(), INTERVAL check_interval MINUTE)
+     *
+     * DATE_SUB and the bare INTERVAL keyword do not exist in Postgres. The form
+     * below multiplies a unit interval by the column instead, which both engines
+     * accept, so the scope survives the move to Postgres unchanged.
+     */
     public function scopeNeedsCheck($query)
     {
         return $query->where(function ($q) {
             $q->whereNull('last_checked_at')
-                ->orWhereRaw('last_checked_at < DATE_SUB(NOW(), INTERVAL check_interval MINUTE)');
+                ->orWhereRaw("last_checked_at < NOW() - (check_interval * INTERVAL '1 minute')");
         });
     }
 

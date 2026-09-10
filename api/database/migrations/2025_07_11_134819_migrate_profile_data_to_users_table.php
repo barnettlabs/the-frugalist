@@ -13,9 +13,14 @@ return new class extends Migration
     {
         // Check if profiles table exists before migrating data
         if (Schema::hasTable('profiles')) {
-            // Migrate profile data to users table
-            // Use SQLite compatible syntax for testing environment
-            if (config('database.default') === 'sqlite') {
+            // Migrate profile data to users table.
+            //
+            // The correlated-subquery form below is standard SQL and runs on
+            // SQLite and Postgres alike. MySQL keeps its own branch because
+            // `UPDATE ... INNER JOIN ... SET` is a MySQL extension - it is not
+            // valid Postgres, which is what broke the first migrate run against
+            // pgsql. Both branches produce the same result.
+            if (in_array(config('database.default'), ['sqlite', 'pgsql'], true)) {
                 DB::statement('
                     UPDATE users
                     SET

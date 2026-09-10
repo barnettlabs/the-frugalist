@@ -26,7 +26,9 @@ const envSchema = z.object({
 	APP_ENV: z.enum(['local', 'staging', 'production', 'test']).default('local'),
 	APP_URL: z.string().url().default('http://localhost:8787'),
 	PORT: port.default(8787),
-	LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
+	LOG_LEVEL: z
+		.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
+		.default('info'),
 
 	DATABASE_URL: z.string().url(),
 	DATABASE_POOL_MAX: z.coerce.number().int().min(1).max(100).default(10),

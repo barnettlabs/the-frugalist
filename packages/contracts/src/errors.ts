@@ -38,6 +38,40 @@ export type ApiErrorBody = z.infer<typeof apiErrorSchema>;
 export const DEFAULT_VALIDATION_MESSAGE = 'The given data was invalid.';
 
 /**
+ * Laravel renders `:attribute` by replacing underscores with spaces, so
+ * `sales_tax_percent` becomes "sales tax percent". Verified against the running
+ * Laravel app rather than assumed - this text is user-visible wherever a form
+ * has no field-level binding for the error.
+ */
+export function humanizeField(field: string): string {
+	return field.replace(/_/g, ' ').replace(/\./g, ' ');
+}
+
+/**
+ * Laravel's top-level `message` for a validation failure is not a constant. It
+ * is the first error, with a count of the rest appended:
+ *
+ *     one error   -> "The msrp field must be a number."
+ *     three       -> "The msrp field must be a number. (and 2 more errors)"
+ *
+ * Both clients fall back to `message` when `errors` is absent or when a field
+ * has no matching form control, so this string is shown to users and is
+ * reproduced exactly rather than replaced with a generic sentence.
+ */
+export function summaryMessage(errors: Record<string, string[]>): string {
+	const flat = Object.values(errors).flat();
+
+	if (flat.length === 0) return DEFAULT_VALIDATION_MESSAGE;
+
+	const [first] = flat;
+	const remaining = flat.length - 1;
+
+	if (remaining === 0) return first!;
+
+	return `${first} (and ${remaining} more ${remaining === 1 ? 'error' : 'errors'})`;
+}
+
+/**
  * Flatten a Zod issue list into Laravel's field -> messages map.
  *
  * Laravel keys nested fields with dots (`address.line1`) and array members with
@@ -61,9 +95,9 @@ export function zodToValidationErrors(issues: z.ZodIssue[]): Record<string, stri
 
 export function validationErrorBody(
 	errors: Record<string, string[]>,
-	message: string = DEFAULT_VALIDATION_MESSAGE,
+	message?: string,
 ): ValidationErrorBody {
-	return { message, errors };
+	return { message: message ?? summaryMessage(errors), errors };
 }
 
 /**
@@ -82,13 +116,14 @@ export class HttpError extends Error {
 		this.errors = errors;
 	}
 
-	static validation(errors: Record<string, string[]>, message = DEFAULT_VALIDATION_MESSAGE) {
-		return new HttpError(422, message, errors);
+	static validation(errors: Record<string, string[]>, message?: string) {
+		return new HttpError(422, message ?? summaryMessage(errors), errors);
 	}
 
 	/** A single-field 422, for checks Zod cannot express (uniqueness, current password). */
 	static field(field: string, message: string) {
-		return new HttpError(422, DEFAULT_VALIDATION_MESSAGE, { [field]: [message] });
+		const errors = { [field]: [message] };
+		return new HttpError(422, summaryMessage(errors), errors);
 	}
 
 	static unauthenticated(message = 'Unauthenticated.') {

@@ -6,93 +6,21 @@
  * it until Phase 6 - so this file is regenerated rather than authored. Two
  * migration tools writing the same schema would be a real hazard.
  *
- * Note the money columns are not uniform, and that is deliberate for now:
- * the vehicle sheets store `double precision` while the price-tracking tables
- * store `numeric(10,2)`. Postgres returns numeric as a *string* over the wire,
- * because it is arbitrary precision. Read those through
+ * Timestamps are normalised to { mode: 'date' } by tools/normalize-schema.mjs;
+ * drizzle-kit introspects them as strings, which rejects the Date objects
+ * Better Auth writes.
+ *
+ * The money columns are not uniform, and that is deliberate for now: the
+ * vehicle sheets store `double precision` while the price-tracking tables store
+ * `numeric(10,2)`, which Postgres returns as a *string*. Read those through
  * `fromNumericColumn` in @frugalist/contracts rather than relying on implicit
  * coercion - see src/db/money.ts.
  */
 
-import { pgTable, unique, bigserial, varchar, timestamp, boolean, foreignKey, bigint, text, check, doublePrecision, smallint, serial, integer, index, json, numeric, char } from "drizzle-orm/pg-core"
+import { pgTable, serial, varchar, integer, timestamp, index, bigint, text, bigserial, smallint, unique, foreignKey, check, doublePrecision, json, boolean, numeric, char } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 
-
-export const users = pgTable("users", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
-	email: varchar({ length: 255 }).notNull(),
-	emailVerifiedAt: timestamp("email_verified_at", { mode: 'string' }),
-	password: varchar({ length: 255 }).notNull(),
-	rememberToken: varchar("remember_token", { length: 100 }),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
-	username: varchar({ length: 255 }),
-	avatarUrl: varchar("avatar_url", { length: 255 }),
-	website: varchar({ length: 255 }),
-	firstName: varchar("first_name", { length: 255 }),
-	lastName: varchar("last_name", { length: 255 }),
-	phoneNumber: varchar("phone_number", { length: 255 }),
-	phoneVerifiedAt: timestamp("phone_verified_at", { mode: 'string' }),
-	isAdmin: boolean("is_admin").default(false).notNull(),
-}, (table) => [
-	unique("users_email_unique").on(table.email),
-	unique("users_username_unique").on(table.username),
-]);
-
-export const notifications = pgTable("notifications", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	userId: bigint("user_id", { mode: "number" }).notNull(),
-	title: varchar({ length: 255 }),
-	message: text(),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
-	readAt: timestamp("read_at", { mode: 'string' }),
-}, (table) => [
-	foreignKey({
-			columns: [table.userId],
-			foreignColumns: [users.id],
-			name: "notifications_user_id_foreign"
-		}).onDelete("cascade"),
-]);
-
-export const vehicleFinanceSheets = pgTable("vehicle_finance_sheets", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	userId: bigint("user_id", { mode: "number" }).notNull(),
-	sheetName: varchar("sheet_name", { length: 255 }),
-	salesConsultant: varchar("sales_consultant", { length: 255 }),
-	dealershipName: varchar("dealership_name", { length: 255 }),
-	vehicleType: varchar("vehicle_type", { length: 255 }).default('CAR').notNull(),
-	shareableKey: varchar("shareable_key", { length: 255 }),
-	vehicleYear: varchar("vehicle_year", { length: 255 }),
-	vehicleMake: varchar("vehicle_make", { length: 255 }),
-	vehicleModel: varchar("vehicle_model", { length: 255 }),
-	vehicleTrim: varchar("vehicle_trim", { length: 255 }),
-	msrp: doublePrecision(),
-	fees: doublePrecision(),
-	discounts: doublePrecision(),
-	rebates: doublePrecision(),
-	downPayment: doublePrecision("down_payment"),
-	salesTaxPercent: doublePrecision("sales_tax_percent"),
-	interestRate: doublePrecision("interest_rate"),
-	financeTerm: smallint("finance_term"),
-	startDate: timestamp("start_date", { mode: 'string' }),
-	contactEmail: varchar("contact_email", { length: 255 }),
-	contactPhone: varchar("contact_phone", { length: 255 }),
-	extraPaymentsJson: text("extra_payments_json"),
-	notes: text(),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
-}, (table) => [
-	foreignKey({
-			columns: [table.userId],
-			foreignColumns: [users.id],
-			name: "vehicle_finance_sheets_user_id_foreign"
-		}).onDelete("cascade"),
-	check("vehicle_finance_sheets_vehicle_type_check", sql`(vehicle_type)::text = ANY ((ARRAY['CAR'::character varying, 'TRUCK'::character varying, 'SUV'::character varying])::text[])`),
-]);
 
 export const migrations = pgTable("migrations", {
 	id: serial().primaryKey().notNull(),
@@ -103,7 +31,7 @@ export const migrations = pgTable("migrations", {
 export const passwordResetTokens = pgTable("password_reset_tokens", {
 	email: varchar({ length: 255 }).primaryKey().notNull(),
 	token: varchar({ length: 255 }).notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }),
+	createdAt: timestamp("created_at", { mode: 'date' }),
 });
 
 export const sessions = pgTable("sessions", {
@@ -163,18 +91,10 @@ export const failedJobs = pgTable("failed_jobs", {
 	queue: text().notNull(),
 	payload: text().notNull(),
 	exception: text().notNull(),
-	failedAt: timestamp("failed_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	failedAt: timestamp("failed_at", { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 }, (table) => [
 	unique("failed_jobs_uuid_unique").on(table.uuid),
 ]);
-
-export const announcements = pgTable("announcements", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
-	title: varchar({ length: 255 }),
-	message: text(),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
-});
 
 export const vehicleLeaseSheets = pgTable("vehicle_lease_sheets", {
 	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
@@ -201,12 +121,12 @@ export const vehicleLeaseSheets = pgTable("vehicle_lease_sheets", {
 	salesTaxPercent: doublePrecision("sales_tax_percent"),
 	residualPercent: doublePrecision("residual_percent"),
 	leaseTerm: smallint("lease_term"),
-	startDate: timestamp("start_date", { mode: 'string' }),
+	startDate: timestamp("start_date", { mode: 'date' }),
 	contactEmail: varchar("contact_email", { length: 255 }),
 	contactPhone: varchar("contact_phone", { length: 255 }),
 	notes: text(),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
 	foreignKey({
 			columns: [table.userId],
@@ -215,6 +135,14 @@ export const vehicleLeaseSheets = pgTable("vehicle_lease_sheets", {
 		}).onDelete("cascade"),
 	check("vehicle_lease_sheets_vehicle_type_check", sql`(vehicle_type)::text = ANY ((ARRAY['CAR'::character varying, 'TRUCK'::character varying, 'SUV'::character varying])::text[])`),
 ]);
+
+export const announcements = pgTable("announcements", {
+	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	title: varchar({ length: 255 }),
+	message: text(),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
+});
 
 export const retailers = pgTable("retailers", {
 	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
@@ -225,13 +153,90 @@ export const retailers = pgTable("retailers", {
 	apiConfig: json("api_config"),
 	isActive: boolean("is_active").default(true).notNull(),
 	rateLimitPerHour: integer("rate_limit_per_hour").default(1000).notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
 	logoUrl: varchar("logo_url", { length: 255 }),
 	comingSoon: boolean("coming_soon").default(false).notNull(),
 }, (table) => [
 	unique("retailers_name_unique").on(table.name),
 	unique("retailers_slug_unique").on(table.slug),
+]);
+
+export const vehicleFinanceSheets = pgTable("vehicle_finance_sheets", {
+	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	userId: bigint("user_id", { mode: "number" }).notNull(),
+	sheetName: varchar("sheet_name", { length: 255 }),
+	salesConsultant: varchar("sales_consultant", { length: 255 }),
+	dealershipName: varchar("dealership_name", { length: 255 }),
+	vehicleType: varchar("vehicle_type", { length: 255 }).default('CAR').notNull(),
+	shareableKey: varchar("shareable_key", { length: 255 }),
+	vehicleYear: varchar("vehicle_year", { length: 255 }),
+	vehicleMake: varchar("vehicle_make", { length: 255 }),
+	vehicleModel: varchar("vehicle_model", { length: 255 }),
+	vehicleTrim: varchar("vehicle_trim", { length: 255 }),
+	msrp: doublePrecision(),
+	fees: doublePrecision(),
+	discounts: doublePrecision(),
+	rebates: doublePrecision(),
+	downPayment: doublePrecision("down_payment"),
+	salesTaxPercent: doublePrecision("sales_tax_percent"),
+	interestRate: doublePrecision("interest_rate"),
+	financeTerm: smallint("finance_term"),
+	startDate: timestamp("start_date", { mode: 'date' }),
+	contactEmail: varchar("contact_email", { length: 255 }),
+	contactPhone: varchar("contact_phone", { length: 255 }),
+	extraPaymentsJson: text("extra_payments_json"),
+	notes: text(),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
+}, (table) => [
+	foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "vehicle_finance_sheets_user_id_foreign"
+		}).onDelete("cascade"),
+	check("vehicle_finance_sheets_vehicle_type_check", sql`(vehicle_type)::text = ANY ((ARRAY['CAR'::character varying, 'TRUCK'::character varying, 'SUV'::character varying])::text[])`),
+]);
+
+export const notifications = pgTable("notifications", {
+	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	userId: bigint("user_id", { mode: "number" }).notNull(),
+	title: varchar({ length: 255 }),
+	message: text(),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
+	readAt: timestamp("read_at", { mode: 'date' }),
+}, (table) => [
+	foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "notifications_user_id_foreign"
+		}).onDelete("cascade"),
+]);
+
+export const users = pgTable("users", {
+	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	email: varchar({ length: 255 }).notNull(),
+	emailVerifiedAt: timestamp("email_verified_at", { mode: 'date' }),
+	password: varchar({ length: 255 }),
+	rememberToken: varchar("remember_token", { length: 100 }),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
+	username: varchar({ length: 255 }),
+	avatarUrl: varchar("avatar_url", { length: 255 }),
+	website: varchar({ length: 255 }),
+	firstName: varchar("first_name", { length: 255 }),
+	lastName: varchar("last_name", { length: 255 }),
+	phoneNumber: varchar("phone_number", { length: 255 }),
+	phoneVerifiedAt: timestamp("phone_verified_at", { mode: 'date' }),
+	isAdmin: boolean("is_admin").default(false).notNull(),
+	name: varchar({ length: 255 }),
+	emailVerified: boolean("email_verified").default(false).notNull(),
+}, (table) => [
+	unique("users_email_unique").on(table.email),
+	unique("users_username_unique").on(table.username),
 ]);
 
 export const priceHistory = pgTable("price_history", {
@@ -241,9 +246,9 @@ export const priceHistory = pgTable("price_history", {
 	price: numeric({ precision: 10, scale:  2 }).notNull(),
 	inStock: boolean("in_stock").default(true).notNull(),
 	apiResponse: json("api_response"),
-	checkedAt: timestamp("checked_at", { mode: 'string' }).notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
+	checkedAt: timestamp("checked_at", { mode: 'date' }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
 	index().using("btree", table.trackedProductId.asc().nullsLast().op("int8_ops"), table.checkedAt.asc().nullsLast().op("int8_ops")),
 	foreignKey({
@@ -251,6 +256,27 @@ export const priceHistory = pgTable("price_history", {
 			foreignColumns: [trackedProducts.id],
 			name: "price_history_tracked_product_id_foreign"
 		}).onDelete("cascade"),
+]);
+
+export const priceAlerts = pgTable("price_alerts", {
+	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	trackedProductId: bigint("tracked_product_id", { mode: "number" }).notNull(),
+	oldPrice: numeric("old_price", { precision: 10, scale:  2 }).notNull(),
+	newPrice: numeric("new_price", { precision: 10, scale:  2 }).notNull(),
+	alertType: varchar("alert_type", { length: 255 }).notNull(),
+	notificationSent: boolean("notification_sent").default(false).notNull(),
+	triggeredAt: timestamp("triggered_at", { mode: 'date' }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
+}, (table) => [
+	index().using("btree", table.trackedProductId.asc().nullsLast().op("int8_ops"), table.triggeredAt.asc().nullsLast().op("int8_ops")),
+	foreignKey({
+			columns: [table.trackedProductId],
+			foreignColumns: [trackedProducts.id],
+			name: "price_alerts_tracked_product_id_foreign"
+		}).onDelete("cascade"),
+	check("price_alerts_alert_type_check", sql`(alert_type)::text = ANY ((ARRAY['price_drop'::character varying, 'target_reached'::character varying, 'back_in_stock'::character varying])::text[])`),
 ]);
 
 export const priceCheckSchedules = pgTable("price_check_schedules", {
@@ -261,8 +287,8 @@ export const priceCheckSchedules = pgTable("price_check_schedules", {
 	isActive: boolean("is_active").default(true).notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	userId: bigint("user_id", { mode: "number" }),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
 	index().using("btree", table.isActive.asc().nullsLast().op("text_ops"), table.frequency.asc().nullsLast().op("text_ops")),
 	foreignKey({
@@ -274,25 +300,25 @@ export const priceCheckSchedules = pgTable("price_check_schedules", {
 	check("price_check_schedules_frequency_check", sql`(frequency)::text = ANY ((ARRAY['hourly'::character varying, 'every_2_hours'::character varying, 'every_6_hours'::character varying, 'daily'::character varying])::text[])`),
 ]);
 
-export const priceAlerts = pgTable("price_alerts", {
+export const userDevices = pgTable("user_devices", {
 	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	trackedProductId: bigint("tracked_product_id", { mode: "number" }).notNull(),
-	oldPrice: numeric("old_price", { precision: 10, scale:  2 }).notNull(),
-	newPrice: numeric("new_price", { precision: 10, scale:  2 }).notNull(),
-	alertType: varchar("alert_type", { length: 255 }).notNull(),
-	notificationSent: boolean("notification_sent").default(false).notNull(),
-	triggeredAt: timestamp("triggered_at", { mode: 'string' }).notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
+	userId: bigint("user_id", { mode: "number" }).notNull(),
+	deviceName: varchar("device_name", { length: 255 }),
+	deviceType: varchar("device_type", { length: 255 }).notNull(),
+	pushToken: varchar("push_token", { length: 255 }).notNull(),
+	isActive: boolean("is_active").default(true).notNull(),
+	lastUsedAt: timestamp("last_used_at", { mode: 'date' }),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
-	index().using("btree", table.trackedProductId.asc().nullsLast().op("int8_ops"), table.triggeredAt.asc().nullsLast().op("int8_ops")),
+	index().using("btree", table.userId.asc().nullsLast().op("int8_ops"), table.isActive.asc().nullsLast().op("int8_ops")),
 	foreignKey({
-			columns: [table.trackedProductId],
-			foreignColumns: [trackedProducts.id],
-			name: "price_alerts_tracked_product_id_foreign"
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "user_devices_user_id_foreign"
 		}).onDelete("cascade"),
-	check("price_alerts_alert_type_check", sql`(alert_type)::text = ANY ((ARRAY['price_drop'::character varying, 'target_reached'::character varying, 'back_in_stock'::character varying])::text[])`),
+	unique("user_devices_push_token_unique").on(table.pushToken),
 ]);
 
 export const bugReports = pgTable("bug_reports", {
@@ -304,8 +330,8 @@ export const bugReports = pgTable("bug_reports", {
 	description: text().notNull(),
 	status: varchar({ length: 255 }).default('new').notNull(),
 	metadata: json(),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
 	index().using("btree", table.userId.asc().nullsLast().op("int8_ops"), table.status.asc().nullsLast().op("int8_ops")),
 	foreignKey({
@@ -322,10 +348,10 @@ export const phoneVerificationCodes = pgTable("phone_verification_codes", {
 	userId: bigint("user_id", { mode: "number" }).notNull(),
 	phoneNumber: varchar("phone_number", { length: 255 }).notNull(),
 	code: varchar({ length: 6 }).notNull(),
-	expiresAt: timestamp("expires_at", { mode: 'string' }).notNull(),
-	verifiedAt: timestamp("verified_at", { mode: 'string' }),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
+	expiresAt: timestamp("expires_at", { mode: 'date' }).notNull(),
+	verifiedAt: timestamp("verified_at", { mode: 'date' }),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
 	index().using("btree", table.userId.asc().nullsLast().op("int8_ops"), table.phoneNumber.asc().nullsLast().op("int8_ops")),
 	foreignKey({
@@ -343,34 +369,13 @@ export const personalAccessTokens = pgTable("personal_access_tokens", {
 	name: text().notNull(),
 	token: varchar({ length: 64 }).notNull(),
 	abilities: text(),
-	lastUsedAt: timestamp("last_used_at", { mode: 'string' }),
-	expiresAt: timestamp("expires_at", { mode: 'string' }),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
+	lastUsedAt: timestamp("last_used_at", { mode: 'date' }),
+	expiresAt: timestamp("expires_at", { mode: 'date' }),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
 	index().using("btree", table.tokenableType.asc().nullsLast().op("int8_ops"), table.tokenableId.asc().nullsLast().op("int8_ops")),
 	unique("personal_access_tokens_token_unique").on(table.token),
-]);
-
-export const userDevices = pgTable("user_devices", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	userId: bigint("user_id", { mode: "number" }).notNull(),
-	deviceName: varchar("device_name", { length: 255 }),
-	deviceType: varchar("device_type", { length: 255 }).notNull(),
-	pushToken: varchar("push_token", { length: 255 }).notNull(),
-	isActive: boolean("is_active").default(true).notNull(),
-	lastUsedAt: timestamp("last_used_at", { mode: 'string' }),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
-}, (table) => [
-	index().using("btree", table.userId.asc().nullsLast().op("int8_ops"), table.isActive.asc().nullsLast().op("int8_ops")),
-	foreignKey({
-			columns: [table.userId],
-			foreignColumns: [users.id],
-			name: "user_devices_user_id_foreign"
-		}).onDelete("cascade"),
-	unique("user_devices_push_token_unique").on(table.pushToken),
 ]);
 
 export const trackedProducts = pgTable("tracked_products", {
@@ -387,17 +392,17 @@ export const trackedProducts = pgTable("tracked_products", {
 	retailPrice: numeric("retail_price", { precision: 10, scale:  2 }).notNull(),
 	currentPrice: numeric("current_price", { precision: 10, scale:  2 }).notNull(),
 	targetPrice: numeric("target_price", { precision: 10, scale:  2 }).notNull(),
-	trackingStartDate: timestamp("tracking_start_date", { mode: 'string' }).notNull(),
-	trackingEndDate: timestamp("tracking_end_date", { mode: 'string' }),
+	trackingStartDate: timestamp("tracking_start_date", { mode: 'date' }).notNull(),
+	trackingEndDate: timestamp("tracking_end_date", { mode: 'date' }),
 	isActive: boolean("is_active").default(true).notNull(),
 	productMetadata: json("product_metadata"),
-	lastCheckedAt: timestamp("last_checked_at", { mode: 'string' }),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
-	deletedAt: timestamp("deleted_at", { mode: 'string' }),
+	lastCheckedAt: timestamp("last_checked_at", { mode: 'date' }),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
+	deletedAt: timestamp("deleted_at", { mode: 'date' }),
 	notificationMethod: json("notification_method"),
 	lastScraperError: text("last_scraper_error"),
-	lastErrorAt: timestamp("last_error_at", { mode: 'string' }),
+	lastErrorAt: timestamp("last_error_at", { mode: 'date' }),
 	watchType: varchar("watch_type", { length: 255 }).default('price').notNull(),
 	checkInterval: integer("check_interval").default(60).notNull(),
 	inStock: boolean("in_stock").default(true).notNull(),
@@ -417,24 +422,6 @@ export const trackedProducts = pgTable("tracked_products", {
 	check("tracked_products_watch_type_check", sql`(watch_type)::text = ANY ((ARRAY['price'::character varying, 'stock'::character varying, 'both'::character varying])::text[])`),
 ]);
 
-export const aiAgentRoutes = pgTable("ai_agent_routes", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
-	contextKey: varchar("context_key", { length: 255 }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	agentId: bigint("agent_id", { mode: "number" }).notNull(),
-	priority: integer().default(0).notNull(),
-	enabled: boolean().default(true).notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
-}, (table) => [
-	index().using("btree", table.contextKey.asc().nullsLast().op("int4_ops"), table.priority.asc().nullsLast().op("int4_ops")),
-	foreignKey({
-			columns: [table.agentId],
-			foreignColumns: [aiAgents.id],
-			name: "ai_agent_routes_agent_id_foreign"
-		}).onDelete("cascade"),
-]);
-
 export const aiProviders = pgTable("ai_providers", {
 	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
 	slug: varchar({ length: 255 }).notNull(),
@@ -447,8 +434,8 @@ export const aiProviders = pgTable("ai_providers", {
 	sendsDataExternally: boolean("sends_data_externally").default(false).notNull(),
 	timeoutSeconds: integer("timeout_seconds").default(20).notNull(),
 	settings: json(),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
 	unique("ai_providers_slug_unique").on(table.slug),
 ]);
@@ -472,8 +459,8 @@ export const aiAgents = pgTable("ai_agents", {
 	enabled: boolean().default(true).notNull(),
 	rateLimitPerUserDay: integer("rate_limit_per_user_day").default(50).notNull(),
 	settings: json(),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
 	foreignKey({
 			columns: [table.providerId],
@@ -491,7 +478,7 @@ export const aiAgentVersions = pgTable("ai_agent_versions", {
 	snapshot: json().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	createdBy: bigint("created_by", { mode: "number" }),
-	createdAt: timestamp("created_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	createdAt: timestamp("created_at", { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 }, (table) => [
 	foreignKey({
 			columns: [table.agentId],
@@ -504,6 +491,24 @@ export const aiAgentVersions = pgTable("ai_agent_versions", {
 			name: "ai_agent_versions_created_by_foreign"
 		}).onDelete("set null"),
 	unique("ai_agent_versions_agent_id_version_unique").on(table.agentId, table.version),
+]);
+
+export const aiAgentRoutes = pgTable("ai_agent_routes", {
+	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	contextKey: varchar("context_key", { length: 255 }).notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	agentId: bigint("agent_id", { mode: "number" }).notNull(),
+	priority: integer().default(0).notNull(),
+	enabled: boolean().default(true).notNull(),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
+}, (table) => [
+	index().using("btree", table.contextKey.asc().nullsLast().op("int4_ops"), table.priority.asc().nullsLast().op("int4_ops")),
+	foreignKey({
+			columns: [table.agentId],
+			foreignColumns: [aiAgents.id],
+			name: "ai_agent_routes_agent_id_foreign"
+		}).onDelete("cascade"),
 ]);
 
 export const aiInvocations = pgTable("ai_invocations", {
@@ -527,7 +532,7 @@ export const aiInvocations = pgTable("ai_invocations", {
 	promptTokens: integer("prompt_tokens"),
 	completionTokens: integer("completion_tokens"),
 	cached: boolean().default(false).notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	createdAt: timestamp("created_at", { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 }, (table) => [
 	index().using("btree", table.agentId.asc().nullsLast().op("int8_ops"), table.createdAt.asc().nullsLast().op("int8_ops")),
 	index().using("btree", table.requestHash.asc().nullsLast().op("bpchar_ops")),
@@ -561,8 +566,8 @@ export const aiInvocationCache = pgTable("ai_invocation_cache", {
 	requestHash: char("request_hash", { length: 64 }).notNull(),
 	response: json().notNull(),
 	hitCount: integer("hit_count").default(0).notNull(),
-	lastHitAt: timestamp("last_hit_at", { mode: 'string' }),
-	createdAt: timestamp("created_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	lastHitAt: timestamp("last_hit_at", { mode: 'date' }),
+	createdAt: timestamp("created_at", { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 }, (table) => [
 	index().using("btree", table.agentId.asc().nullsLast().op("int4_ops"), table.agentVersion.asc().nullsLast().op("int4_ops")),
 	foreignKey({
@@ -590,7 +595,7 @@ export const mortgageSheets = pgTable("mortgage_sheets", {
 	downPayment: doublePrecision("down_payment"),
 	interestRate: doublePrecision("interest_rate"),
 	loanTermYears: smallint("loan_term_years"),
-	startDate: timestamp("start_date", { mode: 'string' }),
+	startDate: timestamp("start_date", { mode: 'date' }),
 	monthlyHoa: doublePrecision("monthly_hoa"),
 	annualInsurance: doublePrecision("annual_insurance"),
 	annualPropertyTax: doublePrecision("annual_property_tax"),
@@ -599,8 +604,8 @@ export const mortgageSheets = pgTable("mortgage_sheets", {
 	contactEmail: varchar("contact_email", { length: 255 }),
 	contactPhone: varchar("contact_phone", { length: 255 }),
 	notes: text(),
-	createdAt: timestamp("created_at", { mode: 'string' }),
-	updatedAt: timestamp("updated_at", { mode: 'string' }),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
 	foreignKey({
 			columns: [table.userId],
@@ -608,4 +613,61 @@ export const mortgageSheets = pgTable("mortgage_sheets", {
 			name: "mortgage_sheets_user_id_foreign"
 		}).onDelete("cascade"),
 	check("mortgage_sheets_property_type_check", sql`(property_type)::text = ANY ((ARRAY['HOUSE'::character varying, 'CONDO'::character varying, 'TOWNHOUSE'::character varying, 'MULTI_FAMILY'::character varying, 'LAND'::character varying])::text[])`),
+]);
+
+export const authSessions = pgTable("auth_sessions", {
+	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	userId: bigint("user_id", { mode: "number" }).notNull(),
+	token: varchar({ length: 255 }).notNull(),
+	expiresAt: timestamp("expires_at", { mode: 'date' }).notNull(),
+	ipAddress: varchar("ip_address", { length: 255 }),
+	userAgent: text("user_agent"),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
+}, (table) => [
+	index().using("btree", table.expiresAt.asc().nullsLast().op("timestamp_ops")),
+	index().using("btree", table.userId.asc().nullsLast().op("int8_ops")),
+	foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "auth_sessions_user_id_foreign"
+		}).onDelete("cascade"),
+	unique("auth_sessions_token_unique").on(table.token),
+]);
+
+export const authAccounts = pgTable("auth_accounts", {
+	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
+	userId: bigint("user_id", { mode: "number" }).notNull(),
+	accountId: varchar("account_id", { length: 255 }).notNull(),
+	providerId: varchar("provider_id", { length: 255 }).notNull(),
+	accessToken: text("access_token"),
+	refreshToken: text("refresh_token"),
+	idToken: text("id_token"),
+	accessTokenExpiresAt: timestamp("access_token_expires_at", { mode: 'date' }),
+	refreshTokenExpiresAt: timestamp("refresh_token_expires_at", { mode: 'date' }),
+	scope: text(),
+	password: text(),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
+}, (table) => [
+	index().using("btree", table.userId.asc().nullsLast().op("int8_ops")),
+	foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "auth_accounts_user_id_foreign"
+		}).onDelete("cascade"),
+	unique("auth_accounts_provider_id_account_id_unique").on(table.accountId, table.providerId),
+]);
+
+export const authVerifications = pgTable("auth_verifications", {
+	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	identifier: varchar({ length: 255 }).notNull(),
+	value: varchar({ length: 255 }).notNull(),
+	expiresAt: timestamp("expires_at", { mode: 'date' }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'date' }),
+	updatedAt: timestamp("updated_at", { mode: 'date' }),
+}, (table) => [
+	index().using("btree", table.identifier.asc().nullsLast().op("text_ops")),
 ]);

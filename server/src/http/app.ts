@@ -4,13 +4,15 @@ import { requestId } from 'hono/request-id';
 import { secureHeaders } from 'hono/secure-headers';
 
 import { env } from '../config/env.js';
+import { auth } from '../lib/auth.js';
 import { logger } from '../lib/logger.js';
 import { calculatorRoutes } from '../routes/calculators.js';
 import { healthRoutes } from '../routes/health.js';
+import { type AuthVariables, resolveSession } from './auth-middleware.js';
 import { errorHandler, notFoundHandler } from './errors.js';
 
 export type AppEnv = {
-	Variables: {
+	Variables: AuthVariables & {
 		logger: ReturnType<typeof logger>;
 		requestId: string;
 	};
@@ -59,6 +61,15 @@ export function createApp() {
 
 	app.onError(errorHandler);
 	app.notFound(notFoundHandler);
+
+	// Better Auth owns everything under /api/auth: sign-in, sign-up, sign-out,
+	// session, password reset, email verification.
+	app.on(['GET', 'POST'], '/api/auth/*', (c) => auth().handler(c.req.raw));
+
+	// Resolve the session for every other route. Handlers that require a user
+	// add requireAuth; handlers that merely behave differently for guests can
+	// read c.get('user') without repeating the lookup.
+	app.use('*', resolveSession);
 
 	app.route('/', healthRoutes);
 	app.route('/api/calculators', calculatorRoutes);

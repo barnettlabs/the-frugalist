@@ -1,25 +1,27 @@
 import { relations } from "drizzle-orm/relations";
-import { users, notifications, vehicleFinanceSheets, vehicleLeaseSheets, trackedProducts, priceHistory, priceCheckSchedules, priceAlerts, bugReports, phoneVerificationCodes, userDevices, retailers, aiAgents, aiAgentRoutes, aiProviders, aiAgentVersions, aiInvocations, aiInvocationCache, mortgageSheets } from "./schema";
+import { users, vehicleLeaseSheets, vehicleFinanceSheets, notifications, trackedProducts, priceHistory, priceAlerts, priceCheckSchedules, userDevices, bugReports, phoneVerificationCodes, retailers, aiProviders, aiAgents, aiAgentVersions, aiAgentRoutes, aiInvocations, aiInvocationCache, mortgageSheets, authSessions, authAccounts } from "./schema";
 
-export const notificationsRelations = relations(notifications, ({one}) => ({
+export const vehicleLeaseSheetsRelations = relations(vehicleLeaseSheets, ({one}) => ({
 	user: one(users, {
-		fields: [notifications.userId],
+		fields: [vehicleLeaseSheets.userId],
 		references: [users.id]
 	}),
 }));
 
 export const usersRelations = relations(users, ({many}) => ({
-	notifications: many(notifications),
-	vehicleFinanceSheets: many(vehicleFinanceSheets),
 	vehicleLeaseSheets: many(vehicleLeaseSheets),
+	vehicleFinanceSheets: many(vehicleFinanceSheets),
+	notifications: many(notifications),
 	priceCheckSchedules: many(priceCheckSchedules),
+	userDevices: many(userDevices),
 	bugReports: many(bugReports),
 	phoneVerificationCodes: many(phoneVerificationCodes),
-	userDevices: many(userDevices),
 	trackedProducts: many(trackedProducts),
 	aiAgentVersions: many(aiAgentVersions),
 	aiInvocations: many(aiInvocations),
 	mortgageSheets: many(mortgageSheets),
+	authSessions: many(authSessions),
+	authAccounts: many(authAccounts),
 }));
 
 export const vehicleFinanceSheetsRelations = relations(vehicleFinanceSheets, ({one}) => ({
@@ -29,9 +31,9 @@ export const vehicleFinanceSheetsRelations = relations(vehicleFinanceSheets, ({o
 	}),
 }));
 
-export const vehicleLeaseSheetsRelations = relations(vehicleLeaseSheets, ({one}) => ({
+export const notificationsRelations = relations(notifications, ({one}) => ({
 	user: one(users, {
-		fields: [vehicleLeaseSheets.userId],
+		fields: [notifications.userId],
 		references: [users.id]
 	}),
 }));
@@ -56,6 +58,13 @@ export const trackedProductsRelations = relations(trackedProducts, ({one, many})
 	}),
 }));
 
+export const priceAlertsRelations = relations(priceAlerts, ({one}) => ({
+	trackedProduct: one(trackedProducts, {
+		fields: [priceAlerts.trackedProductId],
+		references: [trackedProducts.id]
+	}),
+}));
+
 export const priceCheckSchedulesRelations = relations(priceCheckSchedules, ({one}) => ({
 	user: one(users, {
 		fields: [priceCheckSchedules.userId],
@@ -63,10 +72,10 @@ export const priceCheckSchedulesRelations = relations(priceCheckSchedules, ({one
 	}),
 }));
 
-export const priceAlertsRelations = relations(priceAlerts, ({one}) => ({
-	trackedProduct: one(trackedProducts, {
-		fields: [priceAlerts.trackedProductId],
-		references: [trackedProducts.id]
+export const userDevicesRelations = relations(userDevices, ({one}) => ({
+	user: one(users, {
+		fields: [userDevices.userId],
+		references: [users.id]
 	}),
 }));
 
@@ -84,31 +93,17 @@ export const phoneVerificationCodesRelations = relations(phoneVerificationCodes,
 	}),
 }));
 
-export const userDevicesRelations = relations(userDevices, ({one}) => ({
-	user: one(users, {
-		fields: [userDevices.userId],
-		references: [users.id]
-	}),
-}));
-
 export const retailersRelations = relations(retailers, ({many}) => ({
 	trackedProducts: many(trackedProducts),
 }));
 
-export const aiAgentRoutesRelations = relations(aiAgentRoutes, ({one}) => ({
-	aiAgent: one(aiAgents, {
-		fields: [aiAgentRoutes.agentId],
-		references: [aiAgents.id]
-	}),
-}));
-
 export const aiAgentsRelations = relations(aiAgents, ({one, many}) => ({
-	aiAgentRoutes: many(aiAgentRoutes),
 	aiProvider: one(aiProviders, {
 		fields: [aiAgents.providerId],
 		references: [aiProviders.id]
 	}),
 	aiAgentVersions: many(aiAgentVersions),
+	aiAgentRoutes: many(aiAgentRoutes),
 	aiInvocations: many(aiInvocations),
 	aiInvocationCaches: many(aiInvocationCache),
 }));
@@ -127,6 +122,13 @@ export const aiAgentVersionsRelations = relations(aiAgentVersions, ({one}) => ({
 	user: one(users, {
 		fields: [aiAgentVersions.createdBy],
 		references: [users.id]
+	}),
+}));
+
+export const aiAgentRoutesRelations = relations(aiAgentRoutes, ({one}) => ({
+	aiAgent: one(aiAgents, {
+		fields: [aiAgentRoutes.agentId],
+		references: [aiAgents.id]
 	}),
 }));
 
@@ -159,6 +161,20 @@ export const aiInvocationCacheRelations = relations(aiInvocationCache, ({one}) =
 export const mortgageSheetsRelations = relations(mortgageSheets, ({one}) => ({
 	user: one(users, {
 		fields: [mortgageSheets.userId],
+		references: [users.id]
+	}),
+}));
+
+export const authSessionsRelations = relations(authSessions, ({one}) => ({
+	user: one(users, {
+		fields: [authSessions.userId],
+		references: [users.id]
+	}),
+}));
+
+export const authAccountsRelations = relations(authAccounts, ({one}) => ({
+	user: one(users, {
+		fields: [authAccounts.userId],
 		references: [users.id]
 	}),
 }));

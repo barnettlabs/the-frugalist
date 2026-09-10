@@ -14,7 +14,7 @@
     "type-check": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:pull": "drizzle-kit pull",
+    "db:pull": "drizzle-kit pull && node tools/move-schema.mjs && node tools/normalize-schema.mjs",
     "db:studio": "drizzle-kit studio",
     "check-all": "pnpm run type-check && pnpm run test"
   },
@@ -22,7 +22,9 @@
     "@frugalist/contracts": "workspace:*",
     "@hono/node-server": "^1.13.7",
     "@hono/zod-openapi": "^0.18.3",
+    "@node-rs/bcrypt": "^1.10.8",
     "@scalar/hono-api-reference": "^0.5.164",
+    "better-auth": "^1.7.3",
     "bullmq": "^5.34.0",
     "drizzle-orm": "^0.45.2",
     "hono": "^4.6.14",

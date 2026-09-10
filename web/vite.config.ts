@@ -12,8 +12,17 @@ function htmlBasePlugin(base: string): Plugin {
 	};
 }
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, isSsrBuild }) => {
 	const base = mode === 'production' ? '/web/' : '/';
+
+	/*
+	 * The SSR build exists only to prerender public routes at build time
+	 * (see scripts/prerender.mjs). It must not land in the client output
+	 * directory, which Laravel serves.
+	 */
+	const outDir = isSsrBuild
+		? path.resolve(__dirname, 'node_modules/.prerender')
+		: path.resolve(__dirname, '../api/public/web');
 
 	return {
 		plugins: [
@@ -36,7 +45,7 @@ export default defineConfig(({ mode }) => {
 		},
 		base,
 		build: {
-			outDir: path.resolve(__dirname, '../api/public/web'),
+			outDir,
 			emptyOutDir: true,
 			rollupOptions: {
 				output: {

@@ -5,9 +5,16 @@ import { RouterLink, useRoute } from 'vue-router';
 
 import SectionHeader from '@/components/SectionHeader.vue';
 import { learningContentMap } from '@/data/learningContent';
+import { useAuthStore } from '@/stores/auth';
 
 const route = useRoute();
+const authStore = useAuthStore();
 const type = computed(() => route.params.type as string);
+
+// Guests have no saved-estimate list, so link them into the calculator itself.
+const calculatorLink = computed(() =>
+	authStore.isAuthenticated ? `/estimates/${type.value}` : `/estimates/${type.value}/create`
+);
 
 const content = computed(() => {
 	return learningContentMap[type.value as keyof typeof learningContentMap] || null;
@@ -148,7 +155,7 @@ const eyebrowLabel = computed(() => {
 								</div>
 								<div class="col-span-12 lg:col-span-5 flex flex-col sm:flex-row lg:justify-end gap-3">
 									<RouterLink
-										:to="`/estimates/${type}`"
+										:to="calculatorLink"
 										class="group inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 bg-primary text-surface text-sm font-medium hover:bg-primary-light transition-colors"
 									>
 										Open the calculator

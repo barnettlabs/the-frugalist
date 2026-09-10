@@ -12,6 +12,7 @@ import PaymentCharts from '@/components/Finance/PaymentCharts.vue';
 import FinanceForm from '@/components/FinanceForm.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
+import { useEstimateAccess } from '@/composables/useEstimateAccess';
 import { useAuthStore } from '@/stores/auth';
 import type { FinanceFormData, FormErrors } from '@/types';
 import { VehicleType } from '@/types';
@@ -20,6 +21,16 @@ const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 const isAdmin = computed(() => authStore.isAdmin);
+
+const { isAuthenticated, backUrl, backLabel, ensureAccount } = useEstimateAccess({
+	savedListPath: '/estimates/financing',
+	savedListLabel: 'All finance estimates',
+});
+
+// Guests get the calculator but not the save action.
+const submitLabel = computed(() =>
+	isAuthenticated.value ? 'Create finance estimate' : 'Sign in to save this estimate'
+);
 
 const isEdit = computed(() => !!route.params.id);
 const sheetId = computed(() => route.params.id as string);
@@ -93,6 +104,8 @@ const loadSheet = async () => {
 };
 
 const submitForm = async () => {
+	if (!ensureAccount()) return;
+
 	loading.value = true;
 	errors.value = {};
 	networkError.value = '';
@@ -131,11 +144,11 @@ onMounted(() => {
 			<!-- Editorial breadcrumb -->
 			<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8">
 				<RouterLink
-					to="/estimates/financing"
+					:to="backUrl"
 					class="inline-flex items-center gap-1.5 text-xs eyebrow hover:text-primary transition-colors"
 				>
 					<ArrowLeftIcon class="h-3 w-3" />
-					All finance estimates
+					{{ backLabel }}
 				</RouterLink>
 			</div>
 
@@ -177,8 +190,9 @@ onMounted(() => {
 							:errors="errors"
 							:loading="loading"
 							:title="headerTitle"
-							back-url="/estimates/financing"
+							:back-url="backUrl"
 							:is-edit="isEdit"
+							:submit-label="submitLabel"
 							@submit="submitForm"
 						/>
 

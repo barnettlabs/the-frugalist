@@ -32,6 +32,14 @@ export const useAuthStore = defineStore('auth', () => {
 	const initialize = async () => {
 		if (initialized.value) return;
 
+		// Build-time prerendering runs in Node, where there is no storage to restore
+		// from. Render those pages as a signed-out visitor, which is what a crawler
+		// sees anyway.
+		if (typeof localStorage === 'undefined') {
+			initialized.value = true;
+			return;
+		}
+
 		// Try to restore from localStorage
 		const storedToken = localStorage.getItem(TOKEN_KEY);
 		const storedUser = localStorage.getItem(USER_KEY);

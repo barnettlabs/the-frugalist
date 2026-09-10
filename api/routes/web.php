@@ -3,6 +3,7 @@
 use App\Http\Controllers\BugReportController;
 use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,10 +49,55 @@ Route::get('/.well-known/assetlinks.json', function () {
 require __DIR__.'/auth.php';
 
 /*
+ * Crawler files.
+ *
+ * Both live in public/ and are normally served straight off disk by the web
+ * server. These routes exist because the SPA catch-all below would otherwise
+ * answer them with HTML if that ever stopped being true - a silently broken
+ * sitemap is hard to notice.
+ */
+Route::get('/sitemap.xml', function () {
+    $path = public_path('sitemap.xml');
+
+    abort_unless(is_file($path), 404, 'Sitemap not generated. Run the web build.');
+
+    return response()->file($path, [
+        'Content-Type' => 'application/xml',
+    ]);
+});
+
+Route::get('/robots.txt', function () {
+    return response()->file(public_path('robots.txt'), [
+        'Content-Type' => 'text/plain',
+    ]);
+});
+
+/*
  * Serves the built Vue SPA. Shared by the catch-all below and by the named
  * routes that framework redirects target.
+ *
+ * Public routes are prerendered to static HTML during the web build
+ * (web/scripts/prerender.mjs) so crawlers and social-card scrapers - neither of
+ * which reliably runs JavaScript - get real content and per-page metadata
+ * instead of an empty <div id="app">. Where a prerendered file exists for the
+ * requested path it is served in place of the shell. The SPA boots identically
+ * either way, so behaviour in the browser is unchanged.
  */
-$serveSpa = function () {
+$serveSpa = function (Request $request) {
+    $path = trim($request->path(), '/');
+
+    // The path is used to build a filename, so allow only the characters the
+    // Vue router can actually produce. This rules out traversal outright.
+    if ($path === '' || preg_match('/^[A-Za-z0-9\-_\/]+$/', $path)) {
+        $prerendered = public_path('web/prerendered/'.($path === '' ? 'index' : $path).'.html');
+
+        if (is_file($prerendered)) {
+            return response()->file($prerendered, [
+                'Content-Type' => 'text/html',
+            ]);
+        }
+    }
+
     $indexPath = public_path('web/index.html');
 
     if (! file_exists($indexPath)) {

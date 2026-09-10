@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -85,10 +86,10 @@ return new class extends Migration
          * rehash to scrypt on next successful sign-in.
          */
         $now = now();
-        $users = \Illuminate\Support\Facades\DB::table('users')->select('id', 'password')->get();
+        $users = DB::table('users')->select('id', 'password')->get();
 
         foreach ($users as $user) {
-            \Illuminate\Support\Facades\DB::table('auth_accounts')->insert([
+            DB::table('auth_accounts')->insert([
                 'user_id' => $user->id,
                 'account_id' => (string) $user->id,
                 'provider_id' => 'credential',

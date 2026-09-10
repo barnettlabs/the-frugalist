@@ -84,19 +84,32 @@ class TrackedProduct extends Model
      * Products whose check interval has fully elapsed since the last check.
      *
      * The interval lives in a column rather than being a constant, so the
-     * comparison has to be expressed in SQL. This was previously MySQL-only:
+     * comparison has to stay in SQL - and there is no single expression both
+     * engines accept, because each spells a dynamic interval differently:
      *
-     *     last_checked_at < DATE_SUB(NOW(), INTERVAL check_interval MINUTE)
+     *   MySQL     DATE_SUB(NOW(), INTERVAL check_interval MINUTE)
+     *             INTERVAL takes a keyword unit, so the unit cannot be quoted.
      *
-     * DATE_SUB and the bare INTERVAL keyword do not exist in Postgres. The form
-     * below multiplies a unit interval by the column instead, which both engines
-     * accept, so the scope survives the move to Postgres unchanged.
+     *   Postgres  NOW() - (check_interval * INTERVAL '1 minute')
+     *             No DATE_SUB, and the unit must be inside a quoted literal
+     *             that is then multiplied by the column.
+     *
+     * Both branches are kept because production is still MySQL while the
+     * migration is in progress; Postgres is used locally, in tests and by the
+     * Hono service. Dropping the MySQL branch before the production database
+     * moves would silently stop every scheduled price check.
      */
     public function scopeNeedsCheck($query)
     {
-        return $query->where(function ($q) {
+        $driver = $query->getConnection()->getDriverName();
+
+        $elapsed = $driver === 'mysql' || $driver === 'mariadb'
+            ? 'last_checked_at < DATE_SUB(NOW(), INTERVAL check_interval MINUTE)'
+            : "last_checked_at < NOW() - (check_interval * INTERVAL '1 minute')";
+
+        return $query->where(function ($q) use ($elapsed) {
             $q->whereNull('last_checked_at')
-                ->orWhereRaw("last_checked_at < NOW() - (check_interval * INTERVAL '1 minute')");
+                ->orWhereRaw($elapsed);
         });
     }
 

@@ -60,7 +60,7 @@ export const cacheLocks = pgTable("cache_locks", {
 });
 
 export const jobs = pgTable("jobs", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	queue: varchar({ length: 255 }).notNull(),
 	payload: text().notNull(),
 	attempts: smallint().notNull(),
@@ -85,7 +85,7 @@ export const jobBatches = pgTable("job_batches", {
 });
 
 export const failedJobs = pgTable("failed_jobs", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	uuid: varchar({ length: 255 }).notNull(),
 	connection: text().notNull(),
 	queue: text().notNull(),
@@ -97,7 +97,7 @@ export const failedJobs = pgTable("failed_jobs", {
 ]);
 
 export const vehicleLeaseSheets = pgTable("vehicle_lease_sheets", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	userId: bigint("user_id", { mode: "number" }).notNull(),
 	sheetName: varchar("sheet_name", { length: 255 }),
@@ -137,7 +137,7 @@ export const vehicleLeaseSheets = pgTable("vehicle_lease_sheets", {
 ]);
 
 export const announcements = pgTable("announcements", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	title: varchar({ length: 255 }),
 	message: text(),
 	createdAt: timestamp("created_at", { mode: 'date' }),
@@ -145,7 +145,7 @@ export const announcements = pgTable("announcements", {
 });
 
 export const retailers = pgTable("retailers", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	name: varchar({ length: 255 }).notNull(),
 	slug: varchar({ length: 255 }).notNull(),
 	apiBaseUrl: varchar("api_base_url", { length: 255 }).notNull(),
@@ -163,7 +163,7 @@ export const retailers = pgTable("retailers", {
 ]);
 
 export const vehicleFinanceSheets = pgTable("vehicle_finance_sheets", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	userId: bigint("user_id", { mode: "number" }).notNull(),
 	sheetName: varchar("sheet_name", { length: 255 }),
@@ -200,7 +200,7 @@ export const vehicleFinanceSheets = pgTable("vehicle_finance_sheets", {
 ]);
 
 export const notifications = pgTable("notifications", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	userId: bigint("user_id", { mode: "number" }).notNull(),
 	title: varchar({ length: 255 }),
@@ -217,7 +217,7 @@ export const notifications = pgTable("notifications", {
 ]);
 
 export const users = pgTable("users", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	email: varchar({ length: 255 }).notNull(),
 	emailVerifiedAt: timestamp("email_verified_at", { mode: 'date' }),
 	password: varchar({ length: 255 }),
@@ -240,7 +240,7 @@ export const users = pgTable("users", {
 ]);
 
 export const priceHistory = pgTable("price_history", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	trackedProductId: bigint("tracked_product_id", { mode: "number" }).notNull(),
 	price: numeric({ precision: 10, scale:  2 }).notNull(),
@@ -259,7 +259,7 @@ export const priceHistory = pgTable("price_history", {
 ]);
 
 export const priceAlerts = pgTable("price_alerts", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	trackedProductId: bigint("tracked_product_id", { mode: "number" }).notNull(),
 	oldPrice: numeric("old_price", { precision: 10, scale:  2 }).notNull(),
@@ -280,7 +280,7 @@ export const priceAlerts = pgTable("price_alerts", {
 ]);
 
 export const priceCheckSchedules = pgTable("price_check_schedules", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	name: varchar({ length: 255 }).notNull(),
 	frequency: varchar({ length: 255 }).default('daily').notNull(),
 	minuteOffset: integer("minute_offset").default(0).notNull(),
@@ -301,7 +301,7 @@ export const priceCheckSchedules = pgTable("price_check_schedules", {
 ]);
 
 export const userDevices = pgTable("user_devices", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	userId: bigint("user_id", { mode: "number" }).notNull(),
 	deviceName: varchar("device_name", { length: 255 }),
@@ -322,7 +322,7 @@ export const userDevices = pgTable("user_devices", {
 ]);
 
 export const bugReports = pgTable("bug_reports", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	userId: bigint("user_id", { mode: "number" }),
 	pageUrl: varchar("page_url", { length: 255 }).notNull(),
@@ -343,7 +343,7 @@ export const bugReports = pgTable("bug_reports", {
 ]);
 
 export const phoneVerificationCodes = pgTable("phone_verification_codes", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	userId: bigint("user_id", { mode: "number" }).notNull(),
 	phoneNumber: varchar("phone_number", { length: 255 }).notNull(),
@@ -362,7 +362,7 @@ export const phoneVerificationCodes = pgTable("phone_verification_codes", {
 ]);
 
 export const personalAccessTokens = pgTable("personal_access_tokens", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	tokenableType: varchar("tokenable_type", { length: 255 }).notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	tokenableId: bigint("tokenable_id", { mode: "number" }).notNull(),
@@ -379,7 +379,7 @@ export const personalAccessTokens = pgTable("personal_access_tokens", {
 ]);
 
 export const trackedProducts = pgTable("tracked_products", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	userId: bigint("user_id", { mode: "number" }).notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
@@ -423,7 +423,7 @@ export const trackedProducts = pgTable("tracked_products", {
 ]);
 
 export const aiProviders = pgTable("ai_providers", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	slug: varchar({ length: 255 }).notNull(),
 	name: varchar({ length: 255 }).notNull(),
 	baseUrl: varchar("base_url", { length: 255 }).notNull(),
@@ -441,7 +441,7 @@ export const aiProviders = pgTable("ai_providers", {
 ]);
 
 export const aiAgents = pgTable("ai_agents", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	slug: varchar({ length: 255 }).notNull(),
 	name: varchar({ length: 255 }).notNull(),
 	description: text(),
@@ -471,7 +471,7 @@ export const aiAgents = pgTable("ai_agents", {
 ]);
 
 export const aiAgentVersions = pgTable("ai_agent_versions", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	agentId: bigint("agent_id", { mode: "number" }).notNull(),
 	version: integer().notNull(),
@@ -494,7 +494,7 @@ export const aiAgentVersions = pgTable("ai_agent_versions", {
 ]);
 
 export const aiAgentRoutes = pgTable("ai_agent_routes", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	contextKey: varchar("context_key", { length: 255 }).notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	agentId: bigint("agent_id", { mode: "number" }).notNull(),
@@ -512,7 +512,7 @@ export const aiAgentRoutes = pgTable("ai_agent_routes", {
 ]);
 
 export const aiInvocations = pgTable("ai_invocations", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	userId: bigint("user_id", { mode: "number" }),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
@@ -555,7 +555,7 @@ export const aiInvocations = pgTable("ai_invocations", {
 ]);
 
 export const aiInvocationCache = pgTable("ai_invocation_cache", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	cacheKey: char("cache_key", { length: 64 }).notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	agentId: bigint("agent_id", { mode: "number" }).notNull(),
@@ -584,7 +584,7 @@ export const aiInvocationCache = pgTable("ai_invocation_cache", {
 ]);
 
 export const mortgageSheets = pgTable("mortgage_sheets", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	userId: bigint("user_id", { mode: "number" }).notNull(),
 	sheetName: varchar("sheet_name", { length: 255 }),
@@ -616,7 +616,7 @@ export const mortgageSheets = pgTable("mortgage_sheets", {
 ]);
 
 export const authSessions = pgTable("auth_sessions", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	userId: bigint("user_id", { mode: "number" }).notNull(),
 	token: varchar({ length: 255 }).notNull(),
@@ -637,7 +637,7 @@ export const authSessions = pgTable("auth_sessions", {
 ]);
 
 export const authAccounts = pgTable("auth_accounts", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
 	userId: bigint("user_id", { mode: "number" }).notNull(),
 	accountId: varchar("account_id", { length: 255 }).notNull(),
@@ -662,7 +662,7 @@ export const authAccounts = pgTable("auth_accounts", {
 ]);
 
 export const authVerifications = pgTable("auth_verifications", {
-	id: bigserial({ mode: "bigint" }).primaryKey().notNull(),
+	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	identifier: varchar({ length: 255 }).notNull(),
 	value: varchar({ length: 255 }).notNull(),
 	expiresAt: timestamp("expires_at", { mode: 'date' }).notNull(),

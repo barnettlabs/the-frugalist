@@ -1,4 +1,5 @@
 import { verify as verifyBcrypt } from '@node-rs/bcrypt';
+import { expo } from '@better-auth/expo';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { bearer } from 'better-auth/plugins';
@@ -125,12 +126,27 @@ export function createAuth() {
 		account: { modelName: 'auth_accounts' },
 		verification: { modelName: 'auth_verifications' },
 
-		trustedOrigins: config.CORS_ORIGINS,
+		/*
+		 * Origin checking.
+		 *
+		 * Better Auth rejects a request whose Origin it does not trust, which is
+		 * correct for browsers but bites native clients: a React Native fetch sends
+		 * no Origin at all, so mobile sign-in returns MISSING_OR_NULL_ORIGIN.
+		 *
+		 * The app's custom scheme is therefore trusted explicitly. It comes from
+		 * app/env.js (SCHEME = 'thefrugalist'), and the Expo plugin below sets the
+		 * matching Origin on native requests.
+		 */
+		trustedOrigins: [...config.CORS_ORIGINS, 'thefrugalist://'],
 
-		// The Expo app sends a bearer token rather than a cookie. This exposes the
-		// session token in the Set-Auth-Token response header and accepts it back
-		// as Authorization: Bearer, which is what the React Native client needs.
-		plugins: [bearer()],
+		plugins: [
+			// Surfaces the session token in the Set-Auth-Token response header and
+			// accepts it back as Authorization: Bearer - what the Expo client stores
+			// in expo-secure-store, since it has no cookie jar.
+			bearer(),
+			// Handles the native origin and deep-link callback shapes.
+			expo(),
+		],
 	});
 }
 

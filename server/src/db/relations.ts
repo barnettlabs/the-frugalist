@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { users, vehicleLeaseSheets, vehicleFinanceSheets, notifications, trackedProducts, priceHistory, priceAlerts, priceCheckSchedules, userDevices, bugReports, phoneVerificationCodes, retailers, aiProviders, aiAgents, aiAgentVersions, aiAgentRoutes, aiInvocations, aiInvocationCache, mortgageSheets, authSessions, authAccounts } from "./schema";
+import { users, vehicleLeaseSheets, vehicleFinanceSheets, notifications, trackedProducts, priceHistory, priceAlerts, priceCheckSchedules, userDevices, bugReports, phoneVerificationCodes, retailers, aiProviders, aiAgents, aiAgentVersions, aiAgentRoutes, aiInvocations, aiInvocationCache, mortgageSheets, authSessions, authAccounts } from "./schema.js";
 
 export const vehicleLeaseSheetsRelations = relations(vehicleLeaseSheets, ({one}) => ({
 	user: one(users, {

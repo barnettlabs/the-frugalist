@@ -7,6 +7,7 @@ import { env } from '../config/env.js';
 import { auth } from '../lib/auth.js';
 import { logger } from '../lib/logger.js';
 import { calculatorRoutes } from '../routes/calculators.js';
+import { financeSheetRoutes } from '../routes/finance-sheets.js';
 import { healthRoutes } from '../routes/health.js';
 import { type AuthVariables, resolveSession } from './auth-middleware.js';
 import { errorHandler, notFoundHandler } from './errors.js';
@@ -73,6 +74,7 @@ export function createApp() {
 
 	app.route('/', healthRoutes);
 	app.route('/api/calculators', calculatorRoutes);
+	app.route('/api/vehicle-finance-sheets', financeSheetRoutes);
 
 	return app;
 }

@@ -26,7 +26,7 @@ services:
     healthCheckPath: /up
     # Migrations run once here rather than per-instance on boot, which would
     # race when more than one instance starts.
-    preDeployCommand: node dist/scripts/migrate.js
+    preDeployCommand: node server/dist/scripts/migrate.js
     envVars:
       - key: NODE_ENV
         value: production
@@ -53,7 +53,7 @@ services:
     name: frugalist-worker
     runtime: docker
     dockerfilePath: ./Dockerfile
-    dockerCommand: node dist/worker.js
+    dockerCommand: node server/dist/worker.js
     plan: starter
     envVars:
       - key: NODE_ENV

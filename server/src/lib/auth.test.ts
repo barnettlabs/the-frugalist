@@ -1,6 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import { createApp } from '../http/app.js';
+import { createLegacyUser } from '../test/factories.js';
 
 /**
  * Authentication against a real database.
@@ -11,12 +12,18 @@ import { createApp } from '../http/app.js';
  * locked out at cutover with no path back except a password reset - and with
  * only two accounts that would be survivable, but silently wrong.
  *
- * Requires the seeded fixture user:
- *   DB_DATABASE=frugalist_test php artisan migrate:fresh --force
- *   ...then insert legacy@example.com with a bcrypt hash (see the migration).
+ * The fixture user is created by the test rather than seeded externally, so a
+ * run does not depend on what a previous one left behind.
  */
 
 const app = createApp();
+
+let creds = { email: '', password: '' };
+
+beforeAll(async () => {
+	const user = await createLegacyUser();
+	creds = { email: user.email, password: user.password };
+});
 
 const json = (path: string, body: unknown, headers: Record<string, string> = {}) =>
 	app.request(path, {
@@ -27,17 +34,14 @@ const json = (path: string, body: unknown, headers: Record<string, string> = {})
 
 describe('sign-in with a Laravel bcrypt password', () => {
 	it('accepts the existing password', async () => {
-		const res = await json('/api/auth/sign-in/email', {
-			email: 'legacy@example.com',
-			password: 'laravel-password-123',
-		});
+		const res = await json('/api/auth/sign-in/email', creds);
 
 		expect(res.status, await res.text().catch(() => '')).toBe(200);
 	});
 
 	it('rejects a wrong password', async () => {
 		const res = await json('/api/auth/sign-in/email', {
-			email: 'legacy@example.com',
+			email: creds.email,
 			password: 'not-the-password',
 		});
 
@@ -45,10 +49,7 @@ describe('sign-in with a Laravel bcrypt password', () => {
 	});
 
 	it('returns a bearer token the Expo client can store', async () => {
-		const res = await json('/api/auth/sign-in/email', {
-			email: 'legacy@example.com',
-			password: 'laravel-password-123',
-		});
+		const res = await json('/api/auth/sign-in/email', creds);
 
 		// The bearer plugin surfaces the session token in this header, which is
 		// what the React Native client reads and puts in expo-secure-store.
@@ -60,10 +61,7 @@ describe('session resolution', () => {
 	let token: string;
 
 	beforeAll(async () => {
-		const res = await json('/api/auth/sign-in/email', {
-			email: 'legacy@example.com',
-			password: 'laravel-password-123',
-		});
+		const res = await json('/api/auth/sign-in/email', creds);
 		token = res.headers.get('set-auth-token') ?? '';
 	});
 
@@ -74,7 +72,7 @@ describe('session resolution', () => {
 
 		expect(res.status).toBe(200);
 		const body = (await res.json()) as { user?: { email?: string } } | null;
-		expect(body?.user?.email).toBe('legacy@example.com');
+		expect(body?.user?.email).toBe(creds.email);
 	});
 
 	it('carries the Laravel columns through as additional fields', async () => {

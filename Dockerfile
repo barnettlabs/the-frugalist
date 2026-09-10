@@ -31,7 +31,11 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 FROM deps AS build
 COPY packages/contracts ./packages/contracts
 COPY server ./server
-RUN pnpm --filter @frugalist/server build
+# contracts is built first: its package exports point at dist, and the server
+# imports it as a normal dependency. tsx and vitest transpile TypeScript on the
+# fly so this is invisible in development - plain Node in the container is not
+# so forgiving, which is why the image gets built in CI rather than assumed.
+RUN pnpm --filter @frugalist/contracts build && pnpm --filter @frugalist/server build
 
 # ---- production dependencies ------------------------------------------------
 FROM base AS prod-deps
@@ -52,14 +56,28 @@ RUN apk add --no-cache tini && \
     addgroup -g 1001 -S nodejs && \
     adduser -u 1001 -S frugalist -G nodejs
 
+# The workspace layout is preserved rather than flattened.
+#
+# pnpm installs one content-addressed store at the root and symlinks each
+# package's direct dependencies into its own node_modules. Copying dist to
+# /app/dist while its dependencies lived in /app/server/node_modules broke
+# resolution outright - Node walks up from the file, found the root store with
+# no direct links, and failed on the first import. Keeping the same shape the
+# build used means resolution works for the same reason it works locally.
 COPY --from=prod-deps --chown=frugalist:nodejs /app/node_modules ./node_modules
 COPY --from=prod-deps --chown=frugalist:nodejs /app/server/node_modules ./server/node_modules
-COPY --from=prod-deps --chown=frugalist:nodejs /app/packages/contracts ./packages/contracts
-COPY --from=build --chown=frugalist:nodejs /app/server/dist ./dist
-COPY --chown=frugalist:nodejs server/package.json ./package.json
+COPY --from=prod-deps --chown=frugalist:nodejs /app/package.json ./package.json
+COPY --from=prod-deps --chown=frugalist:nodejs /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=prod-deps --chown=frugalist:nodejs /app/server/package.json ./server/package.json
+# contracts has its own direct dependencies (zod, @internationalized/date), so
+# it needs its own symlink tree just like server does.
+COPY --from=prod-deps --chown=frugalist:nodejs /app/packages/contracts/node_modules ./packages/contracts/node_modules
+COPY --from=build --chown=frugalist:nodejs /app/packages/contracts/dist ./packages/contracts/dist
+COPY --from=build --chown=frugalist:nodejs /app/packages/contracts/package.json ./packages/contracts/package.json
+COPY --from=build --chown=frugalist:nodejs /app/server/dist ./server/dist
 
 USER frugalist
 EXPOSE 8787
 
 ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["node", "dist/server.js"]
+CMD ["node", "server/dist/server.js"]

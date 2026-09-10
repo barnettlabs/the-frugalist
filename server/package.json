@@ -19,6 +19,7 @@
     "check-all": "pnpm run type-check && pnpm run test"
   },
   "dependencies": {
+    "@better-auth/expo": "^1.7.4",
     "@frugalist/contracts": "workspace:*",
     "@hono/node-server": "^1.13.7",
     "@hono/zod-openapi": "^0.18.3",

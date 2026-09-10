@@ -1,5 +1,5 @@
 import { HttpError } from '@frugalist/contracts';
-import { and, eq, isNull, type SQL } from 'drizzle-orm';
+import { and, eq, getTableColumns, isNull, type SQL } from 'drizzle-orm';
 import type { PgColumn, PgTable } from 'drizzle-orm/pg-core';
 
 import { db } from '../db/client.js';
@@ -19,8 +19,12 @@ import type { AuthUser } from './auth-middleware.js';
  * half-performed. Every route that resolves a user-owned record goes through
  * here.
  *
- * It returns 404 rather than 403 for a record owned by someone else, matching
- * Laravel's behaviour and avoiding a probe that confirms whether an id exists.
+ * `onForeign` controls what a record owned by someone else returns. 404 is the
+ * safer default - it does not confirm that an id exists - but several existing
+ * controllers answer 403 and their tests assert it, so those routes pass
+ * 'forbidden' to keep the contract they already have. Preserving observable
+ * behaviour matters more here than tidying it; the 403-vs-404 question is worth
+ * revisiting once nothing depends on the old answer.
  */
 export async function findOwned<T extends PgTable>(
 	table: T,
@@ -31,24 +35,41 @@ export async function findOwned<T extends PgTable>(
 		userIdColumn: PgColumn;
 		/** Soft-deleted rows are invisible, as Laravel's SoftDeletes scope made them. */
 		deletedAtColumn?: PgColumn;
+		/** What to answer when the record exists but belongs to someone else. */
+		onForeign?: 'notFound' | 'forbidden';
 	},
 ): Promise<T['$inferSelect']> {
-	const conditions: SQL[] = [
-		eq(options.idColumn, options.id),
-		eq(options.userIdColumn, options.user.id),
-	];
+	const base: SQL[] = [eq(options.idColumn, options.id)];
 
 	if (options.deletedAtColumn) {
-		conditions.push(isNull(options.deletedAtColumn));
+		base.push(isNull(options.deletedAtColumn));
 	}
 
 	const [row] = await db()
 		.select()
 		.from(table as PgTable)
-		.where(and(...conditions))
+		.where(and(...base))
 		.limit(1);
 
 	if (!row) throw HttpError.notFound();
+
+	// The row is keyed by Drizzle's property names (camelCase), not by the
+	// underlying column names (snake_case), so resolve the property that maps to
+	// the given column rather than assuming they match.
+	const columns = getTableColumns(table as PgTable) as Record<string, PgColumn>;
+	const ownerKey = Object.keys(columns).find((key) => columns[key] === options.userIdColumn);
+
+	if (!ownerKey) {
+		throw new Error('findOwned: userIdColumn does not belong to the given table');
+	}
+
+	const ownerId = (row as Record<string, unknown>)[ownerKey];
+
+	if (Number(ownerId) !== options.user.id) {
+		throw options.onForeign === 'forbidden'
+			? new HttpError(403, 'Unauthorized')
+			: HttpError.notFound();
+	}
 
 	return row as T['$inferSelect'];
 }

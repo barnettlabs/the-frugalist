@@ -14,11 +14,30 @@
  *    Date is the natural JavaScript representation and is what the shared
  *    datetime helpers already accept, so the whole schema uses it.
  *
- * 2. The explanatory header is restored, since drizzle-kit overwrites the file
+ * 2. bigserial primary keys become `mode: 'number'`.
+ *
+ *    drizzle-kit introspects them as `mode: 'bigint'`, so Drizzle returns a JS
+ *    BigInt - which JSON.stringify cannot serialise at all ("Do not know how to
+ *    serialize a BigInt"). That would have broken every response body that
+ *    includes a record id. Laravel serialised these as plain JSON numbers and
+ *    both clients read them that way; the ids are row counters nowhere near
+ *    Number.MAX_SAFE_INTEGER, so number is both correct and compatible. Note
+ *    the bigint *foreign key* columns are already introspected as numbers -
+ *    only the serial primary keys differ.
+ *
+ * 3. Generated imports get an explicit .js extension.
+ *
+ *    drizzle-kit writes `from "./schema"` in relations.ts. TypeScript accepts
+ *    that under moduleResolution: bundler, so type-check and tsx both pass -
+ *    but compiled ESM requires the extension, so the built container failed at
+ *    startup with ERR_MODULE_NOT_FOUND. It only shows up in a real build, which
+ *    is why the image is built in CI rather than trusted.
+ *
+ * 4. The explanatory header is restored, since drizzle-kit overwrites the file
  *    wholesale and would otherwise drop it.
  */
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
 const target = 'src/db/schema.ts';
 
@@ -48,8 +67,24 @@ let source = readFileSync(target, 'utf8');
 const firstImport = source.indexOf('import {');
 if (firstImport > 0) source = source.slice(firstImport);
 
-const count = (source.match(/mode: 'string'/g) ?? []).length;
+const timestamps = (source.match(/mode: 'string'/g) ?? []).length;
 source = source.replace(/mode: 'string'/g, "mode: 'date'");
 
+const bigints = (source.match(/bigserial\(\{ mode: "bigint" \}\)/g) ?? []).length;
+source = source.replace(/bigserial\(\{ mode: "bigint" \}\)/g, 'bigserial({ mode: "number" })');
+
 writeFileSync(target, HEADER + source);
-console.log(`normalised ${count} timestamp columns to mode: 'date'`);
+
+// relations.ts is generated alongside schema.ts and has the same problem.
+const relations = 'src/db/relations.ts';
+if (existsSync(relations)) {
+	const patched = readFileSync(relations, 'utf8').replace(
+		/from "\.\/schema"/g,
+		'from "./schema.js"',
+	);
+	writeFileSync(relations, patched);
+}
+
+console.log(
+	`normalised ${timestamps} timestamps to mode: 'date', ${bigints} bigserial ids to mode: 'number', and fixed ESM import extensions`,
+);

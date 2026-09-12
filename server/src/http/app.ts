@@ -9,6 +9,7 @@ import { logger } from '../lib/logger.js';
 import { adminAiRoutes } from '../routes/admin-ai.js';
 import { adminRoutes } from '../routes/admin.js';
 import { aiRoutes } from '../routes/ai.js';
+import { authCompatRoutes } from '../routes/auth-compat.js';
 import { calculatorRoutes } from '../routes/calculators.js';
 import { dashboardRoutes } from '../routes/dashboard.js';
 import { deviceRoutes } from '../routes/devices.js';
@@ -86,6 +87,12 @@ export function createApp() {
 	// Public
 	app.route('/api/calculators', calculatorRoutes);
 	app.route('/api', publicRoutes);
+
+	// Sanctum-shaped auth, translated onto Better Auth. Both clients call these
+	// paths, and the shipped mobile build cannot be changed on demand - see
+	// routes/auth-compat.ts. Mounted before the authenticated routers so /api/user
+	// and /api/logout resolve here.
+	app.route('/api', authCompatRoutes);
 
 	// Authenticated
 	app.route('/api/profile', profileRoutes);

@@ -6,7 +6,9 @@ import { secureHeaders } from 'hono/secure-headers';
 import { env } from '../config/env.js';
 import { auth } from '../lib/auth.js';
 import { logger } from '../lib/logger.js';
+import { adminAiRoutes } from '../routes/admin-ai.js';
 import { adminRoutes } from '../routes/admin.js';
+import { aiRoutes } from '../routes/ai.js';
 import { calculatorRoutes } from '../routes/calculators.js';
 import { dashboardRoutes } from '../routes/dashboard.js';
 import { deviceRoutes } from '../routes/devices.js';
@@ -94,8 +96,11 @@ export function createApp() {
 	app.route('/api/watch', watchRoutes);
 	app.route('/api/notifications', notificationRoutes);
 	app.route('/api/devices', deviceRoutes);
+	app.route('/api/ai', aiRoutes);
 
-	// Admin
+	// Admin. The AI routes mount first so /api/admin/ai/* is matched before the
+	// general admin router sees it.
+	app.route('/api/admin/ai', adminAiRoutes);
 	app.route('/api/admin', adminRoutes);
 
 	return app;

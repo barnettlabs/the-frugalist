@@ -9,14 +9,27 @@ import { computeMortgage } from './mortgage.js';
 /**
  * Parity against the Laravel calculators.
  *
- * fixtures/golden.json is produced by api/tools/dump-calculator-vectors.php from
- * the same fixtures/cases.json this test reads, so both implementations see
- * identical inputs. Any difference here is a porting bug - which is the entire
- * point of cutting the calculators over first: they are the one part of the
- * migration where correctness is provable rather than argued.
+ * fixtures/golden.json holds the output of the original Laravel calculators for
+ * every case in fixtures/cases.json, so both implementations saw identical
+ * inputs. Any difference here is a porting bug - which is the entire point of
+ * cutting the calculators over first: they were the one part of the migration
+ * where correctness was provable rather than argued.
  *
- * Regenerate the reference after changing cases.json:
- *     php api/tools/dump-calculator-vectors.php
+ * THE REFERENCE IS NOW FROZEN. It was regenerated from the running Laravel app
+ * immediately before that app was deleted, and all 78 assertions passed at that
+ * point. The generator (api/tools/dump-calculator-vectors.php) needed Laravel's
+ * autoloader, so it went with it - recoverable from git history at commit
+ * 14b6b11 if it is ever wanted.
+ *
+ * What that means in practice:
+ *
+ *   - These remain useful as regression tests. They pin the arithmetic against a
+ *     known-good snapshot, which is exactly what you want long term.
+ *   - A NEW case cannot be added with a Laravel-derived expectation. Adding one
+ *     means deriving the expected values another way - by hand, or from a
+ *     financial reference - and saying so in the case name.
+ *   - A failure here after a refactor means the refactor changed a payment
+ *     number. That is worth treating as a defect until proven otherwise.
  */
 
 const fixtures = (name: string) =>

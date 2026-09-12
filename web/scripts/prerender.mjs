@@ -4,21 +4,22 @@
  * Runs after the client and SSR builds (see the `build` script in
  * package.json). For every public route it writes a complete HTML document —
  * real markup plus the route's own title, description, canonical, social cards,
- * and JSON-LD — into `api/public/web/prerendered/`.
+ * and JSON-LD — into `dist/prerendered/`.
  *
- * Laravel serves those files ahead of the SPA shell; see the `$serveSpa`
- * closure in `api/routes/web.php`. Anything without a prerendered file falls
- * back to the shell exactly as before.
+ * These are served ahead of the SPA shell so crawlers and social-card scrapers
+ * — neither of which reliably runs JavaScript — get real content. Laravel used
+ * to do that routing; the static host now does, and anything without a
+ * prerendered file falls back to the shell exactly as before.
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const webRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const clientDir = path.resolve(webRoot, '../api/public/web');
+const clientDir = path.resolve(webRoot, 'dist');
 const prerenderDir = path.join(clientDir, 'prerendered');
 const ssrEntry = path.join(webRoot, 'node_modules/.prerender/entry-server.js');
-const sitemapPath = path.resolve(webRoot, '../api/public/sitemap.xml');
+const sitemapPath = path.join(clientDir, 'sitemap.xml');
 
 const fail = message => {
 	console.error(`\n  prerender: ${message}\n`);

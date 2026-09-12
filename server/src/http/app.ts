@@ -7,6 +7,7 @@ import { env } from '../config/env.js';
 import { auth } from '../lib/auth.js';
 import { logger } from '../lib/logger.js';
 import { adminAiRoutes } from '../routes/admin-ai.js';
+import { accountRoutes } from '../routes/account.js';
 import { adminRoutes } from '../routes/admin.js';
 import { aiRoutes } from '../routes/ai.js';
 import { authCompatRoutes } from '../routes/auth-compat.js';
@@ -95,6 +96,9 @@ export function createApp() {
 	app.route('/api', authCompatRoutes);
 
 	// Authenticated
+	// Account deletion is mounted before the profile router so DELETE /api/profile
+	// resolves here; the profile router owns GET and PUT.
+	app.route('/api', accountRoutes);
 	app.route('/api/profile', profileRoutes);
 	app.route('/api/dashboard', dashboardRoutes);
 	app.route('/api/vehicle-finance-sheets', financeSheetRoutes);

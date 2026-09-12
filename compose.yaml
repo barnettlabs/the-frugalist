@@ -1,15 +1,13 @@
 # Local dependencies for development and tests.
 #
 # Only stateful services live here. The application processes (api, worker) run
-# natively on the host for fast reload and a real debugger - the same split the
-# Laravel setup used with `composer dev`, just with the dependencies pinned and
-# reproducible instead of installed by hand.
+# natively on the host for fast reload and a real debugger.
 #
 #   docker compose up -d
 #
-# Versions are pinned to what production will run. The Laravel setup ran the
-# `database` cache driver locally and Redis in production, which is a class of
-# bug you cannot reproduce locally; using the same engines in both closes that.
+# Versions are pinned to what production runs. Testing against different engines
+# than production is a class of bug you cannot reproduce locally - it previously
+# hid two engine-specific SQL errors - so local and production use the same ones.
 
 name: frugalist
 
@@ -20,8 +18,9 @@ services:
       POSTGRES_USER: frugalist
       POSTGRES_PASSWORD: frugalist
       POSTGRES_DB: frugalist
-      # Match config/app.php, which sets the Laravel timezone to UTC. Keeping the
-      # database in UTC too means NOW() and the app agree.
+      # Every timestamp in this database is UTC. Keeping the database in UTC too
+      # means NOW() and the application agree - a host defaulting to a local zone
+      # silently shifts every comparison.
       TZ: UTC
       PGTZ: UTC
     ports:

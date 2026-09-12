@@ -1,128 +1,116 @@
 # Deployment
 
-Production runs at **https://thefrugalist.io** behind Cloudflare. Laravel serves both
-the API and the built Vue SPA from a single origin, and deploys are triggered from the
-hosting panel (Forge/Ploi-style) rather than from CI.
+The stack is a Hono/Node API, a BullMQ worker, Postgres, Redis and a static Vue
+site. Everything is declared in `render.yaml`, so deploys come from a Render
+Blueprint rather than a shell script.
+
+For the first-time cutover — provisioning, the database migration, routing and
+rollback — see the go-live runbook. This file covers steady-state deploys.
 
 ## Topology
 
-The web app is not deployed separately. `web/` builds into `api/public/web/`, and
-Laravel serves it:
+| Component | Runs as | Command |
+|---|---|---|
+| API | Render Web Service (Docker) | `node server/dist/server.js` |
+| Worker | Render Background Worker (same image) | `node server/dist/worker.js` |
+| Postgres | Render Postgres 17 | — |
+| Redis | Render Key Value | — |
+| Web | Render Static Site | built from `web/dist` |
 
-- `routes/web.php` has a catch-all that returns `public/web/index.html` for any
-  non-`api`/`sanctum`/`web` path.
-- `web/vite.config.ts` sets `build.outDir` to `../api/public/web` and uses base `/web/`
-  in production.
-
-**`api/public/web` is listed in `api/.gitignore`.** The built SPA is therefore never
-committed, so a deploy that only runs `git pull` will leave the frontend stale — the
-web build has to run on the server as part of every deploy.
+**One image, two services.** The API and worker ship the same build and differ
+only in start command, which is why the worker costs no extra build time or
+registry space.
 
 ## Requirements
 
 | | Version | Note |
 |---|---|---|
-| PHP | **8.3+** | Laravel 13 requires `^8.3`. Verify the panel's PHP version before the next deploy — this changed from 8.2. |
-| Node | 22 | |
-| pnpm | 10 | Both `web/` and `app/` use pnpm lockfiles. |
-| MySQL | | |
-| Redis | | `QUEUE_CONNECTION=redis`, plus Horizon. |
+| Node | **24** in the container | Development runs on 22; the Dockerfile pins the deploy target. |
+| pnpm | 10 | Workspace root holds the lockfile. |
+| Postgres | **17** | Must be **UTC**. Every stored timestamp is UTC and comparisons assume it. |
+| Redis | Valkey 8 or Redis 7 | **`maxmemory-policy` must be `noeviction`** — see below. |
 
-## Deploy script
+## Deploys
+
+Push to the branch Render tracks. The Blueprint handles the rest:
+
+1. Build the image (`Dockerfile`).
+2. Run the pre-deploy command — `node server/dist/scripts/migrate.js` — which
+   applies any pending Drizzle migration. It runs once per deploy rather than
+   per instance, so instances cannot race. A failure here fails the deploy,
+   which is deliberate: a service running against a half-migrated schema is far
+   harder to diagnose.
+3. Health-check `/up` and cut over with zero downtime.
+
+Both processes handle `SIGTERM`: the API drains in-flight requests, the worker
+finishes its current job rather than being killed mid-run, and both flush
+telemetry before exiting.
+
+## Two settings that will bite
+
+**Redis must be `noeviction`.** BullMQ cannot behave correctly if Redis evicts
+keys — it loses jobs silently rather than erroring. The worker asserts this at
+boot and refuses to start otherwise, which is the intended behaviour: a queue
+that looks healthy while dropping work is worse than one that will not launch.
+Render's free Key Value tier is also non-persistent, so it cannot back a queue.
+
+**Postgres PITR depth comes from the workspace plan, not the database tier.** A
+Hobby workspace gives a 3-day recovery window on any instance size; 7 days needs
+a Pro workspace. Upgrading the database will not change it.
+
+## Schema changes
+
+Drizzle owns the schema.
 
 ```bash
-cd /path/to/the-frugalist
+# 1. change the database (migration, or by hand in development)
+# 2. regenerate the typed schema
+cd server && pnpm db:pull
 
-git pull origin main
+# 3. produce a migration
+pnpm db:generate --name=what_changed
 
-# API
-cd api
-composer install --no-dev --optimize-autoloader --no-interaction
-php artisan migrate --force
-
-# Web SPA -> api/public/web (gitignored, so it must be rebuilt here)
-cd ../web
-pnpm install --frozen-lockfile
-pnpm run build
-
-# Cache last, after the build has landed
-cd ../api
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-php artisan horizon:terminate   # supervisor restarts it with the new code
+# 4. review the SQL in server/drizzle/ before committing
 ```
 
-`php artisan config:cache` must run *after* `.env` is final; a cached config ignores
-later `.env` edits until it is rebuilt.
+`src/db/schema.ts` is generated — do not hand-edit it. `tools/normalize-schema.mjs`
+corrects three drizzle-kit generation bugs on every pull; the reasons are
+documented in that file, and one of them produced SQL Postgres rejected outright.
 
 ## Environment
 
-`api/.env` is not in the repo. `api/.env.example` lists every key. The ones that must
-be set for a working deploy:
+`server/.env.example` lists every key. The ones a deploy will not work without:
 
-- `APP_KEY` (generate once with `php artisan key:generate`), `APP_ENV=production`,
-  `APP_DEBUG=false`, `APP_URL=https://thefrugalist.io`
-- `DB_*`
-- `REDIS_*`, `QUEUE_CONNECTION=redis`, `CACHE_STORE`
-- `MAIL_MAILER=resend` and `RESEND_KEY` — required for email verification and price
-  alerts. Not covered by tests, which run with `MAIL_MAILER=array`.
-- `TWILIO_SID`, `TWILIO_TOKEN`, `TWILIO_FROM` for phone verification
-- `SANCTUM_STATEFUL_DOMAINS`, `SESSION_DOMAIN`
+- `DATABASE_URL`, `REDIS_URL` — wired from the linked Render services
+- `SESSION_SECRET` — 32+ chars; **rotating it invalidates every session**
+- `APP_URL` — used to build verification and password-reset links
+- `CORS_ORIGINS` — comma-separated
+- `MAIL_TRANSPORT=resend` and `RESEND_KEY` — **`MAIL_TRANSPORT` defaults to
+  `log`**, so email silently goes nowhere until it is set. That default is
+  deliberately fail-safe, but it does have to be set in production.
+- `SENTRY_DSN` — the API logs a warning at boot in production if it is missing
+- `HEARTBEAT_PRICE_CHECK_URL`, `HEARTBEAT_SEND_ALERTS_URL` — cron monitors
 
-The mobile app reads `API_URL` from `app/.env.production` (`https://thefrugalist.io/api`),
-which *is* committed.
+**Do not set `RUN_WORKER_IN_PROCESS` in production.** It exists so one local
+`pnpm dev` can run both roles; on Render it would make the API and the worker
+both process jobs, double-running the price check and sending users duplicate
+alerts.
 
-## Background work
+## Scheduled work
 
-`routes/console.php` schedules the whole price-tracking feature:
+There is no cron service. The worker registers three BullMQ repeatable jobs on
+boot — hourly and twice-daily price checks, and alert notifications every 15
+minutes — so cadence, retries, overlap prevention and observability all live in
+one system. Registration is idempotent, so restarts do not stack duplicates.
 
-| Command | Cadence |
-|---|---|
-| `prices:check` | hourly |
-| `prices:check --limit=100` | twice daily (09:00, 21:00) |
-| `notifications:send-price-alerts` | every 15 minutes |
-| `horizon:snapshot` | every 5 minutes |
+Overlap prevention is a Redis lock, not worker concurrency: concurrency only
+serialises within one process, and a rolling deploy briefly runs two. Without
+the lock, two price checks would send duplicate alerts for one price drop.
 
-Both the scheduler and a queue worker must be running, or price tracking silently does
-nothing — no errors, just no price updates and no alerts:
+## Monitoring
 
-```bash
-php artisan horizon        # under supervisor, restarted by horizon:terminate on deploy
-```
-
-plus a system cron entry:
-
-```
-* * * * * cd /path/to/the-frugalist/api && php artisan schedule:run >> /dev/null 2>&1
-```
-
-Worth confirming both are actually running on the box before demoing price tracking.
-
-## Mobile
-
-Mobile does not deploy with the server. Builds go through EAS:
-
-```bash
-cd app
-pnpm build:production:ios
-pnpm build:production:android
-```
-
-`app/eas.json` currently submits under the Apple account `jason@tensifi.com`
-(team `44BTVU6QAF`) — see issue #6 about moving this to the JayTech account.
-
-## Known gaps
-
-- **No staging environment.** `app/.env.staging` points at
-  `https://staging.thefrugalist.io`, which does not resolve. Either stand that host up
-  or stop shipping a staging app profile that cannot reach an API.
-- **Deploys are not automated.** CI (`.github/workflows/ci.yml`) verifies branches but
-  does not deploy; the panel still has to be triggered.
-- **Production reference data is empty.** `/api/retailers` and `/api/announcements`
-  both return empty, so the price-tracking features look dead on a fresh look.
-  `database/seeders/RetailerSeeder.php` exists — run it before demoing:
-
-  ```bash
-  php artisan db:seed --class=RetailerSeeder --force
-  ```
+- `/up` — liveness. Deliberately does **not** touch the database: a health check
+  that fails on a slow query turns a database blip into a restart loop.
+- `/health` — readiness, including the database. Point uptime checks here.
+- Cron heartbeats — the most valuable monitor, because a silently dead scheduler
+  produces no errors and no traffic. Alerts simply stop arriving otherwise.

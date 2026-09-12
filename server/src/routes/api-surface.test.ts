@@ -342,6 +342,22 @@ describe('dashboard', () => {
 	});
 });
 
+describe('routing', () => {
+	it('answers 404 for an unknown /api path, not 401', async () => {
+		// Regression: mounting a router at /api with a wildcard requireAuth made
+		// every unmatched /api/* request answer 401 before the 404 handler ran.
+		// Wrong, and confusing to debug from a client.
+		const res = await app.request('/api/does-not-exist');
+
+		expect(res.status).toBe(404);
+		expect((await res.json()) as { message: string }).toHaveProperty('message');
+	});
+
+	it('still answers 401 for a real authenticated route', async () => {
+		expect((await app.request('/api/dashboard/stats')).status).toBe(401);
+	});
+});
+
 describe('admin gate', () => {
 	it('refuses a non-admin user', async () => {
 		for (const path of ['/api/admin/retailers', '/api/admin/users', '/api/admin/bug-reports']) {

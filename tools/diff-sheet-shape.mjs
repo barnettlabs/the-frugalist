@@ -1,13 +1,22 @@
 #!/usr/bin/env node
 /**
- * Compares the *shape* of a record response between Laravel and the Hono
- * service - key names and value types, not values.
+ * Checks a record response against the shape the clients type against.
  *
- * Written after discovering that Drizzle returns camelCase properties while
- * every client types against Laravel's snake_case columns. The endpoint tests
- * did not catch it because they had been written to match the implementation
- * rather than the contract, which is exactly the failure mode a differential
- * check exists to prevent.
+ * The expected shape below was captured from the Laravel app before it was
+ * removed, so it is a frozen contract rather than a live comparison. It stays
+ * useful precisely because it is independent of the implementation: Drizzle
+ * returns camelCase properties while every client types against snake_case
+ * columns, and the endpoint tests missed that break because they had been
+ * written to match the implementation rather than the contract.
+ *
+ * Run against a live server when changing anything about serialisation:
+ *
+ *   cd server && pnpm dev
+ *   PROBE_EMAIL=... PROBE_PASSWORD=... node tools/diff-sheet-shape.mjs
+ *
+ * The companion tool that compared calculator responses against a running
+ * Laravel is gone with Laravel; that guarantee now lives in the frozen parity
+ * suite at packages/contracts/src/calculators/parity.test.ts.
  */
 const LARAVEL_SHAPE = {
 	id: 'number', user_id: 'number', sheet_name: 'string|null',

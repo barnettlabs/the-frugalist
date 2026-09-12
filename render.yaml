@@ -82,15 +82,18 @@ services:
     ipAllowList: []
 
   # ---- SPA ------------------------------------------------------------------
-  # Splitting the Vue build off the API decouples frontend releases from
-  # backend ones. It was previously served by Laravel's catch-all route, which
-  # meant every UI change required an API deploy.
+  # A standalone static site, so frontend releases are decoupled from backend
+  # ones. Public routes are prerendered at build time for crawlers and
+  # social-card scrapers; anything else falls back to the SPA shell via the
+  # rewrite below.
   - type: web
     name: frugalist-web
     runtime: static
     buildCommand: pnpm install --frozen-lockfile && pnpm --filter thefrugalist-web build
     staticPublishPath: ./web/dist
     routes:
+      # Serve a prerendered document where one exists, otherwise the SPA shell.
+      # The SPA boots identically either way.
       - type: rewrite
         source: /*
         destination: /index.html

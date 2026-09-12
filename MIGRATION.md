@@ -3,10 +3,10 @@
 Working document for the backend migration. Status is current as of the last
 commit on `staging`.
 
-**The short version:** phases 0–4 are done and verified, phase 5 has one of 26
-controllers ported as the reference pattern, and phase 6 has not been started.
-Roughly half the migration is complete. Production is untouched and still runs
-Laravel on MySQL.
+**The short version:** phases 0–5 are done and verified. Phase 6 (production
+cutover and decommission) has not been started and cannot be done from a
+development machine — it needs a production database migration and a hosting
+switch. Production is untouched and still runs Laravel on MySQL.
 
 ---
 
@@ -18,8 +18,8 @@ Laravel on MySQL.
 | 1 | MySQL → Postgres | **Done, verified** — 38 migrations and 128 tests pass on Postgres. |
 | 2 | Hono skeleton + calculators | **Done, verified** — 78/78 differential match against live Laravel. |
 | 3 | Auth (Better Auth) | **Done, verified** — Laravel bcrypt passwords still sign in. |
-| 4 | Workers, retailers, notifications | **Done, verified** — worker runs from the container, processes both job types. AI pipeline still outstanding. |
-| 5 | 26 CRUD controllers | **1 of 26** — finance sheets, as the reference pattern. |
+| 4 | Workers, retailers, notifications | **Done, verified** — worker runs from the container, processes both job types. |
+| 5 | CRUD, admin and AI surfaces | **Done, verified** — sheets, watch, profile, notifications, devices, dashboard, public endpoints, admin, and the AI agent platform. |
 | 6 | Decommission Laravel | **Not started.** |
 
 Section 07 (web app to React) was explicitly deferred — the Vue app stays.
@@ -43,9 +43,9 @@ Verification:
 ```bash
 node tools/diff-endpoints.mjs      # 78/78 identical responses, both services live
 node tools/diff-sheet-shape.mjs    # record shape matches Laravel, all 26 keys
-cd server && pnpm vitest run       # 93
+cd server && pnpm vitest run       # 150
 cd packages/contracts && pnpm vitest run   # 101
-cd api && php artisan test         # 128
+cd api && php artisan test         # 137
 ```
 
 The worker:
@@ -121,26 +121,26 @@ exports pointed at `.ts` source.
 
 ## Next steps, in order
 
-1. **Finish Phase 4 — the AI pipeline.** The Vercel AI SDK's `generateObject`
-   plus Zod replaces `OutputValidator` and its JSON-repair retry loop outright.
-   Also still outstanding: Bull Board for queue visibility, and swapping the
-   hand-rolled Expo client for `expo-server-sdk` (which adds receipt handling and
-   chunking — a behaviour change, so its own commit).
+1. **Finish Phase 0.** OpenAPI generation and typed clients — this is the whole
+   reason the migration is worth doing, and it is the last piece still missing.
+   Then Sentry/PostHog/BetterStack, and split the SPA off Laravel's catch-all.
 
-   Before retiring Horizon in production, run both schedulers for one cycle with
-   the Laravel side in `--dry-run` and diff the output.
+2. **Phase 6 — production cutover.** See GO-LIVE.pdf for the full runbook. In
+   short: stand up Render, migrate the production database MySQL → Postgres,
+   cut traffic over, watch it, then delete Laravel and drop
+   `personal_access_tokens` and `users.password`.
 
-2. **Phase 5 — the remaining 25 controllers.** `server/src/routes/finance-sheets.ts`
-   is the reference: `requireAuth` on the group, `findOwned()` for id-addressed
-   routes, rules transcribed from the Laravel controller including bounds,
-   `serializeRow` on the way out. Audit ownership on every route as you go.
+3. **Still not ported, and deliberately so.** Account deletion requires
+   current-password confirmation and token revocation, and Better Auth owns
+   credentials now — it needs its own design pass. Phone verification, the
+   playground email previews, and the watch-debug endpoints are all
+   admin/development tooling with no user-facing path; they can move after
+   cutover or be dropped.
 
-3. **Finish Phase 0.** OpenAPI generation and typed clients (this is the whole
-   reason the migration is worth doing), Sentry/PostHog/BetterStack, and split
-   the SPA off Laravel's catch-all.
-
-4. **Phase 6.** Move the production database to Postgres, cut the proxy over,
-   delete Laravel, drop `personal_access_tokens` and `users.password`.
+4. **Deferred improvements**, each a behaviour change deserving its own commit:
+   Bull Board for queue visibility, `expo-server-sdk` in place of the
+   hand-rolled push client, React Email for the one remaining template, and the
+   Vercel AI SDK for new agents.
 
 ---
 

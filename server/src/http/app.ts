@@ -6,9 +6,16 @@ import { secureHeaders } from 'hono/secure-headers';
 import { env } from '../config/env.js';
 import { auth } from '../lib/auth.js';
 import { logger } from '../lib/logger.js';
+import { adminRoutes } from '../routes/admin.js';
 import { calculatorRoutes } from '../routes/calculators.js';
-import { financeSheetRoutes } from '../routes/finance-sheets.js';
+import { dashboardRoutes } from '../routes/dashboard.js';
+import { deviceRoutes } from '../routes/devices.js';
 import { healthRoutes } from '../routes/health.js';
+import { notificationRoutes } from '../routes/notifications.js';
+import { profileRoutes } from '../routes/profile.js';
+import { publicRoutes } from '../routes/public.js';
+import { financeSheetRoutes, leaseSheetRoutes, mortgageSheetRoutes } from '../routes/sheets.js';
+import { watchRoutes } from '../routes/watch.js';
 import { type AuthVariables, resolveSession } from './auth-middleware.js';
 import { errorHandler, notFoundHandler } from './errors.js';
 
@@ -73,8 +80,23 @@ export function createApp() {
 	app.use('*', resolveSession);
 
 	app.route('/', healthRoutes);
+
+	// Public
 	app.route('/api/calculators', calculatorRoutes);
+	app.route('/api', publicRoutes);
+
+	// Authenticated
+	app.route('/api/profile', profileRoutes);
+	app.route('/api/dashboard', dashboardRoutes);
 	app.route('/api/vehicle-finance-sheets', financeSheetRoutes);
+	app.route('/api/vehicle-lease-sheets', leaseSheetRoutes);
+	app.route('/api/mortgage-sheets', mortgageSheetRoutes);
+	app.route('/api/watch', watchRoutes);
+	app.route('/api/notifications', notificationRoutes);
+	app.route('/api/devices', deviceRoutes);
+
+	// Admin
+	app.route('/api/admin', adminRoutes);
 
 	return app;
 }

@@ -9,6 +9,10 @@ import { createLegacyUser, createPlainUser, signIn } from '../test/factories.js'
 /**
  * CRUD and, more importantly, ownership.
  *
+ * Finance is exercised in full because all three resources share one factory
+ * (routes/sheet-resource.ts); the lease and mortgage blocks at the end cover
+ * what is genuinely per-resource - their validation rules and response shape.
+ *
  * The access-control cases are the point of this file. Laravel enforced them
  * across two places - route model binding resolved the record, the controller
  * checked the owner - so a controller that forgot its half would serve another
@@ -245,5 +249,130 @@ describe('validation', () => {
 		});
 
 		expect(res.status).toBe(201);
+	});
+});
+
+describe('lease sheets', () => {
+	it('creates and reads a lease sheet', async () => {
+		const res = await authed('/api/vehicle-lease-sheets', {
+			method: 'POST',
+			body: JSON.stringify({
+				sheet_name: 'My Lease',
+				msrp: 45000,
+				money_factor: 0.00225,
+				residual_percent: 58,
+				lease_term: 36,
+			}),
+		});
+
+		expect(res.status, await res.clone().text()).toBe(201);
+		const body = (await res.json()) as Record<string, unknown>;
+
+		expect(body.sheet_name).toBe('My Lease');
+		expect(Number(body.money_factor)).toBeCloseTo(0.00225, 10);
+		expect(body.user_id).toBe(userId);
+	});
+
+	it('rejects a residual percent above 100', async () => {
+		const res = await authed('/api/vehicle-lease-sheets', {
+			method: 'POST',
+			body: JSON.stringify({ residual_percent: 150 }),
+		});
+
+		expect(res.status).toBe(422);
+		const body = (await res.json()) as { errors: Record<string, string[]> };
+		expect(body.errors.residual_percent).toEqual([
+			'The residual percent field must not be greater than 100.',
+		]);
+	});
+
+	it('does not leak another user lease sheet', async () => {
+		const res = await authed(`/api/vehicle-lease-sheets/${foreignSheetId}`);
+		// The foreign id belongs to a finance sheet, so this is a 404 here rather
+		// than a 403 - different table, same guard.
+		expect([403, 404]).toContain(res.status);
+	});
+});
+
+describe('mortgage sheets', () => {
+	it('creates and reads a mortgage sheet', async () => {
+		const res = await authed('/api/mortgage-sheets', {
+			method: 'POST',
+			body: JSON.stringify({
+				sheet_name: 'My House',
+				property_type: 'HOUSE',
+				property_value: 450000,
+				down_payment: 90000,
+				loan_term_years: 30,
+				interest_rate: 6.75,
+			}),
+		});
+
+		expect(res.status, await res.clone().text()).toBe(201);
+		const body = (await res.json()) as Record<string, unknown>;
+
+		expect(body.sheet_name).toBe('My House');
+		expect(body.property_type).toBe('HOUSE');
+		expect(Number(body.property_value)).toBe(450000);
+	});
+
+	it('caps the loan term at 50 years, not 120', async () => {
+		// The vehicle sheets bound their term at 120 *months*; mortgage bounds at
+		// 50 *years*. Easy to copy across by mistake.
+		const res = await authed('/api/mortgage-sheets', {
+			method: 'POST',
+			body: JSON.stringify({ loan_term_years: 60 }),
+		});
+
+		expect(res.status).toBe(422);
+		const body = (await res.json()) as { errors: Record<string, string[]> };
+		expect(body.errors.loan_term_years).toEqual([
+			'The loan term years field must not be greater than 50.',
+		]);
+	});
+
+	it('rejects an invalid property type', async () => {
+		const res = await authed('/api/mortgage-sheets', {
+			method: 'POST',
+			body: JSON.stringify({ property_type: 'CASTLE' }),
+		});
+
+		expect(res.status).toBe(422);
+		const body = (await res.json()) as { errors: Record<string, string[]> };
+		expect(body.errors.property_type).toEqual(['The selected property type is invalid.']);
+	});
+});
+
+describe('ownership is not assignable from the payload', () => {
+	it('ignores a user_id supplied on create', async () => {
+		// The Laravel version let this through - fill($request->all()) ran after
+		// ownership was assigned, so a supplied user_id won and the record landed
+		// in someone else's account.
+		const res = await authed('/api/vehicle-finance-sheets', {
+			method: 'POST',
+			body: JSON.stringify({ sheet_name: 'Probe', user_id: otherUserId }),
+		});
+
+		expect(res.status).toBe(201);
+		const body = (await res.json()) as Record<string, unknown>;
+		expect(body.user_id).toBe(userId);
+	});
+
+	it('ignores a user_id supplied on update', async () => {
+		const created = await authed('/api/vehicle-finance-sheets', {
+			method: 'POST',
+			body: JSON.stringify({ sheet_name: 'Keep mine' }),
+		});
+		const id = Number(((await created.json()) as Record<string, unknown>).id);
+
+		const res = await authed(`/api/vehicle-finance-sheets/${id}`, {
+			method: 'PUT',
+			body: JSON.stringify({ user_id: otherUserId, sheet_name: 'Still mine' }),
+		});
+
+		expect(res.status).toBe(200);
+		const body = (await res.json()) as Record<string, unknown>;
+		expect(body.user_id).toBe(userId);
+		expect(body.sheet_name).toBe('Still mine');
 	});
 });

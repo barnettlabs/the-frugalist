@@ -39,7 +39,17 @@ class VehicleFinanceSheetController extends Controller
 
         $sheet = new VehicleFinanceSheet;
         $sheet->user_id = $request->user()->id;
-        $sheet->fill($request->all());
+        /*
+         * `except('user_id')` is load-bearing, not defensive dressing.
+         *
+         * user_id is in $fillable, and fill() runs *after* the line above that
+         * sets it from the authenticated user - so a request body containing
+         * "user_id": <someone else> overwrote it. That let any authenticated
+         * user create records owned by another account, and on update, push
+         * their own record into another account. Verified against the running
+         * app before this change.
+         */
+        $sheet->fill($request->except('user_id'));
         $sheet->save();
 
         return response()->json($sheet, 201);
@@ -80,7 +90,7 @@ class VehicleFinanceSheetController extends Controller
             'extra_payments_json' => 'nullable|string',
         ]);
 
-        $vehicleFinanceSheet->fill($request->all());
+        $vehicleFinanceSheet->fill($request->except('user_id'));
         $vehicleFinanceSheet->save();
 
         return response()->json($vehicleFinanceSheet);

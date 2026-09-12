@@ -42,7 +42,17 @@ class VehicleLeaseSheetController extends Controller
 
         $sheet = new VehicleLeaseSheet;
         $sheet->user_id = $request->user()->id;
-        $sheet->fill($request->all());
+        /*
+         * `except('user_id')` is load-bearing, not defensive dressing.
+         *
+         * user_id is in $fillable, and fill() runs *after* the line above that
+         * sets it from the authenticated user - so a request body containing
+         * "user_id": <someone else> overwrote it. That let any authenticated
+         * user create records owned by another account, and on update, push
+         * their own record into another account. Verified against the running
+         * app before this change.
+         */
+        $sheet->fill($request->except('user_id'));
         $sheet->save();
 
         return response()->json($sheet, 201);
@@ -86,7 +96,7 @@ class VehicleLeaseSheetController extends Controller
             'contact_phone' => 'nullable|string|max:255',
         ]);
 
-        $vehicleLeaseSheet->fill($request->all());
+        $vehicleLeaseSheet->fill($request->except('user_id'));
         $vehicleLeaseSheet->save();
 
         return response()->json($vehicleLeaseSheet);

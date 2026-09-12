@@ -21,7 +21,17 @@ class MortgageSheetController extends Controller
 
         $sheet = new MortgageSheet;
         $sheet->user_id = $request->user()->id;
-        $sheet->fill($request->all());
+        /*
+         * `except('user_id')` is load-bearing, not defensive dressing.
+         *
+         * user_id is in $fillable, and fill() runs *after* the line above that
+         * sets it from the authenticated user - so a request body containing
+         * "user_id": <someone else> overwrote it. That let any authenticated
+         * user create records owned by another account, and on update, push
+         * their own record into another account. Verified against the running
+         * app before this change.
+         */
+        $sheet->fill($request->except('user_id'));
         $sheet->save();
 
         return response()->json($sheet, 201);
@@ -44,7 +54,7 @@ class MortgageSheetController extends Controller
 
         $request->validate($this->validationRules());
 
-        $mortgageSheet->fill($request->all());
+        $mortgageSheet->fill($request->except('user_id'));
         $mortgageSheet->save();
 
         return response()->json($mortgageSheet);

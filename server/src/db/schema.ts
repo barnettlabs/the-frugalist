@@ -17,84 +17,10 @@
  * coercion - see src/db/money.ts.
  */
 
-import { pgTable, serial, varchar, integer, timestamp, index, bigint, text, bigserial, smallint, unique, foreignKey, check, doublePrecision, json, boolean, numeric, char } from "drizzle-orm/pg-core"
+import { pgTable, foreignKey, check, bigserial, bigint, varchar, doublePrecision, smallint, timestamp, text, unique, json, boolean, integer, index, numeric, char } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 
-
-export const migrations = pgTable("migrations", {
-	id: serial().primaryKey().notNull(),
-	migration: varchar({ length: 255 }).notNull(),
-	batch: integer().notNull(),
-});
-
-export const passwordResetTokens = pgTable("password_reset_tokens", {
-	email: varchar({ length: 255 }).primaryKey().notNull(),
-	token: varchar({ length: 255 }).notNull(),
-	createdAt: timestamp("created_at", { mode: 'date' }),
-});
-
-export const sessions = pgTable("sessions", {
-	id: varchar({ length: 255 }).primaryKey().notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	userId: bigint("user_id", { mode: "number" }),
-	ipAddress: varchar("ip_address", { length: 45 }),
-	userAgent: text("user_agent"),
-	payload: text().notNull(),
-	lastActivity: integer("last_activity").notNull(),
-}, (table) => [
-	index().using("btree", table.lastActivity.asc().nullsLast().op("int4_ops")),
-	index().using("btree", table.userId.asc().nullsLast().op("int8_ops")),
-]);
-
-export const cache = pgTable("cache", {
-	key: varchar({ length: 255 }).primaryKey().notNull(),
-	value: text().notNull(),
-	expiration: integer().notNull(),
-});
-
-export const cacheLocks = pgTable("cache_locks", {
-	key: varchar({ length: 255 }).primaryKey().notNull(),
-	owner: varchar({ length: 255 }).notNull(),
-	expiration: integer().notNull(),
-});
-
-export const jobs = pgTable("jobs", {
-	id: bigserial({ mode: "number" }).primaryKey().notNull(),
-	queue: varchar({ length: 255 }).notNull(),
-	payload: text().notNull(),
-	attempts: smallint().notNull(),
-	reservedAt: integer("reserved_at"),
-	availableAt: integer("available_at").notNull(),
-	createdAt: integer("created_at").notNull(),
-}, (table) => [
-	index().using("btree", table.queue.asc().nullsLast().op("text_ops")),
-]);
-
-export const jobBatches = pgTable("job_batches", {
-	id: varchar({ length: 255 }).primaryKey().notNull(),
-	name: varchar({ length: 255 }).notNull(),
-	totalJobs: integer("total_jobs").notNull(),
-	pendingJobs: integer("pending_jobs").notNull(),
-	failedJobs: integer("failed_jobs").notNull(),
-	failedJobIds: text("failed_job_ids").notNull(),
-	options: text(),
-	cancelledAt: integer("cancelled_at"),
-	createdAt: integer("created_at").notNull(),
-	finishedAt: integer("finished_at"),
-});
-
-export const failedJobs = pgTable("failed_jobs", {
-	id: bigserial({ mode: "number" }).primaryKey().notNull(),
-	uuid: varchar({ length: 255 }).notNull(),
-	connection: text().notNull(),
-	queue: text().notNull(),
-	payload: text().notNull(),
-	exception: text().notNull(),
-	failedAt: timestamp("failed_at", { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
-}, (table) => [
-	unique("failed_jobs_uuid_unique").on(table.uuid),
-]);
 
 export const vehicleLeaseSheets = pgTable("vehicle_lease_sheets", {
 	id: bigserial({ mode: "number" }).primaryKey().notNull(),
@@ -220,8 +146,6 @@ export const users = pgTable("users", {
 	id: bigserial({ mode: "number" }).primaryKey().notNull(),
 	email: varchar({ length: 255 }).notNull(),
 	emailVerifiedAt: timestamp("email_verified_at", { mode: 'date' }),
-	password: varchar({ length: 255 }),
-	rememberToken: varchar("remember_token", { length: 100 }),
 	createdAt: timestamp("created_at", { mode: 'date' }),
 	updatedAt: timestamp("updated_at", { mode: 'date' }),
 	username: varchar({ length: 255 }),
@@ -250,7 +174,7 @@ export const priceHistory = pgTable("price_history", {
 	createdAt: timestamp("created_at", { mode: 'date' }),
 	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
-	index().using("btree", table.trackedProductId.asc().nullsLast().op("int8_ops"), table.checkedAt.asc().nullsLast().op("int8_ops")),
+	index().using("btree", table.trackedProductId.asc().nullsLast(), table.checkedAt.asc().nullsLast()),
 	foreignKey({
 			columns: [table.trackedProductId],
 			foreignColumns: [trackedProducts.id],
@@ -270,7 +194,7 @@ export const priceAlerts = pgTable("price_alerts", {
 	createdAt: timestamp("created_at", { mode: 'date' }),
 	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
-	index().using("btree", table.trackedProductId.asc().nullsLast().op("int8_ops"), table.triggeredAt.asc().nullsLast().op("int8_ops")),
+	index().using("btree", table.trackedProductId.asc().nullsLast(), table.triggeredAt.asc().nullsLast()),
 	foreignKey({
 			columns: [table.trackedProductId],
 			foreignColumns: [trackedProducts.id],
@@ -290,7 +214,7 @@ export const priceCheckSchedules = pgTable("price_check_schedules", {
 	createdAt: timestamp("created_at", { mode: 'date' }),
 	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
-	index().using("btree", table.isActive.asc().nullsLast().op("text_ops"), table.frequency.asc().nullsLast().op("text_ops")),
+	index().using("btree", table.isActive.asc().nullsLast(), table.frequency.asc().nullsLast()),
 	foreignKey({
 			columns: [table.userId],
 			foreignColumns: [users.id],
@@ -312,7 +236,7 @@ export const userDevices = pgTable("user_devices", {
 	createdAt: timestamp("created_at", { mode: 'date' }),
 	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
-	index().using("btree", table.userId.asc().nullsLast().op("int8_ops"), table.isActive.asc().nullsLast().op("int8_ops")),
+	index().using("btree", table.userId.asc().nullsLast(), table.isActive.asc().nullsLast()),
 	foreignKey({
 			columns: [table.userId],
 			foreignColumns: [users.id],
@@ -333,7 +257,7 @@ export const bugReports = pgTable("bug_reports", {
 	createdAt: timestamp("created_at", { mode: 'date' }),
 	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
-	index().using("btree", table.userId.asc().nullsLast().op("int8_ops"), table.status.asc().nullsLast().op("int8_ops")),
+	index().using("btree", table.userId.asc().nullsLast(), table.status.asc().nullsLast()),
 	foreignKey({
 			columns: [table.userId],
 			foreignColumns: [users.id],
@@ -353,29 +277,12 @@ export const phoneVerificationCodes = pgTable("phone_verification_codes", {
 	createdAt: timestamp("created_at", { mode: 'date' }),
 	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
-	index().using("btree", table.userId.asc().nullsLast().op("int8_ops"), table.phoneNumber.asc().nullsLast().op("int8_ops")),
+	index().using("btree", table.userId.asc().nullsLast(), table.phoneNumber.asc().nullsLast()),
 	foreignKey({
 			columns: [table.userId],
 			foreignColumns: [users.id],
 			name: "phone_verification_codes_user_id_foreign"
 		}).onDelete("cascade"),
-]);
-
-export const personalAccessTokens = pgTable("personal_access_tokens", {
-	id: bigserial({ mode: "number" }).primaryKey().notNull(),
-	tokenableType: varchar("tokenable_type", { length: 255 }).notNull(),
-	// You can use { mode: "bigint" } if numbers are exceeding js number limitations
-	tokenableId: bigint("tokenable_id", { mode: "number" }).notNull(),
-	name: text().notNull(),
-	token: varchar({ length: 64 }).notNull(),
-	abilities: text(),
-	lastUsedAt: timestamp("last_used_at", { mode: 'date' }),
-	expiresAt: timestamp("expires_at", { mode: 'date' }),
-	createdAt: timestamp("created_at", { mode: 'date' }),
-	updatedAt: timestamp("updated_at", { mode: 'date' }),
-}, (table) => [
-	index().using("btree", table.tokenableType.asc().nullsLast().op("int8_ops"), table.tokenableId.asc().nullsLast().op("int8_ops")),
-	unique("personal_access_tokens_token_unique").on(table.token),
 ]);
 
 export const trackedProducts = pgTable("tracked_products", {
@@ -407,8 +314,8 @@ export const trackedProducts = pgTable("tracked_products", {
 	checkInterval: integer("check_interval").default(60).notNull(),
 	inStock: boolean("in_stock").default(true).notNull(),
 }, (table) => [
-	index().using("btree", table.retailerId.asc().nullsLast().op("int8_ops"), table.skuUpc.asc().nullsLast().op("text_ops")),
-	index().using("btree", table.userId.asc().nullsLast().op("bool_ops"), table.isActive.asc().nullsLast().op("int8_ops")),
+	index().using("btree", table.retailerId.asc().nullsLast(), table.skuUpc.asc().nullsLast()),
+	index().using("btree", table.userId.asc().nullsLast(), table.isActive.asc().nullsLast()),
 	foreignKey({
 			columns: [table.userId],
 			foreignColumns: [users.id],
@@ -503,7 +410,7 @@ export const aiAgentRoutes = pgTable("ai_agent_routes", {
 	createdAt: timestamp("created_at", { mode: 'date' }),
 	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
-	index().using("btree", table.contextKey.asc().nullsLast().op("int4_ops"), table.priority.asc().nullsLast().op("int4_ops")),
+	index().using("btree", table.contextKey.asc().nullsLast(), table.priority.asc().nullsLast()),
 	foreignKey({
 			columns: [table.agentId],
 			foreignColumns: [aiAgents.id],
@@ -534,9 +441,9 @@ export const aiInvocations = pgTable("ai_invocations", {
 	cached: boolean().default(false).notNull(),
 	createdAt: timestamp("created_at", { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 }, (table) => [
-	index().using("btree", table.agentId.asc().nullsLast().op("int8_ops"), table.createdAt.asc().nullsLast().op("int8_ops")),
-	index().using("btree", table.requestHash.asc().nullsLast().op("bpchar_ops")),
-	index().using("btree", table.status.asc().nullsLast().op("timestamp_ops"), table.createdAt.asc().nullsLast().op("text_ops")),
+	index().using("btree", table.agentId.asc().nullsLast(), table.createdAt.asc().nullsLast()),
+	index().using("btree", table.requestHash.asc().nullsLast()),
+	index().using("btree", table.status.asc().nullsLast(), table.createdAt.asc().nullsLast()),
 	foreignKey({
 			columns: [table.userId],
 			foreignColumns: [users.id],
@@ -569,7 +476,7 @@ export const aiInvocationCache = pgTable("ai_invocation_cache", {
 	lastHitAt: timestamp("last_hit_at", { mode: 'date' }),
 	createdAt: timestamp("created_at", { mode: 'date' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 }, (table) => [
-	index().using("btree", table.agentId.asc().nullsLast().op("int4_ops"), table.agentVersion.asc().nullsLast().op("int4_ops")),
+	index().using("btree", table.agentId.asc().nullsLast(), table.agentVersion.asc().nullsLast()),
 	foreignKey({
 			columns: [table.agentId],
 			foreignColumns: [aiAgents.id],
@@ -626,8 +533,8 @@ export const authSessions = pgTable("auth_sessions", {
 	createdAt: timestamp("created_at", { mode: 'date' }),
 	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
-	index().using("btree", table.expiresAt.asc().nullsLast().op("timestamp_ops")),
-	index().using("btree", table.userId.asc().nullsLast().op("int8_ops")),
+	index().using("btree", table.expiresAt.asc().nullsLast()),
+	index().using("btree", table.userId.asc().nullsLast()),
 	foreignKey({
 			columns: [table.userId],
 			foreignColumns: [users.id],
@@ -652,7 +559,7 @@ export const authAccounts = pgTable("auth_accounts", {
 	createdAt: timestamp("created_at", { mode: 'date' }),
 	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
-	index().using("btree", table.userId.asc().nullsLast().op("int8_ops")),
+	index().using("btree", table.userId.asc().nullsLast()),
 	foreignKey({
 			columns: [table.userId],
 			foreignColumns: [users.id],
@@ -669,5 +576,5 @@ export const authVerifications = pgTable("auth_verifications", {
 	createdAt: timestamp("created_at", { mode: 'date' }),
 	updatedAt: timestamp("updated_at", { mode: 'date' }),
 }, (table) => [
-	index().using("btree", table.identifier.asc().nullsLast().op("text_ops")),
+	index().using("btree", table.identifier.asc().nullsLast()),
 ]);

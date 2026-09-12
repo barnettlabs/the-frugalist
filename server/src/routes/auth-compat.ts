@@ -57,9 +57,9 @@ async function userPayload(email: string) {
 	const [row] = await db().select().from(users).where(eq(users.email, email)).limit(1);
 	if (!row) throw HttpError.unauthenticated();
 
-	// The clients type against the full user row minus the credential columns.
-	const { password: _password, rememberToken: _rememberToken, ...rest } = row;
-	return serializeRow(rest);
+	// The whole row is safe to return now: credentials live on auth_accounts,
+	// and users.password / users.remember_token were dropped with Laravel.
+	return serializeRow(row);
 }
 
 const loginSchema = z.object({

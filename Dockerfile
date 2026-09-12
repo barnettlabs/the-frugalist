@@ -75,6 +75,8 @@ COPY --from=prod-deps --chown=frugalist:nodejs /app/packages/contracts/node_modu
 COPY --from=build --chown=frugalist:nodejs /app/packages/contracts/dist ./packages/contracts/dist
 COPY --from=build --chown=frugalist:nodejs /app/packages/contracts/package.json ./packages/contracts/package.json
 COPY --from=build --chown=frugalist:nodejs /app/server/dist ./server/dist
+# The migration SQL ships with the image so the pre-deploy command can apply it.
+COPY --from=build --chown=frugalist:nodejs /app/server/drizzle ./server/drizzle
 
 USER frugalist
 EXPOSE 8787

@@ -4,6 +4,7 @@ import { HTTPException } from 'hono/http-exception';
 import { ZodError } from 'zod';
 
 import { isProduction } from '../config/env.js';
+import { captureError } from '../observability/sentry.js';
 
 /**
  * Single place where a thrown error becomes a response body.
@@ -34,9 +35,22 @@ export const errorHandler: ErrorHandler = (err, c) => {
 		return c.json({ message: err.message || 'Request failed.' }, err.status);
 	}
 
-	// Anything unrecognised is a bug. Log it with the request context attached
-	// and tell the client nothing about internals.
+	/*
+	 * Anything unrecognised is a bug: log it, report it, and tell the client
+	 * nothing about internals.
+	 *
+	 * Note what is *not* reported - HttpError, ZodError and HTTPException all
+	 * return above. A 422 from a form or a 404 from a bad id is not a defect, and
+	 * reporting them would bury the real failures under routine traffic.
+	 */
 	c.get('logger')?.error({ err }, 'unhandled error');
+
+	captureError(err, {
+		requestId: c.get('requestId'),
+		userId: c.get('user')?.id,
+		path: c.req.path,
+		method: c.req.method,
+	});
 
 	return c.json(
 		{

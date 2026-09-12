@@ -1,3 +1,8 @@
+// Initialised before anything else - see the note in server.ts.
+import { initSentry } from './observability/sentry.js';
+
+initSentry();
+
 import { Worker } from 'bullmq';
 
 import { env } from './config/env.js';
@@ -8,6 +13,9 @@ import { withoutOverlapping } from './jobs/lock.js';
 import { closeQueues, QUEUE_NAMES, type PriceCheckJob, registerRepeatableJobs } from './jobs/queues.js';
 import { sendPendingAlerts } from './jobs/send-alerts.js';
 import { logger } from './lib/logger.js';
+import { withHeartbeat } from './observability/heartbeat.js';
+import { shutdownAnalytics } from './observability/analytics.js';
+import { captureJobError, flushSentry } from './observability/sentry.js';
 
 /**
  * The background worker. Replaces Horizon and the Laravel scheduler.
@@ -36,34 +44,39 @@ log.info('worker starting');
 
 const priceCheckWorker = new Worker<PriceCheckJob>(
 	QUEUE_NAMES.priceChecks,
-	async (job) => {
-		// A run that outlives its TTL is worse than a skipped tick, so the lock is
-		// held for two hours - comfortably longer than any real run, short enough
-		// that a hard crash does not wedge the schedule for a day.
-		const result = await withoutOverlapping('price-check', 2 * 60 * 60, () =>
-			checkPrices({ ...job.data, limit: job.data.limit ?? 50 }),
-		);
+	async (job) =>
+		withHeartbeat('price-check', async () => {
+			// A run that outlives its TTL is worse than a skipped tick, so the lock
+			// is held for two hours - comfortably longer than any real run, short
+			// enough that a hard crash does not wedge the schedule for a day.
+			const result = await withoutOverlapping('price-check', 2 * 60 * 60, () =>
+				checkPrices({ ...job.data, limit: job.data.limit ?? 50 }),
+			);
 
-		if (!result.ran) {
-			return { skipped: true, reason: 'previous run still in progress' };
-		}
+			// A skipped run still pings success: the schedule is working, a previous
+			// run is simply still going. Reporting it as a failure would page
+			// someone for a long job doing its job.
+			if (!result.ran) {
+				return { skipped: true, reason: 'previous run still in progress' };
+			}
 
-		return result.value;
-	},
+			return result.value;
+		}),
 	{ connection: redisConnection(), concurrency: 1 },
 );
 
 const notificationWorker = new Worker(
 	QUEUE_NAMES.notifications,
-	async () => {
-		const result = await withoutOverlapping('send-alerts', 15 * 60, () => sendPendingAlerts());
+	async () =>
+		withHeartbeat('send-alerts', async () => {
+			const result = await withoutOverlapping('send-alerts', 15 * 60, () => sendPendingAlerts());
 
-		if (!result.ran) {
-			return { skipped: true, reason: 'previous run still in progress' };
-		}
+			if (!result.ran) {
+				return { skipped: true, reason: 'previous run still in progress' };
+			}
 
-		return result.value;
-	},
+			return result.value;
+		}),
 	{ connection: redisConnection(), concurrency: 1 },
 );
 
@@ -77,10 +90,13 @@ for (const worker of [priceCheckWorker, notificationWorker]) {
 			{ queue: worker.name, jobId: job?.id, attempts: job?.attemptsMade, err },
 			'job failed',
 		);
+
+		captureJobError(err, { queue: worker.name, jobId: job?.id, jobName: job?.name });
 	});
 
 	worker.on('error', (err) => {
 		log.error({ queue: worker.name, err }, 'worker error');
+		captureJobError(err, { queue: worker.name });
 	});
 }
 
@@ -104,6 +120,7 @@ async function shutdown(signal: string) {
 	}, 30_000).unref();
 
 	await Promise.all([priceCheckWorker.close(), notificationWorker.close()]);
+	await Promise.all([flushSentry(), shutdownAnalytics()]);
 	await closeQueues();
 	await closeRedis();
 	await closeDb();

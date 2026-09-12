@@ -25,7 +25,20 @@
  *    the bigint *foreign key* columns are already introspected as numbers -
  *    only the serial primary keys differ.
  *
- * 3. Generated imports get an explicit .js extension.
+ * 3. Explicit index operator classes are stripped.
+ *
+ *    drizzle-kit assigns the *first* column's operator class to every column in
+ *    a composite index, which is simply wrong - it emitted
+ *    `phoneNumber.op("int8_ops")` for a varchar and `userId.op("bool_ops")` for
+ *    a bigint. Generating the baseline migration from that produced SQL Postgres
+ *    rejects outright: `operator class "int4_ops" does not accept data type
+ *    character varying`.
+ *
+ *    None of these indexes had explicit operator classes to begin with - they
+ *    were created without them and Postgres chose the correct default per column
+ *    type. Removing the annotations restores exactly that.
+ *
+ * 4. Generated imports get an explicit .js extension.
  *
  *    drizzle-kit writes `from "./schema"` in relations.ts. TypeScript accepts
  *    that under moduleResolution: bundler, so type-check and tsx both pass -
@@ -33,7 +46,7 @@
  *    startup with ERR_MODULE_NOT_FOUND. It only shows up in a real build, which
  *    is why the image is built in CI rather than trusted.
  *
- * 4. The explanatory header is restored, since drizzle-kit overwrites the file
+ * 5. The explanatory header is restored, since drizzle-kit overwrites the file
  *    wholesale and would otherwise drop it.
  */
 
@@ -73,6 +86,9 @@ source = source.replace(/mode: 'string'/g, "mode: 'date'");
 const bigints = (source.match(/bigserial\(\{ mode: "bigint" \}\)/g) ?? []).length;
 source = source.replace(/bigserial\(\{ mode: "bigint" \}\)/g, 'bigserial({ mode: "number" })');
 
+const opClasses = (source.match(/\.op\("[a-z0-9_]+"\)/g) ?? []).length;
+source = source.replace(/\.op\("[a-z0-9_]+"\)/g, '');
+
 writeFileSync(target, HEADER + source);
 
 // relations.ts is generated alongside schema.ts and has the same problem.
@@ -86,5 +102,7 @@ if (existsSync(relations)) {
 }
 
 console.log(
-	`normalised ${timestamps} timestamps to mode: 'date', ${bigints} bigserial ids to mode: 'number', and fixed ESM import extensions`,
+	`normalised ${timestamps} timestamps to mode: 'date', ${bigints} bigserial ids to ` +
+		`mode: 'number', stripped ${opClasses} bogus index operator classes, and fixed ` +
+		'ESM import extensions',
 );

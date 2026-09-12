@@ -10,6 +10,7 @@ import {
 	aiInvocations,
 	aiProviders,
 } from '../../db/schema.js';
+import { trackGeneration } from '../../observability/analytics.js';
 import { chat, type ProviderConfig } from './client.js';
 import { renderPrompt } from './prompt.js';
 import { validateAgainstSchema, type JsonSchema } from './schema-validator.js';
@@ -154,6 +155,19 @@ export async function runAgent(options: {
 				rawBody: null,
 			});
 
+			reportGeneration({
+				agent,
+				providerName: provider.name,
+				model,
+				userId,
+				promptTokens: null,
+				completionTokens: null,
+				latencyMs: 0,
+				cached: true,
+				status: 'success',
+				error: null,
+			});
+
 			return { ok: true, data: cachedResponse, cached: true, cacheKey, messages };
 		}
 	}
@@ -185,6 +199,19 @@ export async function runAgent(options: {
 			completionTokens: null,
 			cached: false,
 			rawBody: result.rawBody,
+		});
+
+		reportGeneration({
+			agent,
+			providerName: provider.name,
+			model,
+			userId,
+			promptTokens: null,
+			completionTokens: null,
+			latencyMs: result.latencyMs,
+			cached: false,
+			status: 'error',
+			error: result.error,
 		});
 
 		return {
@@ -246,6 +273,19 @@ export async function runAgent(options: {
 			rawBody: result.rawBody,
 		});
 
+		reportGeneration({
+			agent,
+			providerName: provider.name,
+			model,
+			userId,
+			promptTokens: result.promptTokens,
+			completionTokens: result.completionTokens,
+			latencyMs: result.latencyMs,
+			cached: false,
+			status: 'invalid_json',
+			error: parseError,
+		});
+
 		return {
 			ok: false,
 			code: 'invalid_json',
@@ -293,6 +333,19 @@ export async function runAgent(options: {
 		completionTokens: result.completionTokens,
 		cached: false,
 		rawBody: null,
+	});
+
+	reportGeneration({
+		agent,
+		providerName: provider.name,
+		model,
+		userId,
+		promptTokens: result.promptTokens,
+		completionTokens: result.completionTokens,
+		latencyMs: result.latencyMs,
+		cached: false,
+		status: 'success',
+		error: null,
 	});
 
 	return {
@@ -392,6 +445,38 @@ function normalize(value: unknown): unknown {
 
 function sha256(input: string): string {
 	return createHash('sha256').update(input).digest('hex');
+}
+
+/**
+ * Forwarded to PostHog's LLM analytics alongside the database write, so the two
+ * always agree. The ai_invocations row already carries model, tokens, latency
+ * and cache state, which is why per-agent cost tracking needs no new schema.
+ */
+function reportGeneration(input: {
+	agent: AgentRecord;
+	providerName: string;
+	model: string | null;
+	userId: number | null;
+	promptTokens: number | null;
+	completionTokens: number | null;
+	latencyMs: number | null;
+	cached: boolean;
+	status: string;
+	error: string | null;
+}): void {
+	trackGeneration({
+		userId: input.userId,
+		agentSlug: input.agent.slug,
+		agentVersion: input.agent.version ?? 1,
+		model: input.model,
+		provider: input.providerName,
+		promptTokens: input.promptTokens,
+		completionTokens: input.completionTokens,
+		latencyMs: input.latencyMs,
+		cached: input.cached,
+		status: input.status,
+		error: input.error,
+	});
 }
 
 async function logInvocation(input: {

@@ -25,6 +25,7 @@
     "@hono/zod-openapi": "^0.18.3",
     "@node-rs/bcrypt": "^1.10.8",
     "@scalar/hono-api-reference": "^0.5.164",
+    "@sentry/node": "^10.74.0",
     "better-auth": "^1.7.3",
     "bullmq": "^5.34.0",
     "drizzle-orm": "^0.45.2",
@@ -33,6 +34,7 @@
     "ioredis": "^5.4.2",
     "pino": "^9.5.0",
     "postgres": "^3.4.5",
+    "posthog-node": "^5.52.1",
     "zod": "^3.25.76"
   },
   "devDependencies": {

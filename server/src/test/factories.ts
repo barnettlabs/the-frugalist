@@ -11,9 +11,11 @@ import { authAccounts, users } from '../db/schema.js';
  * Tests create the rows they need rather than relying on a seeded database, so
  * a run is reproducible and does not depend on what a previous run left behind.
  *
- * `createLegacyUser` deliberately writes a *bcrypt* hash - the shape Laravel
- * produced - because the case worth protecting is that those credentials still
- * work through Better Auth, which hashes with scrypt.
+ * `createLegacyUser` deliberately writes a *bcrypt* hash onto the credential
+ * account - the shape Laravel produced - because the case worth protecting is
+ * that those credentials still work through Better Auth, which hashes with
+ * scrypt. The hash goes only on auth_accounts now; users.password was dropped
+ * along with Laravel.
  */
 
 /**
@@ -38,7 +40,6 @@ export async function createLegacyUser(options: { password?: string; isAdmin?: b
 			name: 'Legacy User',
 			firstName: 'Legacy',
 			lastName: 'User',
-			password: bcryptHash,
 			isAdmin: options.isAdmin ?? false,
 			createdAt: now,
 			updatedAt: now,

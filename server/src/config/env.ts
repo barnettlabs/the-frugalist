@@ -66,6 +66,11 @@ const envSchema = z.object({
 	POSTHOG_KEY: z.string().optional(),
 	POSTHOG_HOST: z.string().default('https://us.i.posthog.com'),
 
+	// One heartbeat monitor per scheduled job, so a working price check and a
+	// broken notification run cannot look identical. See observability/heartbeat.ts.
+	HEARTBEAT_PRICE_CHECK_URL: z.string().url().optional(),
+	HEARTBEAT_SEND_ALERTS_URL: z.string().url().optional(),
+
 	// Lets the worker be disabled in the API process during local development,
 	// so a single `pnpm dev` can run both without double-processing jobs.
 	RUN_WORKER_IN_PROCESS: bool(false),

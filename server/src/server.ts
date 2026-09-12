@@ -1,9 +1,22 @@
+/*
+ * Sentry is initialised before anything else is imported.
+ *
+ * Its instrumentation patches modules as they load, so anything imported before
+ * this call is not traced. That makes import order load-bearing here rather than
+ * stylistic.
+ */
+import { initSentry } from './observability/sentry.js';
+
+initSentry();
+
 import { serve } from '@hono/node-server';
 
 import { env } from './config/env.js';
 import { closeDb } from './db/client.js';
 import { createApp } from './http/app.js';
 import { logger } from './lib/logger.js';
+import { shutdownAnalytics } from './observability/analytics.js';
+import { flushSentry } from './observability/sentry.js';
 
 const config = env();
 const log = logger();
@@ -23,6 +36,9 @@ const server = serve({ fetch: app.fetch, port: config.PORT }, (info) => {
 async function shutdown(signal: string) {
 	log.info({ signal }, 'shutting down');
 	server.close(async () => {
+		// Telemetry is flushed before the process exits, otherwise the reports
+		// from the crash you most want to see are the ones that get lost.
+		await Promise.all([flushSentry(), shutdownAnalytics()]);
 		await closeDb();
 		process.exit(0);
 	});

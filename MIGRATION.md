@@ -3,10 +3,10 @@
 Working document for the backend migration. Status is current as of the last
 commit on `staging`.
 
-**The short version:** phases 0–3 are done and verified, phase 5 has one of 26
-controllers ported as the reference pattern, and phases 4 and 6 have not been
-started. Roughly a third of the migration is complete. Production is untouched
-and still runs Laravel on MySQL.
+**The short version:** phases 0–4 are done and verified, phase 5 has one of 26
+controllers ported as the reference pattern, and phase 6 has not been started.
+Roughly half the migration is complete. Production is untouched and still runs
+Laravel on MySQL.
 
 ---
 
@@ -18,7 +18,7 @@ and still runs Laravel on MySQL.
 | 1 | MySQL → Postgres | **Done, verified** — 38 migrations and 128 tests pass on Postgres. |
 | 2 | Hono skeleton + calculators | **Done, verified** — 78/78 differential match against live Laravel. |
 | 3 | Auth (Better Auth) | **Done, verified** — Laravel bcrypt passwords still sign in. |
-| 4 | Workers, AI pipeline, retailers, notifications | **Not started.** |
+| 4 | Workers, retailers, notifications | **Done, verified** — worker runs from the container, processes both job types. AI pipeline still outstanding. |
 | 5 | 26 CRUD controllers | **1 of 26** — finance sheets, as the reference pattern. |
 | 6 | Decommission Laravel | **Not started.** |
 
@@ -43,9 +43,15 @@ Verification:
 ```bash
 node tools/diff-endpoints.mjs      # 78/78 identical responses, both services live
 node tools/diff-sheet-shape.mjs    # record shape matches Laravel, all 26 keys
-cd server && pnpm vitest run       # 66
+cd server && pnpm vitest run       # 93
 cd packages/contracts && pnpm vitest run   # 101
 cd api && php artisan test         # 128
+```
+
+The worker:
+
+```bash
+cd server && pnpm dev:worker       # registers 3 repeatable jobs, processes both queues
 ```
 
 The container builds and serves:
@@ -115,12 +121,14 @@ exports pointed at `.ts` source.
 
 ## Next steps, in order
 
-1. **Phase 4 — workers.** BullMQ on Valkey, repeatable jobs replacing the four
-   scheduler entries, Bull Board. Then the AI pipeline (the Vercel AI SDK's
-   `generateObject` + Zod replaces `OutputValidator` and its retry loop), both
-   retailer clients, and mail/SMS/push onto official SDKs. Run both schedulers in
-   parallel for one cycle with Laravel in dry-run and diff the output before
-   retiring Horizon.
+1. **Finish Phase 4 — the AI pipeline.** The Vercel AI SDK's `generateObject`
+   plus Zod replaces `OutputValidator` and its JSON-repair retry loop outright.
+   Also still outstanding: Bull Board for queue visibility, and swapping the
+   hand-rolled Expo client for `expo-server-sdk` (which adds receipt handling and
+   chunking — a behaviour change, so its own commit).
+
+   Before retiring Horizon in production, run both schedulers for one cycle with
+   the Laravel side in `--dry-run` and diff the output.
 
 2. **Phase 5 — the remaining 25 controllers.** `server/src/routes/finance-sheets.ts`
    is the reference: `requireAuth` on the group, `findOwned()` for id-addressed
@@ -135,6 +143,31 @@ exports pointed at `.ts` source.
    delete Laravel, drop `personal_access_tokens` and `users.password`.
 
 ---
+
+## Latent defects found while porting
+
+All three are **preserved bug-for-bug** in the TypeScript port. Each one changes
+what users receive, so fixing it is a behaviour change that belongs in its own
+commit with the consequences thought through — not buried inside a migration.
+
+**Home Depot prices have always been 0.00.** `HomeDepotService::parseProductData`
+sets a `price` key, but `standardizeProductData` only reads `retail_price` and
+`current_price`. The price is parsed correctly and then dropped. Fixing it is a
+one-line change — and it would immediately start firing price-drop alerts for
+every Home Depot product that has looked free since the feature shipped, so the
+alert consequences need thinking about first.
+
+**The price-drop email's "View Product" button has never rendered.** The Blade
+template guards on `$product->retailer_url`, and there is no such column on
+`tracked_products`; Eloquent returns null for a missing attribute rather than
+erroring. The URL *is* available in `product_metadata`, which the retailer
+clients populate. `priceDropEmail` accepts an `availableRetailerUrl` parameter
+that is deliberately unused, so turning it on is a one-line change in one place.
+
+**SMS has never run.** The branch in `CheckProductPrices` was commented out
+"waiting for Twilio approval". It is left out of the port entirely rather than
+ported-and-disabled, so the code does not imply a working path. The Twilio
+client is still needed for phone verification, which does work.
 
 ## Known gaps
 

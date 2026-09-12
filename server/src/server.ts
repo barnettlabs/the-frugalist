@@ -10,7 +10,9 @@ const log = logger();
 const app = createApp();
 
 const server = serve({ fetch: app.fetch, port: config.PORT }, (info) => {
-	log.info({ port: info.port, env: config.APP_ENV }, 'api listening');
+	// env is stamped on every line by pino's `base`, so it is not repeated here -
+	// a duplicate JSON key is invalid and some parsers drop the record.
+	log.info({ port: info.port }, 'api listening');
 });
 
 /**

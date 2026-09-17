@@ -59,9 +59,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # No `version:` here on purpose. The action refuses to run when the
+      # version is given in both places, and package.json's packageManager is
+      # the one that also governs local installs - so it stays the single
+      # source of truth rather than a second number to keep in step.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - uses: actions/setup-node@v4
         with:
@@ -101,9 +103,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # No `version:` here on purpose. The action refuses to run when the
+      # version is given in both places, and package.json's packageManager is
+      # the one that also governs local installs - so it stays the single
+      # source of truth rather than a second number to keep in step.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - uses: actions/setup-node@v4
         with:
@@ -147,9 +151,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # No `version:` here on purpose. The action refuses to run when the
+      # version is given in both places, and package.json's packageManager is
+      # the one that also governs local installs - so it stays the single
+      # source of truth rather than a second number to keep in step.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - uses: actions/setup-node@v4
         with:

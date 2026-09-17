@@ -131,6 +131,45 @@ jobs:
       - name: Build
         run: pnpm --filter thefrugalist-web build
 
+  # ---------------------------------------------------------------- mobile
+  #
+  # Installed with --ignore-workspace, because the Expo app is deliberately not
+  # a workspace member: it ships its own .npmrc with node-linker=hoisted, which
+  # Metro and the Jest preset both need. Installing it as a member overrides that
+  # and module resolution breaks at test and bundle time.
+  mobile:
+    name: Mobile (Expo)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-workspace
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Type-check
+        run: pnpm run type-check
+
+      - name: Translations
+        run: pnpm run lint:translations
+
+      - name: Tests
+        run: pnpm test
+
   # ----------------------------------------------------------------- image
   #
   # This job exists because three deployment failures were found only by

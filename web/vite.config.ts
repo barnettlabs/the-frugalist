@@ -19,9 +19,7 @@ export default defineConfig(({ isSsrBuild }) => {
 	 * The SSR build exists only to prerender public routes at build time
 	 * (see scripts/prerender.mjs). It must not land in the client output.
 	 */
-	const outDir = isSsrBuild
-		? path.resolve(__dirname, 'node_modules/.prerender')
-		: path.resolve(__dirname, 'dist');
+	const outDir = isSsrBuild ? path.resolve(__dirname, 'node_modules/.prerender') : path.resolve(__dirname, 'dist');
 
 	return {
 		plugins: [

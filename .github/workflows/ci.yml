@@ -255,8 +255,13 @@ jobs:
           # scripts/migrate is Render's preDeployCommand. It is as much an
           # entrypoint as the other two, and a module it cannot resolve fails
           # the deploy before the service ever starts.
+          # Bounded, because two of these are supposed to run forever: the API
+          # listens, and the worker retries an unreachable Redis rather than
+          # giving up. Being killed by `timeout` is therefore a pass - the only
+          # failure this step looks for is a module that would not resolve, and
+          # that happens within the first moments of startup or not at all.
           for entry in server worker scripts/migrate scripts/seed; do
-            output=$(docker run --rm \
+            output=$(timeout 20 docker run --rm \
               -e DATABASE_URL=postgres://u:p@127.0.0.1:5432/none \
               -e REDIS_URL=redis://127.0.0.1:6379 \
               -e SESSION_SECRET=ci-only-secret-at-least-32-characters \

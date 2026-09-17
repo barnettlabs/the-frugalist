@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import { db } from '../db/client.js';
-import { vehicleFinanceSheets } from '../db/schema.js';
+import { vehicleFinanceSheets, vehicleLeaseSheets } from '../db/schema.js';
 import { createApp } from '../http/app.js';
 import { createLegacyUser, createPlainUser, signIn } from '../test/factories.js';
 
@@ -25,6 +25,7 @@ let token = '';
 let userId = 0;
 let otherUserId = 0;
 let foreignSheetId = 0;
+let foreignLeaseSheetId = 0;
 
 const authed = (path: string, init: RequestInit = {}) =>
 	app.request(path, {
@@ -56,6 +57,23 @@ beforeAll(async () => {
 		.returning();
 
 	foreignSheetId = Number(foreign!.id);
+
+	// A lease sheet too, because ids are per-table. A finance id is not a
+	// stand-in for a lease id: the sequences are independent, so on a fresh
+	// database the caller's own first lease sheet and the other user's first
+	// finance sheet are both id 1, and asking the lease endpoint for that id
+	// returns the caller's own row - a 200 that looks exactly like a leak.
+	const [foreignLease] = await db()
+		.insert(vehicleLeaseSheets)
+		.values({
+			userId: otherUserId,
+			sheetName: 'Not yours either',
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		} as typeof vehicleLeaseSheets.$inferInsert)
+		.returning();
+
+	foreignLeaseSheetId = Number(foreignLease!.id);
 });
 
 describe('authentication', () => {
@@ -287,10 +305,22 @@ describe('lease sheets', () => {
 	});
 
 	it('does not leak another user lease sheet', async () => {
-		const res = await authed(`/api/vehicle-lease-sheets/${foreignSheetId}`);
-		// The foreign id belongs to a finance sheet, so this is a 404 here rather
-		// than a 403 - different table, same guard.
+		const res = await authed(`/api/vehicle-lease-sheets/${foreignLeaseSheetId}`);
+
 		expect([403, 404]).toContain(res.status);
+	});
+
+	it('does not confuse a finance sheet id for a lease one', async () => {
+		// Same number, different table. Whatever this returns must not be the
+		// other user's finance sheet.
+		const res = await authed(`/api/vehicle-lease-sheets/${foreignSheetId}`);
+
+		if (res.status === 200) {
+			const body = (await res.json()) as { user_id: number };
+			expect(body.user_id).toBe(userId);
+		} else {
+			expect([403, 404]).toContain(res.status);
+		}
 	});
 });
 

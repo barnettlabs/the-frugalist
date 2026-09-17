@@ -1,17 +1,19 @@
 {
-  "name": "the-frugalist",
-  "private": true,
-  "packageManager": "pnpm@10.12.4",
-  "engines": {
-    "node": ">=22"
-  },
-  "scripts": {
-    "contracts:build": "pnpm --filter @frugalist/contracts build",
-    "server:dev": "pnpm --filter @frugalist/contracts build && pnpm --filter @frugalist/server dev",
-    "server:test": "pnpm --filter @frugalist/server test",
-    "server:check": "pnpm --filter @frugalist/server check",
-    "web:dev": "pnpm --filter thefrugalist-web dev",
-    "check-all": "pnpm -r --filter '!thefrgualist-app' run check-all",
-    "build": "pnpm --filter @frugalist/contracts build && pnpm --filter @frugalist/server build"
-  }
+	"name": "the-frugalist",
+	"private": true,
+	"packageManager": "pnpm@10.12.4",
+	"engines": {
+		"node": ">=22"
+	},
+	"scripts": {
+		"dev": "./scripts/dev.sh",
+		"dev:api": "./scripts/dev.sh --no-web",
+		"contracts:build": "pnpm --filter @frugalist/contracts build",
+		"server:dev": "pnpm --filter @frugalist/contracts build && pnpm --filter @frugalist/server dev",
+		"server:test": "pnpm --filter @frugalist/server test",
+		"server:check": "pnpm --filter @frugalist/server check",
+		"web:dev": "pnpm --filter thefrugalist-web dev",
+		"check-all": "pnpm -r --filter '!thefrgualist-app' run check-all",
+		"build": "pnpm --filter @frugalist/contracts build && pnpm --filter @frugalist/server build"
+	}
 }

@@ -19,6 +19,21 @@ make sense with that history, and the comments say so where it matters.
 
 ## Development Commands
 
+### Running everything
+
+```bash
+pnpm dev                      # containers, contracts build, migrations, all 3 processes
+pnpm dev --no-web             # API and worker only
+```
+
+`scripts/dev.sh` is the whole local stack in one command. The three processes
+are the last step; the two before them are the ones that cost time when skipped
+- contracts has to be *built* because its exports resolve through `dist/`, and
+the database has to be *migrated* because a fresh container starts empty. Ctrl-C
+stops everything.
+
+To run the pieces separately, see the sections below.
+
 ### Local dependencies
 
 ```bash

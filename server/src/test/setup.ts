@@ -12,8 +12,9 @@ setEnvForTesting(
 		PORT: '8787',
 		LOG_LEVEL: 'silent' as never,
 		DATABASE_URL:
-			process.env.TEST_DATABASE_URL ?? 'postgres://jasonbarnett@127.0.0.1:5432/frugalist_test',
-		REDIS_URL: process.env.TEST_REDIS_URL ?? 'redis://127.0.0.1:6379/1',
+			process.env.TEST_DATABASE_URL ??
+			'postgres://frugalist:frugalist@127.0.0.1:55432/frugalist_test',
+		REDIS_URL: process.env.TEST_REDIS_URL ?? 'redis://127.0.0.1:56379/1',
 		CORS_ORIGINS: 'http://localhost:5173',
 		SESSION_SECRET: 'test-secret-that-is-at-least-32-characters',
 		MAIL_TRANSPORT: 'log',

@@ -25,12 +25,19 @@ make sense with that history, and the comments say so where it matters.
 docker compose up -d          # Postgres 17, Valkey 8, Mailpit (UI on :58025)
 ```
 
+These publish on non-default ports (Postgres `55432`, Valkey `56379`) so they
+cannot collide with a host install. `server/.env.example` points at them
+deliberately: a host Postgres 14 answering on 5432 will run the app and the
+suite quite happily, and you will not find out you were testing against the
+wrong engine version until production.
+
 ### Server — run from `server/`
 
 ```bash
 pnpm dev                      # API on :8787, watch mode
 pnpm dev:worker               # BullMQ worker + the repeatable schedule
 pnpm test                     # Vitest (needs Postgres + Redis)
+pnpm db:migrate:test          # apply migrations to the test database
 pnpm type-check
 pnpm db:migrate               # apply Drizzle migrations
 pnpm db:pull                   # regenerate schema.ts from the database

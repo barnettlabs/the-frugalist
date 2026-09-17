@@ -55,6 +55,7 @@ pnpm test                     # Vitest (needs Postgres + Redis)
 pnpm db:migrate:test          # apply migrations to the test database
 pnpm type-check
 pnpm db:migrate               # apply Drizzle migrations
+pnpm db:seed                  # reference data (retailers, schedules, AI agents)
 pnpm db:pull                   # regenerate schema.ts from the database
 pnpm db:generate              # create a migration from schema changes
 pnpm check-all                # type-check + tests
@@ -124,6 +125,29 @@ a bug. Each is explained at the relevant source file.
 - **`db/schema.ts` is generated.** Do not hand-edit it; change the database with
   a migration and run `pnpm db:pull`. `tools/normalize-schema.mjs` fixes three
   drizzle-kit generation bugs on every pull and the reasons are documented there.
+
+### Seeding
+
+`pnpm db:seed` inserts the rows the app needs to function but that migrations do
+not create: the Best Buy retailer, the three global price-check schedules, and
+the AI provider, agents and routes. Without them those features do not fail
+loudly - they resolve nothing and quietly do nothing.
+
+Every insert is keyed on a natural key and skipped when present, so it is safe
+to re-run and safe in production. It deliberately never *updates*: `is_active`,
+`enabled` and API keys are operator-owned, and a seed that reset them on each
+deploy would be a trap.
+
+The first user is created by the same script, and only when asked:
+
+```bash
+SEED_EMAIL=you@example.com SEED_PASSWORD='...' SEED_ADMIN=true pnpm db:seed
+```
+
+It goes through Better Auth's sign-up rather than inserting rows, because a
+user is a profile *and* a credential account, and the hash has to match what
+sign-in verifies with. An existing user is never modified - the password is not
+reset - though `SEED_ADMIN=true` will promote one.
 
 ### Database
 

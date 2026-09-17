@@ -221,7 +221,7 @@ jobs:
           # scripts/migrate is Render's preDeployCommand. It is as much an
           # entrypoint as the other two, and a module it cannot resolve fails
           # the deploy before the service ever starts.
-          for entry in server worker scripts/migrate; do
+          for entry in server worker scripts/migrate scripts/seed; do
             output=$(docker run --rm \
               -e DATABASE_URL=postgres://u:p@127.0.0.1:5432/none \
               -e REDIS_URL=redis://127.0.0.1:6379 \

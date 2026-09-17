@@ -37,7 +37,7 @@ env();
 
 const log = logger();
 
-await assertNoEviction();
+await assertNoEviction(log);
 await registerRepeatableJobs();
 
 log.info('worker starting');

@@ -16,7 +16,7 @@ import { ClipboardDocumentCheckIcon } from '@heroicons/vue/24/outline';
 				</p>
 			</div>
 
-			<div class="bg-surface/80 backdrop-blur-sm border border-border rounded-lg p-6 max-w-md mx-auto">
+			<div class="bg-surface/80 backdrop-blur-xs border border-border rounded-lg p-6 max-w-md mx-auto">
 				<h2 class="text-sm font-medium text-primary mb-3">What Review will help with:</h2>
 				<ul class="text-left text-sm text-text-muted space-y-2">
 					<li class="flex items-start">

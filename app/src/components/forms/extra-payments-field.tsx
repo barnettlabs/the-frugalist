@@ -42,8 +42,8 @@ export function ExtraPaymentsField<T extends FieldValues>({ name, control, maxMo
 
 	return (
 		<View>
-			<View className="flex-row items-center justify-between mb-3">
-				<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+			<View className="mb-3 flex-row items-center justify-between">
+				<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 					Extra payment plans
 				</Text>
 				<Pressable
@@ -56,11 +56,11 @@ export function ExtraPaymentsField<T extends FieldValues>({ name, control, maxMo
 			</View>
 
 			{payments.length === 0 ? (
-				<View className="rounded-md border border-dashed border-border-light dark:border-border-dark p-5 items-center">
-					<Text className="font-display italic text-base tracking-tight text-text-primary-light dark:text-text-primary-dark">
+				<View className="items-center rounded-md border border-dashed border-border-light p-5 dark:border-border-dark">
+					<Text className="font-display text-base italic tracking-tight text-text-primary-light dark:text-text-primary-dark">
 						No extra payments yet.
 					</Text>
-					<Text className="text-xs text-text-muted-light dark:text-text-muted-dark mt-1 text-center">
+					<Text className="mt-1 text-center text-xs text-text-muted-light dark:text-text-muted-dark">
 						Add extras to shorten the loan and shave interest.
 					</Text>
 				</View>
@@ -76,8 +76,8 @@ export function ExtraPaymentsField<T extends FieldValues>({ name, control, maxMo
 						/>
 					))}
 
-					<View className="rounded-md border border-border-light dark:border-border-dark bg-tan-light dark:bg-charcoal-800 px-4 py-3 flex-row items-center justify-between">
-						<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+					<View className="flex-row items-center justify-between rounded-md border border-border-light bg-tan-light px-4 py-3 dark:border-border-dark dark:bg-charcoal-800">
+						<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 							Total extra
 						</Text>
 						<Text className="font-mono text-sm text-text-primary-light dark:text-text-primary-dark">
@@ -105,10 +105,10 @@ function PaymentRow({
 	const total = months * (row.paymentAmount || 0);
 
 	return (
-		<View className="rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-4">
+		<View className="rounded-md border border-border-light bg-surface-light p-4 dark:border-border-dark dark:bg-surface-dark">
 			<View className="flex-row gap-2">
 				<View className="flex-[1.4]">
-					<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-1.5">
+					<Text className="mb-1.5 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 						Amount
 					</Text>
 					<CompactInput
@@ -119,7 +119,7 @@ function PaymentRow({
 					/>
 				</View>
 				<View className="flex-1">
-					<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-1.5">
+					<Text className="mb-1.5 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 						Start mo.
 					</Text>
 					<CompactInput
@@ -130,7 +130,7 @@ function PaymentRow({
 					/>
 				</View>
 				<View className="flex-1">
-					<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-1.5">
+					<Text className="mb-1.5 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 						End mo.
 					</Text>
 					<CompactInput
@@ -143,13 +143,13 @@ function PaymentRow({
 			</View>
 
 			<View className="mt-3 flex-row items-center justify-between">
-				<Text className="text-[11px] font-mono text-text-muted-light dark:text-text-muted-dark">
+				<Text className="font-mono text-[11px] text-text-muted-light dark:text-text-muted-dark">
 					Months {row.startMonth || 1}–{row.endMonth || row.startMonth || 1} · $
 					{total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 				</Text>
 				<Pressable
 					onPress={onRemove}
-					className="rounded-md border border-border-light dark:border-border-dark px-2.5 py-1 active:opacity-60"
+					className="rounded-md border border-border-light px-2.5 py-1 active:opacity-60 dark:border-border-dark"
 				>
 					<Text className="text-[11px] font-medium text-danger">Remove</Text>
 				</Pressable>
@@ -185,8 +185,8 @@ function CompactInput({
 	};
 
 	return (
-		<View className="flex-row items-center rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-charcoal-900 px-3 h-10">
-			{prefix ? <Text className="text-sm text-text-muted-light dark:text-text-muted-dark mr-1">{prefix}</Text> : null}
+		<View className="h-10 flex-row items-center rounded-md border border-border-light bg-surface-light px-3 dark:border-border-dark dark:bg-charcoal-900">
+			{prefix ? <Text className="mr-1 text-sm text-text-muted-light dark:text-text-muted-dark">{prefix}</Text> : null}
 			<TextInput
 				value={text}
 				onChangeText={handleChange}

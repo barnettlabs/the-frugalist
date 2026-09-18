@@ -1,2 +1,2 @@
-export * from './use-grade-deal';
 export * from './types';
+export * from './use-grade-deal';

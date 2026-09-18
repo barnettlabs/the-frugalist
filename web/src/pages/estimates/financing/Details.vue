@@ -12,6 +12,7 @@ import PaymentCharts from '@/components/Finance/PaymentCharts.vue';
 import FinanceForm from '@/components/FinanceForm.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
+import { useEstimateAccess } from '@/composables/useEstimateAccess';
 import { useAuthStore } from '@/stores/auth';
 import type { FinanceFormData, FormErrors } from '@/types';
 import { VehicleType } from '@/types';
@@ -20,6 +21,16 @@ const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 const isAdmin = computed(() => authStore.isAdmin);
+
+const { isAuthenticated, backUrl, backLabel, ensureAccount } = useEstimateAccess({
+	savedListPath: '/estimates/financing',
+	savedListLabel: 'All finance estimates',
+});
+
+// Guests get the calculator but not the save action.
+const submitLabel = computed(() =>
+	isAuthenticated.value ? 'Create finance estimate' : 'Sign in to save this estimate'
+);
 
 const isEdit = computed(() => !!route.params.id);
 const sheetId = computed(() => route.params.id as string);
@@ -51,6 +62,7 @@ const form = ref<FinanceFormData>({
 const loading = ref(false);
 const loadingSheet = ref(false);
 const errors = ref<FormErrors>({});
+const networkError = ref('');
 
 const vehicleTitle = computed(() => {
 	const parts = [
@@ -92,8 +104,11 @@ const loadSheet = async () => {
 };
 
 const submitForm = async () => {
+	if (!ensureAccount()) return;
+
 	loading.value = true;
 	errors.value = {};
+	networkError.value = '';
 
 	try {
 		if (isEdit.value) {
@@ -106,7 +121,7 @@ const submitForm = async () => {
 		if (error.response?.data?.errors) {
 			errors.value = error.response.data.errors;
 		} else {
-			console.error(`Error ${isEdit.value ? 'updating' : 'creating'} finance sheet:`, error);
+			networkError.value = 'Something went wrong. Please check your connection and try again.';
 		}
 	} finally {
 		loading.value = false;
@@ -129,12 +144,18 @@ onMounted(() => {
 			<!-- Editorial breadcrumb -->
 			<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8">
 				<RouterLink
-					to="/estimates/financing"
+					:to="backUrl"
 					class="inline-flex items-center gap-1.5 text-xs eyebrow hover:text-primary transition-colors"
 				>
 					<ArrowLeftIcon class="h-3 w-3" />
-					All finance estimates
+					{{ backLabel }}
 				</RouterLink>
+			</div>
+
+			<div v-if="networkError" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-4">
+				<div class="rounded-md bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+					{{ networkError }}
+				</div>
 			</div>
 
 			<SectionHeader
@@ -169,8 +190,9 @@ onMounted(() => {
 							:errors="errors"
 							:loading="loading"
 							:title="headerTitle"
-							back-url="/estimates/financing"
+							:back-url="backUrl"
 							:is-edit="isEdit"
+							:submit-label="submitLabel"
 							@submit="submitForm"
 						/>
 
@@ -182,12 +204,7 @@ onMounted(() => {
 					<!-- Right sidebar -->
 					<aside class="order-1 lg:order-2 lg:sticky lg:top-20 space-y-4">
 						<AdvancedCalculations :data="form" />
-						<DealGradeCard
-							v-if="isAdmin"
-							agent-slug="deal-grade-finance"
-							calculator-type="finance"
-							:inputs="form"
-						/>
+						<DealGradeCard v-if="isAdmin" agent-slug="deal-grade-finance" calculator-type="finance" :inputs="form" />
 					</aside>
 				</div>
 			</main>

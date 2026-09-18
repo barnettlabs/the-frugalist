@@ -1,8 +1,9 @@
+import { cssInterop, useColorScheme } from 'nativewind';
 import React from 'react';
 import { Text, type TextProps } from 'react-native';
-import { cssInterop, useColorScheme } from 'nativewind';
 
 import { logoBlue, logoWhite } from '@/assets/logos';
+
 import { Image } from './image';
 
 type LogoVariant = 'primary' | 'white' | 'black' | 'accent';

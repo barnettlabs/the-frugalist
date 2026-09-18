@@ -8,7 +8,7 @@ import { client } from '../common';
 type Variables = { id: string };
 
 export const useLeaseSheet = createQuery<VehicleLeaseSheet, Variables, AxiosError>({
-	queryKey: ['lease-sheet'],
+	queryKey: ['lease', 'sheet'],
 	fetcher: async (variables): Promise<VehicleLeaseSheet> => {
 		const response = await client.get<VehicleLeaseSheet>(`/vehicle-lease-sheets/${variables.id}`);
 		const data = response.data;

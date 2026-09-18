@@ -2,12 +2,18 @@
 	"extends": "expo/tsconfig.base",
 	"compilerOptions": {
 		"strict": true,
+		// baseUrl is deprecated in TS 6 but still required here: dropping it
+		// breaks @types resolution under pnpm's node_modules layout.
+		"ignoreDeprecations": "6.0",
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"],
 			"@env": ["./src/lib/env.js"],
 			"@shared/*": ["../shared/*"]
 		},
+		// TS 6 no longer auto-includes every @types package; jest globals need
+		// naming explicitly.
+		"types": ["jest"],
 		"esModuleInterop": true,
 		"checkJs": true
 	},

@@ -15,27 +15,9 @@ import { leaseApi } from '@/api/lease';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
+import type { VehicleLeaseSheet } from '@/types/models';
 import { formatCurrency } from '@/utils/formatters';
 import { LeaseCalculator } from '@/utils/leaseCalculator';
-
-interface VehicleLeaseSheet {
-	id: number;
-	sheet_name?: string;
-	dealership_name?: string;
-	msrp?: number;
-	capitalized_cost?: number;
-	down_payment?: number;
-	vehicle_year?: number;
-	vehicle_make?: string;
-	vehicle_model?: string;
-	vehicle_trim?: string;
-	money_factor?: number;
-	lease_term?: number;
-	residual_percent?: number;
-	monthly_payment?: number;
-	created_at?: string;
-	updated_at?: string;
-}
 
 const router = useRouter();
 
@@ -52,7 +34,7 @@ const actionLoading = ref(false);
 const fetchSheets = async () => {
 	try {
 		const data = await leaseApi.getAll();
-		vehicleLeaseSheets.value = data as VehicleLeaseSheet[];
+		vehicleLeaseSheets.value = data;
 	} catch (error) {
 		console.error('Error fetching lease sheets:', error);
 	} finally {
@@ -114,6 +96,13 @@ const isSelected = (sheetId: number) => {
 const getMonthlyPayment = (sheet: VehicleLeaseSheet) => {
 	const calculator = new LeaseCalculator(sheet as any);
 	return calculator.calculateLeasePayment();
+};
+
+// Cap cost is derived, not stored: the sheet has no capitalized_cost column,
+// so reading one rendered $0.00 for every lease.
+const getCapCost = (sheet: VehicleLeaseSheet) => {
+	const calculator = new LeaseCalculator(sheet as any);
+	return calculator.calculateNetCapCost();
 };
 
 const getResidualValue = (sheet: VehicleLeaseSheet) => {
@@ -218,16 +207,16 @@ onMounted(() => {
 							<input
 								type="checkbox"
 								:checked="isSelected(sheet.id)"
-								class="w-3.5 h-3.5 text-primary border-2 border-border rounded-sm focus:ring-0 focus:outline-none bg-surface cursor-pointer"
+								class="w-3.5 h-3.5 text-primary border-2 border-border rounded-xs focus:ring-0 focus:outline-hidden bg-surface cursor-pointer"
 								@change="toggleSelection(sheet.id)"
 							/>
-							<span class="eyebrow !text-[0.625rem]" :class="isSelected(sheet.id) ? 'text-primary' : ''">
+							<span class="eyebrow text-[0.625rem]!" :class="isSelected(sheet.id) ? 'text-primary' : ''">
 								Compare
 							</span>
 						</label>
 						<div class="flex items-center gap-0.5" @click.stop>
 							<button
-								class="p-1.5 rounded text-text-muted hover:text-primary hover:bg-surface-dark transition-colors"
+								class="p-1.5 rounded-sm text-text-muted hover:text-primary hover:bg-surface-dark transition-colors"
 								@click="toggleCardDetails(sheet.id)"
 							>
 								<ChevronDownIcon
@@ -235,7 +224,7 @@ onMounted(() => {
 								/>
 							</button>
 							<button
-								class="p-1.5 rounded text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
+								class="p-1.5 rounded-sm text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
 								@click="openDeleteDialog(sheet)"
 							>
 								<TrashIcon class="h-3.5 w-3.5" />
@@ -268,19 +257,19 @@ onMounted(() => {
 						<div v-if="isCardExpanded(sheet.id)" class="mt-5 pt-5 border-t border-border space-y-3 text-sm" @click.stop>
 							<div class="grid grid-cols-2 gap-x-4 gap-y-3">
 								<div>
-									<p class="eyebrow !text-[0.625rem]">MSRP</p>
+									<p class="eyebrow text-[0.625rem]!">MSRP</p>
 									<p class="numeral text-primary">${{ formatCurrency(sheet.msrp || 0) }}</p>
 								</div>
 								<div>
-									<p class="eyebrow !text-[0.625rem]">Cap cost</p>
-									<p class="numeral text-primary">${{ formatCurrency(sheet.capitalized_cost || 0) }}</p>
+									<p class="eyebrow text-[0.625rem]!">Cap cost</p>
+									<p class="numeral text-primary">${{ formatCurrency(getCapCost(sheet)) }}</p>
 								</div>
 								<div>
-									<p class="eyebrow !text-[0.625rem]">Money factor</p>
+									<p class="eyebrow text-[0.625rem]!">Money factor</p>
 									<p class="numeral text-primary">{{ sheet.money_factor || 0 }}</p>
 								</div>
 								<div>
-									<p class="eyebrow !text-[0.625rem]">Residual</p>
+									<p class="eyebrow text-[0.625rem]!">Residual</p>
 									<p class="numeral text-primary">${{ formatCurrency(getResidualValue(sheet)) }}</p>
 								</div>
 							</div>

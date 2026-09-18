@@ -1,8 +1,13 @@
 import { Env } from '@env';
+import type { InternalAxiosRequestConfig } from 'axios';
 import axios from 'axios';
 
-import { signOut } from '@/lib/auth';
-import { getToken } from '@/lib/auth/utils';
+import { signOut, useAuth } from '@/lib/auth';
+
+type TrackedRequestConfig = InternalAxiosRequestConfig & {
+	_requestId?: number;
+	_startTime?: number;
+};
 
 export const client = axios.create({
 	baseURL: Env.API_URL,
@@ -17,13 +22,14 @@ let requestId = 0;
 // Request interceptor to add auth token
 client.interceptors.request.use(
 	config => {
+		const tracked = config as TrackedRequestConfig;
 		const id = ++requestId;
 		const fullUrl = `${config.baseURL}${config.url}`;
-		(config as any)._requestId = id;
-		(config as any)._startTime = Date.now();
+		tracked._requestId = id;
+		tracked._startTime = Date.now();
 		console.log(`[API #${id}] → ${config.method?.toUpperCase()} ${fullUrl}`);
 
-		const token = getToken();
+		const token = useAuth.getState().token;
 		if (token?.access) {
 			config.headers.Authorization = `Bearer ${token.access}`;
 		}
@@ -37,15 +43,17 @@ client.interceptors.request.use(
 // Response interceptor for handling 401 errors
 client.interceptors.response.use(
 	response => {
-		const id = (response.config as any)._requestId;
-		const startTime = (response.config as any)._startTime;
-		const duration = Date.now() - startTime;
+		const tracked = response.config as TrackedRequestConfig;
+		const id = tracked._requestId;
+		const startTime = tracked._startTime;
+		const duration = Date.now() - (startTime ?? Date.now());
 		console.log(`[API #${id}] ← ${response.status} (${duration}ms)`);
 		return response;
 	},
 	error => {
-		const id = (error.config as any)?._requestId;
-		const startTime = (error.config as any)?._startTime;
+		const tracked = error.config as TrackedRequestConfig | undefined;
+		const id = tracked?._requestId;
+		const startTime = tracked?._startTime;
 		const duration = startTime ? Date.now() - startTime : 0;
 		const status = error.response?.status ?? 'ERR';
 		console.log(`[API #${id}] ← ${status} (${duration}ms)`);

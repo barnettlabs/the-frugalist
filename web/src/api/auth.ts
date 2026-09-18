@@ -1,6 +1,6 @@
 import type { User } from '@/types';
 
-import apiClient, { getCsrfToken } from './client';
+import apiClient from './client';
 
 export interface LoginCredentials {
 	email: string;
@@ -34,13 +34,11 @@ export interface ResetPasswordData {
 
 export const authApi = {
 	async login(credentials: LoginCredentials): Promise<AuthResponse> {
-		await getCsrfToken();
 		const { data } = await apiClient.post<AuthResponse>('/login', credentials);
 		return data;
 	},
 
 	async register(userData: RegisterData): Promise<AuthResponse> {
-		await getCsrfToken();
 		const { data } = await apiClient.post<AuthResponse>('/register', userData);
 		return data;
 	},
@@ -55,13 +53,11 @@ export const authApi = {
 	},
 
 	async forgotPassword(data: ForgotPasswordData): Promise<{ message: string }> {
-		await getCsrfToken();
 		const response = await apiClient.post<{ message: string }>('/forgot-password', data);
 		return response.data;
 	},
 
 	async resetPassword(data: ResetPasswordData): Promise<{ message: string }> {
-		await getCsrfToken();
 		const response = await apiClient.post<{ message: string }>('/reset-password', data);
 		return response.data;
 	},

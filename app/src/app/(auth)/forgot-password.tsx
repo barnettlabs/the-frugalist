@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, router } from 'expo-router';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,6 +18,7 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export default function ForgotPasswordScreen() {
+	const { t } = useTranslation();
 	const [emailSent, setEmailSent] = useState(false);
 	const { mutate: forgotPassword, isPending } = useForgotPassword();
 	const insets = useSafeAreaInsets();
@@ -31,7 +33,7 @@ export default function ForgotPasswordScreen() {
 			onSuccess: () => setEmailSent(true),
 			onError: error => {
 				showMessage({
-					message: 'Error',
+					message: t('common.error'),
 					description: error.message || 'Could not send reset email',
 					type: 'danger',
 				});
@@ -43,20 +45,20 @@ export default function ForgotPasswordScreen() {
 		return (
 			<ScreenContainer>
 				<View style={{ paddingTop: insets.top + 12 }}>
-					<MastheadBar left="v 1.0.0" center="A field guide to what things should cost" />
+					<MastheadBar left="v 1.0.0" center={t('auth.masthead_subtitle')} />
 				</View>
 				<View className="flex-1 items-center justify-center px-6">
-					<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+					<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 						Check your inbox
 					</Text>
 					<Text
-						className="font-display tracking-tightest text-text-primary-light dark:text-text-primary-dark text-center"
+						className="text-center font-display tracking-tightest text-text-primary-light dark:text-text-primary-dark"
 						style={{ fontSize: 36, lineHeight: 38 }}
 					>
 						Sent.
 					</Text>
 					<Text
-						className="font-display italic tracking-tight text-accent dark:text-accent-light text-center mt-1"
+						className="mt-1 text-center font-display italic tracking-tight text-accent dark:text-accent-light"
 						style={{ fontSize: 22, lineHeight: 24 }}
 					>
 						Check your email.
@@ -67,7 +69,7 @@ export default function ForgotPasswordScreen() {
 					</Text>
 					<Pressable
 						onPress={() => router.replace('/(auth)/login')}
-						className="rounded-md bg-primary px-5 py-3.5 mt-8 active:opacity-80"
+						className="mt-8 rounded-md bg-primary px-5 py-3.5 active:opacity-80"
 					>
 						<Text className="text-sm font-medium text-surface-light">Back to sign in</Text>
 					</Pressable>
@@ -90,11 +92,11 @@ export default function ForgotPasswordScreen() {
 				>
 					<MastheadBar
 						left="v 1.0.0"
-						center="A field guide to what things should cost"
+						center={t('auth.masthead_subtitle')}
 						right={
 							<Link href="/(auth)/login" asChild>
 								<Pressable>
-									<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+									<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 										Sign in
 									</Text>
 								</Pressable>
@@ -103,7 +105,7 @@ export default function ForgotPasswordScreen() {
 					/>
 
 					<View className="px-6 pt-12">
-						<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+						<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 							Forgot password
 						</Text>
 						<Text
@@ -122,7 +124,7 @@ export default function ForgotPasswordScreen() {
 							Drop in your email. We’ll send a reset link.
 						</Text>
 
-						<View className="mt-8 rounded-md bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-6">
+						<View className="mt-8 rounded-md border border-border-light bg-surface-light p-6 dark:border-border-dark dark:bg-surface-dark">
 							<ControlledInput
 								control={control}
 								name="email"
@@ -135,7 +137,7 @@ export default function ForgotPasswordScreen() {
 							<Pressable
 								onPress={handleSubmit(onSubmit)}
 								disabled={isPending}
-								className="rounded-md bg-primary px-5 py-3.5 items-center mt-2 active:opacity-80"
+								className="mt-2 items-center rounded-md bg-primary px-5 py-3.5 active:opacity-80"
 								style={{ opacity: isPending ? 0.6 : 1 }}
 							>
 								<Text className="text-sm font-medium text-surface-light">

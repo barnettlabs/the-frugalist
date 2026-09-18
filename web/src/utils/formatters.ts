@@ -37,6 +37,16 @@ export const parseOrZero = (value: number | string | undefined | null) => {
 };
 
 /**
+ * Parse a whole-number form value (loan terms, month counts).
+ * Mirrors parseOrZero but truncates, matching the parseInt() calls it replaces.
+ * @param {string|number} value - The value to parse
+ * @returns {number} - Parsed integer or 0
+ */
+export const parseIntOrZero = (value: number | string | undefined | null) => {
+	return Math.trunc(parseOrZero(value));
+};
+
+/**
  * Format a number with specified decimal places
  * @param {number|string} value - The value to format
  * @param {number} decimals - Number of decimal places (default: 2)

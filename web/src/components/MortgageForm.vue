@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue';
 
 import FormField from '@/components/FormField.vue';
 import MaskedNumberInput from '@/components/MaskedNumberInput.vue';
-import { MortgageFormData, FormErrors, propertyTypeOptions } from '@/types';
+import { FormErrors, MortgageFormData, propertyTypeOptions } from '@/types';
 import { formatCurrency, parseOrZero } from '@/utils/formatters';
 
 interface Props {
@@ -147,7 +147,7 @@ const downPaymentEquivDollars = computed(() => {
 								<button
 									type="button"
 									:class="[
-										'px-2 py-0.5 text-[0.625rem] font-medium rounded transition-colors',
+										'px-2 py-0.5 text-[0.625rem] font-medium rounded-sm transition-colors',
 										downPaymentMode === 'dollar' ? 'bg-primary text-surface' : 'text-text-muted hover:text-primary',
 									]"
 									@click="downPaymentMode = 'dollar'"
@@ -157,7 +157,7 @@ const downPaymentEquivDollars = computed(() => {
 								<button
 									type="button"
 									:class="[
-										'px-2 py-0.5 text-[0.625rem] font-medium rounded transition-colors',
+										'px-2 py-0.5 text-[0.625rem] font-medium rounded-sm transition-colors',
 										downPaymentMode === 'percent' ? 'bg-primary text-surface' : 'text-text-muted hover:text-primary',
 									]"
 									@click="downPaymentMode = 'percent'"
@@ -184,7 +184,9 @@ const downPaymentEquivDollars = computed(() => {
 						/>
 
 						<p class="numeral text-xs text-text-muted mt-1">
-							<template v-if="downPaymentMode === 'dollar'"> = {{ downPaymentEquivPercent }}% of property value </template>
+							<template v-if="downPaymentMode === 'dollar'">
+								= {{ downPaymentEquivPercent }}% of property value
+							</template>
 							<template v-else> = ${{ formatCurrency(downPaymentEquivDollars) }} </template>
 						</p>
 						<p v-if="errors.down_payment" class="mt-1.5 text-xs text-danger">{{ errors.down_payment[0] }}</p>

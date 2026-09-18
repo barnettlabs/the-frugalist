@@ -1,0 +1,278 @@
+name: CI
+
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+    branches: [main, staging]
+
+# A newer push to the same branch makes the in-flight run irrelevant.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------------------------------------------------------------- server
+  server:
+    name: Server (Hono)
+    runs-on: ubuntu-latest
+
+    # Real Postgres and Redis rather than stand-ins.
+    #
+    # The old Laravel suite ran against in-memory SQLite while production was
+    # MySQL, and that gap hid two engine-specific bugs that only surfaced when
+    # the suite was moved onto Postgres. Testing against the engines production
+    # actually runs is the whole point.
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: frugalist
+          POSTGRES_PASSWORD: frugalist
+          POSTGRES_DB: frugalist_test
+          # The application has always run in UTC; a database in another zone
+          # silently shifts every timestamp comparison.
+          TZ: UTC
+          PGTZ: UTC
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U frugalist"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+      redis:
+        image: valkey/valkey:8-alpine
+        # noeviction is not optional: BullMQ loses jobs silently if Redis evicts
+        # keys, and the worker asserts this at boot.
+        options: >-
+          --health-cmd "valkey-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+        ports: ['6379:6379']
+
+    env:
+      TEST_DATABASE_URL: postgres://frugalist:frugalist@127.0.0.1:5432/frugalist_test
+      TEST_REDIS_URL: redis://127.0.0.1:6379/1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # No `version:` here on purpose. The action refuses to run when the
+      # version is given in both places, and package.json's packageManager is
+      # the one that also governs local installs - so it stays the single
+      # source of truth rather than a second number to keep in step.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The runner image ships no redis-cli, and the service container cannot
+      # take a command argument through the `services:` syntax - so the policy
+      # is set from inside the container that is already running.
+      - name: Configure Redis for BullMQ
+        run: |
+          cid=$(docker ps -q --filter ancestor=valkey/valkey:8-alpine)
+
+          if [ -z "$cid" ]; then
+            echo "could not find the valkey service container"
+            docker ps
+            exit 1
+          fi
+
+          docker exec "$cid" valkey-cli config set maxmemory-policy noeviction
+          docker exec "$cid" valkey-cli config get maxmemory-policy
+
+      - name: Apply schema
+        run: pnpm --filter @frugalist/server db:migrate
+        env:
+          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
+
+      - name: Build contracts
+        run: pnpm --filter @frugalist/contracts build
+
+      - name: Type-check
+        run: |
+          pnpm --filter @frugalist/contracts type-check
+          pnpm --filter @frugalist/server type-check
+
+      - name: Contract tests
+        run: pnpm --filter @frugalist/contracts test
+
+      - name: Server tests
+        run: pnpm --filter @frugalist/server test
+
+  # ------------------------------------------------------------------- web
+  web:
+    name: Web (Vue)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # No `version:` here on purpose. The action refuses to run when the
+      # version is given in both places, and package.json's packageManager is
+      # the one that also governs local installs - so it stays the single
+      # source of truth rather than a second number to keep in step.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build contracts
+        run: pnpm --filter @frugalist/contracts build
+
+      - name: Lint
+        run: pnpm --filter thefrugalist-web lint
+
+      - name: Type-check
+        run: pnpm --filter thefrugalist-web type-check
+
+      - name: Format check
+        run: pnpm --filter thefrugalist-web format:check
+
+      - name: Tests
+        run: pnpm --filter thefrugalist-web test:run
+
+      - name: Build
+        run: pnpm --filter thefrugalist-web build
+
+  # ---------------------------------------------------------------- mobile
+  #
+  # Installed with --ignore-workspace, because the Expo app is deliberately not
+  # a workspace member: it ships its own .npmrc with node-linker=hoisted, which
+  # Metro and the Jest preset both need. Installing it as a member overrides that
+  # and module resolution breaks at test and bundle time.
+  mobile:
+    name: Mobile (Expo)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # No `version:` here on purpose. The action refuses to run when the
+      # version is given in both places, and package.json's packageManager is
+      # the one that also governs local installs - so it stays the single
+      # source of truth rather than a second number to keep in step.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-workspace
+
+      - name: Lint
+        run: pnpm run lint
+
+      # expo-env.d.ts is generated by Expo tooling and gitignored on Expo's own
+      # instruction, but tsconfig includes it - and it carries the reference to
+      # expo/types that declares side-effect CSS imports. Without it type-check
+      # fails on `import '../../global.css'` in CI while passing locally, where
+      # the file is left over from running the dev server.
+      - name: Generate Expo type declarations
+        run: npx expo customize tsconfig.json
+
+      - name: Type-check
+        run: pnpm run type-check
+
+      - name: Translations
+        run: pnpm run lint:translations
+
+      - name: Tests
+        run: pnpm test
+
+  # ----------------------------------------------------------------- image
+  #
+  # This job exists because three deployment failures were found only by
+  # building the image, and every one of them is invisible to the jobs above:
+  #
+  #   - the pnpm workspace symlink layout has to be preserved, not flattened,
+  #     or module resolution fails on the first import;
+  #   - drizzle-kit emits extensionless ESM imports, which tsx accepts and
+  #     plain Node rejects;
+  #   - @frugalist/contracts needs a real build, because its package exports
+  #     point at compiled output rather than TypeScript source.
+  #
+  # tsx and vitest transpile on the fly, so a green test suite says nothing
+  # about whether the container starts. This job does.
+  image:
+    name: Container image
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: frugalist-server:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Building is necessary but not sufficient - an image can build and still
+      # fail to resolve a module at startup, which is exactly what happened.
+      - name: Verify the entrypoints actually start
+        run: |
+          set -euo pipefail
+
+          echo "--- config validation must fail fast on a missing key ---"
+          # Captured before grepping, not piped into it. The container exits
+          # non-zero here by design, and under `pipefail` that failure becomes
+          # the exit status of the whole pipeline - so the `if` read false no
+          # matter what the output said, and the check could only ever fail.
+          config_output=$(docker run --rm frugalist-server:ci node server/dist/server.js 2>&1 || true)
+
+          if echo "$config_output" | grep -q "Invalid environment configuration"; then
+            echo "ok: fails with a clear message rather than a stack trace"
+          else
+            echo "FAIL: expected a config validation error"
+            echo "$config_output"
+            exit 1
+          fi
+
+          echo "--- every entrypoint must load every module ---"
+          # scripts/migrate is Render's preDeployCommand. It is as much an
+          # entrypoint as the other two, and a module it cannot resolve fails
+          # the deploy before the service ever starts.
+          # Bounded, because two of these are supposed to run forever: the API
+          # listens, and the worker retries an unreachable Redis rather than
+          # giving up. Being killed by `timeout` is therefore a pass - the only
+          # failure this step looks for is a module that would not resolve, and
+          # that happens within the first moments of startup or not at all.
+          for entry in server worker scripts/migrate scripts/seed; do
+            output=$(timeout 20 docker run --rm \
+              -e DATABASE_URL=postgres://u:p@127.0.0.1:5432/none \
+              -e REDIS_URL=redis://127.0.0.1:6379 \
+              -e SESSION_SECRET=ci-only-secret-at-least-32-characters \
+              frugalist-server:ci node server/dist/$entry.js 2>&1 || true)
+
+            # A connection failure is expected and fine - there is no database
+            # here. A module resolution failure is the regression being guarded.
+            if echo "$output" | grep -q "ERR_MODULE_NOT_FOUND\|Cannot find module\|Cannot find package"; then
+              echo "FAIL: $entry.js could not resolve a module"
+              echo "$output"
+              exit 1
+            fi
+            echo "ok: $entry.js loaded cleanly"
+          done

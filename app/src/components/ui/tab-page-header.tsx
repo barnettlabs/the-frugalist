@@ -53,7 +53,7 @@ export function TabPageHeader({ title, showBack = false, backLabel = 'Back', onB
 				<View pointerEvents="none" className="absolute inset-x-0 h-full items-center justify-center px-16">
 					<Text
 						className="font-display tracking-tight text-text-primary-light dark:text-text-primary-dark"
-						style={{ fontSize: 17, lineHeight: 22, includeFontPadding: false } as any}
+						style={{ fontSize: 17, lineHeight: 22, includeFontPadding: false }}
 						numberOfLines={1}
 					>
 						{title}
@@ -65,14 +65,14 @@ export function TabPageHeader({ title, showBack = false, backLabel = 'Back', onB
 					<Pressable
 						onPress={handleBack}
 						hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-						className="-ml-1.5 flex-row items-center pr-2 active:opacity-60 z-10"
+						className="z-10 -ml-1.5 flex-row items-center pr-2 active:opacity-60"
 						accessibilityRole="button"
 						accessibilityLabel="Back"
 					>
 						<Chevron direction="left" color={accentTint} size={22} />
 						<Text
 							className="ml-0.5 text-[17px] text-accent dark:text-accent-light"
-							style={{ lineHeight: 22, includeFontPadding: false } as any}
+							style={{ lineHeight: 22, includeFontPadding: false }}
 							numberOfLines={1}
 						>
 							{backLabel}

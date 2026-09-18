@@ -94,12 +94,22 @@ export interface VehicleLeaseSheet {
 }
 
 // Form Data Models (for frontend forms)
-export type FinanceFormData = Omit<
-	VehicleFinanceSheet,
-	'id' | 'user_id' | 'shareable_key' | 'created_at' | 'updated_at'
+/**
+ * Widens numeric fields to accept the strings that <input> elements produce.
+ * A blank numeric input is '', not 0, so form state cannot use the API model
+ * directly. Consumers run these through parseOrZero() before calculating.
+ */
+type WithFormNumerics<T> = {
+	[K in keyof T]: T[K] extends number ? number | string : T[K];
+};
+
+export type FinanceFormData = WithFormNumerics<
+	Omit<VehicleFinanceSheet, 'id' | 'user_id' | 'shareable_key' | 'created_at' | 'updated_at'>
 >;
 
-export type LeaseFormData = Omit<VehicleLeaseSheet, 'id' | 'user_id' | 'shareable_key' | 'created_at' | 'updated_at'>;
+export type LeaseFormData = WithFormNumerics<
+	Omit<VehicleLeaseSheet, 'id' | 'user_id' | 'shareable_key' | 'created_at' | 'updated_at'>
+>;
 
 // Mortgage Sheet Model
 export interface MortgageSheet {

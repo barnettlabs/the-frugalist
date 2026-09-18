@@ -39,7 +39,7 @@ const selectTv = tv({
 		},
 		disabled: {
 			true: {
-				input: 'bg-surface-dark-light dark:bg-surface-dark-dark opacity-60',
+				input: 'bg-surface-dark-light opacity-60 dark:bg-surface-dark-dark',
 			},
 		},
 	},
@@ -287,7 +287,7 @@ export const SelectSheet: React.FC<SelectSheetProps> = ({
 					}}
 				>
 					{/* Grabber */}
-					<View className="items-center pt-3 pb-2">
+					<View className="items-center pb-2 pt-3">
 						<View
 							className="h-1 w-12 rounded-full"
 							style={{ backgroundColor: isDark ? colors.border.dark : colors.border.light }}
@@ -296,14 +296,14 @@ export const SelectSheet: React.FC<SelectSheetProps> = ({
 
 					{/* Header */}
 					<View
-						className="px-5 pt-2 pb-4 flex-row items-center justify-between border-b"
+						className="flex-row items-center justify-between border-b px-5 pb-4 pt-2"
 						style={{ borderColor: isDark ? colors.border.dark : colors.border.light }}
 					>
-						<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+						<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 							{title ?? 'Choose'}
 						</Text>
 						<Pressable onPress={handleClose} hitSlop={12} className="active:opacity-60" accessibilityLabel="close">
-							<Text className="text-[11px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+							<Text className="text-[11px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 								Done
 							</Text>
 						</Pressable>

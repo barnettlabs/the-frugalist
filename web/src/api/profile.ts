@@ -1,5 +1,3 @@
-import type { Profile, User } from '@/types';
-
 import apiClient from './client';
 
 export interface ProfileUpdateData {
@@ -15,9 +13,17 @@ export interface PasswordUpdateData {
 	password_confirmation: string;
 }
 
+/**
+ * Shape returned by GET and PUT /api/profile (ProfileController@show / @update).
+ * A flat projection of the user, not a nested { user, profile } envelope.
+ */
 export interface ProfileResponse {
-	user: User;
-	profile: Profile | null;
+	username: string | null;
+	avatar_url: string | null;
+	website: string | null;
+	first_name: string | null;
+	last_name: string | null;
+	email: string;
 }
 
 export const profileApi = {

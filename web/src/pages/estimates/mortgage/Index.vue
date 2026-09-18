@@ -136,7 +136,8 @@ onMounted(() => {
 							Open a sheet. <span class="italic text-signal-light">Run any mortgage through it.</span>
 						</h2>
 						<p class="mt-5 text-sm text-white/70 max-w-md">
-							Property value, down payment, rate. We&rsquo;ll do the math you&rsquo;d otherwise have to ask the lender for.
+							Property value, down payment, rate. We&rsquo;ll do the math you&rsquo;d otherwise have to ask the lender
+							for.
 						</p>
 					</div>
 					<div class="col-span-12 lg:col-span-4 lg:text-right">
@@ -154,10 +155,10 @@ onMounted(() => {
 			<div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 				<article v-for="sheet in sheets" :key="sheet.id" class="card h-full overflow-hidden flex flex-col group">
 					<div class="flex items-center justify-between px-4 pt-3 pb-2 border-b border-border">
-						<span class="eyebrow !text-[0.625rem]">{{ sheet.property_type || 'House' }}</span>
+						<span class="eyebrow text-[0.625rem]!">{{ sheet.property_type || 'House' }}</span>
 						<div class="flex items-center gap-0.5" @click.stop>
 							<button
-								class="p-1.5 rounded text-text-muted hover:text-primary hover:bg-surface-dark transition-colors"
+								class="p-1.5 rounded-sm text-text-muted hover:text-primary hover:bg-surface-dark transition-colors"
 								:title="isCardExpanded(sheet.id) ? 'Show less' : 'Show more'"
 								@click="toggleCardDetails(sheet.id)"
 							>
@@ -166,7 +167,7 @@ onMounted(() => {
 								/>
 							</button>
 							<button
-								class="p-1.5 rounded text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
+								class="p-1.5 rounded-sm text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
 								title="Delete estimate"
 								@click="openDeleteDialog(sheet)"
 							>
@@ -203,19 +204,19 @@ onMounted(() => {
 						<div v-if="isCardExpanded(sheet.id)" class="mt-5 pt-5 border-t border-border space-y-3 text-sm" @click.stop>
 							<div class="grid grid-cols-2 gap-x-4 gap-y-3">
 								<div>
-									<p class="eyebrow !text-[0.625rem]">Property</p>
+									<p class="eyebrow text-[0.625rem]!">Property</p>
 									<p class="numeral text-primary">${{ formatCurrency(sheet.property_value || 0) }}</p>
 								</div>
 								<div>
-									<p class="eyebrow !text-[0.625rem]">Down</p>
+									<p class="eyebrow text-[0.625rem]!">Down</p>
 									<p class="numeral text-primary">${{ formatCurrency(sheet.down_payment || 0) }}</p>
 								</div>
 								<div>
-									<p class="eyebrow !text-[0.625rem]">Principal</p>
+									<p class="eyebrow text-[0.625rem]!">Principal</p>
 									<p class="numeral text-primary">${{ formatCurrency(getSheetCalculations(sheet).principal) }}</p>
 								</div>
 								<div>
-									<p class="eyebrow !text-[0.625rem]">Total interest</p>
+									<p class="eyebrow text-[0.625rem]!">Total interest</p>
 									<p class="numeral text-warning">${{ formatCurrency(getSheetCalculations(sheet).totalInterest) }}</p>
 								</div>
 							</div>

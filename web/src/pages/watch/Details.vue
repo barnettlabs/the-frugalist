@@ -34,11 +34,13 @@ import InputLabel from '@/components/InputLabel.vue';
 import PrimaryButton from '@/components/PrimaryButton.vue';
 import Spinner from '@/components/Spinner.vue';
 import TextInput from '@/components/TextInput.vue';
+import { useToast } from '@/composables/useToast';
 import { formatCurrency } from '@/utils/formatters';
 import { formatDateTime, formatRelativeTime, formatShortDate } from '@/utils/time';
 
 const route = useRoute();
 const router = useRouter();
+const toast = useToast();
 
 const product = ref<TrackedProduct | null>(null);
 const loading = ref(true);
@@ -77,8 +79,7 @@ const loadProduct = async () => {
 		editForm.value.notification_push = data.notification_method?.includes('push') || false;
 		editForm.value.watch_type = data.watch_type || 'price';
 		editForm.value.check_interval = data.check_interval || 60;
-	} catch (error) {
-		console.error('Error loading product:', error);
+	} catch {
 		router.push('/watch');
 	} finally {
 		loading.value = false;
@@ -103,8 +104,8 @@ const refreshPrice = async () => {
 			const updated = await watchApi.refresh(product.value.id);
 			product.value = updated;
 		}
-	} catch (error) {
-		console.error('Error refreshing price:', error);
+	} catch {
+		toast.error('Failed to refresh price. Please try again.');
 	} finally {
 		refreshing.value = false;
 	}
@@ -130,8 +131,8 @@ const saveSettings = async () => {
 			check_interval: editForm.value.check_interval,
 		});
 		product.value = updated;
-	} catch (error) {
-		console.error('Error updating product:', error);
+	} catch {
+		toast.error('Failed to save settings. Please try again.');
 	} finally {
 		saving.value = false;
 	}
@@ -143,8 +144,8 @@ const confirmDelete = async () => {
 	try {
 		await watchApi.delete(product.value.id);
 		router.push('/watch');
-	} catch (error) {
-		console.error('Error deleting product:', error);
+	} catch {
+		toast.error('Failed to delete tracker. Please try again.');
 	} finally {
 		actionLoading.value = false;
 	}
@@ -159,8 +160,8 @@ const confirmTogglePause = async () => {
 		});
 		product.value = updated;
 		showPauseDialog.value = false;
-	} catch (error) {
-		console.error('Error toggling pause:', error);
+	} catch {
+		toast.error('Failed to update tracking status. Please try again.');
 	} finally {
 		actionLoading.value = false;
 	}
@@ -177,12 +178,6 @@ const progressPercent = computed(() => {
 	const retail = product.value.retail_price;
 	const target = product.value.target_price;
 	const current = product.value.current_price;
-
-	console.log({
-		retail,
-		target,
-		current,
-	});
 
 	if (retail <= target) return 100;
 	if (current <= target) return 100;
@@ -333,7 +328,7 @@ onMounted(async () => {
 										class="relative h-4 bg-border rounded-full overflow-hidden"
 									>
 										<div
-											class="absolute left-0 top-0 h-full bg-gradient-to-r from-accent to-success rounded-full transition-all duration-500"
+											class="absolute left-0 top-0 h-full bg-linear-to-r from-accent to-success rounded-full transition-all duration-500"
 											:style="{ width: progressPercent + '%' }"
 										></div>
 									</div>
@@ -488,15 +483,15 @@ onMounted(async () => {
 							<!-- Legend -->
 							<div class="flex flex-wrap gap-4 mt-4 text-xs text-text-muted">
 								<div class="flex items-center gap-2">
-									<div class="w-4 h-0.5 bg-accent rounded"></div>
+									<div class="w-4 h-0.5 bg-accent rounded-sm"></div>
 									<span>Price trend</span>
 								</div>
 								<div v-if="product.target_price" class="flex items-center gap-2">
-									<div class="w-4 h-0.5 bg-success rounded"></div>
+									<div class="w-4 h-0.5 bg-success rounded-sm"></div>
 									<span>Target price</span>
 								</div>
 								<div class="flex items-center gap-2">
-									<div class="w-4 h-0.5 bg-border rounded"></div>
+									<div class="w-4 h-0.5 bg-border rounded-sm"></div>
 									<span>Grid lines</span>
 								</div>
 							</div>
@@ -561,8 +556,7 @@ onMounted(async () => {
 								</div>
 								<pre
 									class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-96 overflow-y-auto"
-									>{{ JSON.stringify(debugInfo.raw_api_response.response, null, 2) }}</pre
-								>
+									>{{ JSON.stringify(debugInfo.raw_api_response.response, null, 2) }}</pre>
 							</div>
 
 							<!-- Parsed Data -->
@@ -570,8 +564,7 @@ onMounted(async () => {
 								<h3 class="text-sm font-semibold text-primary mb-2">Parsed Data</h3>
 								<pre
 									class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-64 overflow-y-auto"
-									>{{ JSON.stringify(debugInfo.parsed_data, null, 2) }}</pre
-								>
+									>{{ JSON.stringify(debugInfo.parsed_data, null, 2) }}</pre>
 							</div>
 
 							<!-- Saved to DB -->
@@ -579,8 +572,7 @@ onMounted(async () => {
 								<h3 class="text-sm font-semibold text-primary mb-2">Saved to Database</h3>
 								<pre
 									class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-64 overflow-y-auto"
-									>{{ JSON.stringify(debugInfo.saved_to_db, null, 2) }}</pre
-								>
+									>{{ JSON.stringify(debugInfo.saved_to_db, null, 2) }}</pre>
 							</div>
 						</Card>
 					</div>
@@ -588,7 +580,7 @@ onMounted(async () => {
 					<!-- Sidebar -->
 					<div class="space-y-4">
 						<!-- Edit Settings -->
-						<Card class="!bg-surface">
+						<Card class="bg-surface!">
 							<h2 class="text-lg font-bold text-primary mb-4">Edit Settings</h2>
 							<div class="space-y-4">
 								<!-- Watch Type -->
@@ -635,7 +627,7 @@ onMounted(async () => {
 									<select
 										id="check_interval"
 										v-model="editForm.check_interval"
-										class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary text-sm py-2"
+										class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-primary focus:ring-primary text-sm py-2"
 									>
 										<option v-for="option in CHECK_INTERVAL_OPTIONS" :key="option.value" :value="option.value">
 											{{ option.label }}
@@ -692,7 +684,7 @@ onMounted(async () => {
 						</Card>
 
 						<!-- Product Details -->
-						<Card class="!bg-surface">
+						<Card class="bg-surface!">
 							<h2 class="text-lg font-bold text-primary mb-3">Product Details</h2>
 							<dl class="text-sm space-y-3">
 								<div class="flex justify-between items-center">
@@ -718,7 +710,7 @@ onMounted(async () => {
 						</Card>
 
 						<!-- Danger Zone -->
-						<Card class="!bg-surface border-danger/30">
+						<Card class="bg-surface! border-danger/30">
 							<h2 class="text-sm font-bold text-danger mb-2">Stop Tracking</h2>
 							<p class="text-xs text-text-muted mb-3">
 								Remove this product from your tracking list. This action cannot be undone.

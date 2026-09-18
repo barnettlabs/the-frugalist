@@ -109,7 +109,7 @@ const whyLearn = [
 						<li
 							v-for="topic in guide.topics"
 							:key="topic"
-							class="inline-flex items-center px-2.5 py-1 text-xs numeral text-text-muted bg-tan/60 border border-border rounded-sm"
+							class="inline-flex items-center px-2.5 py-1 text-xs numeral text-text-muted bg-tan/60 border border-border rounded-xs"
 						>
 							{{ topic }}
 						</li>

@@ -1,8 +1,10 @@
+import axios from 'axios';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
 import type { LoginCredentials, RegisterData } from '@/api/auth';
 import { authApi } from '@/api/auth';
+import { useToastStore } from '@/stores/toast';
 import type { User } from '@/types';
 
 const TOKEN_KEY = 'auth_token';
@@ -30,6 +32,14 @@ export const useAuthStore = defineStore('auth', () => {
 	const initialize = async () => {
 		if (initialized.value) return;
 
+		// Build-time prerendering runs in Node, where there is no storage to restore
+		// from. Render those pages as a signed-out visitor, which is what a crawler
+		// sees anyway.
+		if (typeof localStorage === 'undefined') {
+			initialized.value = true;
+			return;
+		}
+
 		// Try to restore from localStorage
 		const storedToken = localStorage.getItem(TOKEN_KEY);
 		const storedUser = localStorage.getItem(USER_KEY);
@@ -43,8 +53,8 @@ export const useAuthStore = defineStore('auth', () => {
 				user.value = freshUser;
 				localStorage.setItem(USER_KEY, JSON.stringify(freshUser));
 			} catch {
-				// Token is invalid, clear everything
 				clearAuth();
+				useToastStore().add('Your session has expired. Please sign in again.', 'info');
 			}
 		}
 
@@ -59,11 +69,17 @@ export const useAuthStore = defineStore('auth', () => {
 			const response = await authApi.login(credentials);
 			setAuth(response.user, response.token);
 			return true;
-		} catch (error: any) {
-			if (error.response?.data?.errors) {
-				errors.value = error.response.data.errors;
-			} else if (error.response?.data?.message) {
-				errors.value = { email: [error.response.data.message] };
+		} catch (error: unknown) {
+			if (axios.isAxiosError(error)) {
+				if (error.response?.data?.errors) {
+					errors.value = error.response.data.errors;
+				} else if (error.response?.data?.message) {
+					errors.value = { email: [error.response.data.message] };
+				} else {
+					errors.value = { email: ['A network error occurred. Please try again.'] };
+				}
+			} else {
+				errors.value = { email: ['An unexpected error occurred. Please try again.'] };
 			}
 			return false;
 		} finally {
@@ -79,11 +95,17 @@ export const useAuthStore = defineStore('auth', () => {
 			const response = await authApi.register(data);
 			setAuth(response.user, response.token);
 			return true;
-		} catch (error: any) {
-			if (error.response?.data?.errors) {
-				errors.value = error.response.data.errors;
-			} else if (error.response?.data?.message) {
-				errors.value = { email: [error.response.data.message] };
+		} catch (error: unknown) {
+			if (axios.isAxiosError(error)) {
+				if (error.response?.data?.errors) {
+					errors.value = error.response.data.errors;
+				} else if (error.response?.data?.message) {
+					errors.value = { email: [error.response.data.message] };
+				} else {
+					errors.value = { email: ['A network error occurred. Please try again.'] };
+				}
+			} else {
+				errors.value = { email: ['An unexpected error occurred. Please try again.'] };
 			}
 			return false;
 		} finally {
@@ -112,6 +134,7 @@ export const useAuthStore = defineStore('auth', () => {
 			localStorage.setItem(USER_KEY, JSON.stringify(freshUser));
 		} catch {
 			clearAuth();
+			useToastStore().add('Your session has expired. Please sign in again.', 'info');
 		}
 	};
 

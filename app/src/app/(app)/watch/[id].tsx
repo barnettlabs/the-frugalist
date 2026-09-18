@@ -1,14 +1,16 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
 
-import { useDeleteWatchItem, useWatchItem, useRefreshWatchItem, useUpdateWatchItem } from '@/api/watch';
+import { useDeleteWatchItem, useRefreshWatchItem, useUpdateWatchItem, useWatchItem } from '@/api/watch';
 import { ProductDetail } from '@/components/tracker/product-detail';
 import { Button, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
 
 export default function TrackerDetailScreen() {
+	const { t } = useTranslation();
 	const { id } = useLocalSearchParams<{ id: string }>();
 
 	const {
@@ -49,15 +51,15 @@ export default function TrackerDetailScreen() {
 			{
 				onSuccess: () => {
 					showMessage({
-						message: 'Price Refreshed',
-						description: 'Product price has been updated',
+						message: t('watch_toast.price_refreshed'),
+						description: t('watch_toast.price_refreshed_description'),
 						type: 'success',
 					});
 					refetch();
 				},
 				onError: error => {
 					showMessage({
-						message: 'Error',
+						message: t('common.error'),
 						description: error.message || 'Failed to refresh price',
 						type: 'danger',
 					});
@@ -72,14 +74,14 @@ export default function TrackerDetailScreen() {
 			{
 				onSuccess: () => {
 					showMessage({
-						message: product.is_active ? 'Tracking Paused' : 'Tracking Resumed',
+						message: product.is_active ? t('watch_toast.tracking_paused') : t('watch_toast.tracking_resumed'),
 						type: 'success',
 					});
 					refetch();
 				},
 				onError: error => {
 					showMessage({
-						message: 'Error',
+						message: t('common.error'),
 						description: error.message || 'Failed to update tracking',
 						type: 'danger',
 					});
@@ -100,15 +102,15 @@ export default function TrackerDetailScreen() {
 						{
 							onSuccess: () => {
 								showMessage({
-									message: 'Tracking Stopped',
-									description: 'Product removed from tracking',
+									message: t('watch_toast.tracking_stopped'),
+									description: t('watch_toast.tracking_stopped_description'),
 									type: 'success',
 								});
 								router.back();
 							},
 							onError: error => {
 								showMessage({
-									message: 'Error',
+									message: t('common.error'),
 									description: error.message || 'Failed to stop tracking',
 									type: 'danger',
 								});

@@ -40,21 +40,21 @@ export function SectionHeader({
 }: SectionHeaderProps) {
 	const isCompact = variant === 'compact';
 	return (
-		<View className={`px-4 sm:px-6 lg:px-8 ${isCompact ? 'pt-6 pb-6' : 'pt-8 pb-7'}`}>
+		<View className={`px-4 sm:px-6 lg:px-8 ${isCompact ? 'py-6' : 'pb-7 pt-8'}`}>
 			{/* Top row: eyebrow + chip + index */}
-			<View className="flex-row items-center justify-between mb-5">
+			<View className="mb-5 flex-row items-center justify-between">
 				<View className="flex-row items-center gap-3">
 					{Icon ? (
-						<View className="w-8 h-8 items-center justify-center rounded-md bg-primary dark:bg-text-primary-dark">
+						<View className="size-8 items-center justify-center rounded-md bg-primary dark:bg-text-primary-dark">
 							<Icon color="#FCFAF5" width={16} height={16} />
 						</View>
 					) : null}
-					<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+					<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 						{eyebrow ?? '·'}
 					</Text>
 				</View>
 				{index !== undefined && index !== null ? (
-					<Text className="text-xs font-mono text-text-muted-light dark:text-text-muted-dark">
+					<Text className="font-mono text-xs text-text-muted-light dark:text-text-muted-dark">
 						№ {String(index).padStart(2, '0')}
 					</Text>
 				) : null}
@@ -72,7 +72,7 @@ export function SectionHeader({
 
 			{/* Description */}
 			{description ? (
-				<View className="mt-4 border-l border-border-light dark:border-border-dark pl-4">
+				<View className="mt-4 border-l border-border-light pl-4 dark:border-border-dark">
 					<Text className="text-sm leading-5 text-text-muted-light dark:text-text-muted-dark">{description}</Text>
 				</View>
 			) : null}
@@ -83,7 +83,7 @@ export function SectionHeader({
 			{/* Hairline divider + actions */}
 			{(actions || !isCompact) && (
 				<View className="mt-6 flex-row items-center gap-4">
-					<View className="flex-1 h-px bg-border-light dark:bg-border-dark" />
+					<View className="h-px flex-1 bg-border-light dark:bg-border-dark" />
 					{actions ? <View className="flex-row items-center gap-2">{actions}</View> : null}
 				</View>
 			)}

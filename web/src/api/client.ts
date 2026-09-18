@@ -13,10 +13,13 @@ const apiClient: AxiosInstance = axios.create({
 		Accept: 'application/json',
 		'X-Requested-With': 'XMLHttpRequest',
 	},
-	withCredentials: true, // Important for Sanctum SPA authentication
-	withXSRFToken: true, // Ensure XSRF token is sent
-	xsrfCookieName: 'XSRF-TOKEN',
-	xsrfHeaderName: 'X-XSRF-TOKEN',
+	// Better Auth sets a session cookie for the browser flow, so credentials are
+	// still sent. The XSRF options that used to sit here were Sanctum-specific:
+	// Laravel issued a CSRF token from /sanctum/csrf-cookie and expected it
+	// echoed back. Better Auth does not use that scheme - it relies on SameSite
+	// cookies plus a trusted-origin check, which rejects an untrusted Origin with
+	// 403 before a handler runs.
+	withCredentials: true,
 });
 
 // Request interceptor to add auth token
@@ -37,20 +40,13 @@ apiClient.interceptors.response.use(
 	(error: AxiosError) => {
 		if (error.response?.status === 401) {
 			const authStore = useAuthStore();
-			authStore.logout();
-			window.location.href = '/login';
+			authStore.clearAuth();
+			import('@/router').then(({ default: router }) => {
+				router.push({ name: 'login' });
+			});
 		}
 		return Promise.reject(error);
 	}
 );
-
-// CSRF token fetching for Sanctum SPA mode
-export const getCsrfToken = async (): Promise<void> => {
-	const baseUrl = API_BASE_URL.replace(/\/api$/, '');
-	await axios.get(`${baseUrl}/sanctum/csrf-cookie`, {
-		withCredentials: true,
-		withXSRFToken: true,
-	});
-};
 
 export default apiClient;

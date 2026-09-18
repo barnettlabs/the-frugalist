@@ -6,6 +6,12 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { z } from 'zod';
 
 import { CurrencyInput, ExtraPaymentsField, FormSection, PercentageInput } from '@/components/forms';
+import {
+	ContactSection,
+	EstimateInfoSection,
+	NotesSection,
+	VehicleInfoSection,
+} from '@/components/shared/form-sections';
 import { ActionFooter, ControlledInput, Select, TabPageHeader, Text, View } from '@/components/ui';
 import { tw } from '@/components/ui/theme';
 import { FinanceCalculator, formatCurrencyWithSymbol } from '@/lib/calculators';
@@ -49,12 +55,6 @@ interface FinanceFormProps {
 	backLabel?: string;
 }
 
-const VEHICLE_TYPE_OPTIONS = [
-	{ value: VehicleType.CAR, label: 'Car' },
-	{ value: VehicleType.TRUCK, label: 'Truck' },
-	{ value: VehicleType.SUV, label: 'SUV' },
-];
-
 const TERM_OPTIONS = [
 	{ value: 24, label: '24 months' },
 	{ value: 36, label: '36 months' },
@@ -90,12 +90,12 @@ export function FinanceForm({
 				bottomOffset={120}
 			>
 				<SummaryCard summary={summary} />
-				<EstimateInfoSection control={control} />
-				<VehicleInfoSection control={control} watchedValues={watchedValues} setValue={setValue} />
+				<EstimateInfoSection control={control} sectionNumber="01" placeholder="My car estimate" />
+				<VehicleInfoSection control={control} watchedValues={watchedValues} setValue={setValue} sectionNumber="02" />
 				<PricingSection control={control} />
 				<FinancingSection control={control} watchedValues={watchedValues} setValue={setValue} />
-				<ContactSection control={control} />
-				<NotesSection control={control} />
+				<ContactSection control={control} sectionNumber="05" />
+				<NotesSection control={control} sectionNumber="06" />
 				<AdvancedSection control={control} watchedValues={watchedValues} />
 			</KeyboardAwareScrollView>
 			<ActionFooter
@@ -110,28 +110,28 @@ export function FinanceForm({
 
 function SummaryCard({ summary }: { summary: ReturnType<FinanceCalculator['getSummary']> }) {
 	return (
-		<View className="mb-5 rounded-md overflow-hidden border border-primary-dark" style={{ backgroundColor: '#171B27' }}>
-			<View className="px-5 py-3 border-b border-white/10">
-				<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60">At a glance</Text>
+		<View className="mb-5 overflow-hidden rounded-md border border-primary-dark bg-primary">
+			<View className="border-b border-white/10 px-5 py-3">
+				<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">At a glance</Text>
 			</View>
-			<View className="px-5 py-5">
-				<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1.5">Monthly</Text>
+			<View className="p-5">
+				<Text className="mb-1.5 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Monthly</Text>
 				<Text className="font-mono tracking-tight text-white" style={{ fontSize: 36, lineHeight: 38 }}>
 					{formatCurrencyWithSymbol(summary.monthlyPayment)}
 				</Text>
-				<View className="mt-5 pt-4 border-t border-white/10 flex-row justify-between">
+				<View className="mt-5 flex-row justify-between border-t border-white/10 pt-4">
 					<View>
-						<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1">Financed</Text>
+						<Text className="mb-1 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Financed</Text>
 						<Text className="font-mono text-sm text-white">{formatCurrencyWithSymbol(summary.loanAmount)}</Text>
 					</View>
 					<View>
-						<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1">Interest</Text>
-						<Text className="font-mono text-sm" style={{ color: '#E6B25A' }}>
+						<Text className="mb-1 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Interest</Text>
+						<Text className="font-mono text-sm text-signal-light">
 							{formatCurrencyWithSymbol(summary.interestAmount)}
 						</Text>
 					</View>
 					<View>
-						<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-1">Total</Text>
+						<Text className="mb-1 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Total</Text>
 						<Text className="font-mono text-sm text-white">{formatCurrencyWithSymbol(summary.grandTotal)}</Text>
 					</View>
 				</View>
@@ -140,54 +140,11 @@ function SummaryCard({ summary }: { summary: ReturnType<FinanceCalculator['getSu
 	);
 }
 
-function EstimateInfoSection({ control }: { control: Control<FinanceFormData> }) {
-	return (
-		<FormSection number="01" title="Estimate info">
-			<ControlledInput control={control} name="sheet_name" label="Estimate name" placeholder="My car estimate" />
-		</FormSection>
-	);
-}
-
 type FormProps = {
 	control: Control<FinanceFormData>;
 	watchedValues: Partial<FinanceFormData>;
 	setValue: UseFormSetValue<FinanceFormData>;
 };
-
-function VehicleInfoSection({ control, watchedValues, setValue }: FormProps) {
-	return (
-		<FormSection number="02" title="Vehicle information">
-			<Select
-				label="Vehicle Type"
-				options={VEHICLE_TYPE_OPTIONS}
-				value={watchedValues.vehicle_type}
-				onSelect={v => setValue('vehicle_type', v as VehicleType)}
-			/>
-			<View className="mt-2 flex-row gap-2">
-				<View className="flex-1">
-					<ControlledInput
-						control={control}
-						name="vehicle_year"
-						label="Year"
-						placeholder="2024"
-						keyboardType="number-pad"
-					/>
-				</View>
-				<View className="flex-1">
-					<ControlledInput control={control} name="vehicle_make" label="Make" placeholder="Toyota" />
-				</View>
-			</View>
-			<View className="flex-row gap-2">
-				<View className="flex-1">
-					<ControlledInput control={control} name="vehicle_model" label="Model" placeholder="Camry" />
-				</View>
-				<View className="flex-1">
-					<ControlledInput control={control} name="vehicle_trim" label="Trim" placeholder="XLE" />
-				</View>
-			</View>
-		</FormSection>
-	);
-}
 
 function PricingSection({ control }: { control: Control<FinanceFormData> }) {
 	return (
@@ -213,45 +170,6 @@ function FinancingSection({ control, watchedValues, setValue }: FormProps) {
 				onSelect={v => setValue('finance_term', v as number)}
 			/>
 			<ControlledInput control={control} name="start_date" label="Start Date" placeholder="YYYY-MM-DD" />
-		</FormSection>
-	);
-}
-
-function ContactSection({ control }: { control: Control<FinanceFormData> }) {
-	return (
-		<FormSection number="05" title="Contact information" collapsible defaultCollapsed>
-			<ControlledInput control={control} name="sales_consultant" label="Sales Consultant" placeholder="John Smith" />
-			<ControlledInput control={control} name="dealership_name" label="Dealership" placeholder="ABC Motors" />
-			<ControlledInput
-				control={control}
-				name="contact_email"
-				label="Email"
-				placeholder="john@dealer.com"
-				keyboardType="email-address"
-				autoCapitalize="none"
-			/>
-			<ControlledInput
-				control={control}
-				name="contact_phone"
-				label="Phone"
-				placeholder="(555) 123-4567"
-				keyboardType="phone-pad"
-			/>
-		</FormSection>
-	);
-}
-
-function NotesSection({ control }: { control: Control<FinanceFormData> }) {
-	return (
-		<FormSection number="06" title="Notes" collapsible defaultCollapsed>
-			<ControlledInput
-				control={control}
-				name="notes"
-				label="Notes"
-				placeholder="Additional notes..."
-				multiline
-				numberOfLines={4}
-			/>
 		</FormSection>
 	);
 }

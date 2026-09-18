@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, router } from 'expo-router';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -27,6 +28,7 @@ const registerSchema = z
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 export default function RegisterScreen() {
+	const { t } = useTranslation();
 	const { mutate: register, isPending } = useRegister();
 	const insets = useSafeAreaInsets();
 
@@ -45,15 +47,15 @@ export default function RegisterScreen() {
 		register(data, {
 			onSuccess: () => {
 				showMessage({
-					message: 'Account created',
-					description: 'Please check your email to verify your account',
+					message: t('auth.account_created'),
+					description: t('auth.account_created_description'),
 					type: 'success',
 				});
 				router.replace('/(auth)/verify-email');
 			},
 			onError: error => {
 				showMessage({
-					message: 'Registration failed',
+					message: t('auth.registration_failed'),
 					description: error.message || 'Could not create account',
 					type: 'danger',
 				});
@@ -86,26 +88,26 @@ export default function RegisterScreen() {
 					/>
 
 					<View className="flex-1 justify-center py-8">
-						<View className="px-6 items-center">
+						<View className="items-center px-6">
 							<LogoImage variant="auto" className="!size-20" />
-							<Text className="font-display italic mt-4 text-accent dark:text-accent-light" style={{ fontSize: 18 }}>
+							<Text className="mt-4 font-display italic text-accent dark:text-accent-light" style={{ fontSize: 18 }}>
 								Spend with intent.
 							</Text>
 						</View>
 
-						<View className="px-6 mt-8">
+						<View className="mt-8 px-6">
 							<View className="relative">
 								<View
-									className="absolute rounded-md bg-tan dark:bg-border-dark border border-border-light dark:border-border-strong-dark"
+									className="absolute rounded-md border border-border-light bg-tan dark:border-border-strong-dark dark:bg-border-dark"
 									style={{ top: -10, bottom: -10, left: -10, right: -10, transform: [{ rotate: '-1.5deg' }] }}
 								/>
 								<View
-									className="absolute rounded-md bg-surface-dark-light dark:bg-surface-dark-dark border border-border-light dark:border-border-dark"
+									className="absolute rounded-md border border-border-light bg-surface-dark-light dark:border-border-dark dark:bg-surface-dark-dark"
 									style={{ top: -5, bottom: -5, left: -5, right: -5, transform: [{ rotate: '1deg' }] }}
 								/>
 
-								<View className="relative rounded-md bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-6">
-									<View className="items-center mb-5">
+								<View className="relative rounded-md border border-border-light bg-surface-light p-6 dark:border-border-dark dark:bg-surface-dark">
+									<View className="mb-5 items-center">
 										<Text
 											className="font-display text-text-primary-light dark:text-text-primary-dark"
 											style={{ fontSize: 22 }}
@@ -166,7 +168,7 @@ export default function RegisterScreen() {
 									<Pressable
 										onPress={handleSubmit(onSubmit)}
 										disabled={isPending}
-										className="rounded-md bg-primary px-5 py-3.5 items-center mt-2 active:opacity-80"
+										className="mt-2 items-center rounded-md bg-primary px-5 py-3.5 active:opacity-80"
 										style={{ opacity: isPending ? 0.6 : 1 }}
 									>
 										<Text className="text-sm font-medium text-surface-light">
@@ -174,7 +176,7 @@ export default function RegisterScreen() {
 										</Text>
 									</Pressable>
 
-									<View className="mt-6 pt-5 border-t border-border-light dark:border-border-dark items-center">
+									<View className="mt-6 items-center border-t border-border-light pt-5 dark:border-border-dark">
 										<View className="flex-row items-center">
 											<Text className="text-sm text-text-muted-light dark:text-text-muted-dark">
 												Already have an account?{' '}

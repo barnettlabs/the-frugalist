@@ -1,0 +1,47 @@
+{
+  "finance": [
+    { "name": "typical new car", "input": { "msrp": 42000, "discounts": 1500, "rebates": 1000, "sales_tax_percent": 7.25, "fees": 899, "down_payment": 5000, "finance_term": 60, "interest_rate": 6.49 } },
+    { "name": "zero interest promo", "input": { "msrp": 30000, "discounts": 0, "rebates": 2000, "sales_tax_percent": 6, "fees": 500, "down_payment": 3000, "finance_term": 48, "interest_rate": 0 } },
+    { "name": "all empty", "input": {} },
+    { "name": "masked currency strings", "input": { "msrp": "$42,000.00", "discounts": "1,500", "rebates": "$1,000", "sales_tax_percent": "7.25%", "fees": "899", "down_payment": "$5,000", "finance_term": "60", "interest_rate": "6.49" } },
+    { "name": "down payment exceeds price", "input": { "msrp": 20000, "discounts": 0, "rebates": 0, "sales_tax_percent": 5, "fees": 0, "down_payment": 30000, "finance_term": 36, "interest_rate": 5 } },
+    { "name": "zero term", "input": { "msrp": 25000, "sales_tax_percent": 6, "finance_term": 0, "interest_rate": 5 } },
+    { "name": "extra payments single month", "input": { "msrp": 40000, "sales_tax_percent": 7, "fees": 800, "down_payment": 4000, "finance_term": 60, "interest_rate": 6.9, "extra_payments_json": "[{\"startMonth\":12,\"endMonth\":12,\"paymentAmount\":5000}]" } },
+    { "name": "extra payments range", "input": { "msrp": 40000, "sales_tax_percent": 7, "fees": 800, "down_payment": 4000, "finance_term": 60, "interest_rate": 6.9, "extra_payments_json": "[{\"startMonth\":1,\"endMonth\":60,\"paymentAmount\":200}]" } },
+    { "name": "extra payments overpay early", "input": { "msrp": 30000, "sales_tax_percent": 6, "fees": 0, "down_payment": 2000, "finance_term": 72, "interest_rate": 7.5, "extra_payments_json": "[{\"startMonth\":1,\"endMonth\":72,\"paymentAmount\":3000}]" } },
+    { "name": "extra payments missing endMonth", "input": { "msrp": 35000, "sales_tax_percent": 6, "down_payment": 3000, "finance_term": 48, "interest_rate": 5.5, "extra_payments_json": "[{\"startMonth\":6,\"paymentAmount\":1000}]" } },
+    { "name": "extra payments as array not string", "input": { "msrp": 35000, "sales_tax_percent": 6, "down_payment": 3000, "finance_term": 48, "interest_rate": 5.5, "extra_payments_json": [{ "startMonth": 6, "endMonth": 12, "paymentAmount": 500 }] } },
+    { "name": "malformed extra payments json", "input": { "msrp": 35000, "sales_tax_percent": 6, "down_payment": 3000, "finance_term": 48, "interest_rate": 5.5, "extra_payments_json": "not json at all" } },
+    { "name": "long term high rate", "input": { "msrp": 65000, "discounts": 2000, "rebates": 0, "sales_tax_percent": 8.875, "fees": 1200, "down_payment": 0, "finance_term": 84, "interest_rate": 12.99 } },
+    { "name": "fractional term", "input": { "msrp": 20000, "sales_tax_percent": 5, "down_payment": 1000, "finance_term": 36.7, "interest_rate": 4.25 } },
+    { "name": "negative rate", "input": { "msrp": 20000, "sales_tax_percent": 5, "down_payment": 1000, "finance_term": 36, "interest_rate": -3 } },
+    { "name": "boolean and null inputs", "input": { "msrp": 20000, "discounts": null, "rebates": true, "sales_tax_percent": 5, "fees": false, "down_payment": 1000, "finance_term": 36, "interest_rate": 4 } }
+  ],
+  "lease": [
+    { "name": "typical lease", "input": { "msrp": 45000, "residual_percent": 58, "money_factor": 0.00225, "dealer_contribution": 2000, "trade_in": 0, "doc_fee": 599, "acquisition_fee": 895, "misc_fees": 300, "lease_cash": 1500, "down_payment": 3000, "lease_term": 36, "sales_tax_percent": 7 } },
+    { "name": "zero money factor", "input": { "msrp": 40000, "residual_percent": 60, "money_factor": 0, "dealer_contribution": 1000, "doc_fee": 500, "acquisition_fee": 800, "lease_term": 36, "sales_tax_percent": 6 } },
+    { "name": "all empty", "input": {} },
+    { "name": "zero term", "input": { "msrp": 40000, "residual_percent": 60, "money_factor": 0.002, "lease_term": 0, "sales_tax_percent": 6 } },
+    { "name": "with trade in", "input": { "msrp": 52000, "residual_percent": 55, "money_factor": 0.00185, "dealer_contribution": 3500, "trade_in": 8000, "doc_fee": 699, "acquisition_fee": 995, "misc_fees": 450, "lease_cash": 2000, "down_payment": 0, "lease_term": 39, "sales_tax_percent": 8.25 } },
+    { "name": "masked strings", "input": { "msrp": "$45,000", "residual_percent": "58%", "money_factor": "0.00225", "dealer_contribution": "$2,000", "doc_fee": "599", "acquisition_fee": "$895", "lease_term": "36", "sales_tax_percent": "7%" } },
+    { "name": "high residual short term", "input": { "msrp": 38000, "residual_percent": 72, "money_factor": 0.0012, "dealer_contribution": 500, "doc_fee": 400, "acquisition_fee": 650, "lease_term": 24, "sales_tax_percent": 5.5 } },
+    { "name": "no sales tax", "input": { "msrp": 40000, "residual_percent": 60, "money_factor": 0.002, "dealer_contribution": 1000, "doc_fee": 500, "acquisition_fee": 800, "lease_term": 36, "sales_tax_percent": 0 } }
+  ],
+  "mortgage": [
+    { "name": "typical 30 year", "input": { "property_value": 450000, "down_payment": 90000, "loan_term_years": 30, "interest_rate": 6.75, "annual_property_tax": 5400, "annual_insurance": 1800, "monthly_hoa": 150 } },
+    { "name": "15 year no escrow", "input": { "property_value": 300000, "down_payment": 60000, "loan_term_years": 15, "interest_rate": 5.875, "annual_property_tax": 0, "annual_insurance": 0, "monthly_hoa": 0 } },
+    { "name": "all empty", "input": {} },
+    { "name": "zero interest", "input": { "property_value": 200000, "down_payment": 20000, "loan_term_years": 30, "interest_rate": 0, "annual_property_tax": 2400, "annual_insurance": 1200, "monthly_hoa": 0 } },
+    { "name": "down payment exceeds value", "input": { "property_value": 100000, "down_payment": 150000, "loan_term_years": 30, "interest_rate": 6 } },
+    { "name": "extra payments to end of term", "input": { "property_value": 400000, "down_payment": 80000, "loan_term_years": 30, "interest_rate": 6.5, "annual_property_tax": 4800, "annual_insurance": 1600, "monthly_hoa": 0, "extra_payments_json": "[{\"startMonth\":1,\"paymentAmount\":300}]" } },
+    { "name": "extra payments explicit range", "input": { "property_value": 400000, "down_payment": 80000, "loan_term_years": 30, "interest_rate": 6.5, "extra_payments_json": "[{\"startMonth\":13,\"endMonth\":60,\"paymentAmount\":500}]" } },
+    { "name": "extra payments empty endMonth string", "input": { "property_value": 400000, "down_payment": 80000, "loan_term_years": 30, "interest_rate": 6.5, "extra_payments_json": "[{\"startMonth\":1,\"endMonth\":\"\",\"paymentAmount\":250}]" } },
+    { "name": "huge extra payment pays off early", "input": { "property_value": 250000, "down_payment": 50000, "loan_term_years": 30, "interest_rate": 7, "extra_payments_json": "[{\"startMonth\":1,\"paymentAmount\":8000}]" } },
+    { "name": "extra expenses mixed frequency", "input": { "property_value": 350000, "down_payment": 70000, "loan_term_years": 30, "interest_rate": 6.25, "annual_property_tax": 4200, "annual_insurance": 1400, "monthly_hoa": 75, "extra_expenses_json": "[{\"label\":\"Flood insurance\",\"amount\":1200,\"frequency\":\"annual\"},{\"label\":\"Lawn care\",\"amount\":80,\"frequency\":\"monthly\"}]" } },
+    { "name": "extra expenses bad frequency", "input": { "property_value": 350000, "down_payment": 70000, "loan_term_years": 30, "interest_rate": 6.25, "extra_expenses_json": "[{\"label\":\"Weird\",\"amount\":50,\"frequency\":\"WEEKLY\"},{\"amount\":25}]" } },
+    { "name": "extra expenses annual uppercase", "input": { "property_value": 350000, "down_payment": 70000, "loan_term_years": 30, "interest_rate": 6.25, "extra_expenses_json": "[{\"label\":\"Umbrella\",\"amount\":600,\"frequency\":\"ANNUAL\"}]" } },
+    { "name": "masked strings", "input": { "property_value": "$450,000", "down_payment": "$90,000", "loan_term_years": "30", "interest_rate": "6.75%", "annual_property_tax": "$5,400", "annual_insurance": "1,800", "monthly_hoa": "$150" } },
+    { "name": "fractional term years", "input": { "property_value": 300000, "down_payment": 30000, "loan_term_years": 12.5, "interest_rate": 5.5 } },
+    { "name": "short term high rate", "input": { "property_value": 180000, "down_payment": 18000, "loan_term_years": 5, "interest_rate": 11.25, "annual_property_tax": 2200, "annual_insurance": 900, "monthly_hoa": 40 } }
+  ]
+}

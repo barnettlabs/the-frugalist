@@ -1,0 +1,69 @@
+# Local dependencies for development and tests.
+#
+# Only stateful services live here. The application processes (api, worker) run
+# natively on the host for fast reload and a real debugger.
+#
+#   docker compose up -d
+#
+# Versions are pinned to what production runs. Testing against different engines
+# than production is a class of bug you cannot reproduce locally - it previously
+# hid two engine-specific SQL errors - so local and production use the same ones.
+
+name: frugalist
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: frugalist
+      POSTGRES_PASSWORD: frugalist
+      POSTGRES_DB: frugalist
+      # Every timestamp in this database is UTC. Keeping the database in UTC too
+      # means NOW() and the application agree - a host defaulting to a local zone
+      # silently shifts every comparison.
+      TZ: UTC
+      PGTZ: UTC
+    ports:
+      - '55432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U frugalist -d frugalist']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Valkey rather than Redis: same protocol and BullMQ support, but it is the
+  # Linux Foundation fork and is what the managed options are converging on.
+  valkey:
+    image: valkey/valkey:8-alpine
+    command: >
+      valkey-server
+      --save 60 1
+      --appendonly yes
+      --maxmemory-policy noeviction
+    ports:
+      - '56379:6379'
+    volumes:
+      - valkey-data:/data
+    healthcheck:
+      test: ['CMD', 'valkey-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Catches outbound mail locally. Replaces the PlaygroundController preview
+  # endpoints and stops development from sending real email through Resend.
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - '58025:8025'  # web UI
+      - '51025:1025'  # SMTP
+    environment:
+      MP_MAX_MESSAGES: 500
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
+volumes:
+  postgres-data:
+  valkey-data:

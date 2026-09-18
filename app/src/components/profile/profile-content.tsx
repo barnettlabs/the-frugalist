@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Pressable } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
 
@@ -14,6 +15,7 @@ export function ProfileContent({
 	backLabel = 'Account',
 	tabAware = true,
 }: { backLabel?: string; tabAware?: boolean } = {}) {
+	const { t } = useTranslation();
 	const { data: profile, isLoading, isError, refetch } = useProfile();
 	const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
 	const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount();
@@ -41,15 +43,15 @@ export function ProfileContent({
 		updateProfile(data, {
 			onSuccess: () => {
 				showMessage({
-					message: 'Profile updated',
-					description: 'Your profile has been updated successfully',
+					message: t('profile_toast.updated'),
+					description: t('profile_toast.updated_description'),
 					type: 'success',
 				});
 				refetch();
 			},
 			onError: error => {
 				showMessage({
-					message: 'Error',
+					message: t('common.error'),
 					description: error.message || 'Failed to update profile',
 					type: 'danger',
 				});
@@ -70,15 +72,15 @@ export function ProfileContent({
 						deleteAccount(undefined, {
 							onSuccess: () => {
 								showMessage({
-									message: 'Account deleted',
-									description: 'Your account has been deleted',
+									message: t('profile_toast.deleted'),
+									description: t('profile_toast.deleted_description'),
 									type: 'success',
 								});
 								signOut();
 							},
 							onError: error => {
 								showMessage({
-									message: 'Error',
+									message: t('common.error'),
 									description: error.message || 'Failed to delete account',
 									type: 'danger',
 								});
@@ -110,10 +112,10 @@ function ProfileHeader({ profile }: { profile: User }) {
 
 	return (
 		<View className="mb-6 items-center">
-			<View className="size-20 items-center justify-center rounded-full border border-border-light dark:border-border-dark bg-tan-light dark:bg-charcoal-800">
+			<View className="size-20 items-center justify-center rounded-full border border-border-light bg-tan-light dark:border-border-dark dark:bg-charcoal-800">
 				<Text
 					className="font-display text-text-primary-light dark:text-text-primary-dark"
-					style={{ fontSize: 26, lineHeight: 32, includeFontPadding: false } as any}
+					style={{ fontSize: 26, lineHeight: 32, includeFontPadding: false }}
 				>
 					{initials}
 				</Text>
@@ -121,14 +123,14 @@ function ProfileHeader({ profile }: { profile: User }) {
 
 			<Text
 				className="mt-4 font-display tracking-tight text-text-primary-light dark:text-text-primary-dark"
-				style={{ fontSize: 26, lineHeight: 32, includeFontPadding: false } as any}
+				style={{ fontSize: 26, lineHeight: 32, includeFontPadding: false }}
 			>
 				{profile.first_name} {profile.last_name}
 			</Text>
 
 			<Text className="mt-1 text-sm text-text-muted-light dark:text-text-muted-dark">{profile.email}</Text>
 
-			<Text className="mt-2 text-[10px] font-mono uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
+			<Text className="mt-2 font-mono text-[10px] uppercase tracking-wider text-text-muted-light dark:text-text-muted-dark">
 				Member since{' '}
 				{new Date(profile.created_at).toLocaleDateString('en-US', {
 					month: 'short',
@@ -144,36 +146,34 @@ function AccountStats({ profile }: { profile: User }) {
 
 	return (
 		<View className="mt-6">
-			<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+			<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 				Account info
 			</Text>
-			<View className="flex-row gap-px rounded-md overflow-hidden border border-border-light dark:border-border-dark">
-				<View className="flex-1 bg-surface-light dark:bg-surface-dark p-4">
-					<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-1.5">
+			<View className="flex-row gap-px overflow-hidden rounded-md border border-border-light dark:border-border-dark">
+				<View className="flex-1 bg-surface-light p-4 dark:bg-surface-dark">
+					<Text className="mb-1.5 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 						Days active
 					</Text>
 					<Text
 						className="font-mono text-text-primary-light dark:text-text-primary-dark"
-						style={{ fontSize: 24, lineHeight: 30, includeFontPadding: false } as any}
+						style={{ fontSize: 24, lineHeight: 30, includeFontPadding: false }}
 					>
 						{memberDays}
 					</Text>
 				</View>
 				<View style={{ width: 1, backgroundColor: colors.border.light }} />
-				<View className="flex-1 bg-surface-light dark:bg-surface-dark p-4">
-					<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-1.5">
+				<View className="flex-1 bg-surface-light p-4 dark:bg-surface-dark">
+					<Text className="mb-1.5 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 						Verified
 					</Text>
 					<Text
 						className="font-mono"
-						style={
-							{
-								fontSize: 24,
-								lineHeight: 30,
-								includeFontPadding: false,
-								color: profile.email_verified_at ? colors.success.DEFAULT : colors.text.muted.light,
-							} as any
-						}
+						style={{
+							fontSize: 24,
+							lineHeight: 30,
+							includeFontPadding: false,
+							color: profile.email_verified_at ? colors.success.DEFAULT : colors.text.muted.light,
+						}}
 					>
 						{profile.email_verified_at ? 'Yes' : 'No'}
 					</Text>
@@ -186,19 +186,19 @@ function AccountStats({ profile }: { profile: User }) {
 function DangerZone({ onDelete, isDeleting }: { onDelete: () => void; isDeleting: boolean }) {
 	return (
 		<View className="mt-10">
-			<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-danger mb-3">Danger zone</Text>
+			<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-danger">Danger zone</Text>
 			<View className="rounded-md border border-danger/30 bg-danger/5 p-4">
-				<Text className="font-display text-lg text-text-primary-light dark:text-text-primary-dark mb-2">
+				<Text className="mb-2 font-display text-lg text-text-primary-light dark:text-text-primary-dark">
 					Delete account
 				</Text>
-				<Text className="text-xs text-text-muted-light dark:text-text-muted-dark mb-4 leading-5">
+				<Text className="mb-4 text-xs leading-5 text-text-muted-light dark:text-text-muted-dark">
 					Once you delete your account, there is no going back. All your data — finance estimates, lease calculations,
 					and tracked products — will be permanently removed.
 				</Text>
 				<Pressable
 					onPress={onDelete}
 					disabled={isDeleting}
-					className="rounded-md bg-danger px-4 py-3 items-center active:opacity-80"
+					className="items-center rounded-md bg-danger px-4 py-3 active:opacity-80"
 					style={{ opacity: isDeleting ? 0.6 : 1 }}
 				>
 					<Text className="text-sm font-medium text-surface-light">

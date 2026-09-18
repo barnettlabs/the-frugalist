@@ -3,15 +3,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, router } from 'expo-router';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
 import { useLogin } from '@/api/auth/use-auth';
 import { ControlledInput, LogoImage, MastheadBar, ScreenContainer, Text, View } from '@/components/ui';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-const DEBUG_TAP_COUNT = 3;
-const DEBUG_TAP_WINDOW_MS = 1500;
 
 const loginSchema = z.object({
 	email: z.string().email('Invalid email address'),
@@ -21,26 +19,9 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginScreen() {
+	const { t } = useTranslation();
 	const { mutate: login, isPending } = useLogin();
 	const insets = useSafeAreaInsets();
-	const [showDebug, setShowDebug] = React.useState(false);
-	const tapState = React.useRef<{ count: number; first: number }>({ count: 0, first: 0 });
-
-	const handleLogoTap = React.useCallback(() => {
-		const now = Date.now();
-		const state = tapState.current;
-		if (now - state.first > DEBUG_TAP_WINDOW_MS) {
-			state.first = now;
-			state.count = 1;
-		} else {
-			state.count += 1;
-		}
-		if (state.count >= DEBUG_TAP_COUNT) {
-			state.count = 0;
-			state.first = 0;
-			setShowDebug(s => !s);
-		}
-	}, []);
 
 	const { control, handleSubmit } = useForm<LoginFormData>({
 		resolver: zodResolver(loginSchema),
@@ -74,67 +55,30 @@ export default function LoginScreen() {
 					keyboardShouldPersistTaps="handled"
 					showsVerticalScrollIndicator={false}
 				>
-					<MastheadBar
-						left="v 1.0.0"
-						center="A field guide to what things should cost"
-						right={`Est. ${Env.ESTABLISHED_YEAR}`}
-					/>
+					<MastheadBar left="v 1.0.0" center={t('auth.masthead_subtitle')} right={`Est. ${Env.ESTABLISHED_YEAR}`} />
 
 					<View className="flex-1 justify-center py-8">
-						<View className="px-6 items-center">
-							<Pressable onPress={handleLogoTap} hitSlop={12}>
-								<LogoImage variant="auto" className="!size-20" />
-							</Pressable>
-							<Text className="font-display italic mt-4 text-accent dark:text-accent-light" style={{ fontSize: 18 }}>
-								Spend with intent.
+						<View className="items-center px-6">
+							<LogoImage variant="auto" className="!size-20" />
+							<Text className="mt-4 font-display italic text-accent dark:text-accent-light" style={{ fontSize: 18 }}>
+								{t('auth.login_tagline')}
 							</Text>
 						</View>
 
-						{showDebug && (
-							<View className="px-6 mt-6">
-								<View className="rounded-md bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-4">
-									<View className="flex-row justify-between items-center mb-2">
-										<Text className="font-mono text-xs uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
-											Debug
-										</Text>
-										<Pressable onPress={() => setShowDebug(false)} hitSlop={8}>
-											<Text className="text-xs font-medium text-primary dark:text-text-primary-dark">Hide</Text>
-										</Pressable>
-									</View>
-									{[
-										['env', Env.APP_ENV],
-										['api', Env.API_URL],
-										['version', Env.VERSION],
-										['bundle', Env.BUNDLE_ID],
-										['scheme', Env.SCHEME],
-									].map(([k, v]) => (
-										<View key={k} className="flex-row py-0.5">
-											<Text className="font-mono text-xs text-text-muted-light dark:text-text-muted-dark w-16">
-												{k}
-											</Text>
-											<Text className="font-mono text-xs text-text-primary-light dark:text-text-primary-dark flex-1">
-												{String(v ?? '—')}
-											</Text>
-										</View>
-									))}
-								</View>
-							</View>
-						)}
-
 						{/* Floating paper card with stacked-paper depth */}
-						<View className="px-6 mt-8">
+						<View className="mt-8 px-6">
 							<View className="relative">
 								<View
-									className="absolute rounded-md bg-tan dark:bg-border-dark border border-border-light dark:border-border-strong-dark"
+									className="absolute rounded-md border border-border-light bg-tan dark:border-border-strong-dark dark:bg-border-dark"
 									style={{ top: -10, bottom: -10, left: -10, right: -10, transform: [{ rotate: '-1.5deg' }] }}
 								/>
 								<View
-									className="absolute rounded-md bg-surface-dark-light dark:bg-surface-dark-dark border border-border-light dark:border-border-dark"
+									className="absolute rounded-md border border-border-light bg-surface-dark-light dark:border-border-dark dark:bg-surface-dark-dark"
 									style={{ top: -5, bottom: -5, left: -5, right: -5, transform: [{ rotate: '1deg' }] }}
 								/>
 
-								<View className="relative rounded-md bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark p-6">
-									<View className="items-center mb-5">
+								<View className="relative rounded-md border border-border-light bg-surface-light p-6 dark:border-border-dark dark:bg-surface-dark">
+									<View className="mb-5 items-center">
 										<Text
 											className="font-display text-text-primary-light dark:text-text-primary-dark"
 											style={{ fontSize: 22 }}
@@ -165,18 +109,18 @@ export default function LoginScreen() {
 									<Pressable
 										onPress={handleSubmit(onSubmit)}
 										disabled={isPending}
-										className="rounded-md bg-primary px-5 py-3.5 items-center mt-2 active:opacity-80"
+										className="mt-2 items-center rounded-md bg-primary px-5 py-3.5 active:opacity-80"
 										style={{ opacity: isPending ? 0.6 : 1 }}
 									>
 										<Text className="text-sm font-medium text-surface-light">
-											{isPending ? 'Signing in…' : 'Sign in'}
+											{isPending ? t('auth.signing_in') : t('auth.sign_in')}
 										</Text>
 									</Pressable>
 
-									<View className="mt-6 pt-5 border-t border-border-light dark:border-border-dark items-center gap-3">
+									<View className="mt-6 items-center gap-3 border-t border-border-light pt-5 dark:border-border-dark">
 										<Link href="/(auth)/forgot-password" asChild>
 											<Pressable>
-												<Text className="text-xs font-medium text-text-muted-light dark:text-text-muted-dark underline">
+												<Text className="text-xs font-medium text-text-muted-light underline dark:text-text-muted-dark">
 													Forgot password?
 												</Text>
 											</Pressable>

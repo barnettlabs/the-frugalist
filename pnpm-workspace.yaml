@@ -1,0 +1,16 @@
+# The Expo app is deliberately NOT a workspace member.
+#
+# It ships its own .npmrc with `node-linker=hoisted`, which React Native's
+# Metro bundler and the Jest preset both require - they resolve modules by
+# walking node_modules rather than through pnpm's symlinked store. Making it a
+# member overrides that with the root's isolated linker, and module resolution
+# breaks in ways that only surface at test or bundle time
+# (`Could not locate module react-native/setup-env`).
+#
+# It keeps its own lockfile and is installed from app/ with `pnpm install`.
+# Revisit only if it needs to consume @frugalist/contracts, and then solve the
+# linker question deliberately rather than by adding a line here.
+packages:
+  - 'packages/*'
+  - 'server'
+  - 'web'

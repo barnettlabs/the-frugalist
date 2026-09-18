@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { PropType } from 'vue';
 import { computed, ref } from 'vue';
+
+import type { SelectOption } from '@/types/ui';
 
 import BaseInput from './BaseInput.vue';
 import CurrencyInput from './CurrencyInput.vue';
@@ -10,10 +13,7 @@ import TextareaInput from './TextareaInput.vue';
 
 defineEmits(['focus', 'blur']);
 
-const modelValue = defineModel({
-	type: [String, Number],
-	default: '',
-});
+const modelValue = defineModel<string | number>({ default: '' });
 
 const props = defineProps({
 	label: {
@@ -31,7 +31,7 @@ const props = defineProps({
 	type: {
 		type: String,
 		default: 'text',
-		validator: value =>
+		validator: (value: unknown): boolean =>
 			[
 				'text',
 				'email',
@@ -46,7 +46,7 @@ const props = defineProps({
 				'percentage',
 				'textarea',
 				'select',
-			].includes(value),
+			].includes(value as string),
 	},
 	placeholder: {
 		type: String,
@@ -83,7 +83,7 @@ const props = defineProps({
 	size: {
 		type: String,
 		default: 'md',
-		validator: value => ['sm', 'md', 'lg'].includes(value),
+		validator: (value: unknown): boolean => ['sm', 'md', 'lg'].includes(value as string),
 	},
 	// Number/Currency specific props
 	step: {
@@ -129,12 +129,12 @@ const props = defineProps({
 	},
 	// Select specific props
 	options: {
-		type: Array,
+		type: Array as PropType<readonly SelectOption[]>,
 		default: () => [],
 	},
 });
 
-const input = ref(null);
+const input = ref<HTMLInputElement | null>(null);
 
 // Component selection based on type
 const inputComponent = computed(() => {

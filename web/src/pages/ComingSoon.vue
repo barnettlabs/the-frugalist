@@ -6,7 +6,7 @@ import { RouterLink } from 'vue-router';
 <template>
 	<main class="py-12 flex-1">
 		<div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-			<div class="bg-white rounded-lg border border-gray-200 shadow-sm p-12 text-center">
+			<div class="bg-white rounded-lg border border-gray-200 shadow-xs p-12 text-center">
 				<div class="p-4 rounded-xl bg-warning/10 w-16 h-16 mx-auto mb-6 flex items-center justify-center">
 					<ClockIcon class="h-8 w-8 text-warning" />
 				</div>

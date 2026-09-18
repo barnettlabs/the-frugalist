@@ -9,7 +9,7 @@ interface AuthState {
 	status: 'idle' | 'signOut' | 'signIn';
 	signIn: (data: TokenType) => void;
 	signOut: () => void;
-	hydrate: () => void;
+	hydrate: () => Promise<void>;
 }
 
 const _useAuth = create<AuthState>((set, get) => ({
@@ -23,19 +23,17 @@ const _useAuth = create<AuthState>((set, get) => ({
 		removeToken();
 		set({ status: 'signOut', token: null });
 	},
-	hydrate: () => {
+	hydrate: async () => {
 		try {
-			const userToken = getToken();
+			const userToken = await getToken();
 			if (userToken !== null) {
 				get().signIn(userToken);
 			} else {
 				get().signOut();
 			}
 		} catch (e) {
-			// only to remove eslint error, handle the error properly
-			console.error(e);
-			// catch error here
-			// Maybe sign_out user!
+			console.error('[auth] hydrate failed, signing out:', e);
+			get().signOut();
 		}
 	},
 }));

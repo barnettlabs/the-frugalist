@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import type { PropType } from 'vue';
 import { computed, ref } from 'vue';
 
-import { formatCurrency } from '@/utils/formatters.js';
+import type { LeaseFormData } from '@/types/models';
+import { formatCurrency, parseIntOrZero } from '@/utils/formatters.js';
 
 import { LeaseCalculator } from '../../utils/leaseCalculator.js';
 
 const props = defineProps({
 	data: {
-		type: Object,
+		type: Object as PropType<LeaseFormData>,
 		required: true,
 	},
 });
@@ -23,9 +25,9 @@ const paymentBreakdown = computed(() => {
 	if (!summary.value) return null;
 
 	return {
-		principal: summary.value.monthlyPrincipalPayment * parseInt(props.data.lease_term || 0),
-		interest: summary.value.residualMonthlyInterestPayment * parseInt(props.data.lease_term || 0),
-		salesTax: summary.value.monthlySalesTax * parseInt(props.data.lease_term || 0),
+		principal: summary.value.monthlyPrincipalPayment * parseIntOrZero(props.data.lease_term),
+		interest: summary.value.residualMonthlyInterestPayment * parseIntOrZero(props.data.lease_term),
+		salesTax: summary.value.monthlySalesTax * parseIntOrZero(props.data.lease_term),
 	};
 });
 
@@ -58,7 +60,7 @@ const salesTaxPercentage = computed(() => {
 			<div class="ml-auto flex items-center gap-1 border border-border rounded-md p-0.5">
 				<button
 					:class="[
-						'px-2.5 py-1 text-xs font-medium rounded transition-colors',
+						'px-2.5 py-1 text-xs font-medium rounded-sm transition-colors',
 						chartType === 'line' ? 'bg-primary text-surface' : 'text-text-muted hover:text-primary',
 					]"
 					@click="chartType = 'line'"
@@ -67,7 +69,7 @@ const salesTaxPercentage = computed(() => {
 				</button>
 				<button
 					:class="[
-						'px-2.5 py-1 text-xs font-medium rounded transition-colors',
+						'px-2.5 py-1 text-xs font-medium rounded-sm transition-colors',
 						chartType === 'pie' ? 'bg-primary text-surface' : 'text-text-muted hover:text-primary',
 					]"
 					@click="chartType = 'pie'"
@@ -144,7 +146,7 @@ const salesTaxPercentage = computed(() => {
 							<div class="flex items-center justify-between">
 								<div class="flex items-center gap-2">
 									<span class="w-3 h-3 rounded-full bg-accent"></span>
-									<span class="eyebrow !text-[0.625rem]">Depreciation</span>
+									<span class="eyebrow text-[0.625rem]!">Depreciation</span>
 								</div>
 								<div class="text-sm numeral text-primary">
 									${{ formatCurrency(paymentBreakdown.principal) }}
@@ -154,7 +156,7 @@ const salesTaxPercentage = computed(() => {
 							<div class="flex items-center justify-between">
 								<div class="flex items-center gap-2">
 									<span class="w-3 h-3 rounded-full bg-danger"></span>
-									<span class="eyebrow !text-[0.625rem]">Interest</span>
+									<span class="eyebrow text-[0.625rem]!">Interest</span>
 								</div>
 								<div class="text-sm numeral text-primary">
 									${{ formatCurrency(paymentBreakdown.interest) }}
@@ -164,7 +166,7 @@ const salesTaxPercentage = computed(() => {
 							<div class="flex items-center justify-between">
 								<div class="flex items-center gap-2">
 									<span class="w-3 h-3 rounded-full bg-signal"></span>
-									<span class="eyebrow !text-[0.625rem]">Sales tax</span>
+									<span class="eyebrow text-[0.625rem]!">Sales tax</span>
 								</div>
 								<div class="text-sm numeral text-primary">
 									${{ formatCurrency(paymentBreakdown.salesTax) }}
@@ -179,15 +181,15 @@ const salesTaxPercentage = computed(() => {
 			<!-- Summary tiles -->
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border rounded-md overflow-hidden">
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Total depreciation</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Total depreciation</p>
 					<p class="figure text-xl text-accent-dark leading-none">${{ formatCurrency(paymentBreakdown.principal) }}</p>
 				</div>
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Total interest</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Total interest</p>
 					<p class="figure text-xl text-warning leading-none">${{ formatCurrency(paymentBreakdown.interest) }}</p>
 				</div>
 				<div class="bg-surface p-4">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Total sales tax</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Total sales tax</p>
 					<p class="figure text-xl text-signal-dark leading-none">${{ formatCurrency(paymentBreakdown.salesTax) }}</p>
 				</div>
 			</div>

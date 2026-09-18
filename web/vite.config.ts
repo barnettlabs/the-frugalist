@@ -1,19 +1,25 @@
-import { defineConfig, Plugin } from 'vite';
+import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
 import svgLoader from 'vite-svg-loader';
 
-function htmlBasePlugin(base: string): Plugin {
-	return {
-		name: 'html-base-transform',
-		transformIndexHtml(html) {
-			return html.replace(/href="\/web\//g, `href="${base}`);
-		},
-	};
-}
+export default defineConfig(({ isSsrBuild }) => {
+	/*
+	 * The app is served from the domain root as a static site, so the base is
+	 * simply '/'.
+	 *
+	 * It used to build to `api/public/web` with a '/web/' base, because Laravel
+	 * served the SPA out of a subdirectory behind a catch-all route - which also
+	 * required an html-base-transform plugin to rewrite asset hrefs. With Laravel
+	 * gone the subdirectory, the base prefix and the plugin all go with it.
+	 */
+	const base = '/';
 
-export default defineConfig(({ mode }) => {
-	const base = mode === 'production' ? '/web/' : '/';
+	/*
+	 * The SSR build exists only to prerender public routes at build time
+	 * (see scripts/prerender.mjs). It must not land in the client output.
+	 */
+	const outDir = isSsrBuild ? path.resolve(__dirname, 'node_modules/.prerender') : path.resolve(__dirname, 'dist');
 
 	return {
 		plugins: [
@@ -26,7 +32,6 @@ export default defineConfig(({ mode }) => {
 				},
 			}),
 			svgLoader(),
-			htmlBasePlugin(base),
 		],
 		resolve: {
 			alias: {
@@ -36,7 +41,7 @@ export default defineConfig(({ mode }) => {
 		},
 		base,
 		build: {
-			outDir: path.resolve(__dirname, '../api/public/web'),
+			outDir,
 			emptyOutDir: true,
 			rollupOptions: {
 				output: {

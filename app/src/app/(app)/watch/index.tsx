@@ -7,6 +7,7 @@ import { useWatch } from '@/api/watch';
 import { ProductCard } from '@/components/tracker/product-card';
 import {
 	Button,
+	colors,
 	FloatingAddButton,
 	Pressable,
 	ScreenContainer,
@@ -18,6 +19,7 @@ import {
 import { Plus as PlusIcon } from '@/components/ui/icons';
 import { getThemeColors } from '@/components/ui/theme';
 import type { PriceTrackerFilter } from '@/lib/types/models';
+import { safeFromParam } from '@/lib/types/navigation';
 
 const FILTERS: { key: PriceTrackerFilter; label: string }[] = [
 	{ key: 'all', label: 'All' },
@@ -31,7 +33,8 @@ const BACK_LABELS: Record<string, string> = { home: 'Home', tools: 'Toolkit' };
 
 export default function TrackerListScreen() {
 	const router = useRouter();
-	const { from } = useLocalSearchParams<{ from?: string }>();
+	const { from: fromRaw } = useLocalSearchParams<{ from?: string }>();
+	const from = safeFromParam(fromRaw);
 	const backLabel = BACK_LABELS[from ?? ''] ?? 'Back';
 	const [filter, setFilter] = useState<PriceTrackerFilter>('all');
 	const { data, isLoading, isError, refetch, isRefetching } = useWatch();
@@ -80,8 +83,8 @@ export default function TrackerListScreen() {
 		<ScreenContainer>
 			<TabPageHeader title="Watch" showBack backLabel={backLabel} />
 			{/* Editorial header */}
-			<View className="px-4 pt-6 pb-4">
-				<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+			<View className="px-4 pb-4 pt-6">
+				<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 					Watch · Price ledger
 				</Text>
 				<Text
@@ -121,7 +124,7 @@ export default function TrackerListScreen() {
 						}`}
 					>
 						<Text
-							className={`text-[11px] font-semibold tracking-[0.12em] uppercase ${
+							className={`text-[11px] font-semibold uppercase tracking-[0.12em] ${
 								filter === f.key ? 'text-surface-light' : 'text-text-muted-light dark:text-text-muted-dark'
 							}`}
 						>
@@ -137,31 +140,28 @@ export default function TrackerListScreen() {
 				refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={theme.accent} />}
 			>
 				{filteredProducts.length === 0 ? (
-					<View
-						className="rounded-md p-8 mt-6"
-						style={{ backgroundColor: '#171B27', borderWidth: 1, borderColor: '#0C0E16' }}
-					>
-						<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-white/60 mb-3">
+					<View className="mt-6 rounded-md border border-primary-dark bg-primary p-8">
+						<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">
 							{allProducts.length === 0 ? 'Watchlist empty' : 'No matches'}
 						</Text>
 						<Text className="font-display tracking-tightest text-white" style={{ fontSize: 26, lineHeight: 28 }}>
 							Pick a product.
 						</Text>
 						<Text
-							className="font-display italic tracking-tightest mt-1"
-							style={{ fontSize: 26, lineHeight: 28, color: '#E6B25A' }}
+							className="mt-1 font-display italic tracking-tightest text-signal-light"
+							style={{ fontSize: 26, lineHeight: 28 }}
 						>
 							Watch it breathe.
 						</Text>
-						<Text className="text-sm text-white/70 mt-4 mb-5">
+						<Text className="mb-5 mt-4 text-sm text-white/70">
 							{allProducts.length === 0
 								? 'Drop in a SKU or product link. We’ll log every price change and ping you when motion matters.'
 								: 'Try selecting a different filter.'}
 						</Text>
 						{allProducts.length === 0 ? (
 							<Link href="/watch/create?from=watch" asChild>
-								<Pressable className="self-start rounded-md px-5 py-3 bg-surface-light flex-row items-center gap-2">
-									<PlusIcon color="#171B27" width={14} height={14} />
+								<Pressable className="flex-row items-center gap-2 self-start rounded-md bg-surface-light px-5 py-3">
+									<PlusIcon color={colors.primary.DEFAULT} width={14} height={14} />
 									<Text className="text-sm font-medium text-primary">Track first product</Text>
 								</Pressable>
 							</Link>

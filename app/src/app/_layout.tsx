@@ -14,9 +14,8 @@ import {
 	JetBrainsMono_600SemiBold,
 } from '@expo-google-fonts/jetbrains-mono';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React from 'react';
 import { StyleSheet } from 'react-native';
@@ -34,7 +33,7 @@ export const unstable_settings = {
 	initialRouteName: '(app)',
 };
 
-hydrateAuth();
+hydrateAuth().catch(console.error);
 loadSelectedTheme();
 SplashScreen.preventAutoHideAsync();
 SplashScreen.setOptions({

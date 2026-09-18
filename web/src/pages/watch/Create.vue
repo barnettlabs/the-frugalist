@@ -375,7 +375,7 @@ onMounted(async () => {
 					<button
 						v-if="canDebug && isStoreSelected"
 						:class="[
-							'flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium transition-colors ml-auto',
+							'flex items-center gap-1.5 px-2.5 py-1 rounded-sm text-xs font-medium transition-colors ml-auto',
 							debugEnabled ? 'bg-warning text-white' : 'bg-tan text-text-muted hover:bg-tan-dark',
 						]"
 						title="Toggle debug mode"
@@ -432,7 +432,7 @@ onMounted(async () => {
 						class="mt-5 surface-ink paper-grain rounded-md border border-primary-dark/40 overflow-hidden"
 					>
 						<div class="flex items-center gap-2 px-5 py-3 border-b border-white/10 relative z-10">
-							<CheckCircleIcon class="h-4 w-4 text-success flex-shrink-0" />
+							<CheckCircleIcon class="h-4 w-4 text-success shrink-0" />
 							<span class="eyebrow text-white/80">Product found</span>
 							<div class="flex items-center gap-2 ml-auto">
 								<Badge v-if="product.metadata?.clearance" variant="warning" size="sm">Clearance</Badge>
@@ -443,7 +443,7 @@ onMounted(async () => {
 						</div>
 
 						<div class="flex flex-col sm:flex-row gap-5 p-5 sm:p-6 relative z-10">
-							<div class="flex-shrink-0">
+							<div class="shrink-0">
 								<div
 									v-if="product.image_url"
 									class="w-32 h-32 sm:w-40 sm:h-40 rounded-md bg-surface border border-white/10 overflow-hidden"
@@ -501,7 +501,7 @@ onMounted(async () => {
 									</div>
 									<span
 										v-if="savingsPercent"
-										class="ml-auto inline-flex items-center px-2 py-0.5 rounded-sm bg-signal/20 text-signal-light text-xs numeral"
+										class="ml-auto inline-flex items-center px-2 py-0.5 rounded-xs bg-signal/20 text-signal-light text-xs numeral"
 									>
 										−{{ savingsPercent }}%
 									</span>
@@ -557,8 +557,7 @@ onMounted(async () => {
 							</div>
 							<pre
 								class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-80 overflow-y-auto"
-								>{{ JSON.stringify(debugInfo.raw_api_response.response, null, 2) }}</pre
-							>
+								>{{ JSON.stringify(debugInfo.raw_api_response.response, null, 2) }}</pre>
 						</div>
 
 						<!-- Parsed Data -->
@@ -566,8 +565,7 @@ onMounted(async () => {
 							<h4 class="text-xs font-semibold text-primary mb-2">Parsed Data</h4>
 							<pre
 								class="bg-surface-dark p-4 rounded-lg overflow-x-auto text-xs text-text-muted max-h-48 overflow-y-auto"
-								>{{ JSON.stringify(debugInfo.parsed_data, null, 2) }}</pre
-							>
+								>{{ JSON.stringify(debugInfo.parsed_data, null, 2) }}</pre>
 						</div>
 
 						<!-- Error Info (if any) -->
@@ -646,7 +644,7 @@ onMounted(async () => {
 								id="check_interval"
 								v-model="form.check_interval"
 								:disabled="!isProductValidated"
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed text-sm py-2"
+								class="mt-1 block w-full rounded-md border-gray-300 shadow-xs focus:border-primary focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed text-sm py-2"
 							>
 								<option v-for="option in CHECK_INTERVAL_OPTIONS" :key="option.value" :value="option.value">
 									{{ option.label }}

@@ -5,10 +5,15 @@ import { useRoute } from 'vue-router';
 import { leaseApi } from '@/api/lease';
 import PageHeader from '@/components/PageHeader.vue';
 import { formatCurrency } from '@/utils/formatters';
+import { LeaseCalculator } from '@/utils/leaseCalculator';
 
 const route = useRoute();
 
 const sheets = ref<any[]>([]);
+
+// Cap cost is derived, not stored: reading a capitalized_cost column that does
+// not exist rendered $0.00 for every lease in the comparison.
+const getCapCost = (sheet: any) => new LeaseCalculator(sheet).calculateNetCapCost();
 const loading = ref(true);
 
 const loadSheets = async () => {
@@ -52,7 +57,7 @@ onMounted(() => {
 			</div>
 
 			<!-- Comparison Table -->
-			<div v-else class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+			<div v-else class="bg-white rounded-lg border border-gray-200 shadow-xs overflow-hidden">
 				<div class="overflow-x-auto">
 					<table class="w-full">
 						<thead class="bg-gray-50">
@@ -83,7 +88,7 @@ onMounted(() => {
 							<tr>
 								<td class="px-6 py-4 text-sm text-gray-600">Capitalized Cost</td>
 								<td v-for="sheet in sheets" :key="sheet.id" class="px-6 py-4 text-sm font-medium text-gray-900">
-									${{ formatCurrency(sheet.capitalized_cost || 0) }}
+									${{ formatCurrency(getCapCost(sheet)) }}
 								</td>
 							</tr>
 							<tr class="bg-gray-50">

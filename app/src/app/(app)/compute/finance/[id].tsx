@@ -1,5 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
 
@@ -12,6 +13,7 @@ import colors from '@/components/ui/colors';
 import type { FinanceFormData } from '@/lib/types/models';
 
 export default function FinanceDetailScreen() {
+	const { t } = useTranslation();
 	const { id } = useLocalSearchParams<{ id: string }>();
 	const [isEditing, setIsEditing] = useState(false);
 
@@ -50,8 +52,8 @@ export default function FinanceDetailScreen() {
 			{
 				onSuccess: () => {
 					showMessage({
-						message: 'Success',
-						description: 'Finance estimate updated successfully',
+						message: t('common.success'),
+						description: t('estimate_toast.finance_updated'),
 						type: 'success',
 					});
 					setIsEditing(false);
@@ -59,7 +61,7 @@ export default function FinanceDetailScreen() {
 				},
 				onError: error => {
 					showMessage({
-						message: 'Error',
+						message: t('common.error'),
 						description: error.message || 'Failed to update estimate',
 						type: 'danger',
 					});
@@ -83,15 +85,15 @@ export default function FinanceDetailScreen() {
 							{
 								onSuccess: () => {
 									showMessage({
-										message: 'Deleted',
-										description: 'Finance estimate deleted',
+										message: t('common.deleted'),
+										description: t('estimate_toast.finance_deleted'),
 										type: 'success',
 									});
 									router.back();
 								},
 								onError: error => {
 									showMessage({
-										message: 'Error',
+										message: t('common.error'),
 										description: error.message || 'Failed to delete estimate',
 										type: 'danger',
 									});

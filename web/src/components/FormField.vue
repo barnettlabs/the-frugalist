@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import FormInput from './FormInput.vue';
+import type { SelectOption } from '@/types/ui';
 
-interface SelectOption {
-	value: string | number;
-	label: string;
-}
+import FormInput from './FormInput.vue';
 
 interface Props {
 	label?: string;
@@ -30,7 +27,7 @@ interface Props {
 	maxlength?: number;
 	showCharacterCount?: boolean;
 	resize?: 'none' | 'vertical' | 'horizontal' | 'both';
-	options?: SelectOption[];
+	options?: readonly SelectOption[];
 }
 
 withDefaults(defineProps<Props>(), {

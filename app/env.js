@@ -87,6 +87,7 @@ const client = z.object({
 	API_URL: z.string(),
 	VAR_NUMBER: z.number(),
 	VAR_BOOL: z.boolean(),
+	DEV_EMAILS: z.string().optional().default(''),
 });
 
 const buildTime = z.object({
@@ -113,6 +114,7 @@ const _clientEnv = {
 	API_URL: process.env.API_URL,
 	VAR_NUMBER: Number(process.env.VAR_NUMBER),
 	VAR_BOOL: process.env.VAR_BOOL === 'true',
+	DEV_EMAILS: process.env.DEV_EMAILS ?? '',
 };
 
 /**

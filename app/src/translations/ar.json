@@ -1,6 +1,51 @@
 {
+	"auth": {
+		"account_created": "تم إنشاء الحساب",
+		"account_created_description": "يرجى التحقق من بريدك الإلكتروني لتأكيد الحساب",
+		"email_sent": "تم إرسال البريد الإلكتروني",
+		"email_sent_description": "تم إعادة إرسال بريد التحقق الإلكتروني",
+		"login_tagline": "أنفق بوعي.",
+		"masthead_subtitle": "دليل ميداني لمعرفة التكاليف الحقيقية",
+		"registration_failed": "فشل إنشاء الحساب",
+		"sign_in": "تسجيل الدخول",
+		"signing_in": "جاري تسجيل الدخول…"
+	},
+	"brand": {
+		"description": "نساعدك على تجنب الدفع الزائد من خلال تتبع حركة الأسعار وشرح أساليب التسعير.",
+		"name": "TheFrugalist",
+		"tagline": "أنفق بوعي."
+	},
+	"common": {
+		"deleted": "تم الحذف",
+		"error": "خطأ",
+		"success": "نجاح"
+	},
+	"estimate_toast": {
+		"create_failed": "فشل إنشاء التقدير",
+		"delete_failed": "فشل حذف التقدير",
+		"finance_created": "تم إنشاء تقدير التمويل بنجاح",
+		"finance_deleted": "تم حذف تقدير التمويل",
+		"finance_updated": "تم تحديث تقدير التمويل بنجاح",
+		"lease_created": "تم إنشاء تقدير الإيجار بنجاح",
+		"lease_deleted": "تم حذف تقدير الإيجار",
+		"lease_updated": "تم تحديث تقدير الإيجار بنجاح",
+		"update_failed": "فشل تحديث التقدير"
+	},
+	"navigation": {
+		"account": "الحساب",
+		"compute": "حساب",
+		"guides": "أدلة",
+		"home": "الرئيسية",
+		"watch": "مراقبة"
+	},
 	"onboarding": {
 		"message": "أنفق بوعي."
+	},
+	"profile_toast": {
+		"deleted": "تم حذف الحساب",
+		"deleted_description": "تم حذف حسابك",
+		"updated": "تم تحديث الملف الشخصي",
+		"updated_description": "تم تحديث ملفك الشخصي بنجاح"
 	},
 	"settings": {
 		"about": "حول التطبيق",
@@ -10,6 +55,7 @@
 		"arabic": "عربي",
 		"build": "بناء",
 		"company": "JayTech LLC",
+		"email_client_error": "تعذر فتح تطبيق البريد الإلكتروني",
 		"english": "إنجليزي",
 		"generale": "التفضيلات",
 		"github": "جيثب",
@@ -21,6 +67,7 @@
 		"profile": "تعديل الملف الشخصي",
 		"rate": "قيمنا",
 		"share": "شارك التطبيق",
+		"share_failed": "فشل مشاركة التطبيق",
 		"support": "اتصل بالدعم",
 		"support_us": "ادعمنا",
 		"terms": "شروط الخدمة",
@@ -35,17 +82,14 @@
 		"web_app": "تطبيق الويب",
 		"website": "موقع الكتروني"
 	},
-	"welcome": "أنفق بوعي.",
-	"navigation": {
-		"home": "الرئيسية",
-		"watch": "مراقبة",
-		"compute": "حساب",
-		"guides": "أدلة",
-		"account": "الحساب"
+	"watch_toast": {
+		"price_refreshed": "تم تحديث السعر",
+		"price_refreshed_description": "تم تحديث سعر المنتج",
+		"tracking_paused": "تم إيقاف التتبع",
+		"tracking_resumed": "تم استئناف التتبع",
+		"tracking_started_description": "يتم الآن تتبع المنتج",
+		"tracking_stopped": "تم إيقاف التتبع نهائياً",
+		"tracking_stopped_description": "تمت إزالة المنتج من قائمة التتبع"
 	},
-	"brand": {
-		"name": "TheFrugalist",
-		"tagline": "أنفق بوعي.",
-		"description": "نساعدك على تجنب الدفع الزائد من خلال تتبع حركة الأسعار وشرح أساليب التسعير."
-	}
+	"welcome": "أنفق بوعي."
 }

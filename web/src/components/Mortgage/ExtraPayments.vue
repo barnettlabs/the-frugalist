@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 
 import MaskedNumberInput from '@/components/MaskedNumberInput.vue';
-import { formatCurrency, parseOrZero } from '@/utils/formatters';
+import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters';
 import { MortgageCalculator } from '@/utils/mortgageCalculator';
 
 const props = defineProps({
@@ -25,7 +25,7 @@ interface ExtraPayment {
 const emit = defineEmits(['update:modelValue']);
 
 const extraPayments = ref<ExtraPayment[]>([]);
-const termMonths = computed(() => (parseInt(props.data.loan_term_years as any) || 0) * 12);
+const termMonths = computed(() => (parseIntOrZero(props.data.loan_term_years) || 0) * 12);
 
 watch(
 	() => props.modelValue,
@@ -65,18 +65,20 @@ const updateExtraPayments = () => {
 const totalForPayment = (p: ExtraPayment) => {
 	const amount = parseOrZero(p.paymentAmount);
 	const start = parseOrZero(p.startMonth) || 1;
-	const end = p.endMonth === '' || p.endMonth === null || p.endMonth === undefined
-		? termMonths.value || start
-		: parseOrZero(p.endMonth) || start;
+	const end =
+		p.endMonth === '' || p.endMonth === null || p.endMonth === undefined
+			? termMonths.value || start
+			: parseOrZero(p.endMonth) || start;
 	const months = Math.max(0, end - start + 1);
 	return amount * months;
 };
 
-const totalExtra = () =>
-	extraPayments.value.reduce((sum, p) => sum + totalForPayment(p), 0);
+const totalExtra = () => extraPayments.value.reduce((sum, p) => sum + totalForPayment(p), 0);
 
 const interestSaved = () => {
-	const without = new MortgageCalculator({ ...props.data, extra_payments_json: '' } as any).calculateAmortization(false);
+	const without = new MortgageCalculator({ ...props.data, extra_payments_json: '' } as any).calculateAmortization(
+		false
+	);
 	const withExtra = new MortgageCalculator({
 		...props.data,
 		extra_payments_json: JSON.stringify(extraPayments.value),
@@ -86,7 +88,9 @@ const interestSaved = () => {
 };
 
 const timeSaved = () => {
-	const without = new MortgageCalculator({ ...props.data, extra_payments_json: '' } as any).calculateAmortization(false);
+	const without = new MortgageCalculator({ ...props.data, extra_payments_json: '' } as any).calculateAmortization(
+		false
+	);
 	const withExtra = new MortgageCalculator({
 		...props.data,
 		extra_payments_json: JSON.stringify(extraPayments.value),
@@ -116,7 +120,7 @@ const timeSaved = () => {
 			<div v-for="(payment, index) in extraPayments" :key="index" class="bg-tan/40 border border-border p-4 rounded-md">
 				<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 					<div>
-						<label class="eyebrow !text-[0.625rem] block mb-1.5">Monthly amount</label>
+						<label class="eyebrow text-[0.625rem]! block mb-1.5">Monthly amount</label>
 						<MaskedNumberInput
 							v-model="payment.paymentAmount"
 							prefix="$"
@@ -126,7 +130,7 @@ const timeSaved = () => {
 					</div>
 
 					<div>
-						<label class="eyebrow !text-[0.625rem] block mb-1.5">Start month</label>
+						<label class="eyebrow text-[0.625rem]! block mb-1.5">Start month</label>
 						<MaskedNumberInput
 							v-model="payment.startMonth"
 							placeholder="1"
@@ -137,7 +141,7 @@ const timeSaved = () => {
 
 					<div>
 						<div class="flex items-center gap-1.5 mb-1.5">
-							<label class="eyebrow !text-[0.625rem]">End month</label>
+							<label class="eyebrow text-[0.625rem]!">End month</label>
 							<span
 								class="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-tan/60 text-text-muted text-[0.5625rem] font-medium cursor-help"
 								title="Leave blank to run through the end of the loan"
@@ -189,15 +193,15 @@ const timeSaved = () => {
 			<div v-if="extraPayments.length > 0" class="mt-2 pt-5 border-t border-border">
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border rounded-md overflow-hidden">
 					<div class="bg-surface p-4">
-						<p class="eyebrow !text-[0.625rem] mb-1.5">Total extra</p>
+						<p class="eyebrow text-[0.625rem]! mb-1.5">Total extra</p>
 						<p class="figure text-lg text-primary leading-none">${{ formatCurrency(totalExtra()) }}</p>
 					</div>
 					<div class="bg-surface p-4">
-						<p class="eyebrow !text-[0.625rem] mb-1.5">Interest saved</p>
+						<p class="eyebrow text-[0.625rem]! mb-1.5">Interest saved</p>
 						<p class="figure text-lg text-success leading-none">${{ formatCurrency(interestSaved()) }}</p>
 					</div>
 					<div class="bg-surface p-4">
-						<p class="eyebrow !text-[0.625rem] mb-1.5">Time saved</p>
+						<p class="eyebrow text-[0.625rem]! mb-1.5">Time saved</p>
 						<p class="figure text-lg text-success leading-none">
 							{{ timeSaved() }} <span class="text-text-muted text-sm">mo</span>
 						</p>

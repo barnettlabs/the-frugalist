@@ -5,5 +5,5 @@ export * from './devices';
 export * from './finance';
 export * from './lease';
 export * from './posts';
-export * from './watch';
 export * from './types';
+export * from './watch';

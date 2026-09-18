@@ -33,7 +33,7 @@ const focused = ref(false);
 const rawInput = ref('');
 const inputRef = ref<HTMLInputElement | null>(null);
 
-const CONTENT_RE = /[0-9.\-]/;
+const CONTENT_RE = /[0-9.-]/;
 
 function countContentChars(s: string): number {
 	let count = 0;
@@ -42,7 +42,7 @@ function countContentChars(s: string): number {
 }
 
 function cleanNumeric(input: string): string {
-	let val = String(input).replace(/[^0-9.\-]/g, '');
+	let val = String(input).replace(/[^0-9.-]/g, '');
 	const dotIdx = val.indexOf('.');
 	if (dotIdx !== -1) {
 		val = val.slice(0, dotIdx + 1) + val.slice(dotIdx + 1).replace(/\./g, '');

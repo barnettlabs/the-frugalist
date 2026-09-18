@@ -1,6 +1,51 @@
 {
+	"auth": {
+		"account_created": "Account created",
+		"account_created_description": "Please check your email to verify your account",
+		"email_sent": "Email sent",
+		"email_sent_description": "Verification email has been resent",
+		"login_tagline": "Spend with intent.",
+		"masthead_subtitle": "A field guide to what things should cost",
+		"registration_failed": "Registration failed",
+		"sign_in": "Sign in",
+		"signing_in": "Signing in…"
+	},
+	"brand": {
+		"description": "Helping you avoid overpaying by tracking price movement and explaining pricing tactics.",
+		"name": "TheFrugalist",
+		"tagline": "Spend intentionally."
+	},
+	"common": {
+		"deleted": "Deleted",
+		"error": "Error",
+		"success": "Success"
+	},
+	"estimate_toast": {
+		"create_failed": "Failed to create estimate",
+		"delete_failed": "Failed to delete estimate",
+		"finance_created": "Finance estimate created successfully",
+		"finance_deleted": "Finance estimate deleted",
+		"finance_updated": "Finance estimate updated successfully",
+		"lease_created": "Lease estimate created successfully",
+		"lease_deleted": "Lease estimate deleted",
+		"lease_updated": "Lease estimate updated successfully",
+		"update_failed": "Failed to update estimate"
+	},
+	"navigation": {
+		"account": "Account",
+		"compute": "Compute",
+		"guides": "Guides",
+		"home": "Home",
+		"watch": "Watch"
+	},
 	"onboarding": {
 		"message": "Spend intentionally."
+	},
+	"profile_toast": {
+		"deleted": "Account deleted",
+		"deleted_description": "Your account has been deleted",
+		"updated": "Profile updated",
+		"updated_description": "Your profile has been updated successfully"
 	},
 	"settings": {
 		"about": "About",
@@ -10,6 +55,7 @@
 		"arabic": "Arabic",
 		"build": "Build",
 		"company": "JayTech LLC",
+		"email_client_error": "Unable to open email client",
 		"english": "English",
 		"generale": "Preferences",
 		"github": "Github",
@@ -21,6 +67,7 @@
 		"profile": "Edit Profile",
 		"rate": "Rate Us",
 		"share": "Share App",
+		"share_failed": "Failed to share the app",
 		"support": "Contact Support",
 		"support_us": "Support Us",
 		"terms": "Terms of Service",
@@ -35,17 +82,14 @@
 		"web_app": "Web App",
 		"website": "Website"
 	},
-	"welcome": "Spend intentionally.",
-	"navigation": {
-		"home": "Home",
-		"watch": "Watch",
-		"compute": "Compute",
-		"guides": "Guides",
-		"account": "Account"
+	"watch_toast": {
+		"price_refreshed": "Price Refreshed",
+		"price_refreshed_description": "Product price has been updated",
+		"tracking_paused": "Tracking Paused",
+		"tracking_resumed": "Tracking Resumed",
+		"tracking_started_description": "Product is now being tracked",
+		"tracking_stopped": "Tracking Stopped",
+		"tracking_stopped_description": "Product removed from tracking"
 	},
-	"brand": {
-		"name": "TheFrugalist",
-		"tagline": "Spend intentionally.",
-		"description": "Helping you avoid overpaying by tracking price movement and explaining pricing tactics."
-	}
+	"welcome": "Spend intentionally."
 }

@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router';
 import { financeApi } from '@/api/finance';
 import PageHeader from '@/components/PageHeader.vue';
 import { FinanceCalculator } from '@/utils/financeCalculator';
+import { parseOrZero } from '@/utils/formatters';
 import { formatCurrency } from '@/utils/formatters';
 
 const route = useRoute();
@@ -34,7 +35,7 @@ const getCalculations = (sheet: any) => {
 			monthlyPayment: summary?.monthlyPayment || 0,
 			totalInterest: summary?.interestAmount || 0,
 			loanAmount: summary?.loanAmount || 0,
-			totalCost: summary?.totalCost || 0,
+			totalCost: (summary?.paymentsTotal || 0) + parseOrZero(sheet.down_payment),
 		};
 	} catch {
 		return { monthlyPayment: 0, totalInterest: 0, loanAmount: 0, totalCost: 0 };
@@ -68,7 +69,7 @@ onMounted(() => {
 			</div>
 
 			<!-- Comparison Table -->
-			<div v-else class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+			<div v-else class="bg-white rounded-lg border border-gray-200 shadow-xs overflow-hidden">
 				<div class="overflow-x-auto">
 					<table class="w-full">
 						<thead class="bg-gray-50">

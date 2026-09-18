@@ -8,7 +8,7 @@ export enum VehicleType {
 	SUV = 'SUV',
 }
 
-export interface User {
+export type User = {
 	id: number;
 	first_name: string;
 	last_name: string;
@@ -20,9 +20,9 @@ export interface User {
 	is_admin?: boolean;
 	created_at: string;
 	updated_at: string;
-}
+};
 
-export interface VehicleFinanceSheet {
+export type VehicleFinanceSheet = {
 	id: number;
 	user_id: number;
 	sheet_name: string;
@@ -49,20 +49,20 @@ export interface VehicleFinanceSheet {
 	shareable_key: string;
 	created_at: string;
 	updated_at: string;
-}
+};
 
 export type FinanceFormData = Omit<
 	VehicleFinanceSheet,
 	'id' | 'user_id' | 'shareable_key' | 'created_at' | 'updated_at'
 >;
 
-export interface ExtraPayment {
+export type ExtraPayment = {
 	startMonth: number;
 	endMonth: number;
 	paymentAmount: number;
-}
+};
 
-export interface VehicleLeaseSheet {
+export type VehicleLeaseSheet = {
 	id: number;
 	user_id: number;
 	sheet_name: string;
@@ -92,29 +92,29 @@ export interface VehicleLeaseSheet {
 	shareable_key: string;
 	created_at: string;
 	updated_at: string;
-}
+};
 
 export type LeaseFormData = Omit<VehicleLeaseSheet, 'id' | 'user_id' | 'shareable_key' | 'created_at' | 'updated_at'>;
 
-export interface Retailer {
+export type Retailer = {
 	id: number;
 	name: string;
 	slug: string;
-}
+};
 
-export interface PriceHistoryEntry {
+export type PriceHistoryEntry = {
 	price: number;
 	checked_at: string;
-}
+};
 
-export interface PriceAlert {
+export type PriceAlert = {
 	id: number;
 	type: 'target_reached' | 'price_drop';
 	message: string;
 	created_at: string;
-}
+};
 
-export interface PriceTrackerItem {
+export type PriceTrackerItem = {
 	tracked_product: {
 		id: number;
 		sku_upc: string;
@@ -153,17 +153,17 @@ export interface PriceTrackerItem {
 		};
 		price_drop_percentage: number;
 	};
-}
+};
 
-export interface PriceTracker {
+export type PriceTracker = {
 	retailers: Retailer[];
 	tracked_products: PriceTrackerItem['tracked_product'][];
-}
+};
 
 export type PriceTrackerFilter = 'all' | 'active' | 'paused' | 'target_reached' | 'price_drops';
 
 // Amortization schedule types
-export interface AmortizationPayment {
+export type AmortizationPayment = {
 	month: number;
 	payment: number;
 	extraPayment: number;
@@ -171,23 +171,23 @@ export interface AmortizationPayment {
 	principalPayment: number;
 	interestPayment: number;
 	remainingBalance: number;
-}
+};
 
-export interface AmortizationResult {
+export type AmortizationResult = {
 	schedule: AmortizationPayment[];
 	totalInterest: number;
 	totalPrincipal: number;
 	monthsPaid: number;
 	monthsSaved: number;
-}
+};
 
-export interface PaymentBreakdown {
+export type PaymentBreakdown = {
 	principal: number;
 	interest: number;
 	extraPayments: number;
-}
+};
 
-export interface FinanceSummary {
+export type FinanceSummary = {
 	purchasePrice: number;
 	salesTaxAmount: number;
 	loanAmount: number;
@@ -197,25 +197,25 @@ export interface FinanceSummary {
 	grandTotal: number;
 	amortization: AmortizationResult | null;
 	paymentBreakdown: PaymentBreakdown | null;
-}
+};
 
 // Lease schedule types
-export interface LeaseSchedulePayment {
+export type LeaseSchedulePayment = {
 	month: number;
 	principalPayment: number;
 	interestPayment: number;
 	taxPayment: number;
 	totalPayment: number;
 	remainingPrincipal: number;
-}
+};
 
-export interface LeasePaymentBreakdown {
+export type LeasePaymentBreakdown = {
 	principal: number;
 	interest: number;
 	tax: number;
-}
+};
 
-export interface LeaseSummary {
+export type LeaseSummary = {
 	residualAmount: number;
 	interestRate: number;
 	finalDealerPrice: number;
@@ -231,4 +231,4 @@ export interface LeaseSummary {
 	totalLeaseCost: number;
 	paymentBreakdown: LeasePaymentBreakdown;
 	schedule: LeaseSchedulePayment[];
-}
+};

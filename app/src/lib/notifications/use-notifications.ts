@@ -1,5 +1,5 @@
-import { router } from 'expo-router';
 import * as Notifications from 'expo-notifications';
+import { router } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useRegisterDevice } from '@/api/devices';
@@ -30,8 +30,8 @@ export function useNotifications() {
 		token: null,
 	});
 
-	const notificationListener = useRef<Notifications.EventSubscription>();
-	const responseListener = useRef<Notifications.EventSubscription>();
+	const notificationListener = useRef<Notifications.EventSubscription | undefined>(undefined);
+	const responseListener = useRef<Notifications.EventSubscription | undefined>(undefined);
 	const hasRegistered = useRef(false);
 
 	const register = useCallback(async () => {
@@ -94,18 +94,14 @@ export function useNotifications() {
 			console.log('Notification tapped:', data);
 
 			// Handle navigation based on notification type
-			if (data.type === 'price_alert' && data.tracked_product_id) {
+			if (data?.type === 'price_alert' && data?.tracked_product_id) {
 				router.push(`/watch/${data.tracked_product_id}?from=notification`);
 			}
 		});
 
 		return () => {
-			if (notificationListener.current) {
-				Notifications.removeNotificationSubscription(notificationListener.current);
-			}
-			if (responseListener.current) {
-				Notifications.removeNotificationSubscription(responseListener.current);
-			}
+			notificationListener.current?.remove();
+			responseListener.current?.remove();
 		};
 	}, []);
 

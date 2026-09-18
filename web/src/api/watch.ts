@@ -83,6 +83,7 @@ export interface UpdateTrackedProductData {
 
 export interface ProductMetadata {
 	on_sale?: boolean;
+	clearance?: boolean;
 	model_number?: string;
 	retailer_url?: string;
 }

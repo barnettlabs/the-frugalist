@@ -12,6 +12,17 @@ import {
 import { RouterLink } from 'vue-router';
 
 import SectionHeader from '@/components/SectionHeader.vue';
+import { useAuthStore } from '@/stores/auth';
+
+const authStore = useAuthStore();
+
+/*
+ * Signed-in users land on their saved estimates for that calculator; guests
+ * have no saved list, so they go straight into the calculator itself — the
+ * public, indexable page.
+ */
+const calculatorLink = (slug: string) =>
+	authStore.isAuthenticated ? `/estimates/${slug}` : `/estimates/${slug}/create`;
 
 const calculators = [
 	{
@@ -20,7 +31,7 @@ const calculators = [
 		name: 'Loans, line by line',
 		description:
 			'Monthly payment, total interest, the amortization schedule. Every variable in any vehicle loan, made plain.',
-		href: '/estimates/financing',
+		slug: 'financing',
 		icon: BanknotesIcon,
 		features: ['Monthly payment breakdown', 'Total interest cost', 'Amortization schedule'],
 	},
@@ -30,7 +41,7 @@ const calculators = [
 		name: 'Lease, made literal',
 		description:
 			'Money factor → APR. Residual mechanics. The fees that sneak through fine print. The full picture, before the contract.',
-		href: '/estimates/leasing',
+		slug: 'leasing',
 		icon: CurrencyDollarIcon,
 		features: ['Money factor → APR', 'Residual value analysis', 'Total lease cost'],
 	},
@@ -40,7 +51,7 @@ const calculators = [
 		name: 'Home loans, opened up',
 		description:
 			'Principal, escrow, tax, insurance, HOA. Extra payments and term reduction. The full cost of a home, before you sign.',
-		href: '/estimates/mortgage',
+		slug: 'mortgage',
 		icon: HomeModernIcon,
 		features: ['Principal, interest, escrow', 'Extra payment impact', 'Annual or monthly amortization'],
 	},
@@ -90,11 +101,13 @@ const benefits = [
 				</div>
 			</div>
 
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border rounded-md overflow-hidden">
+			<div
+				class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border rounded-md overflow-hidden"
+			>
 				<RouterLink
 					v-for="calc in calculators"
 					:key="calc.name"
-					:to="calc.href"
+					:to="calculatorLink(calc.slug)"
 					class="group bg-surface hover:bg-surface-dark transition-colors p-8 sm:p-10 flex flex-col"
 				>
 					<div class="flex items-start justify-between mb-8">

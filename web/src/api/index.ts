@@ -1,6 +1,5 @@
 export { authApi } from './auth';
 export { default as apiClient } from './client';
-export { getCsrfToken } from './client';
 export { dashboardApi } from './dashboard';
 export { financeApi } from './finance';
 export { leaseApi } from './lease';

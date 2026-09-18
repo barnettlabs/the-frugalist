@@ -8,9 +8,17 @@ export function getItem<T>(key: string): T | null {
 }
 
 export async function setItem<T>(key: string, value: T) {
-	storage.set(key, JSON.stringify(value));
+	try {
+		storage.set(key, JSON.stringify(value));
+	} catch (e) {
+		console.error(`[storage] setItem failed for key "${key}":`, e);
+	}
 }
 
 export async function removeItem(key: string) {
-	storage.delete(key);
+	try {
+		storage.delete(key);
+	} catch (e) {
+		console.error(`[storage] removeItem failed for key "${key}":`, e);
+	}
 }

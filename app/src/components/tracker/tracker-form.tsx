@@ -47,7 +47,7 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
 			>
 				{/* Editorial title */}
 				<View className="mb-5">
-					<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-3">
+					<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 						Watch · New tracker
 					</Text>
 					<Text
@@ -56,7 +56,7 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
 					>
 						Track a new product.
 					</Text>
-					<Text className="text-sm text-text-muted-light dark:text-text-muted-dark mt-3 leading-5">
+					<Text className="mt-3 text-sm leading-5 text-text-muted-light dark:text-text-muted-dark">
 						Pick a retailer, drop in a SKU, set a target. We’ll do the watching.
 					</Text>
 				</View>
@@ -86,11 +86,11 @@ export function TrackerForm({ onSubmit, isSubmitting, onCancel }: TrackerFormPro
 				</FormSection>
 
 				{/* Tips */}
-				<View className="mt-3 rounded-md border border-border-light bg-tan-light dark:bg-charcoal-800 dark:border-border-dark p-4">
-					<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark mb-2">
+				<View className="mt-3 rounded-md border border-border-light bg-tan-light p-4 dark:border-border-dark dark:bg-charcoal-800">
+					<Text className="mb-2 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 						Tip · Finding SKU
 					</Text>
-					<Text className="text-sm text-text-muted-light dark:text-text-muted-dark leading-5">
+					<Text className="text-sm leading-5 text-text-muted-light dark:text-text-muted-dark">
 						On Best Buy, look for the SKU on the product page (usually under the product title).
 					</Text>
 				</View>

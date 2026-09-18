@@ -74,10 +74,7 @@ export class MortgageCalculator {
 	}
 
 	monthlyExtraExpenses() {
-		return this.parseExtraExpenses().reduce(
-			(sum, e) => sum + (e.frequency === 'annual' ? e.amount / 12 : e.amount),
-			0
-		);
+		return this.parseExtraExpenses().reduce((sum, e) => sum + (e.frequency === 'annual' ? e.amount / 12 : e.amount), 0);
 	}
 
 	monthlyEscrow() {

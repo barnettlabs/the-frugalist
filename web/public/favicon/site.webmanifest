@@ -1,0 +1,15 @@
+{
+	"name": "TheFrugalist",
+	"short_name": "TheFrugalist",
+	"description": "Track price movement and run the numbers behind any finance, lease, or mortgage offer.",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"background_color": "#FCFAF5",
+	"theme_color": "#171B27",
+	"icons": [
+		{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+		{ "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+		{ "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+	]
+}

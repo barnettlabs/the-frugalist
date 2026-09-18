@@ -42,43 +42,43 @@ export function DealGradeCard({ agentSlug, calculatorType, inputs }: Props) {
 	const run = () => mutate({ agentSlug, calculatorType, inputs });
 
 	return (
-		<View className="rounded-lg border border-border bg-surface p-4 my-3">
+		<View className="border-border bg-surface my-3 rounded-lg border p-4">
 			<Text className="text-base font-semibold text-primary">AI Deal Grade</Text>
 
 			{!result && !errorMessage && !isPending && (
-				<Text className="text-sm text-text-muted mt-1">
+				<Text className="text-text-muted mt-1 text-sm">
 					Get an AI take on whether this deal is strong, average, or one to walk away from.
 				</Text>
 			)}
 
 			{isPending && (
-				<View className="flex-row items-center gap-2 mt-3">
+				<View className="mt-3 flex-row items-center gap-2">
 					<ActivityIndicator size="small" />
-					<Text className="text-sm text-text-muted">Grading…</Text>
+					<Text className="text-text-muted text-sm">Grading…</Text>
 				</View>
 			)}
 
 			{errorMessage && !isPending && (
-				<Text className="text-sm text-danger bg-danger/10 rounded p-2 mt-3">{errorMessage}</Text>
+				<Text className="mt-3 rounded bg-danger/10 p-2 text-sm text-danger">{errorMessage}</Text>
 			)}
 
 			{result && !isPending && (
 				<View className="mt-3">
 					<View className="flex-row items-start gap-3">
-						<View className={`w-14 h-14 rounded-md border items-center justify-center ${gradeStyle(result.grade)}`}>
+						<View className={`size-14 items-center justify-center rounded-md border ${gradeStyle(result.grade)}`}>
 							<Text className="text-2xl font-semibold">{result.grade}</Text>
 						</View>
 						<View className="flex-1">
-							<Text className="text-sm text-primary capitalize">{result.rating.replaceAll('_', ' ')}</Text>
-							<Text className="text-sm text-text-muted mt-1">{result.summary}</Text>
+							<Text className="text-sm capitalize text-primary">{result.rating.replaceAll('_', ' ')}</Text>
+							<Text className="text-text-muted mt-1 text-sm">{result.summary}</Text>
 						</View>
 					</View>
 
 					{result.red_flags?.length > 0 && (
 						<View className="mt-3">
-							<Text className="text-xs uppercase tracking-wider text-text-muted">Watch out</Text>
+							<Text className="text-text-muted text-xs uppercase tracking-wider">Watch out</Text>
 							{result.red_flags.map((flag, idx) => (
-								<Text key={idx} className="text-sm text-text-muted">
+								<Text key={idx} className="text-text-muted text-sm">
 									• {flag}
 								</Text>
 							))}
@@ -87,16 +87,16 @@ export function DealGradeCard({ agentSlug, calculatorType, inputs }: Props) {
 
 					{result.tips?.length > 0 && (
 						<View className="mt-3">
-							<Text className="text-xs uppercase tracking-wider text-text-muted">Tips</Text>
+							<Text className="text-text-muted text-xs uppercase tracking-wider">Tips</Text>
 							{result.tips.map((tip, idx) => (
-								<Text key={idx} className="text-sm text-text-muted">
+								<Text key={idx} className="text-text-muted text-sm">
 									• {tip}
 								</Text>
 							))}
 						</View>
 					)}
 
-					{cached && <Text className="text-[10px] text-text-muted mt-2">Cached response — identical inputs.</Text>}
+					{cached && <Text className="text-text-muted mt-2 text-[10px]">Cached response — identical inputs.</Text>}
 				</View>
 			)}
 

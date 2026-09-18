@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import { createMutation } from 'react-query-kit';
 
@@ -8,9 +7,8 @@ import { client, queryClient } from '../common';
 import type { DeleteLeaseSheetRequest, UpdateLeaseSheetRequest } from './types';
 
 const invalidateLeaseQueries = () => {
-	queryClient.invalidateQueries({ queryKey: ['lease-sheets'] });
-	queryClient.invalidateQueries({ queryKey: ['lease-sheet'] });
-	queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+	queryClient.invalidateQueries({ queryKey: ['lease'] });
+	queryClient.invalidateQueries({ queryKey: ['dashboard', 'stats'] });
 };
 
 export const useAddLeaseSheet = createMutation<VehicleLeaseSheet, LeaseFormData, AxiosError>({
@@ -35,20 +33,3 @@ export const useDeleteLeaseSheet = createMutation<void, DeleteLeaseSheetRequest,
 	},
 	onSuccess: invalidateLeaseQueries,
 });
-
-// Hook to invalidate lease queries after mutations
-export function useInvalidateLeaseQueries() {
-	const queryClient = useQueryClient();
-
-	return {
-		invalidateAll: () => {
-			queryClient.invalidateQueries({ queryKey: ['lease-sheets'] });
-			queryClient.invalidateQueries({ queryKey: ['lease-sheet'] });
-			queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
-		},
-		invalidateList: () => {
-			queryClient.invalidateQueries({ queryKey: ['lease-sheets'] });
-			queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
-		},
-	};
-}

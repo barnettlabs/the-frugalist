@@ -257,14 +257,14 @@ onMounted(fetch);
 								<input
 									v-model="editing.name"
 									type="text"
-									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none"
+									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden"
 								/>
 							</div>
 							<div>
 								<label class="block text-sm font-medium text-text-muted mb-1">Provider</label>
 								<select
 									v-model="editing.provider_id"
-									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none"
+									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden"
 								>
 									<option :value="null">— none —</option>
 									<option v-for="p in providers" :key="p.id" :value="p.id">{{ p.name }}</option>
@@ -291,7 +291,7 @@ onMounted(fetch);
 								<select
 									v-if="availableModels.length"
 									v-model="editing.model"
-									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden numeral"
 								>
 									<option :value="null">— use provider default —</option>
 									<option v-for="m in availableModels" :key="m" :value="m">{{ m }}</option>
@@ -305,7 +305,7 @@ onMounted(fetch);
 											? `leave blank to use ${selectedProvider.default_model}`
 											: 'leave blank to use provider default'
 									"
-									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden numeral"
 								/>
 								<p v-if="modelsError" class="text-[10px] text-danger mt-1">{{ modelsError }}</p>
 								<p v-else-if="modelsLoading" class="text-[10px] text-text-muted mt-1">Loading models…</p>
@@ -314,7 +314,7 @@ onMounted(fetch);
 								<label class="block text-sm font-medium text-text-muted mb-1">Response format</label>
 								<select
 									v-model="editing.response_format"
-									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none"
+									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden"
 								>
 									<option value="json_object">json_object</option>
 									<option value="json_schema">json_schema</option>
@@ -328,7 +328,7 @@ onMounted(fetch);
 							<textarea
 								v-model="editing.system_prompt"
 								rows="4"
-								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none font-mono"
+								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden font-mono"
 							></textarea>
 						</div>
 
@@ -345,7 +345,7 @@ onMounted(fetch);
 							<textarea
 								v-model="editing.user_prompt_template"
 								rows="10"
-								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none font-mono"
+								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden font-mono"
 							></textarea>
 						</div>
 
@@ -354,7 +354,7 @@ onMounted(fetch);
 							<textarea
 								:value="outputSchemaText"
 								rows="6"
-								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none font-mono"
+								class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden font-mono"
 								@input="outputSchemaText = ($event.target as HTMLTextAreaElement).value"
 							></textarea>
 							<p v-if="errors.output_schema" class="text-xs text-danger mt-1">{{ errors.output_schema[0] }}</p>
@@ -369,7 +369,7 @@ onMounted(fetch);
 									min="0"
 									max="2"
 									step="0.05"
-									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden numeral"
 								/>
 							</div>
 							<div>
@@ -380,7 +380,7 @@ onMounted(fetch);
 									min="0"
 									max="1"
 									step="0.05"
-									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden numeral"
 								/>
 							</div>
 							<div>
@@ -390,14 +390,14 @@ onMounted(fetch);
 									type="number"
 									min="1"
 									max="8192"
-									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none numeral"
+									class="w-full rounded-md border border-border px-3 py-2 text-sm focus:border-accent focus:outline-hidden numeral"
 								/>
 							</div>
 						</div>
 
 						<div class="flex flex-wrap items-center gap-4">
 							<label class="inline-flex items-center gap-2 text-sm">
-								<input v-model="editing.enabled" type="checkbox" class="rounded border-border" />
+								<input v-model="editing.enabled" type="checkbox" class="rounded-sm border-border" />
 								<span>Enabled</span>
 							</label>
 							<div class="flex items-center gap-2 text-sm">
@@ -406,7 +406,7 @@ onMounted(fetch);
 									v-model.number="editing.rate_limit_per_user_day"
 									type="number"
 									min="0"
-									class="w-24 rounded-md border border-border px-2 py-1 text-sm focus:border-accent focus:outline-none numeral"
+									class="w-24 rounded-md border border-border px-2 py-1 text-sm focus:border-accent focus:outline-hidden numeral"
 								/>
 							</div>
 						</div>
@@ -419,7 +419,7 @@ onMounted(fetch);
 							<textarea
 								v-model="previewSampleJson"
 								rows="8"
-								class="w-full rounded-md border border-border px-3 py-2 text-xs focus:border-accent focus:outline-none font-mono"
+								class="w-full rounded-md border border-border px-3 py-2 text-xs focus:border-accent focus:outline-hidden font-mono"
 							></textarea>
 							<button
 								:disabled="previewLoading"
@@ -432,7 +432,7 @@ onMounted(fetch);
 							<div v-if="previewResult" class="mt-4 space-y-2">
 								<div class="flex flex-wrap items-center gap-2 text-xs">
 									<span
-										class="px-2.5 py-1 rounded font-medium uppercase tracking-wider text-[11px]"
+										class="px-2.5 py-1 rounded-sm font-medium uppercase tracking-wider text-[11px]"
 										:class="previewResult.ok ? 'bg-success/15 text-success' : 'bg-danger/15 text-danger'"
 									>
 										{{ previewResult.ok ? 'OK' : previewResult.error || 'error' }}
@@ -440,7 +440,7 @@ onMounted(fetch);
 									<span v-if="previewResult.model" class="numeral text-text-muted">
 										<span class="text-text-muted/60">model:</span> {{ previewResult.model }}
 									</span>
-									<span v-if="previewResult.cached" class="px-2 py-0.5 rounded bg-accent/10 text-accent text-[11px]">
+									<span v-if="previewResult.cached" class="px-2 py-0.5 rounded-sm bg-accent/10 text-accent text-[11px]">
 										cached
 									</span>
 								</div>
@@ -466,16 +466,14 @@ onMounted(fetch);
 										<div v-if="previewResult.request_payload">
 											<p class="eyebrow mb-1">Request body</p>
 											<pre
-												class="p-3 rounded-md bg-surface-dark/60 text-xs overflow-x-auto numeral max-h-96 whitespace-pre-wrap break-words"
-												>{{ JSON.stringify(previewResult.request_payload, null, 2) }}</pre
-											>
+												class="p-3 rounded-md bg-surface-dark/60 text-xs overflow-x-auto numeral max-h-96 whitespace-pre-wrap wrap-break-word"
+												>{{ JSON.stringify(previewResult.request_payload, null, 2) }}</pre>
 										</div>
 										<div v-if="previewResult.raw_response">
 											<p class="eyebrow mb-1">Response body</p>
 											<pre
-												class="p-3 rounded-md bg-surface-dark/60 text-xs overflow-x-auto numeral max-h-96 whitespace-pre-wrap break-words"
-												>{{ previewResult.raw_response }}</pre
-											>
+												class="p-3 rounded-md bg-surface-dark/60 text-xs overflow-x-auto numeral max-h-96 whitespace-pre-wrap wrap-break-word"
+												>{{ previewResult.raw_response }}</pre>
 										</div>
 									</div>
 								</details>
@@ -499,15 +497,12 @@ onMounted(fetch);
 											:key="idx"
 											class="rounded-md border border-border bg-surface-dark/40 overflow-hidden"
 										>
-											<div
-												class="px-2 py-1 text-[10px] uppercase tracking-wider bg-surface-dark/60 text-text-muted"
-											>
+											<div class="px-2 py-1 text-[10px] uppercase tracking-wider bg-surface-dark/60 text-text-muted">
 												{{ m.role }}
 											</div>
 											<pre
-												class="px-3 py-2 text-xs font-mono whitespace-pre-wrap break-words max-h-64 overflow-y-auto"
-												>{{ m.content }}</pre
-											>
+												class="px-3 py-2 text-xs font-mono whitespace-pre-wrap wrap-break-word max-h-64 overflow-y-auto"
+												>{{ m.content }}</pre>
 										</div>
 									</div>
 								</details>
@@ -523,15 +518,14 @@ onMounted(fetch);
 									</summary>
 									<div class="border-t border-border p-3">
 										<pre
-											class="p-3 rounded-md bg-surface-dark/60 text-xs overflow-x-auto numeral max-h-96 whitespace-pre-wrap break-words"
+											class="p-3 rounded-md bg-surface-dark/60 text-xs overflow-x-auto numeral max-h-96 whitespace-pre-wrap wrap-break-word"
 											>{{
 												previewResult.response !== null && previewResult.response !== undefined
 													? JSON.stringify(previewResult.response, null, 2)
 													: previewResult.ok
 														? '(empty)'
 														: '(no response — see error above)'
-											}}</pre
-										>
+											}}</pre>
 									</div>
 								</details>
 							</div>
@@ -543,7 +537,7 @@ onMounted(fetch);
 								<li
 									v-for="v in versions"
 									:key="v.id"
-									class="flex items-center justify-between text-xs p-2 rounded hover:bg-surface-dark/30"
+									class="flex items-center justify-between text-xs p-2 rounded-sm hover:bg-surface-dark/30"
 								>
 									<span class="numeral">v{{ v.version }} · {{ new Date(v.created_at).toLocaleString() }}</span>
 									<button

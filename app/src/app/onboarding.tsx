@@ -136,17 +136,17 @@ export default function Onboarding() {
 		return (
 			<View style={{ width: SCREEN_WIDTH }} className="flex-1 px-8 py-4">
 				{/* Number + eyebrow */}
-				<View className="flex-row items-center mb-8">
-					<Text className="text-xs font-mono text-text-muted-light dark:text-text-muted-dark mr-3">
+				<View className="mb-8 flex-row items-center">
+					<Text className="mr-3 font-mono text-xs text-text-muted-light dark:text-text-muted-dark">
 						№ {item.number}
 					</Text>
-					<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+					<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 						{item.eyebrow}
 					</Text>
 				</View>
 
 				{/* Icon */}
-				<View className="mb-8 self-start w-16 h-16 items-center justify-center rounded-md bg-primary dark:bg-text-primary-dark">
+				<View className="mb-8 size-16 items-center justify-center self-start rounded-md bg-primary dark:bg-text-primary-dark">
 					<SlideIcon icon={item.icon} color={theme.surface} />
 				</View>
 
@@ -173,7 +173,7 @@ export default function Onboarding() {
 				<View className="mt-8 gap-2">
 					{item.proofs.map((proof, i) => (
 						<View key={i} className="flex-row items-center gap-3">
-							<View className="w-3 h-px bg-accent dark:bg-accent-light" />
+							<View className="h-px w-3 bg-accent dark:bg-accent-light" />
 							<Text className="font-mono text-sm text-text-primary-light dark:text-text-primary-dark">{proof}</Text>
 						</View>
 					))}
@@ -185,14 +185,14 @@ export default function Onboarding() {
 						<Pressable
 							onPress={handleEnableNotifications}
 							disabled={isRegisteringNotifications}
-							className="rounded-md bg-primary px-5 py-3.5 items-center active:opacity-80"
+							className="items-center rounded-md bg-primary px-5 py-3.5 active:opacity-80"
 							style={{ opacity: isRegisteringNotifications ? 0.6 : 1 }}
 						>
 							<Text className="text-sm font-medium text-surface-light">
 								{isRegisteringNotifications ? 'Enabling…' : 'Enable notifications'}
 							</Text>
 						</Pressable>
-						<Pressable onPress={handleComplete} className="py-2 items-center">
+						<Pressable onPress={handleComplete} className="items-center py-2">
 							<Text className="text-sm text-text-muted-light dark:text-text-muted-dark">Maybe later</Text>
 						</Pressable>
 					</View>
@@ -213,7 +213,7 @@ export default function Onboarding() {
 					right={
 						!isLastSlide ? (
 							<Pressable onPress={handleSkip} className="py-1">
-								<Text className="text-[10px] font-semibold tracking-[0.18em] uppercase text-text-muted-light dark:text-text-muted-dark">
+								<Text className="text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 									Skip
 								</Text>
 							</Pressable>
@@ -244,7 +244,7 @@ export default function Onboarding() {
 			{/* Bottom strip — pagination + CTA */}
 			<View
 				style={{ paddingBottom: Platform.OS === 'ios' ? insets.bottom + 16 : 32 }}
-				className="px-8 pt-4 border-t border-border-light dark:border-border-dark"
+				className="border-t border-border-light px-8 pt-4 dark:border-border-dark"
 			>
 				{/* Pagination */}
 				<View className="mb-5 flex-row items-center justify-center gap-1.5">
@@ -261,7 +261,7 @@ export default function Onboarding() {
 				</View>
 
 				{!isLastSlide ? (
-					<Pressable onPress={handleNext} className="rounded-md bg-primary px-5 py-3.5 items-center active:opacity-80">
+					<Pressable onPress={handleNext} className="items-center rounded-md bg-primary px-5 py-3.5 active:opacity-80">
 						<Text className="text-sm font-medium text-surface-light">
 							{currentIndex === slides.length - 2 ? 'Continue' : 'Next'}
 						</Text>

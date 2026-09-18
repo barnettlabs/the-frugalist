@@ -87,25 +87,25 @@ function figureSize(amount: number): string {
 			<!-- Top tiles -->
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border rounded-md overflow-hidden">
 				<div class="bg-surface p-4 min-w-0">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Monthly (P&amp;I)</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Monthly (P&amp;I)</p>
 					<p class="figure text-primary leading-none" :class="figureSize(summary.monthlyPrincipalInterest)">
 						${{ formatCurrency(summary.monthlyPrincipalInterest) }}
 					</p>
 				</div>
 				<div class="bg-surface p-4 min-w-0">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Monthly (all-in)</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Monthly (all-in)</p>
 					<p class="figure text-primary leading-none" :class="figureSize(summary.monthlyPaymentTotal)">
 						${{ formatCurrency(summary.monthlyPaymentTotal) }}
 					</p>
 				</div>
 				<div class="bg-surface p-4 min-w-0">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">Total interest</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Total interest</p>
 					<p class="figure text-warning leading-none" :class="figureSize(summary.totalInterest)">
 						${{ formatCurrency(summary.totalInterest) }}
 					</p>
 				</div>
 				<div class="bg-surface p-4 min-w-0">
-					<p class="eyebrow !text-[0.625rem] mb-1.5">
+					<p class="eyebrow text-[0.625rem]! mb-1.5">
 						Grand total <span class="text-text-muted/70 normal-case">· over {{ termLabel }}</span>
 					</p>
 					<p class="figure text-primary leading-none" :class="figureSize(summary.grandTotal)">
@@ -131,7 +131,7 @@ function figureSize(amount: number): string {
 								<span class="text-text-muted">· {{ summary.downPaymentPercent.toFixed(2) }}%</span>
 							</dd>
 						</div>
-						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Loan principal</dt>
 							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.principal) }}</dd>
 						</div>
@@ -162,7 +162,7 @@ function figureSize(amount: number): string {
 							<dt class="text-sm text-text-muted">Other expenses</dt>
 							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.monthlyExtraExpenses) }}</dd>
 						</div>
-						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Total monthly</dt>
 							<dd class="text-sm numeral text-primary font-medium">
 								${{ formatCurrency(summary.monthlyPaymentTotal) }}
@@ -194,7 +194,7 @@ function figureSize(amount: number): string {
 							<dt class="text-sm text-text-muted">Interest paid</dt>
 							<dd class="text-sm numeral text-warning">${{ formatCurrency(summary.totalInterest) }}</dd>
 						</div>
-						<div class="flex justify-between py-2.5 bg-tan/20 -mx-2 px-2 rounded-sm">
+						<div class="flex justify-between py-2.5 bg-tan/20 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Total of payments</dt>
 							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.paymentsTotal) }}</dd>
 						</div>
@@ -202,7 +202,7 @@ function figureSize(amount: number): string {
 							<dt class="text-sm text-text-muted">Down payment (upfront)</dt>
 							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.downPayment) }}</dd>
 						</div>
-						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Total loan cost</dt>
 							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(totalLoanCost) }}</dd>
 						</div>
@@ -210,7 +210,7 @@ function figureSize(amount: number): string {
 							<dt class="text-sm text-text-muted">Escrow / expenses paid</dt>
 							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.totalEscrow) }}</dd>
 						</div>
-						<div v-if="hasEscrow" class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-sm">
+						<div v-if="hasEscrow" class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Total out-of-pocket</dt>
 							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.grandTotal) }}</dd>
 						</div>

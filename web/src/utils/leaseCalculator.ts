@@ -69,14 +69,15 @@ export class LeaseCalculator {
 		const pv = this.calculatePrincipalAmount();
 		const n = parseOrZero(this.data.lease_term);
 		const apr = this.calculateInterestRate();
-		const residualMonthlyInterestPayment = this.calculateResidualMonthlyInterestPayment();
 
-		if (apr <= 0 || n <= 0) return 0;
+		if (n <= 0) return 0;
+		// No rent charge: depreciation is spread evenly rather than dropped.
+		if (apr <= 0) return pv / n;
 
+		// Depreciation annuity only. The residual rent charge is its own line and
+		// is added once, in calculateLeasePayment - see packages/contracts lease.ts.
 		const R = apr / 1200;
-		const paymentPandI = (pv * R) / (1 - Math.pow(1 + R, n * -1));
-
-		return paymentPandI + residualMonthlyInterestPayment;
+		return (pv * R) / (1 - Math.pow(1 + R, n * -1));
 	}
 
 	// Calculate residual monthly interest payment
@@ -139,9 +140,11 @@ export class LeaseCalculator {
 	calculateTotalLeaseCost() {
 		const leasePayment = this.calculateLeasePayment();
 		const leaseTerm = parseOrZero(this.data.lease_term);
-		const cashDueAtSigning = this.calculateCashDueAtSigning();
+		const downPayment = parseOrZero(this.data.down_payment);
 
-		return leasePayment * leaseTerm + cashDueAtSigning;
+		// The first payment is already one of the leaseTerm payments; adding cash
+		// due at signing on top counted it twice.
+		return downPayment + leasePayment * leaseTerm;
 	}
 
 	// Generate lease payment schedule

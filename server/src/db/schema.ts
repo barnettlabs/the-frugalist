@@ -298,7 +298,7 @@ export const trackedProducts = pgTable("tracked_products", {
 	productImageUrl: varchar("product_image_url", { length: 255 }),
 	retailPrice: numeric("retail_price", { precision: 10, scale:  2 }).notNull(),
 	currentPrice: numeric("current_price", { precision: 10, scale:  2 }).notNull(),
-	targetPrice: numeric("target_price", { precision: 10, scale:  2 }).notNull(),
+	targetPrice: numeric("target_price", { precision: 10, scale:  2 }),
 	trackingStartDate: timestamp("tracking_start_date", { mode: 'date' }).notNull(),
 	trackingEndDate: timestamp("tracking_end_date", { mode: 'date' }),
 	isActive: boolean("is_active").default(true).notNull(),

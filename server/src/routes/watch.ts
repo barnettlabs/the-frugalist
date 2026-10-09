@@ -306,7 +306,7 @@ watchRoutes.post('/', validate('json', storeSchema), async (c) => {
 			isActive: true,
 			createdAt: now,
 			updatedAt: now,
-		} as typeof trackedProducts.$inferInsert)
+		})
 		.returning();
 
 	await insertHistory(Number(created!.id), product, now);

@@ -60,7 +60,7 @@ run worker '1;33' pnpm --filter @frugalist/server dev:worker
 cat <<EOF
 
   API      http://localhost:8787     health: /health
-  Web      http://localhost:5173     (vite binds ::1 - 127.0.0.1 will not answer)
+  Web      http://thefrugalist.local:55173   (must match CORS_ORIGINS in server/.env)
   Mailpit  http://localhost:58025
 
 EOF

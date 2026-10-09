@@ -50,6 +50,11 @@ export default defineConfig(({ isSsrBuild }) => {
 			},
 		},
 		server: {
+			// Pinned off Vite's default 5173, which other local stacks claim. Without
+			// strictPort Vite drifts to the next free port, which is not in the API's
+			// CORS_ORIGINS, so sign-in fails with a CORS error instead of a clear one.
+			port: 55173,
+			strictPort: true,
 			allowedHosts: ['localhost', '127.0.0.1', 'thefrugalist.local'],
 		},
 	};

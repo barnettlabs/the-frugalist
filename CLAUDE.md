@@ -46,6 +46,11 @@ deliberately: a host Postgres 14 answering on 5432 will run the app and the
 suite quite happily, and you will not find out you were testing against the
 wrong engine version until production.
 
+The web dev server is pinned the same way, to `55173` with `strictPort`, and is
+opened at `http://thefrugalist.local:55173` (add `thefrugalist.local` to
+`/etc/hosts`). That origin must be in `CORS_ORIGINS`; a mismatch shows up as a
+CORS error on sign-in.
+
 ### Server — run from `server/`
 
 ```bash

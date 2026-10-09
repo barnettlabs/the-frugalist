@@ -232,6 +232,39 @@ describe('price recording', () => {
 		expect(summary.checked).toBe(0);
 		expect(summary.errors).toBe(1);
 	});
+
+	it('records a failed check so the product waits its interval', async () => {
+		stubProduct.mockResolvedValue(null);
+		const row = await track({ lastCheckedAt: null });
+
+		await run();
+
+		const [updated] = await db()
+			.select()
+			.from(trackedProducts)
+			.where(eq(trackedProducts.id, row.id));
+
+		expect(updated!.lastCheckedAt).not.toBeNull();
+		expect(updated!.lastErrorAt).not.toBeNull();
+		expect(updated!.lastScraperError).toBe('Product not found at retailer');
+		expect((await run()).found).toBe(0);
+	});
+
+	it('does not let failing products starve the rest of the queue', async () => {
+		const failing = await track({ skuUpc: 'GONE', lastCheckedAt: null });
+		const healthy = await track({ skuUpc: 'FINE', lastCheckedAt: null });
+		stubProduct.mockImplementation(async (sku) => (sku === 'GONE' ? null : product()));
+
+		// A batch of one: the failing product goes first, by id.
+		await run({ limit: 1 });
+		expect(stubProduct).toHaveBeenLastCalledWith('GONE');
+
+		// It used to be picked again here, forever. Now the healthy one gets a turn.
+		const second = await run({ limit: 1 });
+		expect(stubProduct).toHaveBeenLastCalledWith('FINE');
+		expect(second.checked).toBe(1);
+		expect(failing.id).toBeLessThan(healthy.id);
+	});
 });
 
 describe('alerting', () => {

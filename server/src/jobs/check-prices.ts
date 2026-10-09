@@ -88,6 +88,9 @@ export async function checkPrices(job: PriceCheckJob): Promise<PriceCheckSummary
 				{ productId: row.product.id, productName: row.product.productName, err },
 				'error checking product price',
 			);
+			await recordFailure(row.product.id, err instanceof Error ? err.message : String(err)).catch(
+				(recordErr: unknown) => log.error({ err: recordErr }, 'could not record check failure'),
+			);
 		}
 
 		await sleep(RATE_LIMIT_DELAY_MS);
@@ -150,13 +153,33 @@ async function selectProducts(job: PriceCheckJob) {
 		.innerJoin(retailers, eq(trackedProducts.retailerId, retailers.id))
 		.innerJoin(users, eq(trackedProducts.userId, users.id))
 		.where(and(...conditions))
-		.orderBy(asc(trackedProducts.id))
+		// Least recently checked first, so a batch-sized run of products that keep
+		// failing cannot hold the front of the queue and starve the rest.
+		.orderBy(sql`${trackedProducts.lastCheckedAt} asc nulls first`, asc(trackedProducts.id))
 		.limit(job.limit);
 
 	return rows;
 }
 
 type CheckOutcome = { checked: boolean; alertsCreated: number };
+
+/**
+ * Marks a product as checked even though the check failed.
+ *
+ * Without this, a product that cannot be checked - a discontinued SKU, a
+ * retailer with no client - kept a stale last_checked_at and was selected again
+ * on every run. Enough of them filled every batch and nothing else got checked.
+ * It waits its normal interval before the next attempt, and the error is kept
+ * on the row for the admin UI.
+ */
+async function recordFailure(productId: number, message: string): Promise<void> {
+	const now = new Date();
+
+	await db()
+		.update(trackedProducts)
+		.set({ lastCheckedAt: now, lastScraperError: message, lastErrorAt: now, updatedAt: now })
+		.where(eq(trackedProducts.id, productId));
+}
 
 async function checkOne(
 	product: ProductRow,
@@ -179,6 +202,7 @@ async function checkOne(
 			// A retailer row exists with no client implementation. Not an error
 			// worth failing the run over - the admin UI can add either side.
 			log.warn({ retailer: retailer.slug }, 'no client for retailer; skipping');
+			await recordFailure(product.id, `No client for retailer ${retailer.slug}`);
 			return { checked: false, alertsCreated: 0 };
 		}
 		throw err;
@@ -188,6 +212,7 @@ async function checkOne(
 
 	if (!data) {
 		log.warn({ skuUpc: product.skuUpc }, 'product not found at retailer');
+		await recordFailure(product.id, 'Product not found at retailer');
 		return { checked: false, alertsCreated: 0 };
 	}
 

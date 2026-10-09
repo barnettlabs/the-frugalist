@@ -3,10 +3,14 @@ import { expo } from '@better-auth/expo';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { bearer } from 'better-auth/plugins';
+import { eq } from 'drizzle-orm';
 
 import { env } from '../config/env.js';
 import { db } from '../db/client.js';
 import * as schema from '../db/schema.js';
+import { passwordResetEmail, verificationEmail } from '../services/notifications/auth-emails.js';
+import { sendMail } from '../services/notifications/mail.js';
+import { logger } from './logger.js';
 
 /**
  * Authentication.
@@ -86,6 +90,37 @@ export function createAuth() {
 					return verifyPassword({ hash, password });
 				},
 			},
+			/*
+			 * Without this Better Auth refuses reset requests outright, and the compat
+			 * route answered "link sent" regardless - so nobody could recover an
+			 * account. The link goes straight to the web app's reset page, which posts
+			 * the token back through /api/reset-password.
+			 */
+			async sendResetPassword({ user, token }) {
+				const url = `${config.WEB_URL}/reset-password/${encodeURIComponent(token)}?email=${encodeURIComponent(user.email)}`;
+				await deliver(user.email, passwordResetEmail(url), 'password reset');
+			},
+		},
+
+		emailVerification: {
+			// Laravel's MustVerifyEmail sent this on registration.
+			sendOnSignUp: true,
+			async sendVerificationEmail({ user, url }) {
+				// `url` is Better Auth's verify endpoint, which redirects to the
+				// callbackURL the request named once the token checks out.
+				await deliver(user.email, verificationEmail(url), 'email verification');
+			},
+			/*
+			 * Better Auth records verification in its own `email_verified` flag, but
+			 * everything ported from Laravel - price-alert emails included - reads
+			 * `email_verified_at`. Set both, or a verified user still gets no alerts.
+			 */
+			async afterEmailVerification(user) {
+				await db()
+					.update(schema.users)
+					.set({ emailVerifiedAt: new Date(), updatedAt: new Date() })
+					.where(eq(schema.users.id, Number(user.id)));
+			},
 		},
 
 		user: {
@@ -137,7 +172,8 @@ export function createAuth() {
 		 * app/env.js (SCHEME = 'thefrugalist'), and the Expo plugin below sets the
 		 * matching Origin on native requests.
 		 */
-		trustedOrigins: [...config.CORS_ORIGINS, 'thefrugalist://'],
+		// WEB_URL is where email-verification redirects land.
+		trustedOrigins: [...new Set([...config.CORS_ORIGINS, config.WEB_URL, 'thefrugalist://'])],
 
 		plugins: [
 			// Surfaces the session token in the Set-Auth-Token response header and
@@ -148,6 +184,20 @@ export function createAuth() {
 			expo(),
 		],
 	});
+}
+
+/**
+ * sendMail reports failure in its result rather than throwing. Logged, not
+ * thrown: the forgot-password response must not reveal whether an address
+ * exists, so a failed send cannot change what the caller sees.
+ */
+async function deliver(
+	to: string,
+	mail: { subject: string; html: string; text: string },
+	kind: string,
+): Promise<void> {
+	const result = await sendMail({ to, ...mail });
+	if (!result.sent) logger().error({ error: result.error, kind }, 'account email failed to send');
 }
 
 let instance: ReturnType<typeof createAuth> | null = null;

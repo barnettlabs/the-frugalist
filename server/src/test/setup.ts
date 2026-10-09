@@ -9,6 +9,7 @@ setEnvForTesting(
 		NODE_ENV: 'test',
 		APP_ENV: 'test',
 		APP_URL: 'http://localhost:8787',
+		WEB_URL: 'http://localhost:5173',
 		PORT: '8787',
 		LOG_LEVEL: 'silent' as never,
 		DATABASE_URL:

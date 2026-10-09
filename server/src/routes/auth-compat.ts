@@ -2,6 +2,7 @@ import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 
+import { env } from '../config/env.js';
 import { db } from '../db/client.js';
 import { users } from '../db/schema.js';
 import { serializeRow } from '../db/serialize.js';
@@ -52,6 +53,9 @@ function forward(c: { req: { raw: Request } }, path: string, body: unknown): Pro
 		}),
 	);
 }
+
+/** Where a verified-email link lands once the API has checked the token. */
+const verifiedCallbackUrl = () => `${env().WEB_URL}/dashboard?verified=1`;
 
 async function userPayload(email: string) {
 	const [row] = await db().select().from(users).where(eq(users.email, email)).limit(1);
@@ -138,6 +142,8 @@ authCompatRoutes.post('/register', validate('json', registerSchema), async (c) =
 		name: `${data.first_name} ${data.last_name}`.trim(),
 		firstName: data.first_name,
 		lastName: data.last_name,
+		// The verification email Better Auth sends on sign-up redirects here.
+		callbackURL: verifiedCallbackUrl(),
 	});
 
 	if (!response.ok) {
@@ -183,10 +189,20 @@ const forgotSchema = z.object({
 authCompatRoutes.post('/forgot-password', validate('json', forgotSchema), async (c) => {
 	const data = validated<z.infer<typeof forgotSchema>>(c, 'json');
 
-	await forward(c, '/api/auth/request-password-reset', {
-		email: data.email,
-		redirectTo: `${new URL(c.req.url).origin}/reset-password`,
+	// The link itself is built in lib/auth.ts and points at the web app, so no
+	// redirectTo is needed. The old one was this request's own origin - the API
+	// host - which has no reset page.
+	const response = await forward(c, '/api/auth/request-password-reset', {
+		email: data.email.toLowerCase(),
 	});
+
+	if (!response.ok) {
+		// Logged, never surfaced: the reply below must not vary.
+		c.get('logger')?.error(
+			{ status: response.status, detail: await response.text() },
+			'password reset request rejected',
+		);
+	}
 
 	// Always the same response, whether or not the address exists - Laravel's
 	// Password::sendResetLink did the same, and anything else is an account
@@ -238,7 +254,8 @@ authCompatRoutes.post('/email/verification-notification', async (c) => {
 
 	await forward(c, '/api/auth/send-verification-email', {
 		email: user.email,
-		callbackURL: '/email-verified',
+		// A relative path resolved against the API host, which has no such page.
+		callbackURL: verifiedCallbackUrl(),
 	});
 
 	return c.json({ message: 'Verification link sent.' });

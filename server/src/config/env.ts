@@ -25,6 +25,13 @@ const envSchema = z.object({
 	NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 	APP_ENV: z.enum(['local', 'staging', 'production', 'test']).default('local'),
 	APP_URL: z.string().url().default('http://localhost:8787'),
+	// The web app's origin. Links in account emails point here - a reset link
+	// opens the SPA's reset page - and it is trusted for auth redirects.
+	WEB_URL: z
+		.string()
+		.url()
+		.default('http://thefrugalist.local:55173')
+		.transform((v) => v.replace(/\/+$/, '')),
 	PORT: port.default(8787),
 	LOG_LEVEL: z
 		.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])

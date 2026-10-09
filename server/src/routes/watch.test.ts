@@ -1,7 +1,8 @@
+import { eq } from 'drizzle-orm';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { db } from '../db/client.js';
-import { retailers } from '../db/schema.js';
+import { priceAlerts, retailers, trackedProducts } from '../db/schema.js';
 import { createApp } from '../http/app.js';
 import type { RetailerProduct } from '../services/retailers/types.js';
 import { createLegacyUser, signIn } from '../test/factories.js';
@@ -135,5 +136,35 @@ describe('stock-only watches', () => {
 		});
 
 		expect(res.status).toBe(200);
+	});
+});
+
+describe('manual refresh', () => {
+	it('does not record a $0 price drop when the retailer returns no price', async () => {
+		stubProduct.mockResolvedValue(product({ sku_upc: 'REFRESH-1', current_price: 150 }));
+
+		const created = await authed('/api/watch', {
+			method: 'POST',
+			body: JSON.stringify({
+				retailer_id: retailerId,
+				sku_upc: 'REFRESH-1',
+				target_price: 100,
+				notification_methods: ['email'],
+				tracking_start_date: today(),
+			}),
+		});
+		expect(created.status).toBe(201);
+		const id = ((await created.json()) as { tracked_product: { id: number } }).tracked_product.id;
+
+		stubProduct.mockResolvedValue(product({ sku_upc: 'REFRESH-1', current_price: 0 }));
+		const res = await authed(`/api/watch/${id}/refresh`, { method: 'POST' });
+
+		expect(res.status).toBe(200);
+		expect(
+			await db().select().from(priceAlerts).where(eq(priceAlerts.trackedProductId, id)),
+		).toHaveLength(0);
+
+		const [row] = await db().select().from(trackedProducts).where(eq(trackedProducts.id, id));
+		expect(Number(row!.currentPrice)).toBe(150);
 	});
 });

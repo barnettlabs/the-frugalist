@@ -308,6 +308,33 @@ describe('alerting', () => {
 		expect(updated!.isActive).toBe(false);
 	});
 
+	it('treats a missing price as unknown, not as a drop to $0', async () => {
+		// Best Buy maps a missing salePrice to 0, which used to read as "target
+		// reached at $0.00" and switch tracking off.
+		stubProduct.mockResolvedValue(product({ current_price: 0, in_stock: false }));
+		const row = await track({ currentPrice: writeMoney(180), targetPrice: writeMoney(100) });
+
+		const summary = await run({ force: true });
+
+		expect(summary.alertsCreated).toBe(0);
+		expect(
+			await db().select().from(priceAlerts).where(eq(priceAlerts.trackedProductId, row.id)),
+		).toHaveLength(0);
+
+		const [updated] = await db()
+			.select()
+			.from(trackedProducts)
+			.where(eq(trackedProducts.id, row.id));
+
+		expect(Number(updated!.currentPrice)).toBe(180);
+		expect(updated!.isActive).toBe(true);
+		expect(updated!.inStock).toBe(false);
+		expect(updated!.lastScraperError).toBe('Retailer returned no price');
+		expect(
+			await db().select().from(priceHistory).where(eq(priceHistory.trackedProductId, row.id)),
+		).toHaveLength(0);
+	});
+
 	it('raises no alert when the price rises', async () => {
 		stubProduct.mockResolvedValue(product({ current_price: 220 }));
 		const row = await track({ currentPrice: writeMoney(180) });

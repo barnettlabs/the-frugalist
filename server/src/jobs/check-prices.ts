@@ -17,6 +17,7 @@ import { priceDropEmail } from '../services/notifications/price-drop-email.js';
 import { sendMail } from '../services/notifications/mail.js';
 import { sendPriceDropPush } from '../services/notifications/push.js';
 import { createRetailerClient, UnsupportedRetailerError } from '../services/retailers/factory.js';
+import { hasUsablePrice } from '../services/retailers/types.js';
 import type { PriceCheckJob } from './queues.js';
 
 /**
@@ -217,12 +218,19 @@ async function checkOne(
 	}
 
 	const oldPrice = readMoney(product.currentPrice);
-	const newPrice = data.current_price;
+	// An unknown price leaves the stored one alone, so it can never read as a
+	// drop - see hasUsablePrice.
+	const priceKnown = hasUsablePrice(data);
+	const newPrice = priceKnown ? data.current_price : oldPrice;
 	const oldInStock = product.inStock ?? true;
 	const newInStock = data.in_stock;
 	const now = new Date();
 
 	let alertsCreated = 0;
+
+	if (!priceKnown) {
+		log.warn({ skuUpc: product.skuUpc }, 'retailer returned no usable price');
+	}
 
 	await db()
 		.update(trackedProducts)
@@ -230,21 +238,24 @@ async function checkOne(
 			currentPrice: writeMoney(newPrice),
 			inStock: newInStock,
 			lastCheckedAt: now,
+			...(priceKnown ? {} : { lastScraperError: 'Retailer returned no price', lastErrorAt: now }),
 			updatedAt: now,
 		})
 		.where(eq(trackedProducts.id, product.id));
 
-	await db()
-		.insert(priceHistory)
-		.values({
-			trackedProductId: product.id,
-			price: writeMoney(newPrice),
-			inStock: newInStock,
-			apiResponse: { ...data, checked_via_command: true, command_run_at: now.toISOString() },
-			checkedAt: now,
-			createdAt: now,
-			updatedAt: now,
-		} as typeof priceHistory.$inferInsert);
+	if (priceKnown) {
+		await db()
+			.insert(priceHistory)
+			.values({
+				trackedProductId: product.id,
+				price: writeMoney(newPrice),
+				inStock: newInStock,
+				apiResponse: { ...data, checked_via_command: true, command_run_at: now.toISOString() },
+				checkedAt: now,
+				createdAt: now,
+				updatedAt: now,
+			} as typeof priceHistory.$inferInsert);
+	}
 
 	const methods = notificationMethods(product.notificationMethod);
 	const watchesPrice = shouldCheckForPriceDrop(product.watchType);

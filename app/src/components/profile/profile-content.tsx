@@ -39,7 +39,12 @@ export function ProfileContent({
 		);
 	}
 
-	const handleUpdateProfile = (data: { first_name: string; last_name: string; email: string }) => {
+	const handleUpdateProfile = (data: {
+		first_name: string;
+		last_name: string;
+		email: string;
+		current_password?: string;
+	}) => {
 		updateProfile(data, {
 			onSuccess: () => {
 				showMessage({
@@ -52,7 +57,11 @@ export function ProfileContent({
 			onError: error => {
 				showMessage({
 					message: t('common.error'),
-					description: error.message || 'Failed to update profile',
+					// The server's 422 message (e.g. a wrong password) rather than Axios's.
+					description:
+						(error.response?.data as { message?: string } | undefined)?.message ||
+						error.message ||
+						'Failed to update profile',
 					type: 'danger',
 				});
 			},

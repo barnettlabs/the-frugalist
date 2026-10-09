@@ -9,6 +9,7 @@ import type { AppEnv } from '../http/app.js';
 import { currentUser, requireAuth } from '../http/auth-middleware.js';
 import { laravelRules as r } from '../http/rules.js';
 import { validate, validated } from '../http/validate.js';
+import { confirmPassword } from '../lib/password-confirmation.js';
 
 /**
  * Profile read, update and account deletion.
@@ -78,6 +79,8 @@ const updateSchema = z.object({
 		}),
 	avatar_url: url('avatar url', 255),
 	website: url('website', 255),
+	// Required only when the email changes - see the handler.
+	current_password: z.string().nullable().optional(),
 });
 
 type ProfileUpdate = z.infer<typeof updateSchema>;
@@ -116,9 +119,19 @@ profileRoutes.put('/', validate('json', updateSchema), async (c) => {
 
 	const emailChanged = existing?.email !== data.email;
 
+	/*
+	 * The email is the login identity and where password resets go, so changing
+	 * it is an account takeover in one request for anyone holding a session -
+	 * a stolen token, an unlocked phone. Re-confirming the password closes that.
+	 */
+	if (emailChanged) {
+		await confirmPassword(user.id, data.current_password, 'current_password');
+	}
+
+	const { current_password: _confirmation, ...fields } = data;
 	const patch: Record<string, unknown> = { updatedAt: new Date() };
 
-	for (const [key, value] of Object.entries(data)) {
+	for (const [key, value] of Object.entries(fields)) {
 		if (value === undefined) continue;
 		patch[key.replace(/_([a-z])/g, (_, ch: string) => ch.toUpperCase())] = value;
 	}

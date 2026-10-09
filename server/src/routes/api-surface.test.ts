@@ -22,6 +22,7 @@ const app = createApp();
 let token = '';
 let adminToken = '';
 let userId = 0;
+let userPassword = '';
 let otherUserId = 0;
 
 const authed = (path: string, token_: string, init: RequestInit = {}) =>
@@ -40,6 +41,7 @@ const asAdmin = (path: string, init?: RequestInit) => authed(path, adminToken, i
 beforeAll(async () => {
 	const user = await createLegacyUser();
 	userId = user.id;
+	userPassword = user.password;
 	token = await signIn(app, user);
 
 	const admin = await createLegacyUser({ isAdmin: true });
@@ -93,6 +95,42 @@ describe('profile', () => {
 		expect(body.errors.email).toEqual(['The email has already been taken.']);
 	});
 
+	it('requires the current password to change the email', async () => {
+		const res = await asUser('/api/profile', {
+			method: 'PUT',
+			body: JSON.stringify({ email: `takeover-${Math.random().toString(36).slice(2, 10)}@example.com` }),
+		});
+
+		expect(res.status).toBe(422);
+		const body = (await res.json()) as { errors: Record<string, string[]> };
+		expect(body.errors.current_password).toEqual(['The current password field is required.']);
+	});
+
+	it('rejects an email change with the wrong password', async () => {
+		const res = await asUser('/api/profile', {
+			method: 'PUT',
+			body: JSON.stringify({
+				email: `takeover-${Math.random().toString(36).slice(2, 10)}@example.com`,
+				current_password: 'not-my-password',
+			}),
+		});
+
+		expect(res.status).toBe(422);
+		const body = (await res.json()) as { errors: Record<string, string[]> };
+		expect(body.errors.current_password).toEqual(['The provided password is incorrect.']);
+	});
+
+	it('does not ask for a password when the email is unchanged', async () => {
+		const [me] = await db().select({ email: users.email }).from(users).where(eq(users.id, userId));
+
+		const res = await asUser('/api/profile', {
+			method: 'PUT',
+			body: JSON.stringify({ email: me!.email, first_name: 'Renamed' }),
+		});
+
+		expect(res.status).toBe(200);
+	});
+
 	it('clears verification when the email actually changes', async () => {
 		const fresh = `changed-${Math.random().toString(36).slice(2, 10)}@example.com`;
 
@@ -103,7 +141,7 @@ describe('profile', () => {
 
 		const res = await asUser('/api/profile', {
 			method: 'PUT',
-			body: JSON.stringify({ email: fresh }),
+			body: JSON.stringify({ email: fresh, current_password: userPassword }),
 		});
 
 		expect(res.status).toBe(200);

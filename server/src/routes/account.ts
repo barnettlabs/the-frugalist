@@ -1,14 +1,13 @@
-import { verify as verifyBcrypt } from '@node-rs/bcrypt';
-import { and, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { Hono, type Context } from 'hono';
 import { z } from 'zod';
 
 import { db } from '../db/client.js';
-import { authAccounts, users } from '../db/schema.js';
+import { users } from '../db/schema.js';
 import type { AppEnv } from '../http/app.js';
 import { currentUser, requireAuth } from '../http/auth-middleware.js';
-import { HttpError } from '../http/errors.js';
 import { auth } from '../lib/auth.js';
+import { confirmPassword } from '../lib/password-confirmation.js';
 import { trackEvent } from '../observability/analytics.js';
 
 /**
@@ -64,34 +63,8 @@ async function deleteAccount(c: Context<AppEnv>) {
 	const parsed = deleteSchema.safeParse(body);
 	const password = parsed.success ? parsed.data.password : undefined;
 
-	/*
-	 * Password confirmation, when the account has a password to confirm.
-	 *
-	 * Laravel's ProfileController required it unconditionally via the
-	 * `current_password` rule. That cannot be unconditional here: Better Auth
-	 * supports social sign-in, and an account created that way has no credential
-	 * password to check. So the rule is "confirm it if there is one" - which is
-	 * strictly the same requirement for every account that exists today, and
-	 * correct rather than broken for any social account added later.
-	 */
-	const [credential] = await db()
-		.select({ id: authAccounts.id, password: authAccounts.password })
-		.from(authAccounts)
-		.where(and(eq(authAccounts.userId, user.id), eq(authAccounts.providerId, 'credential')))
-		.limit(1);
-
-	if (credential?.password) {
-		if (!password) {
-			throw HttpError.field('password', 'The password field is required.');
-		}
-
-		const valid = await verifyPassword(credential.password, password);
-
-		if (!valid) {
-			// Reported on `password`, where Laravel's current_password rule put it.
-			throw HttpError.field('password', 'The provided password is incorrect.');
-		}
-	}
+	// Only when the account has a password to confirm - see confirmPassword.
+	await confirmPassword(user.id, password, 'password');
 
 	// Revoke sessions before the row goes, so a token in flight cannot be used
 	// against a half-deleted account.
@@ -106,16 +79,6 @@ async function deleteAccount(c: Context<AppEnv>) {
 	await db().delete(users).where(eq(users.id, user.id));
 
 	return c.json({ message: 'Account deleted successfully.' });
-}
-
-async function verifyPassword(hash: string, password: string): Promise<boolean> {
-	// A hash carried over from Laravel, or one Better Auth has since written.
-	if (['$2a$', '$2b$', '$2y$'].some((p) => hash.startsWith(p))) {
-		return verifyBcrypt(password, hash);
-	}
-
-	const { verifyPassword: verify } = await import('better-auth/crypto');
-	return verify({ hash, password });
 }
 
 accountRoutes.delete('/profile', requireAuth, (c) => deleteAccount(c));

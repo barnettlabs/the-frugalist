@@ -128,23 +128,18 @@ export class MortgageCalculator {
 
 		for (let month = 1; month <= term && remaining > 0; month++) {
 			const interestPayment = rate > 0 ? (remaining * rate) / 100 / 12 : 0;
-			let principalPayment = monthlyPi - interestPayment;
 
-			let extraPayment = 0;
-			if (withExtraPayments && extras.length > 0) {
-				extraPayment = this.extraForMonth(month, extras);
-			}
+			// Scheduled principal first, then any extra up to what is still owed, so
+			// the final month charges only interest plus the remaining balance - see
+			// packages/contracts mortgage.ts.
+			const principalPayment = Math.min(monthlyPi - interestPayment, remaining);
+			const extraPayment =
+				withExtraPayments && extras.length > 0
+					? Math.max(0, Math.min(this.extraForMonth(month, extras), remaining - principalPayment))
+					: 0;
 
-			if (principalPayment + extraPayment > remaining) {
-				const overage = principalPayment + extraPayment - remaining;
-				if (extraPayment >= overage) {
-					extraPayment -= overage;
-				} else {
-					principalPayment = Math.max(0, remaining - extraPayment);
-				}
-			}
-
-			const totalPayment = monthlyPi + extraPayment + escrow;
+			const payment = interestPayment + principalPayment;
+			const totalPayment = payment + extraPayment + escrow;
 			remaining -= principalPayment + extraPayment;
 			totalInterest += interestPayment;
 			totalPrincipalPaid += principalPayment + extraPayment;
@@ -153,7 +148,7 @@ export class MortgageCalculator {
 
 			schedule.push({
 				month,
-				payment: monthlyPi,
+				payment,
 				extraPayment,
 				escrowPayment: escrow,
 				totalPayment,
@@ -224,6 +219,13 @@ export class MortgageCalculator {
 		const amort = this.calculateAmortization(true);
 		const monthlyPi = this.monthlyPrincipalAndInterest();
 		const escrow = this.monthlyEscrow();
+		const termMonths = this.loanTermMonths();
+
+		// Closed-form figures when there is no schedule, so the totals never leave
+		// interest out - see packages/contracts mortgage.ts.
+		const totalInterest = amort?.totalInterest ?? Math.max(0, monthlyPi * termMonths - this.principal());
+		const totalPrincipal = amort?.totalPrincipal ?? this.principal();
+		const totalEscrow = amort?.totalEscrow ?? escrow * termMonths;
 
 		return {
 			propertyValue: this.propertyValue(),
@@ -238,16 +240,12 @@ export class MortgageCalculator {
 			monthlyExtraExpenses: this.monthlyExtraExpenses(),
 			monthlyEscrow: escrow,
 			monthlyPaymentTotal: monthlyPi + escrow,
-			totalInterest: amort?.totalInterest ?? 0,
-			totalPrincipal: amort?.totalPrincipal ?? this.principal(),
+			totalInterest,
+			totalPrincipal,
 			totalExtraPayments: amort?.totalExtra ?? 0,
-			totalEscrow: amort?.totalEscrow ?? escrow * this.loanTermMonths(),
-			paymentsTotal: (amort?.totalInterest ?? 0) + (amort?.totalPrincipal ?? this.principal()),
-			grandTotal:
-				this.downPayment() +
-				((amort?.totalInterest ?? 0) +
-					(amort?.totalPrincipal ?? this.principal()) +
-					(amort?.totalEscrow ?? escrow * this.loanTermMonths())),
+			totalEscrow,
+			paymentsTotal: totalInterest + totalPrincipal,
+			grandTotal: this.downPayment() + totalInterest + totalPrincipal + totalEscrow,
 			monthsPaid: amort?.monthsPaid ?? this.loanTermMonths(),
 			monthsSaved: amort?.monthsSaved ?? 0,
 			amortization: amort,

@@ -125,7 +125,9 @@ export function createSheetResource<T extends PgTable>(options: SheetResourceOpt
 		c.json(serializeRow((await load(c as Context<AppEnv>)) as Record<string, unknown>)),
 	);
 
-	routes.put('/:id', validate('json', schema), async (c) => {
+	// Laravel's apiResource routed both verbs to update, and the web client sends
+	// PATCH while the app sends PUT. Registering only PUT 404'd every web save.
+	routes.on(['PUT', 'PATCH'], '/:id', validate('json', schema), async (c) => {
 		const existing = (await load(c as unknown as Context<AppEnv>)) as Record<string, unknown>;
 		const data = validated<SheetInput>(c, 'json');
 

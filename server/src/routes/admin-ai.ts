@@ -124,7 +124,8 @@ adminAiRoutes.post('/providers', validate('json', providerSchema), async (c) => 
 	return c.json({ provider: presentProvider(created!) }, 201);
 });
 
-adminAiRoutes.put('/providers/:id', validate('json', providerSchema), async (c) => {
+// PUT and PATCH both update, as Laravel's resource routes did; the web sends PATCH.
+adminAiRoutes.on(['PUT', 'PATCH'], '/providers/:id', validate('json', providerSchema), async (c) => {
 	const id = parseId(c.req.param('id'));
 	await loadProvider(id);
 
@@ -313,7 +314,7 @@ adminAiRoutes.post('/agents', validate('json', agentSchema), async (c) => {
 	return c.json({ agent: serializeRow(created!) }, 201);
 });
 
-adminAiRoutes.put('/agents/:id', validate('json', agentSchema), async (c) => {
+adminAiRoutes.on(['PUT', 'PATCH'], '/agents/:id', validate('json', agentSchema), async (c) => {
 	const id = parseId(c.req.param('id'));
 	const existing = await loadAgent(id);
 	const data = validated<z.infer<typeof agentSchema>>(c, 'json');
@@ -534,7 +535,7 @@ adminAiRoutes.post('/routes', validate('json', routeSchema), async (c) => {
 	return c.json({ route: serializeRow(created!) }, 201);
 });
 
-adminAiRoutes.put('/routes/:id', validate('json', routeSchema.partial()), async (c) => {
+adminAiRoutes.on(['PUT', 'PATCH'], '/routes/:id', validate('json', routeSchema.partial()), async (c) => {
 	const id = parseId(c.req.param('id'));
 	const data = validated<Partial<z.infer<typeof routeSchema>>>(c, 'json');
 

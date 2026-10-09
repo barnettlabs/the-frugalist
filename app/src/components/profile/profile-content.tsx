@@ -1,9 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Pressable } from 'react-native';
+import { ActivityIndicator, Alert } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
 
 import { useDeleteAccount, useProfile, useUpdateProfile } from '@/api/auth/use-profile';
+import { DangerZone } from '@/components/profile/danger-zone';
 import { ProfileForm } from '@/components/profile/profile-form';
 import { Button, ScreenContainer, TabPageHeader, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
@@ -59,7 +60,7 @@ export function ProfileContent({
 		});
 	};
 
-	const handleDeleteAccount = () => {
+	const handleDeleteAccount = (password: string) => {
 		Alert.alert(
 			'Delete account',
 			'Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently lost.',
@@ -69,23 +70,30 @@ export function ProfileContent({
 					text: 'Delete account',
 					style: 'destructive',
 					onPress: () => {
-						deleteAccount(undefined, {
-							onSuccess: () => {
-								showMessage({
-									message: t('profile_toast.deleted'),
-									description: t('profile_toast.deleted_description'),
-									type: 'success',
-								});
-								signOut();
-							},
-							onError: error => {
-								showMessage({
-									message: t('common.error'),
-									description: error.message || 'Failed to delete account',
-									type: 'danger',
-								});
-							},
-						});
+						deleteAccount(
+							{ password },
+							{
+								onSuccess: () => {
+									showMessage({
+										message: t('profile_toast.deleted'),
+										description: t('profile_toast.deleted_description'),
+										type: 'success',
+									});
+									signOut();
+								},
+								onError: error => {
+									showMessage({
+										message: t('common.error'),
+										// The server's message, e.g. "The provided password is incorrect."
+										description:
+											(error.response?.data as { message?: string } | undefined)?.message ||
+											error.message ||
+											'Failed to delete account',
+										type: 'danger',
+									});
+								},
+							}
+						);
 					},
 				},
 			]
@@ -178,33 +186,6 @@ function AccountStats({ profile }: { profile: User }) {
 						{profile.email_verified_at ? 'Yes' : 'No'}
 					</Text>
 				</View>
-			</View>
-		</View>
-	);
-}
-
-function DangerZone({ onDelete, isDeleting }: { onDelete: () => void; isDeleting: boolean }) {
-	return (
-		<View className="mt-10">
-			<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-danger">Danger zone</Text>
-			<View className="rounded-md border border-danger/30 bg-danger/5 p-4">
-				<Text className="mb-2 font-display text-lg text-text-primary-light dark:text-text-primary-dark">
-					Delete account
-				</Text>
-				<Text className="mb-4 text-xs leading-5 text-text-muted-light dark:text-text-muted-dark">
-					Once you delete your account, there is no going back. All your data — finance estimates, lease calculations,
-					and tracked products — will be permanently removed.
-				</Text>
-				<Pressable
-					onPress={onDelete}
-					disabled={isDeleting}
-					className="items-center rounded-md bg-danger px-4 py-3 active:opacity-80"
-					style={{ opacity: isDeleting ? 0.6 : 1 }}
-				>
-					<Text className="text-sm font-medium text-surface-light">
-						{isDeleting ? 'Deleting…' : 'Delete my account'}
-					</Text>
-				</Pressable>
 			</View>
 		</View>
 	);

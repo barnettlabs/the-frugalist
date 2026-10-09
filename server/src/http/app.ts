@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { bodyLimit } from 'hono/body-limit';
 import { cors } from 'hono/cors';
 import { requestId } from 'hono/request-id';
 import { secureHeaders } from 'hono/secure-headers';
@@ -68,6 +69,18 @@ export function createApp() {
 			allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
 			allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 			maxAge: 86_400,
+		}),
+	);
+
+	// No route takes uploads; the largest legitimate body is a sheet with its
+	// extra-payment JSON. Capped before anything parses it, so an anonymous
+	// request cannot make the server buffer an arbitrarily large payload. After
+	// cors, so a rejected browser request still gets a readable response.
+	app.use(
+		'*',
+		bodyLimit({
+			maxSize: 256 * 1024,
+			onError: (c) => c.json({ message: 'The request body is too large.' }, 413),
 		}),
 	);
 

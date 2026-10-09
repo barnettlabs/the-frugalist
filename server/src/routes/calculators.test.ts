@@ -194,6 +194,39 @@ describe('POST /api/calculators/mortgage/compute', () => {
 	});
 });
 
+describe('resource limits on the public endpoints', () => {
+	// Each of these used to build a schedule of the requested length, so one
+	// anonymous request could exhaust memory.
+	it.each([
+		['finance', { finance_term: 1e9 }, 'finance term', 120],
+		['lease', { lease_term: 1e9 }, 'lease term', 120],
+		['mortgage', { loan_term_years: 1e9 }, 'loan term years', 50],
+	] as const)('rejects an oversized %s term', async (kind, body, label, max) => {
+		const res = await post(`/api/calculators/${kind}/compute`, body);
+
+		expect(res.status).toBe(422);
+		expect(((await res.json()) as { message: string }).message).toBe(
+			`The ${label} field must not be greater than ${max}.`,
+		);
+	});
+
+	it('still accepts the largest term a saved sheet allows', async () => {
+		const res = await post('/api/calculators/mortgage/compute', {
+			property_value: 300000,
+			interest_rate: 6,
+			loan_term_years: 50,
+		});
+		expect(res.status).toBe(200);
+	});
+
+	it('rejects an oversized request body before parsing it', async () => {
+		const res = await post('/api/calculators/mortgage/compute', {
+			extra_payments_json: 'x'.repeat(300 * 1024),
+		});
+		expect(res.status).toBe(413);
+	});
+});
+
 describe('every fixture case is servable over HTTP', () => {
 	// Guards against a schema that rejects input the calculator handles happily.
 	// Cases using masked strings are expected to 422 - the endpoint validates

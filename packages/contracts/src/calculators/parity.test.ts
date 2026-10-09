@@ -31,13 +31,20 @@ import { computeMortgage } from './mortgage.js';
  *   - A failure here after a refactor means the refactor changed a payment
  *     number. That is worth treating as a defect until proven otherwise.
  *
- * EXCEPTION - the lease vectors were re-baselined from the TypeScript on
- * 2026-10-08. Laravel's lease calculator was itself wrong: it added the residual
- * rent charge twice (in the payment and the tax base), returned a $0 payment at
- * a zero money factor, and counted the first payment twice in the total. Those
- * fixes are pinned independently in lease.test.ts against hand-derived values;
- * the lease entries here now guard against regressions, not against Laravel.
- * Finance and mortgage vectors are untouched and still Laravel's.
+ * EXCEPTION - every vector has since been re-baselined from the TypeScript
+ * (2026-10-08), because Laravel's own calculators were wrong:
+ *
+ *   - Lease: the residual rent charge was added twice (in the payment and the
+ *     tax base), a zero money factor gave a $0 payment, and the total counted
+ *     the first payment twice. Pinned against hand-derived values in
+ *     lease.test.ts.
+ *   - Finance and mortgage: the final month charged the full payment however
+ *     little was owed (and finance dropped that month's extra payment), 0%
+ *     loans had no schedule, and mortgage totals computed without a schedule
+ *     left interest out. Total interest and total principal did not change in
+ *     any case. Pinned in schedule-invariants.test.ts.
+ *
+ * So these entries now guard against regressions, not against Laravel.
  */
 
 const fixtures = (name: string) =>

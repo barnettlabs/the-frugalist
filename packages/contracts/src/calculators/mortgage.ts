@@ -188,29 +188,25 @@ export class MortgageCalculator {
 
 		for (let month = 1; month <= term && remaining > 0; month++) {
 			const interestPayment = rate > 0 ? (remaining * rate) / 100 / 12 : 0;
-			let principalPayment = monthlyPi - interestPayment;
 
-			let extraPayment = 0;
-			if (withExtraPayments && extras.length > 0) {
-				extraPayment = extraForMonth(month, extras);
-			}
+			/*
+			 * The scheduled principal is applied first and the extra only covers
+			 * what is still owed after it. The Laravel original trimmed the
+			 * scheduled principal instead - down to $0 when the extra alone cleared
+			 * the balance - while still charging the full P&I, so the final row
+			 * billed ~$2,000 that paid off nothing and the rows no longer summed to
+			 * the grand total.
+			 */
+			const principalPayment = Math.min(monthlyPi - interestPayment, remaining);
+			const extraPayment =
+				withExtraPayments && extras.length > 0
+					? Math.max(0, Math.min(extraForMonth(month, extras), remaining - principalPayment))
+					: 0;
 
-			// Final-month trim. Unlike the finance calculator, which zeroes the
-			// extra outright, this reduces the extra first and only then clamps
-			// the scheduled principal - so a large final extra does not vanish.
-			if (principalPayment + extraPayment > remaining) {
-				const overage = principalPayment + extraPayment - remaining;
-				if (extraPayment >= overage) {
-					extraPayment -= overage;
-				} else {
-					principalPayment = Math.max(0, remaining - extraPayment);
-					if (principalPayment + extraPayment > remaining) {
-						extraPayment = Math.max(0, remaining - principalPayment);
-					}
-				}
-			}
-
-			const totalPayment = monthlyPi + extraPayment + escrow;
+			// The P&I actually due: the full monthly figure except in a final month,
+			// where only the interest and what remains is owed.
+			const payment = interestPayment + principalPayment;
+			const totalPayment = payment + extraPayment + escrow;
 			remaining -= principalPayment + extraPayment;
 			totalInterest += interestPayment;
 			totalPrincipalPaid += principalPayment + extraPayment;
@@ -219,7 +215,7 @@ export class MortgageCalculator {
 
 			schedule.push({
 				month,
-				payment: monthlyPi,
+				payment,
 				extra_payment: extraPayment,
 				escrow_payment: escrow,
 				total_payment: totalPayment,
@@ -289,6 +285,14 @@ export class MortgageCalculator {
 		const escrow = this.monthlyEscrow();
 		const termMonths = this.loanTermMonths();
 
+		// Without a schedule, the closed-form figures. These used to fall back to
+		// 0 for interest in the totals while reporting it in total_interest, so
+		// payments_total and grand_total silently left interest out.
+		const totalInterest =
+			amort?.total_interest ?? Math.max(0, monthlyPi * termMonths - this.principal());
+		const totalPrincipal = amort?.total_principal ?? this.principal();
+		const totalEscrow = amort?.total_escrow ?? escrow * termMonths;
+
 		return {
 			property_value: this.propertyValue(),
 			down_payment: this.downPayment(),
@@ -304,17 +308,12 @@ export class MortgageCalculator {
 			monthly_escrow: escrow,
 			monthly_payment_total: monthlyPi + escrow,
 
-			total_interest:
-				amort?.total_interest ?? Math.max(0, monthlyPi * termMonths - this.principal()),
-			total_principal: amort?.total_principal ?? this.principal(),
+			total_interest: totalInterest,
+			total_principal: totalPrincipal,
 			total_extra_payments: amort?.total_extra ?? 0,
-			total_escrow: amort?.total_escrow ?? escrow * termMonths,
-			payments_total: (amort?.total_interest ?? 0) + (amort?.total_principal ?? this.principal()),
-			grand_total:
-				this.downPayment() +
-				(amort?.total_interest ?? 0) +
-				(amort?.total_principal ?? this.principal()) +
-				(amort?.total_escrow ?? escrow * termMonths),
+			total_escrow: totalEscrow,
+			payments_total: totalInterest + totalPrincipal,
+			grand_total: this.downPayment() + totalInterest + totalPrincipal + totalEscrow,
 
 			months_paid: amort?.months_paid ?? termMonths,
 			months_saved: amort?.months_saved ?? 0,

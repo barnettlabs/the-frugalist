@@ -117,7 +117,9 @@ export class FinanceCalculator {
 		const term = Math.trunc(this.n('finance_term'));
 		const monthlyPayment = this.monthlyPayment();
 
-		if (loanAmount <= 0 || rate <= 0 || term <= 0) return null;
+		// A 0% loan still has a schedule - common for promotional car financing,
+		// and the Laravel original returned none, which also dropped its extras.
+		if (loanAmount <= 0 || term <= 0) return null;
 
 		const schedule: FinanceScheduleRow[] = [];
 		let remaining = loanAmount;
@@ -126,27 +128,30 @@ export class FinanceCalculator {
 		const extras = this.parseExtraPayments();
 
 		for (let month = 1; month <= term && remaining > 0; month++) {
-			const interestPayment = (remaining * rate) / 100 / 12;
-			let principalPayment = monthlyPayment - interestPayment;
+			const interestPayment = rate > 0 ? (remaining * rate) / 100 / 12 : 0;
 
-			let extraPayment = 0;
-			if (withExtraPayments && extras.length > 0) {
-				extraPayment = extraForMonth(month, extras);
-			}
+			/*
+			 * Scheduled principal first, then the extra up to what is still owed -
+			 * the same rule as the mortgage calculator. The Laravel original moved
+			 * the whole remaining balance into the scheduled principal and zeroed the
+			 * extra, but still reported the normal monthly payment, so a final row
+			 * could show $2,578 of principal paid by a $515 payment.
+			 */
+			const principalPayment = Math.min(monthlyPayment - interestPayment, remaining);
+			const extraPayment =
+				withExtraPayments && extras.length > 0
+					? Math.max(0, Math.min(extraForMonth(month, extras), remaining - principalPayment))
+					: 0;
 
-			if (principalPayment + extraPayment > remaining) {
-				principalPayment = remaining;
-				extraPayment = 0;
-			}
-
-			const totalPayment = monthlyPayment + extraPayment;
+			const payment = interestPayment + principalPayment;
+			const totalPayment = payment + extraPayment;
 			remaining -= principalPayment + extraPayment;
 			totalInterest += interestPayment;
 			totalPrincipal += principalPayment + extraPayment;
 
 			schedule.push({
 				month,
-				payment: monthlyPayment,
+				payment,
 				extra_payment: extraPayment,
 				total_payment: totalPayment,
 				principal_payment: principalPayment + extraPayment,

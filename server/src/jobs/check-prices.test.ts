@@ -9,6 +9,7 @@ import {
 	priceHistory,
 	retailers,
 	trackedProducts,
+	users,
 } from '../db/schema.js';
 import { createLegacyUser } from '../test/factories.js';
 import type { RetailerProduct } from '../services/retailers/types.js';
@@ -42,6 +43,21 @@ vi.mock('../services/retailers/factory.js', async () => {
 			},
 			getLastRawResponse: () => null,
 		}),
+	};
+});
+
+// Real delivery by default (the log transport in tests); a test can make it fail.
+const sendMailOverride = vi.fn<() => Promise<unknown> | undefined>(() => undefined);
+
+vi.mock('../services/notifications/mail.js', async () => {
+	const actual = await vi.importActual<typeof import('../services/notifications/mail.js')>(
+		'../services/notifications/mail.js',
+	);
+
+	return {
+		...actual,
+		sendMail: (...args: Parameters<typeof actual.sendMail>) =>
+			sendMailOverride() ?? actual.sendMail(...args),
 	};
 });
 
@@ -284,6 +300,40 @@ describe('alerting', () => {
 		expect(alerts).toHaveLength(1);
 		expect(alerts[0]!.alertType).toBe('price_drop');
 		expect(alerts[0]!.notificationSent).toBe(true);
+	});
+
+	it('leaves the alert unsent when its email fails, so send-alerts retries it', async () => {
+		await db().update(users).set({ emailVerifiedAt: new Date() }).where(eq(users.id, userId));
+		sendMailOverride.mockReturnValueOnce(
+			Promise.resolve({ sent: false, transport: 'resend', error: 'HTTP 500' }),
+		);
+		stubProduct.mockResolvedValue(product({ current_price: 150 }));
+		const row = await track({ notificationMethod: ['email'] });
+
+		await run({ force: true });
+
+		const alerts = await db()
+			.select()
+			.from(priceAlerts)
+			.where(eq(priceAlerts.trackedProductId, row.id));
+
+		expect(alerts).toHaveLength(1);
+		expect(alerts[0]!.notificationSent).toBe(false);
+	});
+
+	it('marks the alert sent when its email goes out', async () => {
+		await db().update(users).set({ emailVerifiedAt: new Date() }).where(eq(users.id, userId));
+		stubProduct.mockResolvedValue(product({ current_price: 150 }));
+		const row = await track({ notificationMethod: ['email'] });
+
+		await run({ force: true });
+
+		const [alert] = await db()
+			.select()
+			.from(priceAlerts)
+			.where(eq(priceAlerts.trackedProductId, row.id));
+
+		expect(alert!.notificationSent).toBe(true);
 	});
 
 	it('raises target_reached and deactivates tracking when the target is hit', async () => {

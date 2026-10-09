@@ -318,6 +318,10 @@ async function raiseAlert(input: {
 }): Promise<void> {
 	const { product, retailer, user, methods, alertType, oldPrice, newPrice, now } = input;
 
+	// Stays true unless an email that should have gone out did not. A failed
+	// email leaves notification_sent false so the send-alerts job retries it.
+	let emailDelivered = true;
+
 	const [alert] = await db()
 		.insert(priceAlerts)
 		.values({
@@ -361,7 +365,16 @@ async function raiseAlert(input: {
 			availableRetailerUrl: typeof metadata.retailer_url === 'string' ? metadata.retailer_url : null,
 		});
 
-		await sendMail({ to: user.email, ...mail });
+		const result = await sendMail({ to: user.email, ...mail });
+
+		// sendMail reports failure in its result rather than throwing.
+		if (!result.sent) {
+			emailDelivered = false;
+			logger().warn(
+				{ productId: product.id, error: result.error },
+				'alert email failed; left for send-alerts to retry',
+			);
+		}
 	}
 
 	if (methods.includes('push')) {
@@ -390,7 +403,7 @@ async function raiseAlert(input: {
 
 	await createInAppNotification({ product, alertType, oldPrice, newPrice, now });
 
-	if (alert) {
+	if (alert && emailDelivered) {
 		await db()
 			.update(priceAlerts)
 			.set({ notificationSent: true, updatedAt: now })

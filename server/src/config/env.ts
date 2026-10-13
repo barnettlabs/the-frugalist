@@ -38,7 +38,7 @@ const envSchema = z.object({
 	// Comma-separated. The Vue SPA and, in development, the Expo dev client.
 	CORS_ORIGINS: z
 		.string()
-		.default('http://localhost:5173')
+		.default('http://thefrugalist.local:55173')
 		.transform((v) =>
 			v
 				.split(',')

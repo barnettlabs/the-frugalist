@@ -154,9 +154,8 @@
 </template>
 
 <script setup>
+import { FinanceCalculator } from '@frugalist/contracts';
 import { computed, ref } from 'vue';
-
-import { FinanceCalculator } from '../../utils/financeCalculator.js';
 
 const props = defineProps({
 	data: {
@@ -167,9 +166,18 @@ const props = defineProps({
 
 const chartType = ref('pie');
 
+// Principal here is the scheduled portion only: the schedule's total_principal
+// already includes the extras, which have their own slice.
 const paymentBreakdown = computed(() => {
-	const calculator = new FinanceCalculator(props.data);
-	return calculator.getPaymentBreakdown();
+	const amortization = new FinanceCalculator(props.data).amortization(true);
+	if (!amortization || amortization.schedule.length === 0) return null;
+
+	const extraPayments = amortization.schedule.reduce((sum, row) => sum + row.extra_payment, 0);
+	return {
+		principal: amortization.total_principal - extraPayments,
+		interest: amortization.total_interest,
+		extraPayments,
+	};
 });
 
 const totalAmount = computed(() => {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { MortgageCalculator } from '@frugalist/contracts';
 import { ArrowUpRightIcon, ChevronDownIcon, HomeModernIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
@@ -8,7 +9,6 @@ import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
 import { formatCurrency } from '@/utils/formatters';
-import { MortgageCalculator } from '@/utils/mortgageCalculator';
 
 interface MortgageSheet {
 	id: number;
@@ -69,12 +69,12 @@ const confirmDelete = async () => {
 
 const getSheetCalculations = (sheet: MortgageSheet) => {
 	try {
-		const calculator = new MortgageCalculator(sheet as any);
-		const summary = calculator.getSummary();
+		const calculator = new MortgageCalculator({ ...sheet });
+		const summary = calculator.summary();
 		return {
-			monthlyPI: summary.monthlyPrincipalInterest,
-			monthlyTotal: summary.monthlyPaymentTotal,
-			totalInterest: summary.totalInterest,
+			monthlyPI: summary.monthly_principal_interest,
+			monthlyTotal: summary.monthly_payment_total,
+			totalInterest: summary.total_interest,
 			principal: summary.principal,
 		};
 	} catch {

@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { MortgageCalculator } from '@frugalist/contracts';
 import { computed, ref } from 'vue';
 
 import { formatCurrency } from '@/utils/formatters';
-import { MortgageCalculator } from '@/utils/mortgageCalculator';
 
 const props = defineProps({
 	data: {
@@ -13,14 +13,19 @@ const props = defineProps({
 
 const chartType = ref<'pi' | 'balance' | 'pie'>('pi');
 
-const annual = computed(() => {
-	const calc = new MortgageCalculator(props.data as any);
-	return (calc.calculateAnnualAmortization(true) as any[] | null) ?? [];
-});
+const annual = computed(() => new MortgageCalculator(props.data).annualAmortization(true) ?? []);
 
+// Principal is the scheduled portion only; the extras have their own slice.
 const breakdown = computed(() => {
-	const calc = new MortgageCalculator(props.data as any);
-	return calc.getPaymentBreakdown();
+	const amortization = new MortgageCalculator(props.data).amortization(true);
+	if (!amortization || amortization.schedule.length === 0) return null;
+
+	return {
+		principal: amortization.total_principal - amortization.total_extra,
+		interest: amortization.total_interest,
+		extraPayments: amortization.total_extra,
+		escrow: amortization.total_escrow,
+	};
 });
 
 const totalAmount = computed(() => {
@@ -54,10 +59,10 @@ const innerHeight = computed(() => chartHeight - padding.top - padding.bottom);
 const maxValue = computed(() => {
 	if (!annual.value.length) return 1;
 	if (chartType.value === 'balance') {
-		return Math.max(...annual.value.map(r => r.remainingBalance), 1);
+		return Math.max(...annual.value.map(r => r.remaining_balance), 1);
 	}
 	if (chartType.value === 'pi') {
-		return Math.max(...annual.value.flatMap(r => [r.principalPayment, r.interestPayment]), 1);
+		return Math.max(...annual.value.flatMap(r => [r.principal_payment, r.interest_payment]), 1);
 	}
 	return 1;
 });
@@ -72,15 +77,15 @@ const yAt = (value: number) => {
 
 const principalPath = computed(() => {
 	if (!annual.value.length) return '';
-	return annual.value.map((r, i) => `${i === 0 ? 'M' : 'L'} ${xAt(i)} ${yAt(r.principalPayment)}`).join(' ');
+	return annual.value.map((r, i) => `${i === 0 ? 'M' : 'L'} ${xAt(i)} ${yAt(r.principal_payment)}`).join(' ');
 });
 const interestPath = computed(() => {
 	if (!annual.value.length) return '';
-	return annual.value.map((r, i) => `${i === 0 ? 'M' : 'L'} ${xAt(i)} ${yAt(r.interestPayment)}`).join(' ');
+	return annual.value.map((r, i) => `${i === 0 ? 'M' : 'L'} ${xAt(i)} ${yAt(r.interest_payment)}`).join(' ');
 });
 const balancePath = computed(() => {
 	if (!annual.value.length) return '';
-	return annual.value.map((r, i) => `${i === 0 ? 'M' : 'L'} ${xAt(i)} ${yAt(r.remainingBalance)}`).join(' ');
+	return annual.value.map((r, i) => `${i === 0 ? 'M' : 'L'} ${xAt(i)} ${yAt(r.remaining_balance)}`).join(' ');
 });
 
 const xTicks = computed(() => {

@@ -1,10 +1,9 @@
 <script setup lang="ts">
+import { FinanceCalculator } from '@frugalist/contracts';
 import type { PropType } from 'vue';
 import { computed, ref } from 'vue';
 
 import type { FinanceFormData } from '@/types/models';
-
-import { FinanceCalculator } from '../../utils/financeCalculator.js';
 
 const props = defineProps({
 	data: {
@@ -17,7 +16,7 @@ const expanded = ref(false);
 
 const summary = computed(() => {
 	const calculator = new FinanceCalculator(props.data);
-	return calculator.getSummary();
+	return calculator.summary();
 });
 
 const hasExtraPayments = computed(() => {
@@ -25,18 +24,18 @@ const hasExtraPayments = computed(() => {
 });
 
 const interestRatio = computed(() => {
-	if (!summary.value || summary.value.paymentsTotal === 0) return 0;
-	return ((summary.value.interestAmount / summary.value.paymentsTotal) * 100).toFixed(1);
+	if (!summary.value || summary.value.payments_total === 0) return 0;
+	return ((summary.value.interest_amount / summary.value.payments_total) * 100).toFixed(1);
 });
 
 const principalRatio = computed(() => {
-	if (!summary.value || summary.value.paymentsTotal === 0) return 0;
-	return ((summary.value.loanAmount / summary.value.paymentsTotal) * 100).toFixed(1);
+	if (!summary.value || summary.value.payments_total === 0) return 0;
+	return ((summary.value.loan_amount / summary.value.payments_total) * 100).toFixed(1);
 });
 
 const totalCost = computed(() => {
 	if (!summary.value) return 0;
-	return summary.value.paymentsTotal + parseOrZero(props.data.down_payment);
+	return summary.value.payments_total + parseOrZero(props.data.down_payment);
 });
 
 const costVsMsrpRatio = computed(() => {
@@ -47,7 +46,7 @@ const costVsMsrpRatio = computed(() => {
 
 const timeSaved = computed(() => {
 	if (!hasExtraPayments.value || !summary.value || !summary.value.amortization) return 0;
-	return summary.value.amortization.monthsSaved || 0;
+	return summary.value.amortization.months_saved || 0;
 });
 
 const interestSaved = computed(() => {
@@ -58,21 +57,21 @@ const interestSaved = computed(() => {
 	const calculatorWithoutExtra = new FinanceCalculator(dataWithoutExtra);
 	const calculatorWithExtra = new FinanceCalculator(props.data);
 
-	const amortizationWithoutExtra = calculatorWithoutExtra.calculateAmortization(false);
-	const amortizationWithExtra = calculatorWithExtra.calculateAmortization(true);
+	const amortizationWithoutExtra = calculatorWithoutExtra.amortization(false);
+	const amortizationWithExtra = calculatorWithExtra.amortization(true);
 
 	if (!amortizationWithoutExtra || !amortizationWithExtra) {
 		return 0;
 	}
 
-	const diff = amortizationWithoutExtra.totalInterest - amortizationWithExtra.totalInterest;
+	const diff = amortizationWithoutExtra.total_interest - amortizationWithExtra.total_interest;
 
 	return Math.max(0, diff);
 });
 
 const totalExtraPayments = computed(() => {
-	if (!hasExtraPayments.value || !summary.value.paymentBreakdown) return 0;
-	return summary.value.paymentBreakdown.extraPayments || 0;
+	if (!hasExtraPayments.value || !summary.value.amortization) return 0;
+	return summary.value.amortization.schedule.reduce((sum, row) => sum + row.extra_payment, 0);
 });
 
 import { formatCurrency, parseOrZero } from '@/utils/formatters.js';
@@ -90,7 +89,7 @@ import { formatCurrency, parseOrZero } from '@/utils/formatters.js';
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border rounded-md overflow-hidden">
 				<div class="bg-surface p-4">
 					<p class="eyebrow text-[0.625rem]! mb-1.5">Monthly</p>
-					<p class="figure text-2xl text-primary leading-none">${{ formatCurrency(summary.monthlyPayment) }}</p>
+					<p class="figure text-2xl text-primary leading-none">${{ formatCurrency(summary.monthly_payment) }}</p>
 				</div>
 				<div class="bg-surface p-4">
 					<p class="eyebrow text-[0.625rem]! mb-1.5">Due at signing</p>
@@ -98,12 +97,12 @@ import { formatCurrency, parseOrZero } from '@/utils/formatters.js';
 				</div>
 				<div class="bg-surface p-4">
 					<p class="eyebrow text-[0.625rem]! mb-1.5">Total interest</p>
-					<p class="figure text-2xl text-warning leading-none">${{ formatCurrency(summary.interestAmount) }}</p>
+					<p class="figure text-2xl text-warning leading-none">${{ formatCurrency(summary.interest_amount) }}</p>
 				</div>
 				<div class="bg-surface p-4">
 					<p class="eyebrow text-[0.625rem]! mb-1.5">Total paid</p>
 					<p class="figure text-2xl text-primary leading-none">
-						${{ formatCurrency(summary.paymentsTotal + parseOrZero(data.down_payment)) }}
+						${{ formatCurrency(summary.payments_total + parseOrZero(data.down_payment)) }}
 					</p>
 				</div>
 			</div>
@@ -128,7 +127,7 @@ import { formatCurrency, parseOrZero } from '@/utils/formatters.js';
 						</div>
 						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Purchase price</dt>
-							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.purchasePrice) }}</dd>
+							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.purchase_price) }}</dd>
 						</div>
 					</dl>
 				</div>
@@ -139,7 +138,7 @@ import { formatCurrency, parseOrZero } from '@/utils/formatters.js';
 					<dl class="divide-y divide-border border-y border-border">
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Purchase price</dt>
-							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.purchasePrice) }}</dd>
+							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.purchase_price) }}</dd>
 						</div>
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Fees</dt>
@@ -147,7 +146,7 @@ import { formatCurrency, parseOrZero } from '@/utils/formatters.js';
 						</div>
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Sales tax</dt>
-							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.salesTaxAmount) }}</dd>
+							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.sales_tax_amount) }}</dd>
 						</div>
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Down payment</dt>
@@ -155,7 +154,7 @@ import { formatCurrency, parseOrZero } from '@/utils/formatters.js';
 						</div>
 						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Amount financed</dt>
-							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.loanAmount) }}</dd>
+							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.loan_amount) }}</dd>
 						</div>
 					</dl>
 				</div>
@@ -166,7 +165,7 @@ import { formatCurrency, parseOrZero } from '@/utils/formatters.js';
 					<dl class="divide-y divide-border border-y border-border">
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Monthly</dt>
-							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.monthlyPayment) }}</dd>
+							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.monthly_payment) }}</dd>
 						</div>
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Number of payments</dt>
@@ -174,11 +173,11 @@ import { formatCurrency, parseOrZero } from '@/utils/formatters.js';
 						</div>
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Total of payments</dt>
-							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.paymentsTotal) }}</dd>
+							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.payments_total) }}</dd>
 						</div>
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Total interest</dt>
-							<dd class="text-sm numeral text-warning">${{ formatCurrency(summary.interestAmount) }}</dd>
+							<dd class="text-sm numeral text-warning">${{ formatCurrency(summary.interest_amount) }}</dd>
 						</div>
 					</dl>
 				</div>

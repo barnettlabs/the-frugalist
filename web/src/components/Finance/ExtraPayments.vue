@@ -1,12 +1,11 @@
 <script setup lang="ts">
+import { FinanceCalculator } from '@frugalist/contracts';
 import type { PropType } from 'vue';
 import { computed, ref, watch } from 'vue';
 
 import TextInput from '@/components/TextInput.vue';
 import type { FinanceFormData } from '@/types/models';
 import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.js';
-
-import { FinanceCalculator } from '../../utils/financeCalculator.js';
 
 const props = defineProps({
 	modelValue: {
@@ -88,14 +87,14 @@ const getInterestSavings = () => {
 	const calculatorWithoutExtra = new FinanceCalculator(dataWithoutExtra);
 	const calculatorWithExtra = new FinanceCalculator(dataWithExtra);
 
-	const amortizationWithoutExtra = calculatorWithoutExtra.calculateAmortization(false);
-	const amortizationWithExtra = calculatorWithExtra.calculateAmortization(true);
+	const amortizationWithoutExtra = calculatorWithoutExtra.amortization(false);
+	const amortizationWithExtra = calculatorWithExtra.amortization(true);
 
 	if (!amortizationWithoutExtra || !amortizationWithExtra) {
 		return 0;
 	}
 
-	const diff = amortizationWithoutExtra.totalInterest - amortizationWithExtra.totalInterest;
+	const diff = amortizationWithoutExtra.total_interest - amortizationWithExtra.total_interest;
 
 	return Math.max(0, diff);
 };
@@ -107,14 +106,14 @@ const getTimeSavings = () => {
 	const calculatorWithoutExtra = new FinanceCalculator(dataWithoutExtra);
 	const calculatorWithExtra = new FinanceCalculator(dataWithExtra);
 
-	const amortizationWithoutExtra = calculatorWithoutExtra.calculateAmortization(false);
-	const amortizationWithExtra = calculatorWithExtra.calculateAmortization(true);
+	const amortizationWithoutExtra = calculatorWithoutExtra.amortization(false);
+	const amortizationWithExtra = calculatorWithExtra.amortization(true);
 
 	if (!amortizationWithoutExtra || !amortizationWithExtra) {
 		return 0;
 	}
 
-	return Math.max(0, amortizationWithoutExtra.monthsPaid - amortizationWithExtra.monthsPaid);
+	return Math.max(0, amortizationWithoutExtra.months_paid - amortizationWithExtra.months_paid);
 };
 </script>
 

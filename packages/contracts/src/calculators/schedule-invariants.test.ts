@@ -88,4 +88,14 @@ describe('finance schedule', () => {
 		expect(s.amortization!.total_interest).toBe(0);
 		expect(rows[0]!.payment).toBeCloseTo(27000 / 60, 8);
 	});
+
+	it.each([['blank', ''], ['zero', 0]])('treats a %s end month as a one-month payment', (_label, endMonth) => {
+		const s = computeFinance({
+			...loan,
+			extra_payments_json: JSON.stringify([{ startMonth: 6, endMonth, paymentAmount: 1000 }]),
+		});
+		const extras = s.amortization!.schedule.filter((r) => r.extra_payment > 0);
+
+		expect(extras.map((r) => [r.month, r.extra_payment])).toEqual([[6, 1000]]);
+	});
 });

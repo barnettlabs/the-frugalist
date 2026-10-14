@@ -191,6 +191,10 @@ export class FinanceCalculator {
 	 * Note the asymmetry with the mortgage calculator: here a missing `endMonth`
 	 * falls back to `startMonth` (a one-month payment), whereas mortgage falls
 	 * back to the full term. That difference exists in the PHP and is preserved.
+	 *
+	 * A blank end month counts as missing. The web form sends "" when the field
+	 * is cleared and shows that as a one-month payment, but PHP's `??` only
+	 * caught null, so "" became month 0 and the payment silently never applied.
 	 */
 	private parseExtraPayments(): ParsedExtraPayment[] {
 		const raw = this.data['extra_payments_json'];
@@ -198,10 +202,10 @@ export class FinanceCalculator {
 
 		return parsed.map((p) => {
 			const startMonth = Math.trunc(num(p?.['startMonth'] ?? 1));
-			const endSource = p?.['endMonth'] ?? p?.['startMonth'] ?? 1;
+			const endMonth = Math.trunc(num(p?.['endMonth'] ?? null));
 			return {
 				startMonth,
-				endMonth: Math.trunc(num(endSource)),
+				endMonth: endMonth > 0 ? endMonth : Math.trunc(num(p?.['startMonth'] ?? 1)),
 				paymentAmount: num(p?.['paymentAmount'] ?? 0),
 			};
 		});

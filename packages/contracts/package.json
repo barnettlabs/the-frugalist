@@ -10,6 +10,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./calculators": {
+      "types": "./dist/calculators/index.d.ts",
+      "import": "./dist/calculators/index.js"
+    },
     "./money": {
       "types": "./dist/money.d.ts",
       "import": "./dist/money.js"

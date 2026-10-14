@@ -177,6 +177,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-workspace
 
+      # The calculators come from @frugalist/contracts, linked in and used as its
+      # compiled dist/. This is the same script EAS runs after its install, so a
+      # broken EAS build shows up here first.
+      - name: Build contracts
+        run: pnpm run eas-build-post-install
+
       - name: Lint
         run: pnpm run lint
 

@@ -41,5 +41,13 @@ module.exports = {
 	coverageDirectory: '<rootDir>/coverage/',
 	moduleNameMapper: {
 		'^@/(.*)$': '<rootDir>/src/$1',
+		// Jest's CommonJS resolver does not match contracts' "import"-only exports,
+		// so the entry point is mapped to the compiled file Metro bundles. It is
+		// outside node_modules, so babel-jest transforms it like app code.
+		'^@frugalist/contracts/calculators$': '<rootDir>/node_modules/@frugalist/contracts/dist/calculators/index.js',
 	},
+	// Jest resolves that file from its real path in packages/contracts, where the
+	// Babel helpers it is transformed with are not installed. Fall back to the
+	// app's modules, as metro.config.js does.
+	modulePaths: ['<rootDir>/node_modules'],
 };

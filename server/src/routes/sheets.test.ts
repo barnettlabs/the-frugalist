@@ -152,6 +152,16 @@ describe('create and read', () => {
 		expect(Number(body.msrp)).toBe(52000);
 	});
 
+	it('accepts PATCH as well as PUT, as the web client sends PATCH', async () => {
+		const res = await authed(`/api/vehicle-finance-sheets/${createdId}`, {
+			method: 'PATCH',
+			body: JSON.stringify({ sheet_name: 'Patched' }),
+		});
+
+		expect(res.status).toBe(200);
+		expect(((await res.json()) as Record<string, unknown>).sheet_name).toBe('Patched');
+	});
+
 	it('deletes its own sheet', async () => {
 		const res = await authed(`/api/vehicle-finance-sheets/${createdId}`, { method: 'DELETE' });
 

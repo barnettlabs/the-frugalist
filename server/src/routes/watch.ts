@@ -18,7 +18,7 @@ import { findOwned, parseId } from '../http/ownership.js';
 import { laravelRules as r } from '../http/rules.js';
 import { validate, validated } from '../http/validate.js';
 import { createRetailerClient } from '../services/retailers/factory.js';
-import type { RetailerProduct } from '../services/retailers/types.js';
+import { hasUsablePrice, type RetailerProduct } from '../services/retailers/types.js';
 
 /**
  * Price tracking ("watch").
@@ -306,7 +306,7 @@ watchRoutes.post('/', validate('json', storeSchema), async (c) => {
 			isActive: true,
 			createdAt: now,
 			updatedAt: now,
-		} as typeof trackedProducts.$inferInsert)
+		})
 		.returning();
 
 	await insertHistory(Number(created!.id), product, now);
@@ -417,7 +417,10 @@ watchRoutes.post('/:id/refresh', async (c) => {
 	}
 
 	const oldPrice = readMoney(row.currentPrice);
-	const newPrice = product.current_price;
+	// An unknown price leaves the stored one alone, so it can never read as a
+	// drop - see hasUsablePrice.
+	const priceKnown = hasUsablePrice(product);
+	const newPrice = priceKnown ? product.current_price : oldPrice;
 	const oldInStock = row.inStock ?? true;
 	const newInStock = product.in_stock;
 
@@ -428,13 +431,13 @@ watchRoutes.post('/:id/refresh', async (c) => {
 			inStock: newInStock,
 			productMetadata: product.metadata,
 			lastCheckedAt: now,
-			lastScraperError: null,
-			lastErrorAt: null,
+			lastScraperError: priceKnown ? null : 'Retailer returned no price',
+			lastErrorAt: priceKnown ? null : now,
 			updatedAt: now,
 		})
 		.where(eq(trackedProducts.id, row.id));
 
-	await insertHistory(row.id, product, now);
+	if (priceKnown) await insertHistory(row.id, product, now);
 
 	const watchesPrice = row.watchType === 'price' || row.watchType === 'both';
 	const watchesStock = row.watchType === 'stock' || row.watchType === 'both';

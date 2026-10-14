@@ -17,6 +17,7 @@ import { priceDropEmail } from '../services/notifications/price-drop-email.js';
 import { sendMail } from '../services/notifications/mail.js';
 import { sendPriceDropPush } from '../services/notifications/push.js';
 import { createRetailerClient, UnsupportedRetailerError } from '../services/retailers/factory.js';
+import { hasUsablePrice } from '../services/retailers/types.js';
 import type { PriceCheckJob } from './queues.js';
 
 /**
@@ -88,6 +89,9 @@ export async function checkPrices(job: PriceCheckJob): Promise<PriceCheckSummary
 				{ productId: row.product.id, productName: row.product.productName, err },
 				'error checking product price',
 			);
+			await recordFailure(row.product.id, err instanceof Error ? err.message : String(err)).catch(
+				(recordErr: unknown) => log.error({ err: recordErr }, 'could not record check failure'),
+			);
 		}
 
 		await sleep(RATE_LIMIT_DELAY_MS);
@@ -150,13 +154,33 @@ async function selectProducts(job: PriceCheckJob) {
 		.innerJoin(retailers, eq(trackedProducts.retailerId, retailers.id))
 		.innerJoin(users, eq(trackedProducts.userId, users.id))
 		.where(and(...conditions))
-		.orderBy(asc(trackedProducts.id))
+		// Least recently checked first, so a batch-sized run of products that keep
+		// failing cannot hold the front of the queue and starve the rest.
+		.orderBy(sql`${trackedProducts.lastCheckedAt} asc nulls first`, asc(trackedProducts.id))
 		.limit(job.limit);
 
 	return rows;
 }
 
 type CheckOutcome = { checked: boolean; alertsCreated: number };
+
+/**
+ * Marks a product as checked even though the check failed.
+ *
+ * Without this, a product that cannot be checked - a discontinued SKU, a
+ * retailer with no client - kept a stale last_checked_at and was selected again
+ * on every run. Enough of them filled every batch and nothing else got checked.
+ * It waits its normal interval before the next attempt, and the error is kept
+ * on the row for the admin UI.
+ */
+async function recordFailure(productId: number, message: string): Promise<void> {
+	const now = new Date();
+
+	await db()
+		.update(trackedProducts)
+		.set({ lastCheckedAt: now, lastScraperError: message, lastErrorAt: now, updatedAt: now })
+		.where(eq(trackedProducts.id, productId));
+}
 
 async function checkOne(
 	product: ProductRow,
@@ -179,6 +203,7 @@ async function checkOne(
 			// A retailer row exists with no client implementation. Not an error
 			// worth failing the run over - the admin UI can add either side.
 			log.warn({ retailer: retailer.slug }, 'no client for retailer; skipping');
+			await recordFailure(product.id, `No client for retailer ${retailer.slug}`);
 			return { checked: false, alertsCreated: 0 };
 		}
 		throw err;
@@ -188,16 +213,24 @@ async function checkOne(
 
 	if (!data) {
 		log.warn({ skuUpc: product.skuUpc }, 'product not found at retailer');
+		await recordFailure(product.id, 'Product not found at retailer');
 		return { checked: false, alertsCreated: 0 };
 	}
 
 	const oldPrice = readMoney(product.currentPrice);
-	const newPrice = data.current_price;
+	// An unknown price leaves the stored one alone, so it can never read as a
+	// drop - see hasUsablePrice.
+	const priceKnown = hasUsablePrice(data);
+	const newPrice = priceKnown ? data.current_price : oldPrice;
 	const oldInStock = product.inStock ?? true;
 	const newInStock = data.in_stock;
 	const now = new Date();
 
 	let alertsCreated = 0;
+
+	if (!priceKnown) {
+		log.warn({ skuUpc: product.skuUpc }, 'retailer returned no usable price');
+	}
 
 	await db()
 		.update(trackedProducts)
@@ -205,21 +238,24 @@ async function checkOne(
 			currentPrice: writeMoney(newPrice),
 			inStock: newInStock,
 			lastCheckedAt: now,
+			...(priceKnown ? {} : { lastScraperError: 'Retailer returned no price', lastErrorAt: now }),
 			updatedAt: now,
 		})
 		.where(eq(trackedProducts.id, product.id));
 
-	await db()
-		.insert(priceHistory)
-		.values({
-			trackedProductId: product.id,
-			price: writeMoney(newPrice),
-			inStock: newInStock,
-			apiResponse: { ...data, checked_via_command: true, command_run_at: now.toISOString() },
-			checkedAt: now,
-			createdAt: now,
-			updatedAt: now,
-		} as typeof priceHistory.$inferInsert);
+	if (priceKnown) {
+		await db()
+			.insert(priceHistory)
+			.values({
+				trackedProductId: product.id,
+				price: writeMoney(newPrice),
+				inStock: newInStock,
+				apiResponse: { ...data, checked_via_command: true, command_run_at: now.toISOString() },
+				checkedAt: now,
+				createdAt: now,
+				updatedAt: now,
+			} as typeof priceHistory.$inferInsert);
+	}
 
 	const methods = notificationMethods(product.notificationMethod);
 	const watchesPrice = shouldCheckForPriceDrop(product.watchType);
@@ -282,6 +318,10 @@ async function raiseAlert(input: {
 }): Promise<void> {
 	const { product, retailer, user, methods, alertType, oldPrice, newPrice, now } = input;
 
+	// Stays true unless an email that should have gone out did not. A failed
+	// email leaves notification_sent false so the send-alerts job retries it.
+	let emailDelivered = true;
+
 	const [alert] = await db()
 		.insert(priceAlerts)
 		.values({
@@ -325,7 +365,16 @@ async function raiseAlert(input: {
 			availableRetailerUrl: typeof metadata.retailer_url === 'string' ? metadata.retailer_url : null,
 		});
 
-		await sendMail({ to: user.email, ...mail });
+		const result = await sendMail({ to: user.email, ...mail });
+
+		// sendMail reports failure in its result rather than throwing.
+		if (!result.sent) {
+			emailDelivered = false;
+			logger().warn(
+				{ productId: product.id, error: result.error },
+				'alert email failed; left for send-alerts to retry',
+			);
+		}
 	}
 
 	if (methods.includes('push')) {
@@ -354,7 +403,7 @@ async function raiseAlert(input: {
 
 	await createInAppNotification({ product, alertType, oldPrice, newPrice, now });
 
-	if (alert) {
+	if (alert && emailDelivered) {
 		await db()
 			.update(priceAlerts)
 			.set({ notificationSent: true, updatedAt: now })

@@ -9,6 +9,7 @@ import {
 	priceHistory,
 	retailers,
 	trackedProducts,
+	users,
 } from '../db/schema.js';
 import { createLegacyUser } from '../test/factories.js';
 import type { RetailerProduct } from '../services/retailers/types.js';
@@ -42,6 +43,21 @@ vi.mock('../services/retailers/factory.js', async () => {
 			},
 			getLastRawResponse: () => null,
 		}),
+	};
+});
+
+// Real delivery by default (the log transport in tests); a test can make it fail.
+const sendMailOverride = vi.fn<() => Promise<unknown> | undefined>(() => undefined);
+
+vi.mock('../services/notifications/mail.js', async () => {
+	const actual = await vi.importActual<typeof import('../services/notifications/mail.js')>(
+		'../services/notifications/mail.js',
+	);
+
+	return {
+		...actual,
+		sendMail: (...args: Parameters<typeof actual.sendMail>) =>
+			sendMailOverride() ?? actual.sendMail(...args),
 	};
 });
 
@@ -232,6 +248,39 @@ describe('price recording', () => {
 		expect(summary.checked).toBe(0);
 		expect(summary.errors).toBe(1);
 	});
+
+	it('records a failed check so the product waits its interval', async () => {
+		stubProduct.mockResolvedValue(null);
+		const row = await track({ lastCheckedAt: null });
+
+		await run();
+
+		const [updated] = await db()
+			.select()
+			.from(trackedProducts)
+			.where(eq(trackedProducts.id, row.id));
+
+		expect(updated!.lastCheckedAt).not.toBeNull();
+		expect(updated!.lastErrorAt).not.toBeNull();
+		expect(updated!.lastScraperError).toBe('Product not found at retailer');
+		expect((await run()).found).toBe(0);
+	});
+
+	it('does not let failing products starve the rest of the queue', async () => {
+		const failing = await track({ skuUpc: 'GONE', lastCheckedAt: null });
+		const healthy = await track({ skuUpc: 'FINE', lastCheckedAt: null });
+		stubProduct.mockImplementation(async (sku) => (sku === 'GONE' ? null : product()));
+
+		// A batch of one: the failing product goes first, by id.
+		await run({ limit: 1 });
+		expect(stubProduct).toHaveBeenLastCalledWith('GONE');
+
+		// It used to be picked again here, forever. Now the healthy one gets a turn.
+		const second = await run({ limit: 1 });
+		expect(stubProduct).toHaveBeenLastCalledWith('FINE');
+		expect(second.checked).toBe(1);
+		expect(failing.id).toBeLessThan(healthy.id);
+	});
 });
 
 describe('alerting', () => {
@@ -251,6 +300,40 @@ describe('alerting', () => {
 		expect(alerts).toHaveLength(1);
 		expect(alerts[0]!.alertType).toBe('price_drop');
 		expect(alerts[0]!.notificationSent).toBe(true);
+	});
+
+	it('leaves the alert unsent when its email fails, so send-alerts retries it', async () => {
+		await db().update(users).set({ emailVerifiedAt: new Date() }).where(eq(users.id, userId));
+		sendMailOverride.mockReturnValueOnce(
+			Promise.resolve({ sent: false, transport: 'resend', error: 'HTTP 500' }),
+		);
+		stubProduct.mockResolvedValue(product({ current_price: 150 }));
+		const row = await track({ notificationMethod: ['email'] });
+
+		await run({ force: true });
+
+		const alerts = await db()
+			.select()
+			.from(priceAlerts)
+			.where(eq(priceAlerts.trackedProductId, row.id));
+
+		expect(alerts).toHaveLength(1);
+		expect(alerts[0]!.notificationSent).toBe(false);
+	});
+
+	it('marks the alert sent when its email goes out', async () => {
+		await db().update(users).set({ emailVerifiedAt: new Date() }).where(eq(users.id, userId));
+		stubProduct.mockResolvedValue(product({ current_price: 150 }));
+		const row = await track({ notificationMethod: ['email'] });
+
+		await run({ force: true });
+
+		const [alert] = await db()
+			.select()
+			.from(priceAlerts)
+			.where(eq(priceAlerts.trackedProductId, row.id));
+
+		expect(alert!.notificationSent).toBe(true);
 	});
 
 	it('raises target_reached and deactivates tracking when the target is hit', async () => {
@@ -273,6 +356,33 @@ describe('alerting', () => {
 
 		// Auto-deactivate on target, so the user is not alerted repeatedly.
 		expect(updated!.isActive).toBe(false);
+	});
+
+	it('treats a missing price as unknown, not as a drop to $0', async () => {
+		// Best Buy maps a missing salePrice to 0, which used to read as "target
+		// reached at $0.00" and switch tracking off.
+		stubProduct.mockResolvedValue(product({ current_price: 0, in_stock: false }));
+		const row = await track({ currentPrice: writeMoney(180), targetPrice: writeMoney(100) });
+
+		const summary = await run({ force: true });
+
+		expect(summary.alertsCreated).toBe(0);
+		expect(
+			await db().select().from(priceAlerts).where(eq(priceAlerts.trackedProductId, row.id)),
+		).toHaveLength(0);
+
+		const [updated] = await db()
+			.select()
+			.from(trackedProducts)
+			.where(eq(trackedProducts.id, row.id));
+
+		expect(Number(updated!.currentPrice)).toBe(180);
+		expect(updated!.isActive).toBe(true);
+		expect(updated!.inStock).toBe(false);
+		expect(updated!.lastScraperError).toBe('Retailer returned no price');
+		expect(
+			await db().select().from(priceHistory).where(eq(priceHistory.trackedProductId, row.id)),
+		).toHaveLength(0);
 	});
 
 	it('raises no alert when the price rises', async () => {

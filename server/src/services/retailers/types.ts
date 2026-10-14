@@ -23,6 +23,18 @@ export const retailerProductSchema = z.object({
 
 export type RetailerProduct = z.infer<typeof retailerProductSchema>;
 
+/**
+ * Whether the retailer actually told us a price.
+ *
+ * Clients map a missing price to 0 (Best Buy's `salePrice ?? 0`, PHP's `(float)`
+ * cast in standardize). Taken at face value, 0 is a price drop to below any
+ * target: the user is told the product hit their target at $0.00 and tracking
+ * switches itself off. Callers treat "no usable price" as "price unknown".
+ */
+export function hasUsablePrice(product: RetailerProduct): boolean {
+	return Number.isFinite(product.current_price) && product.current_price > 0;
+}
+
 export type RetailerConfig = {
 	id: number;
 	name: string;

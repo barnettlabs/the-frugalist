@@ -8,8 +8,9 @@
 # (`Could not locate module react-native/setup-env`).
 #
 # It keeps its own lockfile and is installed from app/ with `pnpm install`.
-# Revisit only if it needs to consume @frugalist/contracts, and then solve the
-# linker question deliberately rather than by adding a line here.
+# It consumes @frugalist/contracts as a `link:` dependency instead, using the
+# compiled dist/ - see app/metro.config.js and app/jest.config.js for what
+# that takes, rather than adding it here.
 packages:
   - 'packages/*'
   - 'server'

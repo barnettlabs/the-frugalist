@@ -56,12 +56,6 @@ export type FinanceFormData = Omit<
 	'id' | 'user_id' | 'shareable_key' | 'created_at' | 'updated_at'
 >;
 
-export type ExtraPayment = {
-	startMonth: number;
-	endMonth: number;
-	paymentAmount: number;
-};
-
 export type VehicleLeaseSheet = {
 	id: number;
 	user_id: number;
@@ -161,74 +155,3 @@ export type PriceTracker = {
 };
 
 export type PriceTrackerFilter = 'all' | 'active' | 'paused' | 'target_reached' | 'price_drops';
-
-// Amortization schedule types
-export type AmortizationPayment = {
-	month: number;
-	payment: number;
-	extraPayment: number;
-	totalPayment: number;
-	principalPayment: number;
-	interestPayment: number;
-	remainingBalance: number;
-};
-
-export type AmortizationResult = {
-	schedule: AmortizationPayment[];
-	totalInterest: number;
-	totalPrincipal: number;
-	monthsPaid: number;
-	monthsSaved: number;
-};
-
-export type PaymentBreakdown = {
-	principal: number;
-	interest: number;
-	extraPayments: number;
-};
-
-export type FinanceSummary = {
-	purchasePrice: number;
-	salesTaxAmount: number;
-	loanAmount: number;
-	monthlyPayment: number;
-	interestAmount: number;
-	paymentsTotal: number;
-	grandTotal: number;
-	amortization: AmortizationResult | null;
-	paymentBreakdown: PaymentBreakdown | null;
-};
-
-// Lease schedule types
-export type LeaseSchedulePayment = {
-	month: number;
-	principalPayment: number;
-	interestPayment: number;
-	taxPayment: number;
-	totalPayment: number;
-	remainingPrincipal: number;
-};
-
-export type LeasePaymentBreakdown = {
-	principal: number;
-	interest: number;
-	tax: number;
-};
-
-export type LeaseSummary = {
-	residualAmount: number;
-	interestRate: number;
-	finalDealerPrice: number;
-	grossCapCost: number;
-	netCapCost: number;
-	principalAmount: number;
-	monthlyPrincipalPayment: number;
-	residualMonthlyInterestPayment: number;
-	totalSalesTax: number;
-	monthlySalesTax: number;
-	leasePayment: number;
-	cashDueAtSigning: number;
-	totalLeaseCost: number;
-	paymentBreakdown: LeasePaymentBreakdown;
-	schedule: LeaseSchedulePayment[];
-};

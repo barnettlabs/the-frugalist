@@ -1,8 +1,9 @@
+import { LeaseCalculator } from '@frugalist/contracts/calculators';
 import { Link } from 'expo-router';
 import React from 'react';
 
 import { Pressable, Text, View } from '@/components/ui';
-import { formatCurrencyWithSymbol, LeaseCalculator } from '@/lib/calculators';
+import { formatCurrencyWithSymbol } from '@/lib/calculators';
 import type { VehicleLeaseSheet } from '@/lib/types/models';
 
 interface LeaseCardProps {
@@ -10,8 +11,8 @@ interface LeaseCardProps {
 }
 
 export function LeaseCard({ sheet }: LeaseCardProps) {
-	const calculator = new LeaseCalculator(sheet);
-	const leasePayment = calculator.calculateLeasePayment();
+	const calculator = new LeaseCalculator({ ...sheet });
+	const leasePayment = calculator.leasePayment();
 
 	return (
 		<Link href={`/compute/lease/${sheet.id}?from=lease`} asChild>

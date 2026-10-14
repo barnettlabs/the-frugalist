@@ -1,3 +1,4 @@
+import { LeaseCalculator } from '@frugalist/contracts/calculators';
 import React, { useMemo, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 
@@ -5,7 +6,7 @@ import { useLeaseSheets } from '@/api/lease/use-lease-sheets';
 import { Checkbox, Pressable, ScreenContainer, ScrollView, TabPageHeader, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
 import { tw } from '@/components/ui/theme';
-import { formatCurrencyWithSymbol, LeaseCalculator } from '@/lib/calculators';
+import { formatCurrencyWithSymbol } from '@/lib/calculators';
 import type { VehicleLeaseSheet } from '@/lib/types/models';
 
 const MAX_COMPARE = 3;
@@ -22,7 +23,7 @@ const rows: Row[] = [
 	},
 	{
 		label: 'Monthly Payment',
-		get: (_, c) => formatCurrencyWithSymbol(c.calculateLeasePayment()),
+		get: (_, c) => formatCurrencyWithSymbol(c.leasePayment()),
 	},
 	{ label: 'Term', get: s => `${s.lease_term} mo` },
 	{ label: 'Money Factor', get: s => String(s.money_factor) },
@@ -34,11 +35,11 @@ const rows: Row[] = [
 	},
 	{
 		label: 'Cash Due at Signing',
-		get: (_, c) => formatCurrencyWithSymbol(c.calculateCashDueAtSigning()),
+		get: (_, c) => formatCurrencyWithSymbol(c.cashDueAtSigning()),
 	},
 	{
 		label: 'Total Lease Cost',
-		get: (_, c) => formatCurrencyWithSymbol(c.calculateTotalLeaseCost()),
+		get: (_, c) => formatCurrencyWithSymbol(c.totalLeaseCost()),
 	},
 ];
 
@@ -113,7 +114,7 @@ export default function LeaseCompareScreen() {
 									</Text>
 								</View>
 								<Text className="text-sm font-semibold text-accent dark:text-accent-light">
-									{formatCurrencyWithSymbol(new LeaseCalculator(sheet).calculateLeasePayment())}
+									{formatCurrencyWithSymbol(new LeaseCalculator({ ...sheet }).leasePayment())}
 									/mo
 								</Text>
 							</Pressable>
@@ -134,8 +135,8 @@ export default function LeaseCompareScreen() {
 }
 
 function ComparisonTable({ sheets }: { sheets: VehicleLeaseSheet[] }) {
-	const calcs = sheets.map(s => new LeaseCalculator(s));
-	const monthlyPayments = calcs.map(c => c.calculateLeasePayment());
+	const calcs = sheets.map(s => new LeaseCalculator({ ...s }));
+	const monthlyPayments = calcs.map(c => c.leasePayment());
 	const bestIdx = monthlyPayments.indexOf(Math.min(...monthlyPayments));
 
 	return (

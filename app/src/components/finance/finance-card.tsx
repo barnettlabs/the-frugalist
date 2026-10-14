@@ -1,8 +1,9 @@
+import { FinanceCalculator } from '@frugalist/contracts/calculators';
 import { Link } from 'expo-router';
 import React from 'react';
 
 import { Pressable, Text, View } from '@/components/ui';
-import { FinanceCalculator, formatCurrencyWithSymbol } from '@/lib/calculators';
+import { formatCurrencyWithSymbol } from '@/lib/calculators';
 import type { VehicleFinanceSheet } from '@/lib/types/models';
 
 interface FinanceCardProps {
@@ -10,8 +11,8 @@ interface FinanceCardProps {
 }
 
 export function FinanceCard({ sheet }: FinanceCardProps) {
-	const calculator = new FinanceCalculator(sheet);
-	const monthlyPayment = calculator.calculateMonthlyPayment();
+	const calculator = new FinanceCalculator({ ...sheet });
+	const monthlyPayment = calculator.monthlyPayment();
 
 	return (
 		<Link href={`/compute/finance/${sheet.id}?from=finance`} asChild>
@@ -77,7 +78,7 @@ export function FinanceCard({ sheet }: FinanceCardProps) {
 				{/* Footer */}
 				<View className="flex-row justify-between border-t border-border-light px-4 py-3 dark:border-border-dark">
 					<Text className="font-mono text-xs text-text-muted-light dark:text-text-muted-dark">
-						{formatCurrencyWithSymbol(calculator.calculateLoanAmount())} financed
+						{formatCurrencyWithSymbol(calculator.loanAmount())} financed
 					</Text>
 					<Text className="text-xs font-medium text-text-primary-light dark:text-text-primary-dark">Open ↗</Text>
 				</View>

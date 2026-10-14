@@ -1,3 +1,4 @@
+import { FinanceCalculator } from '@frugalist/contracts/calculators';
 import React, { useMemo, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 
@@ -5,7 +6,7 @@ import { useFinanceSheets } from '@/api/finance/use-finance-sheets';
 import { Checkbox, Pressable, ScreenContainer, ScrollView, TabPageHeader, Text, View } from '@/components/ui';
 import colors from '@/components/ui/colors';
 import { tw } from '@/components/ui/theme';
-import { FinanceCalculator, formatCurrencyWithSymbol } from '@/lib/calculators';
+import { formatCurrencyWithSymbol } from '@/lib/calculators';
 import type { VehicleFinanceSheet } from '@/lib/types/models';
 
 const MAX_COMPARE = 3;
@@ -22,7 +23,7 @@ const rows: Row[] = [
 	},
 	{
 		label: 'Monthly Payment',
-		get: (_, c) => formatCurrencyWithSymbol(c.calculateMonthlyPayment()),
+		get: (_, c) => formatCurrencyWithSymbol(c.monthlyPayment()),
 	},
 	{ label: 'APR', get: s => `${s.interest_rate}%` },
 	{ label: 'Term', get: s => `${s.finance_term} mo` },
@@ -30,15 +31,15 @@ const rows: Row[] = [
 	{ label: 'Down Payment', get: s => formatCurrencyWithSymbol(s.down_payment) },
 	{
 		label: 'Loan Amount',
-		get: (_, c) => formatCurrencyWithSymbol(c.calculateLoanAmount()),
+		get: (_, c) => formatCurrencyWithSymbol(c.loanAmount()),
 	},
 	{
 		label: 'Total Interest',
-		get: (_, c) => formatCurrencyWithSymbol(c.calculateInterestAmount()),
+		get: (_, c) => formatCurrencyWithSymbol(c.interestAmount()),
 	},
 	{
 		label: 'Grand Total',
-		get: (_, c) => formatCurrencyWithSymbol(c.calculateGrandTotal()),
+		get: (_, c) => formatCurrencyWithSymbol(c.grandTotal()),
 	},
 ];
 
@@ -113,7 +114,7 @@ export default function FinanceCompareScreen() {
 									</Text>
 								</View>
 								<Text className="text-sm font-semibold text-accent dark:text-accent-light">
-									{formatCurrencyWithSymbol(new FinanceCalculator(sheet).calculateMonthlyPayment())}
+									{formatCurrencyWithSymbol(new FinanceCalculator({ ...sheet }).monthlyPayment())}
 									/mo
 								</Text>
 							</Pressable>
@@ -134,8 +135,8 @@ export default function FinanceCompareScreen() {
 }
 
 function ComparisonTable({ sheets }: { sheets: VehicleFinanceSheet[] }) {
-	const calcs = sheets.map(s => new FinanceCalculator(s));
-	const monthlyPayments = calcs.map(c => c.calculateMonthlyPayment());
+	const calcs = sheets.map(s => new FinanceCalculator({ ...s }));
+	const monthlyPayments = calcs.map(c => c.monthlyPayment());
 	const bestIdx = monthlyPayments.indexOf(Math.min(...monthlyPayments));
 
 	return (

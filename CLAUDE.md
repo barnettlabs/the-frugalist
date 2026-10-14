@@ -86,8 +86,14 @@ pnpm check-all                # lint, type-check, format, tests
 ```bash
 pnpm start
 pnpm ios | pnpm android
-pnpm check-all                # lint, type-check, translations, tests
+pnpm check-all                # contracts build, lint, type-check, translations, tests
 ```
+
+The app is not a workspace member, but its calculators are the same
+`@frugalist/contracts` code the API and web run, linked in from
+`packages/contracts` and used as its compiled `dist/`. `start` and `check-all`
+build it first; `eas-build-post-install` does the same on EAS, and CI runs that
+script so a broken EAS build fails a PR first.
 
 ## Architecture
 

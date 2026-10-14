@@ -96,17 +96,26 @@ export class LeaseCalculator {
 		return (this.residualAmount() * this.interestRate()) / 100 / 12;
 	}
 
+	/**
+	 * The depreciation annuity only. The rent charge on the residual is a separate
+	 * line (`residualMonthlyInterestPayment`), and together they equal the full
+	 * pre-tax annuity lease payment, (cap - res*v^n) * r / (1 - v^n).
+	 *
+	 * The Laravel original folded the residual interest in here *and* added it
+	 * again in `leasePayment()` and the tax base, overstating every payment.
+	 * It also returned 0 at a zero money factor, which dropped depreciation
+	 * entirely; with no rent charge the depreciation is simply spread evenly.
+	 */
 	monthlyPrincipalPayment(): number {
 		const pv = this.principalAmount();
 		const n = this.n('lease_term');
 		const apr = this.interestRate();
 
-		if (apr <= 0 || n <= 0) return 0;
+		if (n <= 0) return 0;
+		if (apr <= 0) return pv / n;
 
 		const r = apr / 1200;
-		const paymentPI = (pv * r) / (1 - Math.pow(1 + r, -n));
-
-		return paymentPI + this.residualMonthlyInterestPayment();
+		return (pv * r) / (1 - Math.pow(1 + r, -n));
 	}
 
 	totalSalesTax(): number {
@@ -139,8 +148,13 @@ export class LeaseCalculator {
 		return this.n('down_payment') + this.leasePayment();
 	}
 
+	/**
+	 * The first payment is one of the `lease_term` payments, and it is already
+	 * inside cash due at signing - so the total is the down payment plus every
+	 * payment once, not payments-times-term plus cash due.
+	 */
 	totalLeaseCost(): number {
-		return this.leasePayment() * this.n('lease_term') + this.cashDueAtSigning();
+		return this.n('down_payment') + this.leasePayment() * this.n('lease_term');
 	}
 
 	schedule(): LeaseScheduleRow[] {

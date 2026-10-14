@@ -5177,300 +5177,300 @@
                 "gross_cap_cost": 44794,
                 "net_cap_cost": 40294,
                 "principal_amount": 14194,
-                "monthly_principal_payment": 545.4107156870466,
+                "monthly_principal_payment": 427.9607156870466,
                 "residual_monthly_interest_payment": 117.45,
-                "total_sales_tax": 1985.4090035313575,
-                "monthly_sales_tax": 55.150250098093267,
-                "lease_payment": 718.01096578513989,
-                "cash_due_at_signing": 3718.0109657851399,
-                "total_lease_cost": 29566.405734050175,
+                "total_sales_tax": 1689.4350035313576,
+                "monthly_sales_tax": 46.92875009809327,
+                "lease_payment": 592.3394657851399,
+                "cash_due_at_signing": 3592.33946578514,
+                "total_lease_cost": 24324.220768265033,
                 "schedule": [
                     {
                         "month": 1,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 13648.589284312953
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 13766.039284312954
                     },
                     {
                         "month": 2,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 13103.178568625906
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 13338.078568625908
                     },
                     {
                         "month": 3,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 12557.76785293886
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 12910.117852938862
                     },
                     {
                         "month": 4,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 12012.357137251813
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 12482.157137251816
                     },
                     {
                         "month": 5,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 11466.946421564766
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 12054.19642156477
                     },
                     {
                         "month": 6,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 10921.535705877719
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 11626.235705877723
                     },
                     {
                         "month": 7,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 10376.124990190672
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 11198.274990190677
                     },
                     {
                         "month": 8,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 9830.7142745036253
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 10770.314274503631
                     },
                     {
                         "month": 9,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 9285.3035588165785
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 10342.353558816585
                     },
                     {
                         "month": 10,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 8739.8928431295317
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 9914.392843129539
                     },
                     {
                         "month": 11,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 8194.4821274424849
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 9486.432127442493
                     },
                     {
                         "month": 12,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 7649.071411755438
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 9058.471411755447
                     },
                     {
                         "month": 13,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 7103.6606960683912
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 8630.5106960684
                     },
                     {
                         "month": 14,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 6558.2499803813444
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 8202.549980381355
                     },
                     {
                         "month": 15,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 6012.8392646942975
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 7774.5892646943075
                     },
                     {
                         "month": 16,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 5467.4285490072507
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 7346.6285490072605
                     },
                     {
                         "month": 17,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 4922.0178333202039
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 6918.6678333202135
                     },
                     {
                         "month": 18,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 4376.607117633157
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 6490.7071176331665
                     },
                     {
                         "month": 19,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 3831.1964019461102
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 6062.7464019461195
                     },
                     {
                         "month": 20,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 3285.7856862590634
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 5634.7856862590725
                     },
                     {
                         "month": 21,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 2740.3749705720165
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 5206.824970572025
                     },
                     {
                         "month": 22,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 2194.9642548849697
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 4778.864254884978
                     },
                     {
                         "month": 23,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 1649.5535391979231
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 4350.903539197931
                     },
                     {
                         "month": 24,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 1104.1428235108765
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 3922.942823510885
                     },
                     {
                         "month": 25,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 558.73210782382989
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 3494.9821078238383
                     },
                     {
                         "month": 26,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 13.321392136783288
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 3067.0213921367917
                     },
                     {
                         "month": 27,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 0
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 2639.060676449745
                     },
                     {
                         "month": 28,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 0
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 2211.0999607626986
                     },
                     {
                         "month": 29,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 0
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 1783.139245075652
                     },
                     {
                         "month": 30,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 0
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 1355.1785293886055
                     },
                     {
                         "month": 31,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 0
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 927.217813701559
                     },
                     {
                         "month": 32,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 0
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 499.25709801451234
                     },
                     {
                         "month": 33,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
-                        "remaining_principal": 0
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
+                        "remaining_principal": 71.29638232746572
                     },
                     {
                         "month": 34,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
                         "remaining_principal": 0
                     },
                     {
                         "month": 35,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
                         "remaining_principal": 0
                     },
                     {
                         "month": 36,
-                        "principal_payment": 545.4107156870466,
+                        "principal_payment": 427.9607156870466,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.150250098093267,
-                        "total_payment": 718.01096578513989,
+                        "tax_payment": 46.92875009809327,
+                        "total_payment": 592.3394657851399,
                         "remaining_principal": 0
                     }
                 ]
@@ -5482,13 +5482,13 @@
                 "gross_cap_cost": 44794,
                 "net_cap_cost": 40294,
                 "principal_amount": 14194,
-                "monthly_principal_payment": 545.4107156870466,
+                "monthly_principal_payment": 427.9607156870466,
                 "residual_monthly_interest_payment": 117.45,
-                "total_sales_tax": 1985.4090035313575,
-                "monthly_sales_tax": 55.150250098093267,
-                "lease_payment": 718.01096578513989,
-                "cash_due_at_signing": 3718.0109657851399,
-                "total_lease_cost": 29566.405734050175,
+                "total_sales_tax": 1689.4350035313576,
+                "monthly_sales_tax": 46.92875009809327,
+                "lease_payment": 592.3394657851399,
+                "cash_due_at_signing": 3592.33946578514,
+                "total_lease_cost": 24324.220768265033,
                 "schedule": null
             }
         },
@@ -5501,301 +5501,301 @@
                 "gross_cap_cost": 40300,
                 "net_cap_cost": 40300,
                 "principal_amount": 16300,
-                "monthly_principal_payment": 0,
+                "monthly_principal_payment": 452.77777777777777,
                 "residual_monthly_interest_payment": 0,
-                "total_sales_tax": 0,
-                "monthly_sales_tax": 0,
-                "lease_payment": 0,
-                "cash_due_at_signing": 0,
-                "total_lease_cost": 0,
+                "total_sales_tax": 977.9999999999999,
+                "monthly_sales_tax": 27.166666666666664,
+                "lease_payment": 479.94444444444446,
+                "cash_due_at_signing": 479.94444444444446,
+                "total_lease_cost": 17278,
                 "schedule": [
                     {
                         "month": 1,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 15847.222222222223
                     },
                     {
                         "month": 2,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 15394.444444444445
                     },
                     {
                         "month": 3,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 14941.666666666668
                     },
                     {
                         "month": 4,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 14488.88888888889
                     },
                     {
                         "month": 5,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 14036.111111111113
                     },
                     {
                         "month": 6,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 13583.333333333336
                     },
                     {
                         "month": 7,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 13130.555555555558
                     },
                     {
                         "month": 8,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 12677.777777777781
                     },
                     {
                         "month": 9,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 12225.000000000004
                     },
                     {
                         "month": 10,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 11772.222222222226
                     },
                     {
                         "month": 11,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 11319.444444444449
                     },
                     {
                         "month": 12,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 10866.666666666672
                     },
                     {
                         "month": 13,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 10413.888888888894
                     },
                     {
                         "month": 14,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 9961.111111111117
                     },
                     {
                         "month": 15,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 9508.33333333334
                     },
                     {
                         "month": 16,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 9055.555555555562
                     },
                     {
                         "month": 17,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 8602.777777777785
                     },
                     {
                         "month": 18,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 8150.000000000007
                     },
                     {
                         "month": 19,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 7697.22222222223
                     },
                     {
                         "month": 20,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 7244.4444444444525
                     },
                     {
                         "month": 21,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 6791.666666666675
                     },
                     {
                         "month": 22,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 6338.888888888898
                     },
                     {
                         "month": 23,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 5886.11111111112
                     },
                     {
                         "month": 24,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 5433.333333333343
                     },
                     {
                         "month": 25,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 4980.555555555566
                     },
                     {
                         "month": 26,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 4527.777777777788
                     },
                     {
                         "month": 27,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 4075.0000000000105
                     },
                     {
                         "month": 28,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 3622.2222222222326
                     },
                     {
                         "month": 29,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 3169.444444444455
                     },
                     {
                         "month": 30,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 2716.666666666677
                     },
                     {
                         "month": 31,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 2263.888888888899
                     },
                     {
                         "month": 32,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 1811.1111111111213
                     },
                     {
                         "month": 33,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 1358.3333333333435
                     },
                     {
                         "month": 34,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 905.5555555555657
                     },
                     {
                         "month": 35,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 452.7777777777879
                     },
                     {
                         "month": 36,
-                        "principal_payment": 0,
+                        "principal_payment": 452.77777777777777,
                         "interest_payment": 0,
-                        "tax_payment": 0,
-                        "total_payment": 0,
-                        "remaining_principal": 16300
+                        "tax_payment": 27.166666666666664,
+                        "total_payment": 479.94444444444446,
+                        "remaining_principal": 1.0118128557223827e-11
                     }
                 ]
             },
@@ -5806,13 +5806,13 @@
                 "gross_cap_cost": 40300,
                 "net_cap_cost": 40300,
                 "principal_amount": 16300,
-                "monthly_principal_payment": 0,
+                "monthly_principal_payment": 452.77777777777777,
                 "residual_monthly_interest_payment": 0,
-                "total_sales_tax": 0,
-                "monthly_sales_tax": 0,
-                "lease_payment": 0,
-                "cash_due_at_signing": 0,
-                "total_lease_cost": 0,
+                "total_sales_tax": 977.9999999999999,
+                "monthly_sales_tax": 27.166666666666664,
+                "lease_payment": 479.94444444444446,
+                "cash_due_at_signing": 479.94444444444446,
+                "total_lease_cost": 17278,
                 "schedule": null
             }
         },
@@ -5855,7 +5855,7 @@
             "name": "zero term",
             "with_schedule": {
                 "residual_amount": 24000,
-                "interest_rate": 4.7999999999999998,
+                "interest_rate": 4.8,
                 "final_dealer_price": 40000,
                 "gross_cap_cost": 40000,
                 "net_cap_cost": 40000,
@@ -5866,12 +5866,12 @@
                 "monthly_sales_tax": 0,
                 "lease_payment": 96,
                 "cash_due_at_signing": 96,
-                "total_lease_cost": 96,
+                "total_lease_cost": 0,
                 "schedule": []
             },
             "without_schedule": {
                 "residual_amount": 24000,
-                "interest_rate": 4.7999999999999998,
+                "interest_rate": 4.8,
                 "final_dealer_price": 40000,
                 "gross_cap_cost": 40000,
                 "net_cap_cost": 40000,
@@ -5882,7 +5882,7 @@
                 "monthly_sales_tax": 0,
                 "lease_payment": 96,
                 "cash_due_at_signing": 96,
-                "total_lease_cost": 96,
+                "total_lease_cost": 0,
                 "schedule": null
             }
         },
@@ -5890,347 +5890,347 @@
             "name": "with trade in",
             "with_schedule": {
                 "residual_amount": 28600.000000000004,
-                "interest_rate": 4.4400000000000004,
+                "interest_rate": 4.44,
                 "final_dealer_price": 40500,
                 "gross_cap_cost": 42644,
                 "net_cap_cost": 40644,
                 "principal_amount": 12043.999999999996,
-                "monthly_principal_payment": 438.0275730108051,
+                "monthly_principal_payment": 332.20757301080505,
                 "residual_monthly_interest_payment": 105.82000000000004,
-                "total_sales_tax": 1914.8295661622656,
-                "monthly_sales_tax": 49.098194004160653,
-                "lease_payment": 592.94576701496578,
-                "cash_due_at_signing": 592.94576701496578,
-                "total_lease_cost": 23717.830680598629,
+                "total_sales_tax": 1574.3537161622655,
+                "monthly_sales_tax": 40.36804400416065,
+                "lease_payment": 478.39561701496575,
+                "cash_due_at_signing": 478.39561701496575,
+                "total_lease_cost": 18657.429063583666,
                 "schedule": [
                     {
                         "month": 1,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 11605.972426989192
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 11711.792426989192
                     },
                     {
                         "month": 2,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 11167.944853978388
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 11379.584853978387
                     },
                     {
                         "month": 3,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 10729.917280967584
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 11047.377280967583
                     },
                     {
                         "month": 4,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 10291.88970795678
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 10715.169707956778
                     },
                     {
                         "month": 5,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 9853.8621349459754
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 10382.962134945974
                     },
                     {
                         "month": 6,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 9415.8345619351712
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 10050.75456193517
                     },
                     {
                         "month": 7,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 8977.806988924367
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 9718.546988924365
                     },
                     {
                         "month": 8,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 8539.7794159135628
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 9386.33941591356
                     },
                     {
                         "month": 9,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 8101.7518429027577
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 9054.131842902756
                     },
                     {
                         "month": 10,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 7663.7242698919526
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 8721.924269891952
                     },
                     {
                         "month": 11,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 7225.6966968811475
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 8389.716696881147
                     },
                     {
                         "month": 12,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 6787.6691238703424
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 8057.509123870342
                     },
                     {
                         "month": 13,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 6349.6415508595373
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 7725.301550859536
                     },
                     {
                         "month": 14,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 5911.6139778487322
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 7393.093977848731
                     },
                     {
                         "month": 15,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 5473.5864048379271
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 7060.8864048379255
                     },
                     {
                         "month": 16,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 5035.558831827122
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 6728.67883182712
                     },
                     {
                         "month": 17,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 4597.5312588163169
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 6396.471258816315
                     },
                     {
                         "month": 18,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 4159.5036858055119
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 6064.263685805509
                     },
                     {
                         "month": 19,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 3721.4761127947068
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 5732.056112794704
                     },
                     {
                         "month": 20,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 3283.4485397839017
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 5399.848539783899
                     },
                     {
                         "month": 21,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 2845.4209667730966
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 5067.640966773093
                     },
                     {
                         "month": 22,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 2407.3933937622915
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 4735.433393762288
                     },
                     {
                         "month": 23,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 1969.3658207514864
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 4403.225820751482
                     },
                     {
                         "month": 24,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 1531.3382477406813
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 4071.0182477406775
                     },
                     {
                         "month": 25,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 1093.3106747298762
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 3738.8106747298725
                     },
                     {
                         "month": 26,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 655.28310171907106
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 3406.6031017190676
                     },
                     {
                         "month": 27,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 217.25552870826596
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 3074.3955287082626
                     },
                     {
                         "month": 28,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 0
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 2742.1879556974577
                     },
                     {
                         "month": 29,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 0
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 2409.980382686653
                     },
                     {
                         "month": 30,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 0
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 2077.772809675848
                     },
                     {
                         "month": 31,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 0
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 1745.565236665043
                     },
                     {
                         "month": 32,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 0
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 1413.357663654238
                     },
                     {
                         "month": 33,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 0
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 1081.150090643433
                     },
                     {
                         "month": 34,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 0
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 748.942517632628
                     },
                     {
                         "month": 35,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 0
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 416.73494462182293
                     },
                     {
                         "month": 36,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
-                        "remaining_principal": 0
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
+                        "remaining_principal": 84.52737161101788
                     },
                     {
                         "month": 37,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
                         "remaining_principal": 0
                     },
                     {
                         "month": 38,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
                         "remaining_principal": 0
                     },
                     {
                         "month": 39,
-                        "principal_payment": 438.0275730108051,
+                        "principal_payment": 332.20757301080505,
                         "interest_payment": 105.82000000000004,
-                        "tax_payment": 49.098194004160653,
-                        "total_payment": 592.94576701496578,
+                        "tax_payment": 40.36804400416065,
+                        "total_payment": 478.39561701496575,
                         "remaining_principal": 0
                     }
                 ]
             },
             "without_schedule": {
                 "residual_amount": 28600.000000000004,
-                "interest_rate": 4.4400000000000004,
+                "interest_rate": 4.44,
                 "final_dealer_price": 40500,
                 "gross_cap_cost": 42644,
                 "net_cap_cost": 40644,
                 "principal_amount": 12043.999999999996,
-                "monthly_principal_payment": 438.0275730108051,
+                "monthly_principal_payment": 332.20757301080505,
                 "residual_monthly_interest_payment": 105.82000000000004,
-                "total_sales_tax": 1914.8295661622656,
-                "monthly_sales_tax": 49.098194004160653,
-                "lease_payment": 592.94576701496578,
-                "cash_due_at_signing": 592.94576701496578,
-                "total_lease_cost": 23717.830680598629,
+                "total_sales_tax": 1574.3537161622655,
+                "monthly_sales_tax": 40.36804400416065,
+                "lease_payment": 478.39561701496575,
+                "cash_due_at_signing": 478.39561701496575,
+                "total_lease_cost": 18657.429063583666,
                 "schedule": null
             }
         },
@@ -6243,300 +6243,300 @@
                 "gross_cap_cost": 44494,
                 "net_cap_cost": 44494,
                 "principal_amount": 18394,
-                "monthly_principal_payment": 672.04415276507928,
+                "monthly_principal_payment": 554.5941527650792,
                 "residual_monthly_interest_payment": 117.45,
-                "total_sales_tax": 1989.5252649679999,
-                "monthly_sales_tax": 55.264590693555554,
-                "lease_payment": 844.75874345863485,
-                "cash_due_at_signing": 844.75874345863485,
-                "total_lease_cost": 31256.07350796949,
+                "total_sales_tax": 1693.551264968,
+                "monthly_sales_tax": 47.043090693555556,
+                "lease_payment": 719.0872434586348,
+                "cash_due_at_signing": 719.0872434586348,
+                "total_lease_cost": 25887.140764510852,
                 "schedule": [
                     {
                         "month": 1,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 17721.95584723492
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 17839.40584723492
                     },
                     {
                         "month": 2,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 17049.91169446984
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 17284.81169446984
                     },
                     {
                         "month": 3,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 16377.86754170476
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 16730.217541704762
                     },
                     {
                         "month": 4,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 15705.82338893968
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 16175.623388939683
                     },
                     {
                         "month": 5,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 15033.7792361746
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 15621.029236174603
                     },
                     {
                         "month": 6,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 14361.73508340952
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 15066.435083409524
                     },
                     {
                         "month": 7,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 13689.69093064444
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 14511.840930644445
                     },
                     {
                         "month": 8,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 13017.646777879359
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 13957.246777879365
                     },
                     {
                         "month": 9,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 12345.602625114279
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 13402.652625114286
                     },
                     {
                         "month": 10,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 11673.558472349199
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 12848.058472349207
                     },
                     {
                         "month": 11,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 11001.514319584119
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 12293.464319584127
                     },
                     {
                         "month": 12,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 10329.470166819039
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 11738.870166819048
                     },
                     {
                         "month": 13,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 9657.4260140539591
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 11184.276014053969
                     },
                     {
                         "month": 14,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 8985.381861288879
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 10629.68186128889
                     },
                     {
                         "month": 15,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 8313.3377085237989
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 10075.08770852381
                     },
                     {
                         "month": 16,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 7641.2935557587198
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 9520.49355575873
                     },
                     {
                         "month": 17,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 6969.2494029936406
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 8965.899402993651
                     },
                     {
                         "month": 18,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 6297.2052502285615
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 8411.305250228572
                     },
                     {
                         "month": 19,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 5625.1610974634823
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 7856.7110974634925
                     },
                     {
                         "month": 20,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 4953.1169446984031
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 7302.116944698413
                     },
                     {
                         "month": 21,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 4281.072791933324
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 6747.522791933334
                     },
                     {
                         "month": 22,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 3609.0286391682448
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 6192.928639168254
                     },
                     {
                         "month": 23,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 2936.9844864031656
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 5638.334486403175
                     },
                     {
                         "month": 24,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 2264.9403336380865
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 5083.740333638096
                     },
                     {
                         "month": 25,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 1592.8961808730073
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 4529.146180873016
                     },
                     {
                         "month": 26,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 920.85202810792805
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 3974.552028107937
                     },
                     {
                         "month": 27,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 248.80787534284877
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 3419.9578753428577
                     },
                     {
                         "month": 28,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 0
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 2865.3637225777784
                     },
                     {
                         "month": 29,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 0
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 2310.769569812699
                     },
                     {
                         "month": 30,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 0
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 1756.1754170476197
                     },
                     {
                         "month": 31,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 0
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 1201.5812642825404
                     },
                     {
                         "month": 32,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 0
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 646.9871115174611
                     },
                     {
                         "month": 33,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
-                        "remaining_principal": 0
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
+                        "remaining_principal": 92.3929587523819
                     },
                     {
                         "month": 34,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
                         "remaining_principal": 0
                     },
                     {
                         "month": 35,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
                         "remaining_principal": 0
                     },
                     {
                         "month": 36,
-                        "principal_payment": 672.04415276507928,
+                        "principal_payment": 554.5941527650792,
                         "interest_payment": 117.45,
-                        "tax_payment": 55.264590693555554,
-                        "total_payment": 844.75874345863485,
+                        "tax_payment": 47.043090693555556,
+                        "total_payment": 719.0872434586348,
                         "remaining_principal": 0
                     }
                 ]
@@ -6548,13 +6548,13 @@
                 "gross_cap_cost": 44494,
                 "net_cap_cost": 44494,
                 "principal_amount": 18394,
-                "monthly_principal_payment": 672.04415276507928,
+                "monthly_principal_payment": 554.5941527650792,
                 "residual_monthly_interest_payment": 117.45,
-                "total_sales_tax": 1989.5252649679999,
-                "monthly_sales_tax": 55.264590693555554,
-                "lease_payment": 844.75874345863485,
-                "cash_due_at_signing": 844.75874345863485,
-                "total_lease_cost": 31256.07350796949,
+                "total_sales_tax": 1693.551264968,
+                "monthly_sales_tax": 47.043090693555556,
+                "lease_payment": 719.0872434586348,
+                "cash_due_at_signing": 719.0872434586348,
+                "total_lease_cost": 25887.140764510852,
                 "schedule": null
             }
         },
@@ -6562,227 +6562,227 @@
             "name": "high residual short term",
             "with_schedule": {
                 "residual_amount": 27360,
-                "interest_rate": 2.8799999999999999,
+                "interest_rate": 2.88,
                 "final_dealer_price": 37500,
                 "gross_cap_cost": 38550,
                 "net_cap_cost": 38550,
                 "principal_amount": 11190,
-                "monthly_principal_payment": 546.03002372266951,
-                "residual_monthly_interest_payment": 65.664000000000001,
-                "total_sales_tax": 807.43611131392367,
-                "monthly_sales_tax": 33.643171304746822,
-                "lease_payment": 645.33719502741633,
-                "cash_due_at_signing": 645.33719502741633,
-                "total_lease_cost": 16133.429875685408,
+                "monthly_principal_payment": 480.3660237226695,
+                "residual_monthly_interest_payment": 65.664,
+                "total_sales_tax": 720.7596313139238,
+                "monthly_sales_tax": 30.031651304746827,
+                "lease_payment": 576.0616750274163,
+                "cash_due_at_signing": 576.0616750274163,
+                "total_lease_cost": 13825.480200657992,
                 "schedule": [
                     {
                         "month": 1,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 10643.969976277331
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 10709.633976277331
                     },
                     {
                         "month": 2,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 10097.939952554661
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 10229.267952554663
                     },
                     {
                         "month": 3,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 9551.9099288319921
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 9748.901928831994
                     },
                     {
                         "month": 4,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 9005.8799051093229
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 9268.535905109326
                     },
                     {
                         "month": 5,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 8459.8498813866536
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 8788.169881386657
                     },
                     {
                         "month": 6,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 7913.8198576639843
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 8307.803857663988
                     },
                     {
                         "month": 7,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 7367.789833941315
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 7827.437833941319
                     },
                     {
                         "month": 8,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 6821.7598102186457
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 7347.071810218649
                     },
                     {
                         "month": 9,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 6275.7297864959764
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 6866.70578649598
                     },
                     {
                         "month": 10,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 5729.6997627733072
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 6386.33976277331
                     },
                     {
                         "month": 11,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 5183.6697390506379
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 5905.973739050641
                     },
                     {
                         "month": 12,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 4637.6397153279686
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 5425.607715327971
                     },
                     {
                         "month": 13,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 4091.6096916052993
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 4945.241691605302
                     },
                     {
                         "month": 14,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 3545.57966788263
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 4464.875667882632
                     },
                     {
                         "month": 15,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 2999.5496441599607
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 3984.5096441599626
                     },
                     {
                         "month": 16,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 2453.5196204372915
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 3504.143620437293
                     },
                     {
                         "month": 17,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 1907.4895967146219
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 3023.7775967146235
                     },
                     {
                         "month": 18,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 1361.4595729919524
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 2543.411572991954
                     },
                     {
                         "month": 19,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 815.42954926928292
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 2063.0455492692845
                     },
                     {
                         "month": 20,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 269.3995255466134
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 1582.679525546615
                     },
                     {
                         "month": 21,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 0
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 1102.3135018239454
                     },
                     {
                         "month": 22,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 0
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 621.9474781012759
                     },
                     {
                         "month": 23,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
-                        "remaining_principal": 0
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
+                        "remaining_principal": 141.5814543786064
                     },
                     {
                         "month": 24,
-                        "principal_payment": 546.03002372266951,
-                        "interest_payment": 65.664000000000001,
-                        "tax_payment": 33.643171304746822,
-                        "total_payment": 645.33719502741633,
+                        "principal_payment": 480.3660237226695,
+                        "interest_payment": 65.664,
+                        "tax_payment": 30.031651304746827,
+                        "total_payment": 576.0616750274163,
                         "remaining_principal": 0
                     }
                 ]
             },
             "without_schedule": {
                 "residual_amount": 27360,
-                "interest_rate": 2.8799999999999999,
+                "interest_rate": 2.88,
                 "final_dealer_price": 37500,
                 "gross_cap_cost": 38550,
                 "net_cap_cost": 38550,
                 "principal_amount": 11190,
-                "monthly_principal_payment": 546.03002372266951,
-                "residual_monthly_interest_payment": 65.664000000000001,
-                "total_sales_tax": 807.43611131392367,
-                "monthly_sales_tax": 33.643171304746822,
-                "lease_payment": 645.33719502741633,
-                "cash_due_at_signing": 645.33719502741633,
-                "total_lease_cost": 16133.429875685408,
+                "monthly_principal_payment": 480.3660237226695,
+                "residual_monthly_interest_payment": 65.664,
+                "total_sales_tax": 720.7596313139238,
+                "monthly_sales_tax": 30.031651304746827,
+                "lease_payment": 576.0616750274163,
+                "cash_due_at_signing": 576.0616750274163,
+                "total_lease_cost": 13825.480200657992,
                 "schedule": null
             }
         },
@@ -6790,323 +6790,323 @@
             "name": "no sales tax",
             "with_schedule": {
                 "residual_amount": 24000,
-                "interest_rate": 4.7999999999999998,
+                "interest_rate": 4.8,
                 "final_dealer_price": 39000,
                 "gross_cap_cost": 40300,
                 "net_cap_cost": 40300,
                 "principal_amount": 16300,
-                "monthly_principal_payment": 583.06330154381885,
+                "monthly_principal_payment": 487.0633015438188,
                 "residual_monthly_interest_payment": 96,
                 "total_sales_tax": 0,
                 "monthly_sales_tax": 0,
-                "lease_payment": 679.06330154381885,
-                "cash_due_at_signing": 679.06330154381885,
-                "total_lease_cost": 25125.342157121297,
+                "lease_payment": 583.0633015438189,
+                "cash_due_at_signing": 583.0633015438189,
+                "total_lease_cost": 20990.27885557748,
                 "schedule": [
                     {
                         "month": 1,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 15716.936698456182
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 15812.936698456182
                     },
                     {
                         "month": 2,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 15133.873396912364
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 15325.873396912364
                     },
                     {
                         "month": 3,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 14550.810095368546
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 14838.810095368546
                     },
                     {
                         "month": 4,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 13967.746793824728
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 14351.746793824728
                     },
                     {
                         "month": 5,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 13384.68349228091
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 13864.68349228091
                     },
                     {
                         "month": 6,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 12801.620190737092
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 13377.620190737092
                     },
                     {
                         "month": 7,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 12218.556889193274
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 12890.556889193274
                     },
                     {
                         "month": 8,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 11635.493587649456
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 12403.493587649456
                     },
                     {
                         "month": 9,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 11052.430286105639
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 11916.430286105639
                     },
                     {
                         "month": 10,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 10469.366984561821
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 11429.36698456182
                     },
                     {
                         "month": 11,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 9886.3036830180026
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 10942.303683018003
                     },
                     {
                         "month": 12,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 9303.2403814741847
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 10455.240381474185
                     },
                     {
                         "month": 13,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 8720.1770799303667
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 9968.177079930367
                     },
                     {
                         "month": 14,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 8137.1137783865479
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 9481.113778386549
                     },
                     {
                         "month": 15,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 7554.050476842729
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 8994.05047684273
                     },
                     {
                         "month": 16,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 6970.9871752989102
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 8506.987175298913
                     },
                     {
                         "month": 17,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 6387.9238737550913
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 8019.923873755094
                     },
                     {
                         "month": 18,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 5804.8605722112725
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 7532.860572211275
                     },
                     {
                         "month": 19,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 5221.7972706674536
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 7045.797270667456
                     },
                     {
                         "month": 20,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 4638.7339691236348
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 6558.7339691236375
                     },
                     {
                         "month": 21,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 4055.6706675798159
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 6071.670667579819
                     },
                     {
                         "month": 22,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 3472.6073660359971
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 5584.607366036
                     },
                     {
                         "month": 23,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 2889.5440644921782
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 5097.544064492181
                     },
                     {
                         "month": 24,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 2306.4807629483594
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 4610.480762948362
                     },
                     {
                         "month": 25,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 1723.4174614045405
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 4123.417461404543
                     },
                     {
                         "month": 26,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 1140.3541598607217
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 3636.3541598607244
                     },
                     {
                         "month": 27,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 557.29085831690281
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 3149.2908583169055
                     },
                     {
                         "month": 28,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 0
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 2662.2275567730867
                     },
                     {
                         "month": 29,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 0
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 2175.164255229268
                     },
                     {
                         "month": 30,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 0
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 1688.100953685449
                     },
                     {
                         "month": 31,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 0
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 1201.0376521416301
                     },
                     {
                         "month": 32,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 0
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 713.9743505978113
                     },
                     {
                         "month": 33,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
-                        "remaining_principal": 0
+                        "total_payment": 583.0633015438189,
+                        "remaining_principal": 226.91104905399249
                     },
                     {
                         "month": 34,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
+                        "total_payment": 583.0633015438189,
                         "remaining_principal": 0
                     },
                     {
                         "month": 35,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
+                        "total_payment": 583.0633015438189,
                         "remaining_principal": 0
                     },
                     {
                         "month": 36,
-                        "principal_payment": 583.06330154381885,
+                        "principal_payment": 487.0633015438188,
                         "interest_payment": 96,
                         "tax_payment": 0,
-                        "total_payment": 679.06330154381885,
+                        "total_payment": 583.0633015438189,
                         "remaining_principal": 0
                     }
                 ]
             },
             "without_schedule": {
                 "residual_amount": 24000,
-                "interest_rate": 4.7999999999999998,
+                "interest_rate": 4.8,
                 "final_dealer_price": 39000,
                 "gross_cap_cost": 40300,
                 "net_cap_cost": 40300,
                 "principal_amount": 16300,
-                "monthly_principal_payment": 583.06330154381885,
+                "monthly_principal_payment": 487.0633015438188,
                 "residual_monthly_interest_payment": 96,
                 "total_sales_tax": 0,
                 "monthly_sales_tax": 0,
-                "lease_payment": 679.06330154381885,
-                "cash_due_at_signing": 679.06330154381885,
-                "total_lease_cost": 25125.342157121297,
+                "lease_payment": 583.0633015438189,
+                "cash_due_at_signing": 583.0633015438189,
+                "total_lease_cost": 20990.27885557748,
                 "schedule": null
             }
         }

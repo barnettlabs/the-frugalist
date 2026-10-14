@@ -11,6 +11,8 @@ const profileSchema = z.object({
 	first_name: z.string().min(1, 'First name is required'),
 	last_name: z.string().min(1, 'Last name is required'),
 	email: z.string().email('Invalid email address'),
+	// Sent, and required, only when the email changes - see onValid.
+	current_password: z.string().optional(),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -22,14 +24,28 @@ interface ProfileFormProps {
 }
 
 export function ProfileForm({ profile, onSubmit, isSubmitting }: ProfileFormProps) {
-	const { control, handleSubmit } = useForm<ProfileFormData>({
+	const { control, handleSubmit, setError, watch } = useForm<ProfileFormData>({
 		resolver: zodResolver(profileSchema),
 		defaultValues: {
 			first_name: profile.first_name,
 			last_name: profile.last_name,
 			email: profile.email,
+			current_password: '',
 		},
 	});
+
+	// The email is the sign-in identity, so the server asks for the password to change it.
+	const emailChanged = (watch('email') ?? '').trim().toLowerCase() !== profile.email.toLowerCase();
+
+	const onValid = ({ current_password, ...fields }: ProfileFormData) => {
+		if (emailChanged && !current_password) {
+			setError('current_password', { message: 'Enter your password to change your email' });
+			return;
+		}
+		// The server requires a lowercase address.
+		const payload = { ...fields, email: fields.email.trim().toLowerCase() };
+		onSubmit(emailChanged ? { ...payload, current_password } : payload);
+	};
 
 	return (
 		<View>
@@ -68,8 +84,19 @@ export function ProfileForm({ profile, onSubmit, isSubmitting }: ProfileFormProp
 					autoCapitalize="none"
 				/>
 
+				{emailChanged && (
+					<ControlledInput
+						control={control}
+						name="current_password"
+						label="Current password"
+						placeholder="Required to change your email"
+						secureTextEntry
+						autoComplete="current-password"
+					/>
+				)}
+
 				<Pressable
-					onPress={handleSubmit(onSubmit)}
+					onPress={handleSubmit(onValid)}
 					disabled={isSubmitting}
 					className="mt-2 items-center rounded-md bg-primary px-5 py-3.5 active:opacity-80"
 					style={{ opacity: isSubmitting ? 0.6 : 1 }}

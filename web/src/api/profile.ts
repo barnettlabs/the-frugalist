@@ -5,6 +5,8 @@ export interface ProfileUpdateData {
 	last_name: string;
 	email: string;
 	phone?: string;
+	/** Required by the server only when `email` changes. */
+	current_password?: string;
 }
 
 export interface PasswordUpdateData {

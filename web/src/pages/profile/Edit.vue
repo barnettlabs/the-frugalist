@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { z } from 'zod';
 
@@ -25,6 +25,9 @@ const profileSchema = toTypedSchema(
 		first_name: z.string().min(1, 'The first name field is required.'),
 		last_name: z.string().min(1, 'The last name field is required.'),
 		email: z.string().min(1, 'The email field is required.').email('Please enter a valid email address.'),
+		// Only sent, and only required, when the email changes - the server asks
+		// for it because the email is the login identity.
+		current_password: z.string().optional(),
 	})
 );
 
@@ -40,12 +43,18 @@ const {
 		first_name: '',
 		last_name: '',
 		email: '',
+		current_password: '',
 	},
 });
 
 const [firstName] = defineProfileField('first_name');
 const [lastName] = defineProfileField('last_name');
 const [email] = defineProfileField('email');
+const [emailPassword] = defineProfileField('current_password');
+
+// The address as saved, to tell whether the form is changing it.
+const savedEmail = ref('');
+const emailChanged = computed(() => (email.value ?? '').trim().toLowerCase() !== savedEmail.value);
 
 const profileLoading = ref(false);
 const profileSuccess = ref(false);
@@ -117,11 +126,13 @@ const showDeleteConfirm = ref(false);
 const loadProfile = async () => {
 	try {
 		const data = await profileApi.getProfile();
+		savedEmail.value = (data.email || '').toLowerCase();
 		resetProfileForm({
 			values: {
 				first_name: data.first_name || '',
 				last_name: data.last_name || '',
 				email: data.email || '',
+				current_password: '',
 			},
 		});
 	} catch {
@@ -130,12 +141,21 @@ const loadProfile = async () => {
 };
 
 const updateProfile = handleProfileSubmit(async values => {
+	if (emailChanged.value && !values.current_password) {
+		setProfileErrors({ current_password: 'Enter your current password to change your email.' });
+		return;
+	}
+
 	profileLoading.value = true;
 	profileSuccess.value = false;
 
 	try {
-		await profileApi.updateProfile(values);
+		const { current_password, ...fields } = values;
+		// The server requires a lowercase address.
+		const payload = { ...fields, email: fields.email.trim().toLowerCase() };
+		await profileApi.updateProfile(emailChanged.value ? { ...payload, current_password } : payload);
 		profileSuccess.value = true;
+		await loadProfile();
 		await authStore.refreshUser();
 	} catch (error: any) {
 		if (error.response?.data?.errors) {
@@ -252,6 +272,19 @@ onMounted(() => {
 							<InputLabel for="email" value="Email" />
 							<TextInput id="email" v-model="email" type="email" class="mt-1 block w-full" />
 							<InputError :message="profileErrors.email" class="mt-2" />
+						</div>
+
+						<div v-if="emailChanged">
+							<InputLabel for="email_current_password" value="Current Password" />
+							<TextInput
+								id="email_current_password"
+								v-model="emailPassword"
+								type="password"
+								autocomplete="current-password"
+								class="mt-1 block w-full"
+							/>
+							<p class="mt-1 text-xs text-text-muted">Required to change the email you sign in with.</p>
+							<InputError :message="profileErrors.current_password" class="mt-2" />
 						</div>
 
 						<div class="flex justify-end">

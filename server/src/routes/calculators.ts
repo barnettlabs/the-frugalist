@@ -55,6 +55,20 @@ const numericLike = (field: string) =>
 		);
 
 /** Laravel's `boolean` rule: true, false, 1, 0, "1", "0". */
+/**
+ * A term, bounded like the saved sheets bound it (rules in routes/sheets.ts).
+ *
+ * The calculators build their schedule month by month, and this route is public.
+ * Unbounded, `{"lease_term": 1e9}` from an anonymous caller built a billion-row
+ * schedule and took the process down. Zero and negative terms are still left to
+ * the calculators, which return an empty result for them, as Laravel's did.
+ */
+const termLike = (field: string, max: number) =>
+	numericLike(field).refine(
+		(v) => v === null || v === undefined || typeof v === 'boolean' || Number(v) <= max,
+		{ message: `The ${humanizeField(field)} field must not be greater than ${max}.` },
+	);
+
 const booleanLike = (field: string) =>
 	z
 		.union([z.boolean(), z.number(), z.string(), z.null()])
@@ -108,7 +122,7 @@ const financeSchema = z.object({
 	down_payment: numericLike('down_payment'),
 	sales_tax_percent: numericLike('sales_tax_percent'),
 	interest_rate: numericLike('interest_rate'),
-	finance_term: numericLike('finance_term'),
+	finance_term: termLike('finance_term', 120),
 	extra_payments_json: z.unknown().optional(),
 	with_schedule: booleanLike('with_schedule'),
 });
@@ -125,7 +139,7 @@ const leaseSchema = z.object({
 	money_factor: numericLike('money_factor'),
 	sales_tax_percent: numericLike('sales_tax_percent'),
 	residual_percent: numericLike('residual_percent'),
-	lease_term: numericLike('lease_term'),
+	lease_term: termLike('lease_term', 120),
 	with_schedule: booleanLike('with_schedule'),
 });
 
@@ -133,7 +147,7 @@ const mortgageSchema = z.object({
 	property_value: numericLike('property_value'),
 	down_payment: numericLike('down_payment'),
 	interest_rate: numericLike('interest_rate'),
-	loan_term_years: numericLike('loan_term_years'),
+	loan_term_years: termLike('loan_term_years', 50),
 	monthly_hoa: numericLike('monthly_hoa'),
 	annual_insurance: numericLike('annual_insurance'),
 	annual_property_tax: numericLike('annual_property_tax'),

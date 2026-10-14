@@ -22,8 +22,9 @@ export const useUpdateProfile = createMutation<ProfileResponse, UpdateProfileReq
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['auth', 'profile'] }),
 });
 
-export const useDeleteAccount = createMutation<void, void, AxiosError>({
-	mutationFn: async () => {
-		await client.delete('/user');
+// The server requires the account password; without it every deletion was a 422.
+export const useDeleteAccount = createMutation<void, { password: string }, AxiosError>({
+	mutationFn: async ({ password }) => {
+		await client.delete('/user', { data: { password } });
 	},
 });

@@ -2,13 +2,12 @@ import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { z } from 'zod';
 
-import { env } from '../config/env.js';
 import { db } from '../db/client.js';
 import { users } from '../db/schema.js';
 import { serializeRow } from '../db/serialize.js';
 import type { AppEnv } from '../http/app.js';
 import { HttpError } from '../http/errors.js';
-import { auth } from '../lib/auth.js';
+import { auth, verifiedCallbackUrl } from '../lib/auth.js';
 import { validate, validated } from '../http/validate.js';
 
 /**
@@ -50,9 +49,6 @@ function forward(c: { req: { raw: Request } }, path: string, body: unknown): Pro
 		}),
 	);
 }
-
-/** Where a verified-email link lands once the API has checked the token. */
-const verifiedCallbackUrl = () => `${env().WEB_URL}/dashboard?verified=1`;
 
 async function userPayload(email: string) {
 	const [row] = await db().select().from(users).where(eq(users.email, email)).limit(1);

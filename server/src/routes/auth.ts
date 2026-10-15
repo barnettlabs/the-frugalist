@@ -12,29 +12,26 @@ import { auth } from '../lib/auth.js';
 import { validate, validated } from '../http/validate.js';
 
 /**
- * Sanctum-shaped auth endpoints, backed by Better Auth.
+ * The auth endpoints both clients call, backed by Better Auth.
  *
- * This is not tidiness - it is what makes cutover possible at all.
+ * POST /login, /register, /logout, /forgot-password, /reset-password and
+ * /email/verification-notification, GET /user and PUT /password. Better Auth
+ * does the work under /auth/*; these routes give it the API's own shape:
  *
- * Both clients call the Laravel routes: POST /login, /register,
- * /logout, /forgot-password, /reset-password,
- * /email/verification-notification, and GET /user. They expect
- * `{ user, token }` back and store the token for bearer auth. Better Auth
- * instead exposes /auth/sign-in/email and friends with a different envelope.
+ *   - errors in the 422 envelope, on the field the forms display them under,
+ *     where Better Auth answers `{ code, message }`
+ *   - `{ user, token }` back from sign-in and sign-up, with the user as the
+ *     same snake_case record every other endpoint returns
+ *   - first and last name and a password confirmation on sign-up
+ *   - one reply to a reset request whether or not the address exists
+ *   - email links that land on the web app rather than the API host
  *
- * The web client could be updated and redeployed on demand. **The mobile client
- * cannot** - the App Store build has its API base URL compiled in and its auth
- * calls hard-coded, so every already-installed copy would fail to sign in the
- * moment traffic moved. Waiting for an app review to complete a backend cutover
- * is not an acceptable coupling.
- *
- * So these routes translate. They are a compatibility layer with a defined end:
- * once both clients have shipped against /auth/* and the old mobile builds
- * have aged out, this file is deleted. Until then it is the reason the cutover
- * is reversible and does not need a coordinated client release.
+ * They began as a bridge for the Laravel-era clients and stayed because that
+ * shape is worth keeping; calling Better Auth directly would push all of the
+ * above into both clients.
  */
 
-export const authCompatRoutes = new Hono<AppEnv>();
+export const authRoutes = new Hono<AppEnv>();
 
 /** Native clients send no Origin; Better Auth needs a trusted one. */
 const NATIVE_ORIGIN = 'thefrugalist://';
@@ -73,7 +70,7 @@ const loginSchema = z.object({
 		.min(1, 'The password field is required.'),
 });
 
-authCompatRoutes.post('/login', validate('json', loginSchema), async (c) => {
+authRoutes.post('/login', validate('json', loginSchema), async (c) => {
 	const data = validated<z.infer<typeof loginSchema>>(c, 'json');
 
 	const response = await forward(c, '/auth/sign-in/email', {
@@ -119,7 +116,7 @@ const registerSchema = z.object({
 	password_confirmation: z.string().optional(),
 });
 
-authCompatRoutes.post('/register', validate('json', registerSchema), async (c) => {
+authRoutes.post('/register', validate('json', registerSchema), async (c) => {
 	const data = validated<z.infer<typeof registerSchema>>(c, 'json');
 
 	// Laravel's `confirmed` rule. Checked here rather than in the schema so the
@@ -161,7 +158,7 @@ authCompatRoutes.post('/register', validate('json', registerSchema), async (c) =
 	return out;
 });
 
-authCompatRoutes.post('/logout', async (c) => {
+authRoutes.post('/logout', async (c) => {
 	const headers = new Headers(c.req.raw.headers);
 	if (!headers.get('Origin')) headers.set('Origin', NATIVE_ORIGIN);
 
@@ -172,7 +169,7 @@ authCompatRoutes.post('/logout', async (c) => {
 	return c.json({ message: 'Logged out successfully.' });
 });
 
-authCompatRoutes.get('/user', async (c) => {
+authRoutes.get('/user', async (c) => {
 	const user = c.get('user');
 	if (!user) throw HttpError.unauthenticated();
 
@@ -186,7 +183,7 @@ const forgotSchema = z.object({
 		.email('The email field must be a valid email address.'),
 });
 
-authCompatRoutes.post('/forgot-password', validate('json', forgotSchema), async (c) => {
+authRoutes.post('/forgot-password', validate('json', forgotSchema), async (c) => {
 	const data = validated<z.infer<typeof forgotSchema>>(c, 'json');
 
 	// The link itself is built in lib/auth.ts and points at the web app, so no
@@ -219,7 +216,7 @@ const resetSchema = z.object({
 	password_confirmation: z.string().optional(),
 });
 
-authCompatRoutes.post('/reset-password', validate('json', resetSchema), async (c) => {
+authRoutes.post('/reset-password', validate('json', resetSchema), async (c) => {
 	const data = validated<z.infer<typeof resetSchema>>(c, 'json');
 
 	if (data.password_confirmation !== undefined && data.password_confirmation !== data.password) {
@@ -238,7 +235,7 @@ authCompatRoutes.post('/reset-password', validate('json', resetSchema), async (c
 	return c.json({ message: 'Password has been reset successfully.' });
 });
 
-authCompatRoutes.post('/email/verification-notification', async (c) => {
+authRoutes.post('/email/verification-notification', async (c) => {
 	const user = c.get('user');
 	if (!user) throw HttpError.unauthenticated();
 
@@ -271,7 +268,7 @@ const passwordUpdateSchema = z.object({
 	password_confirmation: z.string().optional(),
 });
 
-authCompatRoutes.put('/password', validate('json', passwordUpdateSchema), async (c) => {
+authRoutes.put('/password', validate('json', passwordUpdateSchema), async (c) => {
 	const user = c.get('user');
 	if (!user) throw HttpError.unauthenticated();
 

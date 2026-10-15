@@ -11,7 +11,7 @@ import { adminAiRoutes } from '../routes/admin-ai.js';
 import { accountRoutes } from '../routes/account.js';
 import { adminRoutes } from '../routes/admin.js';
 import { aiRoutes } from '../routes/ai.js';
-import { authCompatRoutes } from '../routes/auth-compat.js';
+import { authRoutes } from '../routes/auth.js';
 import { calculatorRoutes } from '../routes/calculators.js';
 import { dashboardRoutes } from '../routes/dashboard.js';
 import { deviceRoutes } from '../routes/devices.js';
@@ -102,11 +102,10 @@ export function createApp() {
 	app.route('/calculators', calculatorRoutes);
 	app.route('/', publicRoutes);
 
-	// Sanctum-shaped auth, translated onto Better Auth. Both clients call these
-	// paths, and the shipped mobile build cannot be changed on demand - see
-	// routes/auth-compat.ts. Mounted before the authenticated routers so /user
-	// and /logout resolve here.
-	app.route('/', authCompatRoutes);
+	// The clients' auth endpoints, in the API's shape, over Better Auth - see
+	// routes/auth.ts. Mounted before the authenticated routers so /user and
+	// /logout resolve here.
+	app.route('/', authRoutes);
 
 	// Authenticated
 	// Account deletion is mounted before the profile router so DELETE /profile

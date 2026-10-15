@@ -103,7 +103,7 @@ services:
     envVars:
       # Read at build time, so a change needs a rebuild rather than a restart.
       - key: VITE_API_URL
-        value: https://api.thefrugalist.io/api
+        value: https://api.thefrugalist.io
     routes:
       # Serve a prerendered document where one exists, otherwise the SPA shell.
       # The SPA boots identically either way.

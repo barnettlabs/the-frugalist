@@ -18,7 +18,8 @@ rollback — see the go-live runbook. This file covers steady-state deploys.
 | Web | Render Static Site | built from `web/dist` |
 
 **Domains.** The site is `thefrugalist.io` (with `www` redirecting to it) and the
-API is `api.thefrugalist.io`; both are declared in `render.yaml`. They are the
+API is `api.thefrugalist.io`, with its routes at the root of that host (no `/api`
+prefix); both are declared in `render.yaml`. They are the
 same site to a browser, so the session cookie is sent on API calls, and the API
 allows the web origin through `CORS_ORIGINS`.
 

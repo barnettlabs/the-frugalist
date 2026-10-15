@@ -31,6 +31,7 @@ vi.mock('../services/notifications/mail.js', async () => {
 });
 
 const { createApp } = await import('../http/app.js');
+const { auth } = await import('../lib/auth.js');
 const app = createApp();
 
 const post = (path: string, body: unknown) =>
@@ -111,5 +112,21 @@ describe('email verification', () => {
 			.where(eq(users.email, email));
 		expect(row!.verified).toBe(true);
 		expect(row!.verifiedAt).not.toBeNull();
+	});
+
+	it('sends a sign-up that names no callback to the web app too', async () => {
+		// The seed's sign-up (and a direct /auth/sign-up/email) names no
+		// callbackURL, and Better Auth fills in "/" - the API host's root, a 404.
+		const email = `seeded-${Math.random().toString(36).slice(2, 10)}@example.com`;
+
+		await auth().api.signUpEmail({
+			body: { email, password: 'a-good-password', name: 'Seeded User' },
+		});
+
+		const [mail] = mailTo(email);
+		const link = new URL(linkIn(mail!));
+		const visit = await app.request(link.pathname + link.search);
+		expect(visit.status).toBe(302);
+		expect(visit.headers.get('location')).toBe('http://localhost:5173/dashboard?verified=1');
 	});
 });

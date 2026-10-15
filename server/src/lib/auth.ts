@@ -36,6 +36,9 @@ import { logger } from './logger.js';
  *     fields so they survive a round trip.
  */
 
+/** Where a verified-email link lands once the API has checked the token. */
+export const verifiedCallbackUrl = () => `${env().WEB_URL}/dashboard?verified=1`;
+
 const BCRYPT_PREFIXES = ['$2a$', '$2b$', '$2y$'];
 
 function looksLikeBcrypt(hash: string): boolean {
@@ -107,8 +110,16 @@ export function createAuth() {
 			sendOnSignUp: true,
 			async sendVerificationEmail({ user, url }) {
 				// `url` is Better Auth's verify endpoint, which redirects to the
-				// callbackURL the request named once the token checks out.
-				await deliver(user.email, verificationEmail(url), 'email verification');
+				// callbackURL the request named once the token checks out. A sign-up
+				// that named none - the seed's, or one straight to /auth/sign-up -
+				// gets "/", which resolves against the API host: the user lands on
+				// a 404 there instead of the site. Anything not absolute goes to the
+				// web app.
+				const link = new URL(url);
+				if (!URL.canParse(link.searchParams.get('callbackURL') ?? '')) {
+					link.searchParams.set('callbackURL', verifiedCallbackUrl());
+				}
+				await deliver(user.email, verificationEmail(link.toString()), 'email verification');
 			},
 			/*
 			 * Better Auth records verification in its own `email_verified` flag, but

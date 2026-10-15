@@ -126,7 +126,7 @@ exports pointed at `.ts` source.
 ## Next steps, in order
 
 1. **Deploy.** Provision Render from `render.yaml`, set the environment group,
-   and route `thefrugalist.io/api/*` at the API service. The runbook covers
+   and point `api.thefrugalist.io` at the API service. The runbook covers
    tiers, every environment variable, and rollback.
 
 2. **OpenAPI generation and typed clients.** The last outstanding item from

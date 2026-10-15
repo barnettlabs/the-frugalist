@@ -51,7 +51,7 @@ describe('password reset', () => {
 	it('emails a link to the web reset page that resets the password', async () => {
 		const user = await createLegacyUser();
 
-		const res = await post('/api/forgot-password', { email: user.email });
+		const res = await post('/forgot-password', { email: user.email });
 		expect(res.status).toBe(200);
 
 		const [mail] = mailTo(user.email);
@@ -62,7 +62,7 @@ describe('password reset', () => {
 		expect(link.origin).toBe('http://localhost:5173');
 		const token = decodeURIComponent(link.pathname.replace('/reset-password/', ''));
 
-		const reset = await post('/api/reset-password', {
+		const reset = await post('/reset-password', {
 			token,
 			email: user.email,
 			password: 'a-brand-new-password',
@@ -70,12 +70,12 @@ describe('password reset', () => {
 		});
 		expect(reset.status, await reset.clone().text()).toBe(200);
 
-		const login = await post('/api/login', { email: user.email, password: 'a-brand-new-password' });
+		const login = await post('/login', { email: user.email, password: 'a-brand-new-password' });
 		expect(login.status).toBe(200);
 	});
 
 	it('sends nothing, and answers the same, for an unknown address', async () => {
-		const res = await post('/api/forgot-password', { email: 'nobody-here@example.com' });
+		const res = await post('/forgot-password', { email: 'nobody-here@example.com' });
 
 		expect(res.status).toBe(200);
 		expect(sent).toHaveLength(0);
@@ -86,7 +86,7 @@ describe('email verification', () => {
 	it('emails a link on sign-up that verifies the address', async () => {
 		const email = `verify-${Math.random().toString(36).slice(2, 10)}@example.com`;
 
-		const res = await post('/api/register', {
+		const res = await post('/register', {
 			first_name: 'New',
 			last_name: 'User',
 			email,

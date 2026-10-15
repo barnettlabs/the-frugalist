@@ -30,9 +30,9 @@ const cases = JSON.parse(
 	),
 ) as { finance: { name: string; input: Record<string, unknown> }[] };
 
-describe('POST /api/calculators/finance/compute', () => {
+describe('POST /calculators/finance/compute', () => {
 	it('returns the { inputs, computed } envelope', async () => {
-		const res = await post('/api/calculators/finance/compute', {
+		const res = await post('/calculators/finance/compute', {
 			msrp: 42000,
 			down_payment: 5000,
 			finance_term: 60,
@@ -52,14 +52,14 @@ describe('POST /api/calculators/finance/compute', () => {
 		// Laravel's validate() returns the present-and-validated subset, and the
 		// Vue forms read `inputs` back. A fully defaulted echo would change what
 		// they render.
-		const res = await post('/api/calculators/finance/compute', { msrp: 30000 });
+		const res = await post('/calculators/finance/compute', { msrp: 30000 });
 		const body = (await res.json()) as { inputs: Record<string, unknown> };
 
 		expect(Object.keys(body.inputs)).toEqual(['msrp']);
 	});
 
 	it('never echoes the with_schedule control flag', async () => {
-		const res = await post('/api/calculators/finance/compute', {
+		const res = await post('/calculators/finance/compute', {
 			msrp: 30000,
 			with_schedule: false,
 		});
@@ -71,7 +71,7 @@ describe('POST /api/calculators/finance/compute', () => {
 
 	it('defaults with_schedule to true when absent or null', async () => {
 		for (const payload of [{ msrp: 40000, finance_term: 60, interest_rate: 6 }, { msrp: 40000, finance_term: 60, interest_rate: 6, with_schedule: null }]) {
-			const res = await post('/api/calculators/finance/compute', payload);
+			const res = await post('/calculators/finance/compute', payload);
 			const body = (await res.json()) as { computed: { amortization: unknown } };
 			expect(body.computed.amortization).not.toBeNull();
 		}
@@ -79,7 +79,7 @@ describe('POST /api/calculators/finance/compute', () => {
 
 	it('treats the string "0" as false, as PHP does', async () => {
 		// Boolean("0") is true in JavaScript; (bool) "0" is false in PHP.
-		const res = await post('/api/calculators/finance/compute', {
+		const res = await post('/calculators/finance/compute', {
 			msrp: 40000,
 			finance_term: 60,
 			interest_rate: 6,
@@ -91,12 +91,12 @@ describe('POST /api/calculators/finance/compute', () => {
 	});
 
 	it('accepts numeric strings', async () => {
-		const res = await post('/api/calculators/finance/compute', { msrp: '42000', finance_term: '60' });
+		const res = await post('/calculators/finance/compute', { msrp: '42000', finance_term: '60' });
 		expect(res.status).toBe(200);
 	});
 
 	it('rejects masked currency strings with 422, matching the numeric rule', async () => {
-		const res = await post('/api/calculators/finance/compute', { msrp: '$42,000' });
+		const res = await post('/calculators/finance/compute', { msrp: '$42,000' });
 
 		expect(res.status).toBe(422);
 		const body = (await res.json()) as { message: string; errors: Record<string, string[]> };
@@ -107,7 +107,7 @@ describe('POST /api/calculators/finance/compute', () => {
 	});
 
 	it('humanizes snake_case field names the way Laravel does', async () => {
-		const res = await post('/api/calculators/finance/compute', { sales_tax_percent: 'abc' });
+		const res = await post('/calculators/finance/compute', { sales_tax_percent: 'abc' });
 		const body = (await res.json()) as { message: string; errors: Record<string, string[]> };
 
 		expect(body.errors.sales_tax_percent).toEqual([
@@ -117,7 +117,7 @@ describe('POST /api/calculators/finance/compute', () => {
 	});
 
 	it('summarises multiple errors the way Laravel does', async () => {
-		const res = await post('/api/calculators/finance/compute', {
+		const res = await post('/calculators/finance/compute', {
 			msrp: 'x',
 			fees: 'y',
 			rebates: 'z',
@@ -129,24 +129,24 @@ describe('POST /api/calculators/finance/compute', () => {
 	});
 
 	it('uses the singular form for exactly one additional error', async () => {
-		const res = await post('/api/calculators/finance/compute', { msrp: 'x', fees: 'y' });
+		const res = await post('/calculators/finance/compute', { msrp: 'x', fees: 'y' });
 		const body = (await res.json()) as { message: string };
 
 		expect(body.message).toBe('The msrp field must be a number. (and 1 more error)');
 	});
 
 	it('rejects booleans, because is_numeric() does', async () => {
-		const res = await post('/api/calculators/finance/compute', { rebates: true });
+		const res = await post('/calculators/finance/compute', { rebates: true });
 		expect(res.status).toBe(422);
 	});
 
 	it('accepts an empty body', async () => {
-		const res = await post('/api/calculators/finance/compute', {});
+		const res = await post('/calculators/finance/compute', {});
 		expect(res.status).toBe(200);
 	});
 
 	it('treats a malformed body as an empty one rather than a parse error', async () => {
-		const res = await app.request('/api/calculators/finance/compute', {
+		const res = await app.request('/calculators/finance/compute', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: 'not json',
@@ -155,9 +155,9 @@ describe('POST /api/calculators/finance/compute', () => {
 	});
 });
 
-describe('POST /api/calculators/lease/compute', () => {
+describe('POST /calculators/lease/compute', () => {
 	it('computes a lease', async () => {
-		const res = await post('/api/calculators/lease/compute', {
+		const res = await post('/calculators/lease/compute', {
 			msrp: 45000,
 			residual_percent: 58,
 			money_factor: 0.00225,
@@ -172,9 +172,9 @@ describe('POST /api/calculators/lease/compute', () => {
 	});
 });
 
-describe('POST /api/calculators/mortgage/compute', () => {
+describe('POST /calculators/mortgage/compute', () => {
 	it('computes a mortgage with escrow', async () => {
-		const res = await post('/api/calculators/mortgage/compute', {
+		const res = await post('/calculators/mortgage/compute', {
 			property_value: 450000,
 			down_payment: 90000,
 			loan_term_years: 30,
@@ -189,7 +189,7 @@ describe('POST /api/calculators/mortgage/compute', () => {
 	});
 
 	it('rejects a non-numeric property value', async () => {
-		const res = await post('/api/calculators/mortgage/compute', { property_value: 'a lot' });
+		const res = await post('/calculators/mortgage/compute', { property_value: 'a lot' });
 		expect(res.status).toBe(422);
 	});
 });
@@ -202,7 +202,7 @@ describe('resource limits on the public endpoints', () => {
 		['lease', { lease_term: 1e9 }, 'lease term', 120],
 		['mortgage', { loan_term_years: 1e9 }, 'loan term years', 50],
 	] as const)('rejects an oversized %s term', async (kind, body, label, max) => {
-		const res = await post(`/api/calculators/${kind}/compute`, body);
+		const res = await post(`/calculators/${kind}/compute`, body);
 
 		expect(res.status).toBe(422);
 		expect(((await res.json()) as { message: string }).message).toBe(
@@ -211,7 +211,7 @@ describe('resource limits on the public endpoints', () => {
 	});
 
 	it('still accepts the largest term a saved sheet allows', async () => {
-		const res = await post('/api/calculators/mortgage/compute', {
+		const res = await post('/calculators/mortgage/compute', {
 			property_value: 300000,
 			interest_rate: 6,
 			loan_term_years: 50,
@@ -220,7 +220,7 @@ describe('resource limits on the public endpoints', () => {
 	});
 
 	it('rejects an oversized request body before parsing it', async () => {
-		const res = await post('/api/calculators/mortgage/compute', {
+		const res = await post('/calculators/mortgage/compute', {
 			extra_payments_json: 'x'.repeat(300 * 1024),
 		});
 		expect(res.status).toBe(413);
@@ -238,7 +238,7 @@ describe('every fixture case is servable over HTTP', () => {
 
 	for (const testCase of cases.finance) {
 		it(testCase.name, async () => {
-			const res = await post('/api/calculators/finance/compute', testCase.input);
+			const res = await post('/calculators/finance/compute', testCase.input);
 			expect(res.status).toBe(REJECTED.has(testCase.name) ? 422 : 200);
 		});
 	}
@@ -246,7 +246,7 @@ describe('every fixture case is servable over HTTP', () => {
 
 describe('unknown routes', () => {
 	it('returns a 404 with a message body', async () => {
-		const res = await app.request('/api/nope');
+		const res = await app.request('/nope');
 		expect(res.status).toBe(404);
 		expect((await res.json()) as { message: string }).toHaveProperty('message');
 	});

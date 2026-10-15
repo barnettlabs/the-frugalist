@@ -97,7 +97,7 @@ describe('stock-only watches', () => {
 	it('creates a stock watch with no target price', async () => {
 		stubProduct.mockResolvedValue(product({ sku_upc: 'STOCK-1' }));
 
-		const res = await authed('/api/watch', {
+		const res = await authed('/watch', {
 			method: 'POST',
 			body: JSON.stringify({
 				retailer_id: retailerId,
@@ -117,7 +117,7 @@ describe('stock-only watches', () => {
 	it('clears the target price on update', async () => {
 		stubProduct.mockResolvedValue(product({ sku_upc: 'STOCK-2' }));
 
-		const created = await authed('/api/watch', {
+		const created = await authed('/watch', {
 			method: 'POST',
 			body: JSON.stringify({
 				retailer_id: retailerId,
@@ -130,7 +130,7 @@ describe('stock-only watches', () => {
 		expect(created.status).toBe(201);
 		const id = ((await created.json()) as { tracked_product: { id: number } }).tracked_product.id;
 
-		const res = await authed(`/api/watch/${id}`, {
+		const res = await authed(`/watch/${id}`, {
 			method: 'PATCH',
 			body: JSON.stringify({ watch_type: 'stock', target_price: null }),
 		});
@@ -143,7 +143,7 @@ describe('manual refresh', () => {
 	it('does not record a $0 price drop when the retailer returns no price', async () => {
 		stubProduct.mockResolvedValue(product({ sku_upc: 'REFRESH-1', current_price: 150 }));
 
-		const created = await authed('/api/watch', {
+		const created = await authed('/watch', {
 			method: 'POST',
 			body: JSON.stringify({
 				retailer_id: retailerId,
@@ -157,7 +157,7 @@ describe('manual refresh', () => {
 		const id = ((await created.json()) as { tracked_product: { id: number } }).tracked_product.id;
 
 		stubProduct.mockResolvedValue(product({ sku_upc: 'REFRESH-1', current_price: 0 }));
-		const res = await authed(`/api/watch/${id}/refresh`, { method: 'POST' });
+		const res = await authed(`/watch/${id}/refresh`, { method: 'POST' });
 
 		expect(res.status).toBe(200);
 		expect(

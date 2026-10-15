@@ -126,7 +126,7 @@ exports pointed at `.ts` source.
 ## Next steps, in order
 
 1. **Deploy.** Provision Render from `render.yaml`, set the environment group,
-   and route `thefrugalist.io/api/*` at the API service. The runbook covers
+   and point `api.thefrugalist.io` at the API service. The runbook covers
    tiers, every environment variable, and rollback.
 
 2. **OpenAPI generation and typed clients.** The last outstanding item from
@@ -136,7 +136,7 @@ exports pointed at `.ts` source.
 
 3. **Retire the auth compatibility layer.** `server/src/routes/auth-compat.ts`
    translates the Sanctum-shaped endpoints onto Better Auth so the shipped
-   mobile build keeps working. Delete it once both clients call `/api/auth/*`
+   mobile build keeps working. Delete it once both clients call `/auth/*`
    and the old builds have aged out — not before.
 
 4. **Not ported, deliberately.** Phone verification, the playground email
@@ -181,7 +181,7 @@ client is still needed for phone verification, which does work.
 - The Docker image is 675MB, larger than it should be. The prod-deps stage
   copies more of the pnpm store than it needs.
 - **The clients still call the compatibility auth endpoints.** They work, but
-  both apps should move to `/api/auth/*` so the shim can go.
+  both apps should move to `/auth/*` so the shim can go.
 - **The mobile app has no crash reporting yet.** Sentry is wired server-side;
   the Expo client needs `@sentry/react-native` added separately, and that is
   where RN source maps and native symbolication pay for themselves.

@@ -24,6 +24,10 @@ services:
     dockerfilePath: ./Dockerfile
     plan: starter
     healthCheckPath: /up
+    # Its own subdomain rather than thefrugalist.io/api: no proxy in front of
+    # it, and the two are the same site, so the session cookie still travels.
+    domains:
+      - api.thefrugalist.io
     # Migrations run once here rather than per-instance on boot, which would
     # race when more than one instance starts.
     preDeployCommand: node server/dist/scripts/migrate.js
@@ -93,6 +97,13 @@ services:
     # package exports resolve through its compiled dist/.
     buildCommand: pnpm install --frozen-lockfile && pnpm --filter @frugalist/contracts build && pnpm --filter thefrugalist-web build
     staticPublishPath: ./web/dist
+    domains:
+      - thefrugalist.io
+      - www.thefrugalist.io
+    envVars:
+      # Read at build time, so a change needs a rebuild rather than a restart.
+      - key: VITE_API_URL
+        value: https://api.thefrugalist.io
     routes:
       # Serve a prerendered document where one exists, otherwise the SPA shell.
       # The SPA boots identically either way.
@@ -105,12 +116,13 @@ envVarGroups:
     envVars:
       - key: SESSION_SECRET
         generateValue: true
+      # Not secrets, so they live here where a PR can see them change.
       - key: APP_URL
-        sync: false
+        value: https://api.thefrugalist.io
       - key: WEB_URL
-        sync: false
+        value: https://thefrugalist.io
       - key: CORS_ORIGINS
-        sync: false
+        value: https://thefrugalist.io,https://www.thefrugalist.io
       - key: RESEND_KEY
         sync: false
       - key: MAIL_TRANSPORT

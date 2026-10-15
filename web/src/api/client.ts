@@ -2,8 +2,10 @@ import axios, { type AxiosError, type AxiosInstance, type InternalAxiosRequestCo
 
 import { useAuthStore } from '@/stores/auth';
 
-// API base URL from environment variable, defaults to /api for same-domain setup
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+// The API is its own host (api.thefrugalist.io in production; render.yaml sets
+// this for the build). The fallback is the local API rather than production, so
+// a missing value fails loudly instead of quietly writing to live data.
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8787';
 
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({

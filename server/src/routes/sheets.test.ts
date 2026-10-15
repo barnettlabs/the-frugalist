@@ -78,7 +78,7 @@ beforeAll(async () => {
 
 describe('authentication', () => {
 	it('rejects an anonymous request with Unauthenticated', async () => {
-		const res = await app.request('/api/vehicle-finance-sheets');
+		const res = await app.request('/vehicle-finance-sheets');
 
 		expect(res.status).toBe(401);
 		expect((await res.json()) as { message: string }).toEqual({ message: 'Unauthenticated.' });
@@ -89,7 +89,7 @@ describe('create and read', () => {
 	let createdId = 0;
 
 	it('serialises timestamps the way Laravel did', async () => {
-		const res = await authed('/api/vehicle-finance-sheets', {
+		const res = await authed('/vehicle-finance-sheets', {
 			method: 'POST',
 			body: JSON.stringify({ sheet_name: 'Timestamps', start_date: '2026-03-15' }),
 		});
@@ -102,7 +102,7 @@ describe('create and read', () => {
 	});
 
 	it('creates a sheet and returns 201', async () => {
-		const res = await authed('/api/vehicle-finance-sheets', {
+		const res = await authed('/vehicle-finance-sheets', {
 			method: 'POST',
 			body: JSON.stringify({
 				sheet_name: 'My Truck',
@@ -125,7 +125,7 @@ describe('create and read', () => {
 	});
 
 	it('lists only the current user sheets', async () => {
-		const res = await authed('/api/vehicle-finance-sheets');
+		const res = await authed('/vehicle-finance-sheets');
 		const rows = (await res.json()) as { id: unknown }[];
 
 		expect(res.status).toBe(200);
@@ -134,12 +134,12 @@ describe('create and read', () => {
 	});
 
 	it('reads its own sheet', async () => {
-		const res = await authed(`/api/vehicle-finance-sheets/${createdId}`);
+		const res = await authed(`/vehicle-finance-sheets/${createdId}`);
 		expect(res.status).toBe(200);
 	});
 
 	it('updates only the fields provided', async () => {
-		const res = await authed(`/api/vehicle-finance-sheets/${createdId}`, {
+		const res = await authed(`/vehicle-finance-sheets/${createdId}`, {
 			method: 'PUT',
 			body: JSON.stringify({ sheet_name: 'Renamed' }),
 		});
@@ -153,7 +153,7 @@ describe('create and read', () => {
 	});
 
 	it('accepts PATCH as well as PUT, as the web client sends PATCH', async () => {
-		const res = await authed(`/api/vehicle-finance-sheets/${createdId}`, {
+		const res = await authed(`/vehicle-finance-sheets/${createdId}`, {
 			method: 'PATCH',
 			body: JSON.stringify({ sheet_name: 'Patched' }),
 		});
@@ -163,7 +163,7 @@ describe('create and read', () => {
 	});
 
 	it('deletes its own sheet', async () => {
-		const res = await authed(`/api/vehicle-finance-sheets/${createdId}`, { method: 'DELETE' });
+		const res = await authed(`/vehicle-finance-sheets/${createdId}`, { method: 'DELETE' });
 
 		expect(res.status).toBe(200);
 		expect((await res.json()) as { message: string }).toEqual({
@@ -180,12 +180,12 @@ describe('create and read', () => {
 
 describe('ownership', () => {
 	it('cannot read another user sheet', async () => {
-		const res = await authed(`/api/vehicle-finance-sheets/${foreignSheetId}`);
+		const res = await authed(`/vehicle-finance-sheets/${foreignSheetId}`);
 		expect(res.status).toBe(403);
 	});
 
 	it('cannot update another user sheet', async () => {
-		const res = await authed(`/api/vehicle-finance-sheets/${foreignSheetId}`, {
+		const res = await authed(`/vehicle-finance-sheets/${foreignSheetId}`, {
 			method: 'PUT',
 			body: JSON.stringify({ sheet_name: 'Hijacked' }),
 		});
@@ -200,7 +200,7 @@ describe('ownership', () => {
 	});
 
 	it('cannot delete another user sheet', async () => {
-		const res = await authed(`/api/vehicle-finance-sheets/${foreignSheetId}`, {
+		const res = await authed(`/vehicle-finance-sheets/${foreignSheetId}`, {
 			method: 'DELETE',
 		});
 
@@ -214,20 +214,20 @@ describe('ownership', () => {
 	});
 
 	it('returns 404 for an id that does not exist', async () => {
-		const res = await authed('/api/vehicle-finance-sheets/99999999');
+		const res = await authed('/vehicle-finance-sheets/99999999');
 		expect(res.status).toBe(404);
 	});
 
 	it('returns 404 for a non-numeric id instead of a database error', async () => {
 		// Laravel's implicit binding rejected these before the controller ran.
-		const res = await authed('/api/vehicle-finance-sheets/abc');
+		const res = await authed('/vehicle-finance-sheets/abc');
 		expect(res.status).toBe(404);
 	});
 });
 
 describe('validation', () => {
 	it('rejects an out-of-range term with Laravel wording', async () => {
-		const res = await authed('/api/vehicle-finance-sheets', {
+		const res = await authed('/vehicle-finance-sheets', {
 			method: 'POST',
 			body: JSON.stringify({ finance_term: 500 }),
 		});
@@ -240,7 +240,7 @@ describe('validation', () => {
 	});
 
 	it('rejects a negative amount', async () => {
-		const res = await authed('/api/vehicle-finance-sheets', {
+		const res = await authed('/vehicle-finance-sheets', {
 			method: 'POST',
 			body: JSON.stringify({ msrp: -100 }),
 		});
@@ -251,7 +251,7 @@ describe('validation', () => {
 	});
 
 	it('rejects an invalid vehicle type', async () => {
-		const res = await authed('/api/vehicle-finance-sheets', {
+		const res = await authed('/vehicle-finance-sheets', {
 			method: 'POST',
 			body: JSON.stringify({ vehicle_type: 'BOAT' }),
 		});
@@ -262,7 +262,7 @@ describe('validation', () => {
 	});
 
 	it('rejects a malformed email', async () => {
-		const res = await authed('/api/vehicle-finance-sheets', {
+		const res = await authed('/vehicle-finance-sheets', {
 			method: 'POST',
 			body: JSON.stringify({ contact_email: 'nope' }),
 		});
@@ -271,7 +271,7 @@ describe('validation', () => {
 	});
 
 	it('accepts an empty payload, as the Laravel rules were all nullable', async () => {
-		const res = await authed('/api/vehicle-finance-sheets', {
+		const res = await authed('/vehicle-finance-sheets', {
 			method: 'POST',
 			body: JSON.stringify({}),
 		});
@@ -282,7 +282,7 @@ describe('validation', () => {
 
 describe('lease sheets', () => {
 	it('creates and reads a lease sheet', async () => {
-		const res = await authed('/api/vehicle-lease-sheets', {
+		const res = await authed('/vehicle-lease-sheets', {
 			method: 'POST',
 			body: JSON.stringify({
 				sheet_name: 'My Lease',
@@ -302,7 +302,7 @@ describe('lease sheets', () => {
 	});
 
 	it('rejects a residual percent above 100', async () => {
-		const res = await authed('/api/vehicle-lease-sheets', {
+		const res = await authed('/vehicle-lease-sheets', {
 			method: 'POST',
 			body: JSON.stringify({ residual_percent: 150 }),
 		});
@@ -315,7 +315,7 @@ describe('lease sheets', () => {
 	});
 
 	it('does not leak another user lease sheet', async () => {
-		const res = await authed(`/api/vehicle-lease-sheets/${foreignLeaseSheetId}`);
+		const res = await authed(`/vehicle-lease-sheets/${foreignLeaseSheetId}`);
 
 		expect([403, 404]).toContain(res.status);
 	});
@@ -323,7 +323,7 @@ describe('lease sheets', () => {
 	it('does not confuse a finance sheet id for a lease one', async () => {
 		// Same number, different table. Whatever this returns must not be the
 		// other user's finance sheet.
-		const res = await authed(`/api/vehicle-lease-sheets/${foreignSheetId}`);
+		const res = await authed(`/vehicle-lease-sheets/${foreignSheetId}`);
 
 		if (res.status === 200) {
 			const body = (await res.json()) as { user_id: number };
@@ -336,7 +336,7 @@ describe('lease sheets', () => {
 
 describe('mortgage sheets', () => {
 	it('creates and reads a mortgage sheet', async () => {
-		const res = await authed('/api/mortgage-sheets', {
+		const res = await authed('/mortgage-sheets', {
 			method: 'POST',
 			body: JSON.stringify({
 				sheet_name: 'My House',
@@ -359,7 +359,7 @@ describe('mortgage sheets', () => {
 	it('caps the loan term at 50 years, not 120', async () => {
 		// The vehicle sheets bound their term at 120 *months*; mortgage bounds at
 		// 50 *years*. Easy to copy across by mistake.
-		const res = await authed('/api/mortgage-sheets', {
+		const res = await authed('/mortgage-sheets', {
 			method: 'POST',
 			body: JSON.stringify({ loan_term_years: 60 }),
 		});
@@ -372,7 +372,7 @@ describe('mortgage sheets', () => {
 	});
 
 	it('rejects an invalid property type', async () => {
-		const res = await authed('/api/mortgage-sheets', {
+		const res = await authed('/mortgage-sheets', {
 			method: 'POST',
 			body: JSON.stringify({ property_type: 'CASTLE' }),
 		});
@@ -388,7 +388,7 @@ describe('ownership is not assignable from the payload', () => {
 		// The Laravel version let this through - fill($request->all()) ran after
 		// ownership was assigned, so a supplied user_id won and the record landed
 		// in someone else's account.
-		const res = await authed('/api/vehicle-finance-sheets', {
+		const res = await authed('/vehicle-finance-sheets', {
 			method: 'POST',
 			body: JSON.stringify({ sheet_name: 'Probe', user_id: otherUserId }),
 		});
@@ -399,13 +399,13 @@ describe('ownership is not assignable from the payload', () => {
 	});
 
 	it('ignores a user_id supplied on update', async () => {
-		const created = await authed('/api/vehicle-finance-sheets', {
+		const created = await authed('/vehicle-finance-sheets', {
 			method: 'POST',
 			body: JSON.stringify({ sheet_name: 'Keep mine' }),
 		});
 		const id = Number(((await created.json()) as Record<string, unknown>).id);
 
-		const res = await authed(`/api/vehicle-finance-sheets/${id}`, {
+		const res = await authed(`/vehicle-finance-sheets/${id}`, {
 			method: 'PUT',
 			body: JSON.stringify({ user_id: otherUserId, sheet_name: 'Still mine' }),
 		});

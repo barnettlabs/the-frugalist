@@ -1,3 +1,4 @@
+import { LeaseCalculator, type LeaseSummary } from '@frugalist/contracts/calculators';
 import { Link } from 'expo-router';
 import React, { useMemo } from 'react';
 
@@ -8,7 +9,7 @@ import { DealGradeCard } from '@/components/ui/deal-grade-card';
 import { Book } from '@/components/ui/icons';
 import { SummaryRow } from '@/components/ui/summary-row';
 import { tw } from '@/components/ui/theme';
-import { formatCurrencyWithSymbol, formatPercentage, LeaseCalculator } from '@/lib/calculators';
+import { formatCurrencyWithSymbol, formatPercentage } from '@/lib/calculators';
 import type { VehicleLeaseSheet } from '@/lib/types/models';
 
 interface LeaseDetailProps {
@@ -19,14 +20,14 @@ interface LeaseDetailProps {
 }
 
 export function LeaseDetail({ sheet, onEdit, onDelete, isDeleting }: LeaseDetailProps) {
-	const summary = useMemo(() => new LeaseCalculator(sheet).getSummary(), [sheet]);
+	const summary = useMemo(() => new LeaseCalculator({ ...sheet }).summary(), [sheet]);
 	const { data: user } = useProfile();
 
 	return (
 		<View className={`flex-1 ${tw.pageBg}`}>
 			<TabPageHeader title="Lease estimate" showBack backLabel="Lease" />
 			<ScrollView className="flex-1" contentContainerStyle={{ padding: 16, paddingBottom: 140 }}>
-				<PaymentHeader payment={summary.leasePayment} term={sheet.lease_term} residual={sheet.residual_percent} />
+				<PaymentHeader payment={summary.lease_payment} term={sheet.lease_term} residual={sheet.residual_percent} />
 				<TermsLink />
 				<VehicleInfoCard sheet={sheet} />
 				<PaymentBreakdownCard summary={summary} />
@@ -100,30 +101,32 @@ function VehicleInfoCard({ sheet }: { sheet: VehicleLeaseSheet }) {
 	);
 }
 
-function PaymentBreakdownCard({ summary }: { summary: ReturnType<LeaseCalculator['getSummary']> }) {
+function PaymentBreakdownCard({ summary }: { summary: LeaseSummary }) {
 	return (
 		<View className={`mb-3 p-5 ${tw.card}`}>
 			<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 				Payment breakdown
 			</Text>
 			<View className="gap-2">
-				<SummaryRow label="Principal payment" value={formatCurrencyWithSymbol(summary.monthlyPrincipalPayment)} />
-				<SummaryRow label="Interest payment" value={formatCurrencyWithSymbol(summary.residualMonthlyInterestPayment)} />
-				<SummaryRow label="Monthly tax" value={formatCurrencyWithSymbol(summary.monthlySalesTax)} />
+				<SummaryRow label="Principal payment" value={formatCurrencyWithSymbol(summary.monthly_principal_payment)} />
+				<SummaryRow
+					label="Interest payment"
+					value={formatCurrencyWithSymbol(summary.residual_monthly_interest_payment)}
+				/>
+				<SummaryRow label="Monthly tax" value={formatCurrencyWithSymbol(summary.monthly_sales_tax)} />
 				<View className="my-2 border-t border-border-light dark:border-border-dark" />
-				<SummaryRow label="Monthly payment" value={formatCurrencyWithSymbol(summary.leasePayment)} isBold isHighlight />
+				<SummaryRow
+					label="Monthly payment"
+					value={formatCurrencyWithSymbol(summary.lease_payment)}
+					isBold
+					isHighlight
+				/>
 			</View>
 		</View>
 	);
 }
 
-function FinancialSummaryCard({
-	summary,
-	sheet,
-}: {
-	summary: ReturnType<LeaseCalculator['getSummary']>;
-	sheet: VehicleLeaseSheet;
-}) {
+function FinancialSummaryCard({ summary, sheet }: { summary: LeaseSummary; sheet: VehicleLeaseSheet }) {
 	return (
 		<View className={`mb-3 p-5 ${tw.card}`}>
 			<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
@@ -141,15 +144,15 @@ function FinancialSummaryCard({
 				{sheet.trade_in > 0 && (
 					<SummaryRow label="Trade-in" value={`−${formatCurrencyWithSymbol(sheet.trade_in)}`} isNegative />
 				)}
-				<SummaryRow label="Final dealer price" value={formatCurrencyWithSymbol(summary.finalDealerPrice)} isBold />
-				<SummaryRow label="Gross cap cost" value={formatCurrencyWithSymbol(summary.grossCapCost)} />
-				<SummaryRow label="Net cap cost" value={formatCurrencyWithSymbol(summary.netCapCost)} />
-				<SummaryRow label="Residual amount" value={formatCurrencyWithSymbol(summary.residualAmount)} />
+				<SummaryRow label="Final dealer price" value={formatCurrencyWithSymbol(summary.final_dealer_price)} isBold />
+				<SummaryRow label="Gross cap cost" value={formatCurrencyWithSymbol(summary.gross_cap_cost)} />
+				<SummaryRow label="Net cap cost" value={formatCurrencyWithSymbol(summary.net_cap_cost)} />
+				<SummaryRow label="Residual amount" value={formatCurrencyWithSymbol(summary.residual_amount)} />
 				<View className="my-2 border-t border-border-light dark:border-border-dark" />
-				<SummaryRow label="Cash due at signing" value={formatCurrencyWithSymbol(summary.cashDueAtSigning)} isBold />
+				<SummaryRow label="Cash due at signing" value={formatCurrencyWithSymbol(summary.cash_due_at_signing)} isBold />
 				<SummaryRow
 					label="Total lease cost"
-					value={formatCurrencyWithSymbol(summary.totalLeaseCost)}
+					value={formatCurrencyWithSymbol(summary.total_lease_cost)}
 					isBold
 					isHighlight
 				/>
@@ -158,13 +161,7 @@ function FinancialSummaryCard({
 	);
 }
 
-function LeaseDetailsCard({
-	sheet,
-	summary,
-}: {
-	sheet: VehicleLeaseSheet;
-	summary: ReturnType<LeaseCalculator['getSummary']>;
-}) {
+function LeaseDetailsCard({ sheet, summary }: { sheet: VehicleLeaseSheet; summary: LeaseSummary }) {
 	return (
 		<View className={`mb-3 p-5 ${tw.card}`}>
 			<Text className="mb-3 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
@@ -172,7 +169,7 @@ function LeaseDetailsCard({
 			</Text>
 			<View className="gap-2">
 				<SummaryRow label="Money factor" value={String(sheet.money_factor)} />
-				<SummaryRow label="Implied APR" value={formatPercentage(summary.interestRate)} />
+				<SummaryRow label="Implied APR" value={formatPercentage(summary.interest_rate)} />
 				<SummaryRow label="Residual %" value={formatPercentage(sheet.residual_percent)} />
 				<SummaryRow label="Term" value={`${sheet.lease_term} months`} />
 				<SummaryRow label="Sales tax" value={formatPercentage(sheet.sales_tax_percent)} />

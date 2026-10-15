@@ -33,23 +33,23 @@
 			<div class="grid grid-cols-2 md:grid-cols-4 gap-px bg-border border border-border rounded-md overflow-hidden">
 				<div class="bg-surface p-4">
 					<p class="eyebrow text-[0.625rem]! mb-1.5">Total interest</p>
-					<p class="figure text-xl text-warning leading-none">${{ formatCurrency(amortization.totalInterest) }}</p>
+					<p class="figure text-xl text-warning leading-none">${{ formatCurrency(amortization.total_interest) }}</p>
 				</div>
 				<div class="bg-surface p-4">
 					<p class="eyebrow text-[0.625rem]! mb-1.5">Total principal</p>
-					<p class="figure text-xl text-primary leading-none">${{ formatCurrency(amortization.totalPrincipal) }}</p>
+					<p class="figure text-xl text-primary leading-none">${{ formatCurrency(amortization.total_principal) }}</p>
 				</div>
 				<div class="bg-surface p-4">
 					<p class="eyebrow text-[0.625rem]! mb-1.5">Months to pay</p>
-					<p class="figure text-xl text-primary leading-none">{{ amortization.monthsPaid }}</p>
+					<p class="figure text-xl text-primary leading-none">{{ amortization.months_paid }}</p>
 				</div>
 				<div class="bg-surface p-4">
 					<p class="eyebrow text-[0.625rem]! mb-1.5">Months saved</p>
 					<p
 						class="figure text-xl leading-none"
-						:class="amortization.monthsSaved > 0 ? 'text-success' : 'text-text-muted'"
+						:class="amortization.months_saved > 0 ? 'text-success' : 'text-text-muted'"
 					>
-						{{ amortization.monthsSaved > 0 ? amortization.monthsSaved : '·' }}
+						{{ amortization.months_saved > 0 ? amortization.months_saved : '·' }}
 					</p>
 				</div>
 			</div>
@@ -75,16 +75,16 @@
 								${{ formatCurrency(payment.payment) }}
 							</td>
 							<td v-if="showWithExtra" class="px-3 py-2.5 text-sm numeral text-success text-right">
-								${{ formatCurrency(payment.extraPayment) }}
+								${{ formatCurrency(payment.extra_payment) }}
 							</td>
 							<td class="px-3 py-2.5 text-sm numeral text-accent-dark text-right">
-								${{ formatCurrency(payment.principalPayment - payment.extraPayment) }}
+								${{ formatCurrency(payment.principal_payment - payment.extra_payment) }}
 							</td>
 							<td class="px-3 py-2.5 text-sm numeral text-warning text-right">
-								${{ formatCurrency(payment.interestPayment) }}
+								${{ formatCurrency(payment.interest_payment) }}
 							</td>
 							<td class="px-3 py-2.5 text-sm numeral text-primary text-right">
-								${{ formatCurrency(payment.remainingBalance) }}
+								${{ formatCurrency(payment.remaining_balance) }}
 							</td>
 						</tr>
 					</tbody>
@@ -108,11 +108,10 @@
 </template>
 
 <script setup>
+import { FinanceCalculator } from '@frugalist/contracts';
 import { computed, ref } from 'vue';
 
 import { formatCurrency } from '@/utils/formatters.js';
-
-import { FinanceCalculator } from '../../utils/financeCalculator.js';
 
 const props = defineProps({
 	data: {
@@ -127,7 +126,7 @@ const showAllPayments = ref(false);
 
 const amortization = computed(() => {
 	const calculator = new FinanceCalculator(props.data);
-	return calculator.calculateAmortization(showWithExtra.value);
+	return calculator.amortization(showWithExtra.value);
 });
 
 const displayedPayments = computed(() => {

@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import { LeaseCalculator } from '@frugalist/contracts';
 import type { PropType } from 'vue';
 import { computed, ref } from 'vue';
 
 import type { LeaseFormData } from '@/types/models';
 import { formatCurrency, parseIntOrZero } from '@/utils/formatters.js';
-
-import { LeaseCalculator } from '../../utils/leaseCalculator.js';
 
 const props = defineProps({
 	data: {
@@ -18,16 +17,16 @@ const chartType = ref('pie');
 
 const summary = computed(() => {
 	const calculator = new LeaseCalculator(props.data);
-	return calculator.getSummary();
+	return calculator.summary();
 });
 
 const paymentBreakdown = computed(() => {
 	if (!summary.value) return null;
 
 	return {
-		principal: summary.value.monthlyPrincipalPayment * parseIntOrZero(props.data.lease_term),
-		interest: summary.value.residualMonthlyInterestPayment * parseIntOrZero(props.data.lease_term),
-		salesTax: summary.value.monthlySalesTax * parseIntOrZero(props.data.lease_term),
+		principal: summary.value.monthly_principal_payment * parseIntOrZero(props.data.lease_term),
+		interest: summary.value.residual_monthly_interest_payment * parseIntOrZero(props.data.lease_term),
+		salesTax: summary.value.monthly_sales_tax * parseIntOrZero(props.data.lease_term),
 	};
 });
 

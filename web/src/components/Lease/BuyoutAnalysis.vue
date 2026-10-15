@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import { LeaseCalculator } from '@frugalist/contracts';
 import type { PropType } from 'vue';
 import { computed, ref } from 'vue';
 
 import type { LeaseFormData } from '@/types/models';
 import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.js';
-
-import { LeaseCalculator } from '../../utils/leaseCalculator.js';
 
 const props = defineProps({
 	data: {
@@ -18,13 +17,13 @@ const expanded = ref(false);
 
 const summary = computed(() => {
 	const calculator = new LeaseCalculator(props.data);
-	return calculator.getSummary();
+	return calculator.summary();
 });
 
 // Calculate buyout price at lease end
 const endOfLeaseBuyout = computed(() => {
 	if (!summary.value) return 0;
-	return summary.value.residualAmount;
+	return summary.value.residual_amount;
 });
 
 interface BuyoutScenario {
@@ -41,8 +40,8 @@ const earlyBuyoutScenarios = computed((): BuyoutScenario[] => {
 	if (!summary.value || !props.data.lease_term) return [];
 
 	const leaseTerm = parseIntOrZero(props.data.lease_term);
-	const monthlyPayment = summary.value.leasePayment;
-	const residualAmount = summary.value.residualAmount;
+	const monthlyPayment = summary.value.lease_payment;
+	const residualAmount = summary.value.residual_amount;
 	const msrp = parseOrZero(props.data.msrp);
 
 	const scenarios: BuyoutScenario[] = [];

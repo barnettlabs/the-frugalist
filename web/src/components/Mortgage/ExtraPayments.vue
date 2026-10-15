@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { MortgageCalculator } from '@frugalist/contracts';
 import { computed, ref, watch } from 'vue';
 
 import MaskedNumberInput from '@/components/MaskedNumberInput.vue';
 import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters';
-import { MortgageCalculator } from '@/utils/mortgageCalculator';
 
 const props = defineProps({
 	modelValue: {
@@ -76,27 +76,23 @@ const totalForPayment = (p: ExtraPayment) => {
 const totalExtra = () => extraPayments.value.reduce((sum, p) => sum + totalForPayment(p), 0);
 
 const interestSaved = () => {
-	const without = new MortgageCalculator({ ...props.data, extra_payments_json: '' } as any).calculateAmortization(
-		false
-	);
+	const without = new MortgageCalculator({ ...props.data, extra_payments_json: '' }).amortization(false);
 	const withExtra = new MortgageCalculator({
 		...props.data,
 		extra_payments_json: JSON.stringify(extraPayments.value),
-	} as any).calculateAmortization(true);
+	}).amortization(true);
 	if (!without || !withExtra) return 0;
-	return Math.max(0, without.totalInterest - withExtra.totalInterest);
+	return Math.max(0, without.total_interest - withExtra.total_interest);
 };
 
 const timeSaved = () => {
-	const without = new MortgageCalculator({ ...props.data, extra_payments_json: '' } as any).calculateAmortization(
-		false
-	);
+	const without = new MortgageCalculator({ ...props.data, extra_payments_json: '' }).amortization(false);
 	const withExtra = new MortgageCalculator({
 		...props.data,
 		extra_payments_json: JSON.stringify(extraPayments.value),
-	} as any).calculateAmortization(true);
+	}).amortization(true);
 	if (!without || !withExtra) return 0;
-	return Math.max(0, without.monthsPaid - withExtra.monthsPaid);
+	return Math.max(0, without.months_paid - withExtra.months_paid);
 };
 </script>
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { LeaseCalculator } from '@frugalist/contracts';
 import {
 	ArrowUpRightIcon,
 	BookOpenIcon,
@@ -17,7 +18,6 @@ import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
 import type { VehicleLeaseSheet } from '@/types/models';
 import { formatCurrency } from '@/utils/formatters';
-import { LeaseCalculator } from '@/utils/leaseCalculator';
 
 const router = useRouter();
 
@@ -94,15 +94,15 @@ const isSelected = (sheetId: number) => {
 };
 
 const getMonthlyPayment = (sheet: VehicleLeaseSheet) => {
-	const calculator = new LeaseCalculator(sheet as any);
-	return calculator.calculateLeasePayment();
+	const calculator = new LeaseCalculator({ ...sheet });
+	return calculator.leasePayment();
 };
 
 // Cap cost is derived, not stored: the sheet has no capitalized_cost column,
 // so reading one rendered $0.00 for every lease.
 const getCapCost = (sheet: VehicleLeaseSheet) => {
-	const calculator = new LeaseCalculator(sheet as any);
-	return calculator.calculateNetCapCost();
+	const calculator = new LeaseCalculator({ ...sheet });
+	return calculator.netCapCost();
 };
 
 const getResidualValue = (sheet: VehicleLeaseSheet) => {

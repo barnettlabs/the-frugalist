@@ -1,3 +1,4 @@
+import { FinanceCalculator, type FinanceSummary } from '@frugalist/contracts/calculators';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useMemo } from 'react';
 import type { Control, UseFormSetValue } from 'react-hook-form';
@@ -14,7 +15,7 @@ import {
 } from '@/components/shared/form-sections';
 import { ActionFooter, ControlledInput, Select, TabPageHeader, Text, View } from '@/components/ui';
 import { tw } from '@/components/ui/theme';
-import { FinanceCalculator, formatCurrencyWithSymbol } from '@/lib/calculators';
+import { formatCurrencyWithSymbol } from '@/lib/calculators';
 import type { FinanceFormData } from '@/lib/types/models';
 import { VehicleType } from '@/lib/types/models';
 
@@ -78,7 +79,7 @@ export function FinanceForm({
 		defaultValues: initialData,
 	});
 	const watchedValues = useWatch({ control });
-	const summary = useMemo(() => new FinanceCalculator(watchedValues as FinanceFormData).getSummary(), [watchedValues]);
+	const summary = useMemo(() => new FinanceCalculator({ ...watchedValues }).summary(), [watchedValues]);
 
 	return (
 		<View className={`flex-1 ${tw.pageBg}`}>
@@ -108,7 +109,7 @@ export function FinanceForm({
 	);
 }
 
-function SummaryCard({ summary }: { summary: ReturnType<FinanceCalculator['getSummary']> }) {
+function SummaryCard({ summary }: { summary: FinanceSummary }) {
 	return (
 		<View className="mb-5 overflow-hidden rounded-md border border-primary-dark bg-primary">
 			<View className="border-b border-white/10 px-5 py-3">
@@ -117,22 +118,22 @@ function SummaryCard({ summary }: { summary: ReturnType<FinanceCalculator['getSu
 			<View className="p-5">
 				<Text className="mb-1.5 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Monthly</Text>
 				<Text className="font-mono tracking-tight text-white" style={{ fontSize: 36, lineHeight: 38 }}>
-					{formatCurrencyWithSymbol(summary.monthlyPayment)}
+					{formatCurrencyWithSymbol(summary.monthly_payment)}
 				</Text>
 				<View className="mt-5 flex-row justify-between border-t border-white/10 pt-4">
 					<View>
 						<Text className="mb-1 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Financed</Text>
-						<Text className="font-mono text-sm text-white">{formatCurrencyWithSymbol(summary.loanAmount)}</Text>
+						<Text className="font-mono text-sm text-white">{formatCurrencyWithSymbol(summary.loan_amount)}</Text>
 					</View>
 					<View>
 						<Text className="mb-1 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Interest</Text>
 						<Text className="font-mono text-sm text-signal-light">
-							{formatCurrencyWithSymbol(summary.interestAmount)}
+							{formatCurrencyWithSymbol(summary.interest_amount)}
 						</Text>
 					</View>
 					<View>
 						<Text className="mb-1 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Total</Text>
-						<Text className="font-mono text-sm text-white">{formatCurrencyWithSymbol(summary.grandTotal)}</Text>
+						<Text className="font-mono text-sm text-white">{formatCurrencyWithSymbol(summary.grand_total)}</Text>
 					</View>
 				</View>
 			</View>

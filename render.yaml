@@ -89,7 +89,9 @@ services:
   - type: web
     name: frugalist-web
     runtime: static
-    buildCommand: pnpm install --frozen-lockfile && pnpm --filter thefrugalist-web build
+    # Contracts first: the calculators come from @frugalist/contracts, whose
+    # package exports resolve through its compiled dist/.
+    buildCommand: pnpm install --frozen-lockfile && pnpm --filter @frugalist/contracts build && pnpm --filter thefrugalist-web build
     staticPublishPath: ./web/dist
     routes:
       # Serve a prerendered document where one exists, otherwise the SPA shell.

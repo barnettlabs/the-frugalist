@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { FinanceCalculator } from '@frugalist/contracts';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { financeApi } from '@/api/finance';
 import PageHeader from '@/components/PageHeader.vue';
-import { FinanceCalculator } from '@/utils/financeCalculator';
 import { parseOrZero } from '@/utils/formatters';
 import { formatCurrency } from '@/utils/formatters';
 
@@ -30,12 +30,12 @@ const loadSheets = async () => {
 const getCalculations = (sheet: any) => {
 	try {
 		const calculator = new FinanceCalculator(sheet);
-		const summary = calculator.getSummary();
+		const summary = calculator.summary();
 		return {
-			monthlyPayment: summary?.monthlyPayment || 0,
-			totalInterest: summary?.interestAmount || 0,
-			loanAmount: summary?.loanAmount || 0,
-			totalCost: (summary?.paymentsTotal || 0) + parseOrZero(sheet.down_payment),
+			monthlyPayment: summary?.monthly_payment || 0,
+			totalInterest: summary?.interest_amount || 0,
+			loanAmount: summary?.loan_amount || 0,
+			totalCost: (summary?.payments_total || 0) + parseOrZero(sheet.down_payment),
 		};
 	} catch {
 		return { monthlyPayment: 0, totalInterest: 0, loanAmount: 0, totalCost: 0 };

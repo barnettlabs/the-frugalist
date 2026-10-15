@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { FinanceCalculator } from '@frugalist/contracts';
 import {
 	ArrowUpRightIcon,
 	BanknotesIcon,
@@ -16,7 +17,6 @@ import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
 import type { VehicleFinanceSheet } from '@/types/models';
-import { FinanceCalculator } from '@/utils/financeCalculator';
 import { formatCurrency } from '@/utils/formatters';
 
 const router = useRouter();
@@ -64,13 +64,13 @@ const confirmDelete = async () => {
 
 const getSheetCalculations = (sheet: VehicleFinanceSheet) => {
 	try {
-		const calculator = new FinanceCalculator(sheet as any);
-		const summary = calculator.getSummary();
+		const calculator = new FinanceCalculator({ ...sheet });
+		const summary = calculator.summary();
 		return {
-			monthlyPayment: summary?.monthlyPayment || 0,
-			totalInterest: summary?.interestAmount || 0,
-			loanAmount: summary?.loanAmount || 0,
-			purchasePrice: summary?.purchasePrice || 0,
+			monthlyPayment: summary?.monthly_payment || 0,
+			totalInterest: summary?.interest_amount || 0,
+			loanAmount: summary?.loan_amount || 0,
+			purchasePrice: summary?.purchase_price || 0,
 		};
 	} catch {
 		return {

@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { LeaseCalculator } from '@frugalist/contracts';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { leaseApi } from '@/api/lease';
 import PageHeader from '@/components/PageHeader.vue';
 import { formatCurrency } from '@/utils/formatters';
-import { LeaseCalculator } from '@/utils/leaseCalculator';
 
 const route = useRoute();
 
@@ -13,7 +13,7 @@ const sheets = ref<any[]>([]);
 
 // Cap cost is derived, not stored: reading a capitalized_cost column that does
 // not exist rendered $0.00 for every lease in the comparison.
-const getCapCost = (sheet: any) => new LeaseCalculator(sheet).calculateNetCapCost();
+const getCapCost = (sheet: any) => new LeaseCalculator(sheet).netCapCost();
 const loading = ref(true);
 
 const loadSheets = async () => {

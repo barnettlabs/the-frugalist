@@ -1,3 +1,4 @@
+import { type FinanceAmortization, FinanceCalculator, type FinanceSummary } from '@frugalist/contracts/calculators';
 import { Link } from 'expo-router';
 import React, { useMemo } from 'react';
 
@@ -8,7 +9,7 @@ import { DealGradeCard } from '@/components/ui/deal-grade-card';
 import { Book } from '@/components/ui/icons';
 import { SummaryRow } from '@/components/ui/summary-row';
 import { tw } from '@/components/ui/theme';
-import { FinanceCalculator, formatCurrencyWithSymbol } from '@/lib/calculators';
+import { formatCurrencyWithSymbol } from '@/lib/calculators';
 import type { VehicleFinanceSheet } from '@/lib/types/models';
 
 interface FinanceDetailProps {
@@ -19,14 +20,14 @@ interface FinanceDetailProps {
 }
 
 export function FinanceDetail({ sheet, onEdit, onDelete, isDeleting }: FinanceDetailProps) {
-	const summary = useMemo(() => new FinanceCalculator(sheet).getSummary(), [sheet]);
+	const summary = useMemo(() => new FinanceCalculator({ ...sheet }).summary(), [sheet]);
 	const { data: user } = useProfile();
 
 	return (
 		<View className={`flex-1 ${tw.pageBg}`}>
 			<TabPageHeader title="Finance estimate" showBack backLabel="Finance" />
 			<ScrollView className="flex-1" contentContainerStyle={{ padding: 16, paddingBottom: 140 }}>
-				<PaymentHeader payment={summary.monthlyPayment} term={sheet.finance_term} rate={sheet.interest_rate} />
+				<PaymentHeader payment={summary.monthly_payment} term={sheet.finance_term} rate={sheet.interest_rate} />
 				<TermsLink />
 				<VehicleInfoCard sheet={sheet} />
 				<FinancialSummaryCard summary={summary} sheet={sheet} />
@@ -92,13 +93,7 @@ function VehicleInfoCard({ sheet }: { sheet: VehicleFinanceSheet }) {
 	);
 }
 
-function FinancialSummaryCard({
-	summary,
-	sheet,
-}: {
-	summary: ReturnType<FinanceCalculator['getSummary']>;
-	sheet: VehicleFinanceSheet;
-}) {
+function FinancialSummaryCard({ summary, sheet }: { summary: FinanceSummary; sheet: VehicleFinanceSheet }) {
 	return (
 		<View className={`mb-3 p-5 ${tw.card}`}>
 			<Text className="mb-4 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
@@ -112,37 +107,35 @@ function FinancialSummaryCard({
 				{sheet.rebates > 0 && (
 					<SummaryRow label="Rebates" value={`-${formatCurrencyWithSymbol(sheet.rebates)}`} isNegative />
 				)}
-				<SummaryRow label="Purchase Price" value={formatCurrencyWithSymbol(summary.purchasePrice)} isBold />
+				<SummaryRow label="Purchase Price" value={formatCurrencyWithSymbol(summary.purchase_price)} isBold />
 				{sheet.fees > 0 && <SummaryRow label="Fees" value={formatCurrencyWithSymbol(sheet.fees)} />}
-				<SummaryRow label="Sales Tax" value={formatCurrencyWithSymbol(summary.salesTaxAmount)} />
+				<SummaryRow label="Sales Tax" value={formatCurrencyWithSymbol(summary.sales_tax_amount)} />
 				{sheet.down_payment > 0 && (
 					<SummaryRow label="Down Payment" value={`-${formatCurrencyWithSymbol(sheet.down_payment)}`} isNegative />
 				)}
 				<View className="my-2 border-t border-border-light dark:border-border-dark" />
-				<SummaryRow label="Loan Amount" value={formatCurrencyWithSymbol(summary.loanAmount)} isBold />
-				<SummaryRow label="Total Interest" value={formatCurrencyWithSymbol(summary.interestAmount)} />
-				<SummaryRow label="Total Payments" value={formatCurrencyWithSymbol(summary.paymentsTotal)} />
-				<SummaryRow label="Grand Total" value={formatCurrencyWithSymbol(summary.grandTotal)} isBold isHighlight />
+				<SummaryRow label="Loan Amount" value={formatCurrencyWithSymbol(summary.loan_amount)} isBold />
+				<SummaryRow label="Total Interest" value={formatCurrencyWithSymbol(summary.interest_amount)} />
+				<SummaryRow label="Total Payments" value={formatCurrencyWithSymbol(summary.payments_total)} />
+				<SummaryRow label="Grand Total" value={formatCurrencyWithSymbol(summary.grand_total)} isBold isHighlight />
 			</View>
 		</View>
 	);
 }
 
-type AmortizationType = NonNullable<ReturnType<FinanceCalculator['getSummary']>['amortization']>;
-
-function AmortizationCard({ amortization }: { amortization: AmortizationType }) {
+function AmortizationCard({ amortization }: { amortization: FinanceAmortization }) {
 	return (
 		<View className={`mb-3 p-5 ${tw.card}`}>
 			<Text className="mb-4 text-[10px] font-semibold uppercase tracking-eyebrow text-text-muted-light dark:text-text-muted-dark">
 				Amortization
 			</Text>
 			<View className="gap-2">
-				<SummaryRow label="Payments" value={`${amortization.monthsPaid} months`} />
-				{amortization.monthsSaved > 0 && (
-					<SummaryRow label="Months Saved" value={`${amortization.monthsSaved} months`} isHighlight />
+				<SummaryRow label="Payments" value={`${amortization.months_paid} months`} />
+				{amortization.months_saved > 0 && (
+					<SummaryRow label="Months Saved" value={`${amortization.months_saved} months`} isHighlight />
 				)}
-				<SummaryRow label="Total Principal" value={formatCurrencyWithSymbol(amortization.totalPrincipal)} />
-				<SummaryRow label="Total Interest" value={formatCurrencyWithSymbol(amortization.totalInterest)} />
+				<SummaryRow label="Total Principal" value={formatCurrencyWithSymbol(amortization.total_principal)} />
+				<SummaryRow label="Total Interest" value={formatCurrencyWithSymbol(amortization.total_interest)} />
 			</View>
 		</View>
 	);

@@ -1,3 +1,4 @@
+import { LeaseCalculator, type LeaseSummary } from '@frugalist/contracts/calculators';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useMemo } from 'react';
 import type { Control, UseFormSetValue } from 'react-hook-form';
@@ -14,7 +15,7 @@ import {
 } from '@/components/shared/form-sections';
 import { ActionFooter, ControlledInput, Select, TabPageHeader, Text, View } from '@/components/ui';
 import { tw } from '@/components/ui/theme';
-import { formatCurrencyWithSymbol, LeaseCalculator } from '@/lib/calculators';
+import { formatCurrencyWithSymbol } from '@/lib/calculators';
 import type { LeaseFormData } from '@/lib/types/models';
 import { VehicleType } from '@/lib/types/models';
 
@@ -77,7 +78,7 @@ export function LeaseForm({
 		defaultValues: initialData,
 	});
 	const watchedValues = useWatch({ control });
-	const summary = useMemo(() => new LeaseCalculator(watchedValues as LeaseFormData).getSummary(), [watchedValues]);
+	const summary = useMemo(() => new LeaseCalculator({ ...watchedValues }).summary(), [watchedValues]);
 
 	return (
 		<View className={`flex-1 ${tw.pageBg}`}>
@@ -107,7 +108,7 @@ export function LeaseForm({
 	);
 }
 
-function SummaryCard({ summary }: { summary: ReturnType<LeaseCalculator['getSummary']> }) {
+function SummaryCard({ summary }: { summary: LeaseSummary }) {
 	return (
 		<View className="mb-5 overflow-hidden rounded-md border border-primary-dark" style={{ backgroundColor: '#171B27' }}>
 			<View className="border-b border-white/10 px-5 py-3">
@@ -116,24 +117,26 @@ function SummaryCard({ summary }: { summary: ReturnType<LeaseCalculator['getSumm
 			<View className="p-5">
 				<Text className="mb-1.5 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Monthly</Text>
 				<Text className="font-mono tracking-tight text-white" style={{ fontSize: 36, lineHeight: 38 }}>
-					{formatCurrencyWithSymbol(summary.leasePayment)}
+					{formatCurrencyWithSymbol(summary.lease_payment)}
 				</Text>
 				<View className="mt-5 flex-row justify-between border-t border-white/10 pt-4">
 					<View>
 						<Text className="mb-1 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">
 							Due at signing
 						</Text>
-						<Text className="font-mono text-sm text-white">{formatCurrencyWithSymbol(summary.cashDueAtSigning)}</Text>
+						<Text className="font-mono text-sm text-white">
+							{formatCurrencyWithSymbol(summary.cash_due_at_signing)}
+						</Text>
 					</View>
 					<View>
 						<Text className="mb-1 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Total cost</Text>
 						<Text className="font-mono text-sm" style={{ color: '#E6B25A' }}>
-							{formatCurrencyWithSymbol(summary.totalLeaseCost)}
+							{formatCurrencyWithSymbol(summary.total_lease_cost)}
 						</Text>
 					</View>
 					<View>
 						<Text className="mb-1 text-[10px] font-semibold uppercase tracking-eyebrow text-white/60">Residual</Text>
-						<Text className="font-mono text-sm text-white">{formatCurrencyWithSymbol(summary.residualAmount)}</Text>
+						<Text className="font-mono text-sm text-white">{formatCurrencyWithSymbol(summary.residual_amount)}</Text>
 					</View>
 				</View>
 			</View>

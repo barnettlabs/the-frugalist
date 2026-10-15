@@ -1,10 +1,9 @@
 <script setup lang="ts">
+import { LeaseCalculator } from '@frugalist/contracts';
 import type { PropType } from 'vue';
 import { computed, ref } from 'vue';
 
 import type { LeaseFormData } from '@/types/models';
-
-import { LeaseCalculator } from '../../utils/leaseCalculator.js';
 
 const props = defineProps({
 	data: {
@@ -17,7 +16,7 @@ const expanded = ref(false);
 
 const summary = computed(() => {
 	const calculator = new LeaseCalculator(props.data);
-	return calculator.getSummary();
+	return calculator.summary();
 });
 
 const costPerMile = computed(() => {
@@ -26,7 +25,7 @@ const costPerMile = computed(() => {
 	const leaseTerm = parseIntOrZero(props.data.lease_term);
 	const totalMiles = assumedMiles * (leaseTerm / 12);
 	if (totalMiles === 0) return '0.00';
-	return (summary.value.totalLeaseCost / totalMiles).toFixed(2);
+	return (summary.value.total_lease_cost / totalMiles).toFixed(2);
 });
 
 const depreciationRate = computed(() => {
@@ -51,11 +50,11 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border rounded-md overflow-hidden">
 				<div class="bg-surface p-4">
 					<p class="eyebrow text-[0.625rem]! mb-1.5">Monthly</p>
-					<p class="figure text-2xl text-primary leading-none">${{ formatCurrency(summary.leasePayment) }}</p>
+					<p class="figure text-2xl text-primary leading-none">${{ formatCurrency(summary.lease_payment) }}</p>
 				</div>
 				<div class="bg-surface p-4">
 					<p class="eyebrow text-[0.625rem]! mb-1.5">Due at signing</p>
-					<p class="figure text-2xl text-primary leading-none">${{ formatCurrency(summary.cashDueAtSigning) }}</p>
+					<p class="figure text-2xl text-primary leading-none">${{ formatCurrency(summary.cash_due_at_signing) }}</p>
 				</div>
 			</div>
 
@@ -78,7 +77,9 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 						</div>
 						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Final dealer price</dt>
-							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.finalDealerPrice) }}</dd>
+							<dd class="text-sm numeral text-primary font-medium">
+								${{ formatCurrency(summary.final_dealer_price) }}
+							</dd>
 						</div>
 					</dl>
 				</div>
@@ -89,7 +90,7 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 					<dl class="divide-y divide-border border-y border-border">
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Final dealer price</dt>
-							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.finalDealerPrice) }}</dd>
+							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.final_dealer_price) }}</dd>
 						</div>
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Doc fee</dt>
@@ -105,7 +106,7 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 						</div>
 						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Gross cap cost</dt>
-							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.grossCapCost) }}</dd>
+							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.gross_cap_cost) }}</dd>
 						</div>
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Down payment</dt>
@@ -117,7 +118,7 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 						</div>
 						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Net cap cost</dt>
-							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.netCapCost) }}</dd>
+							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.net_cap_cost) }}</dd>
 						</div>
 					</dl>
 				</div>
@@ -136,7 +137,7 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 						</div>
 						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Residual amount</dt>
-							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.residualAmount) }}</dd>
+							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.residual_amount) }}</dd>
 						</div>
 					</dl>
 				</div>
@@ -147,21 +148,21 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 					<dl class="divide-y divide-border border-y border-border">
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Principal payment</dt>
-							<dd class="text-sm numeral text-accent-dark">${{ formatCurrency(summary.monthlyPrincipalPayment) }}</dd>
+							<dd class="text-sm numeral text-accent-dark">${{ formatCurrency(summary.monthly_principal_payment) }}</dd>
 						</div>
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Interest payment</dt>
 							<dd class="text-sm numeral text-warning">
-								${{ formatCurrency(summary.residualMonthlyInterestPayment) }}
+								${{ formatCurrency(summary.residual_monthly_interest_payment) }}
 							</dd>
 						</div>
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Monthly sales tax</dt>
-							<dd class="text-sm numeral text-signal-dark">${{ formatCurrency(summary.monthlySalesTax) }}</dd>
+							<dd class="text-sm numeral text-signal-dark">${{ formatCurrency(summary.monthly_sales_tax) }}</dd>
 						</div>
 						<div class="flex justify-between py-2.5 bg-tan/40 -mx-2 px-2 rounded-xs">
 							<dt class="text-sm font-medium text-primary">Total monthly</dt>
-							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.leasePayment) }}</dd>
+							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.lease_payment) }}</dd>
 						</div>
 					</dl>
 				</div>
@@ -173,7 +174,7 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Money factor</dt>
 							<dd class="text-sm numeral text-primary">
-								{{ data.money_factor }} <span class="text-text-muted">({{ summary.interestRate.toFixed(2) }}%)</span>
+								{{ data.money_factor }} <span class="text-text-muted">({{ summary.interest_rate.toFixed(2) }}%)</span>
 							</dd>
 						</div>
 						<div class="flex justify-between py-2">
@@ -182,7 +183,7 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 						</div>
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Total lease cost</dt>
-							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.totalLeaseCost) }}</dd>
+							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.total_lease_cost) }}</dd>
 						</div>
 						<div class="flex justify-between py-2">
 							<dt class="text-sm text-text-muted">Cost per mile</dt>
@@ -202,16 +203,16 @@ import { formatCurrency, parseIntOrZero, parseOrZero } from '@/utils/formatters.
 						<div class="flex justify-between">
 							<dt class="text-sm text-text-muted">Monthly × {{ data.lease_term }}</dt>
 							<dd class="text-sm numeral text-primary">
-								${{ formatCurrency(summary.leasePayment * parseIntOrZero(data.lease_term)) }}
+								${{ formatCurrency(summary.lease_payment * parseIntOrZero(data.lease_term)) }}
 							</dd>
 						</div>
 						<div class="flex justify-between">
 							<dt class="text-sm text-text-muted">Cash due at signing</dt>
-							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.cashDueAtSigning) }}</dd>
+							<dd class="text-sm numeral text-primary">${{ formatCurrency(summary.cash_due_at_signing) }}</dd>
 						</div>
 						<div class="flex justify-between pt-2 border-t border-border">
 							<dt class="text-sm font-medium text-primary">Total lease cost</dt>
-							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.totalLeaseCost) }}</dd>
+							<dd class="text-sm numeral text-primary font-medium">${{ formatCurrency(summary.total_lease_cost) }}</dd>
 						</div>
 					</dl>
 				</div>

@@ -24,19 +24,19 @@ const del = (path: string, token: string, body?: unknown) =>
 		...(body === undefined ? {} : { body: JSON.stringify(body) }),
 	});
 
-describe('DELETE /api/profile', () => {
+describe('DELETE /profile', () => {
 	it('deletes the account and cascades the user data', async () => {
 		const user = await createLegacyUser();
 		const token = await signIn(app, user);
 
 		// Give the account something that must go with it.
-		await app.request('/api/vehicle-finance-sheets', {
+		await app.request('/vehicle-finance-sheets', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 			body: JSON.stringify({ sheet_name: 'Should be deleted' }),
 		});
 
-		const res = await del('/api/profile', token, { password: user.password });
+		const res = await del('/profile', token, { password: user.password });
 
 		expect(res.status, await res.clone().text()).toBe(200);
 		expect((await res.json()) as { message: string }).toEqual({
@@ -57,7 +57,7 @@ describe('DELETE /api/profile', () => {
 		const user = await createLegacyUser();
 		const token = await signIn(app, user);
 
-		const res = await del('/api/profile', token, { password: 'not-my-password' });
+		const res = await del('/profile', token, { password: 'not-my-password' });
 
 		expect(res.status).toBe(422);
 		const body = (await res.json()) as { errors: Record<string, string[]> };
@@ -70,7 +70,7 @@ describe('DELETE /api/profile', () => {
 		const user = await createLegacyUser();
 		const token = await signIn(app, user);
 
-		const res = await del('/api/profile', token, {});
+		const res = await del('/profile', token, {});
 
 		expect(res.status).toBe(422);
 		const body = (await res.json()) as { errors: Record<string, string[]> };
@@ -81,25 +81,25 @@ describe('DELETE /api/profile', () => {
 		const user = await createLegacyUser({ password: 'legacy-bcrypt-secret' });
 		const token = await signIn(app, user);
 
-		const res = await del('/api/profile', token, { password: 'legacy-bcrypt-secret' });
+		const res = await del('/profile', token, { password: 'legacy-bcrypt-secret' });
 
 		expect(res.status).toBe(200);
 	});
 
 	it('rejects an anonymous request', async () => {
-		const res = await app.request('/api/profile', { method: 'DELETE' });
+		const res = await app.request('/profile', { method: 'DELETE' });
 		expect(res.status).toBe(401);
 	});
 });
 
-describe('DELETE /api/user', () => {
+describe('DELETE /user', () => {
 	it('serves the Expo client path too', async () => {
 		// The two clients disagree on the path; both are honoured rather than
 		// picking one and breaking a client.
 		const user = await createLegacyUser();
 		const token = await signIn(app, user);
 
-		const res = await del('/api/user', token, { password: user.password });
+		const res = await del('/user', token, { password: user.password });
 
 		expect(res.status, await res.clone().text()).toBe(200);
 		expect(await db().select().from(users).where(eq(users.id, user.id))).toHaveLength(0);
@@ -111,9 +111,9 @@ describe('after deletion', () => {
 		const user = await createLegacyUser();
 		const token = await signIn(app, user);
 
-		await del('/api/profile', token, { password: user.password });
+		await del('/profile', token, { password: user.password });
 
-		const res = await app.request('/api/user', {
+		const res = await app.request('/user', {
 			headers: { Authorization: `Bearer ${token}` },
 		});
 

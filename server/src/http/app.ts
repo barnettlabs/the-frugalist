@@ -87,9 +87,9 @@ export function createApp() {
 	app.onError(errorHandler);
 	app.notFound(notFoundHandler);
 
-	// Better Auth owns everything under /api/auth: sign-in, sign-up, sign-out,
+	// Better Auth owns everything under /auth: sign-in, sign-up, sign-out,
 	// session, password reset, email verification.
-	app.on(['GET', 'POST'], '/api/auth/*', (c) => auth().handler(c.req.raw));
+	app.on(['GET', 'POST'], '/auth/*', (c) => auth().handler(c.req.raw));
 
 	// Resolve the session for every other route. Handlers that require a user
 	// add requireAuth; handlers that merely behave differently for guests can
@@ -99,33 +99,33 @@ export function createApp() {
 	app.route('/', healthRoutes);
 
 	// Public
-	app.route('/api/calculators', calculatorRoutes);
-	app.route('/api', publicRoutes);
+	app.route('/calculators', calculatorRoutes);
+	app.route('/', publicRoutes);
 
 	// Sanctum-shaped auth, translated onto Better Auth. Both clients call these
 	// paths, and the shipped mobile build cannot be changed on demand - see
-	// routes/auth-compat.ts. Mounted before the authenticated routers so /api/user
-	// and /api/logout resolve here.
-	app.route('/api', authCompatRoutes);
+	// routes/auth-compat.ts. Mounted before the authenticated routers so /user
+	// and /logout resolve here.
+	app.route('/', authCompatRoutes);
 
 	// Authenticated
-	// Account deletion is mounted before the profile router so DELETE /api/profile
+	// Account deletion is mounted before the profile router so DELETE /profile
 	// resolves here; the profile router owns GET and PUT.
-	app.route('/api', accountRoutes);
-	app.route('/api/profile', profileRoutes);
-	app.route('/api/dashboard', dashboardRoutes);
-	app.route('/api/vehicle-finance-sheets', financeSheetRoutes);
-	app.route('/api/vehicle-lease-sheets', leaseSheetRoutes);
-	app.route('/api/mortgage-sheets', mortgageSheetRoutes);
-	app.route('/api/watch', watchRoutes);
-	app.route('/api/notifications', notificationRoutes);
-	app.route('/api/devices', deviceRoutes);
-	app.route('/api/ai', aiRoutes);
+	app.route('/', accountRoutes);
+	app.route('/profile', profileRoutes);
+	app.route('/dashboard', dashboardRoutes);
+	app.route('/vehicle-finance-sheets', financeSheetRoutes);
+	app.route('/vehicle-lease-sheets', leaseSheetRoutes);
+	app.route('/mortgage-sheets', mortgageSheetRoutes);
+	app.route('/watch', watchRoutes);
+	app.route('/notifications', notificationRoutes);
+	app.route('/devices', deviceRoutes);
+	app.route('/ai', aiRoutes);
 
-	// Admin. The AI routes mount first so /api/admin/ai/* is matched before the
+	// Admin. The AI routes mount first so /admin/ai/* is matched before the
 	// general admin router sees it.
-	app.route('/api/admin/ai', adminAiRoutes);
-	app.route('/api/admin', adminRoutes);
+	app.route('/admin/ai', adminAiRoutes);
+	app.route('/admin', adminRoutes);
 
 	return app;
 }

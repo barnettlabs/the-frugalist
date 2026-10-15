@@ -19,7 +19,7 @@ describe('sign-in origins', () => {
 	it('accepts a request from the web app origin', async () => {
 		const user = await createLegacyUser();
 
-		const res = await app.request('/api/auth/sign-in/email', {
+		const res = await app.request('/auth/sign-in/email', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json', Origin: 'http://localhost:5173' },
 			body: JSON.stringify({ email: user.email, password: user.password }),
@@ -31,7 +31,7 @@ describe('sign-in origins', () => {
 	it('accepts a request from the native app scheme', async () => {
 		const user = await createLegacyUser();
 
-		const res = await app.request('/api/auth/sign-in/email', {
+		const res = await app.request('/auth/sign-in/email', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json', Origin: 'thefrugalist://' },
 			body: JSON.stringify({ email: user.email, password: user.password }),
@@ -43,7 +43,7 @@ describe('sign-in origins', () => {
 	it('accepts a request with no Origin, as a native fetch sends', async () => {
 		const user = await createLegacyUser();
 
-		const res = await app.request('/api/auth/sign-in/email', {
+		const res = await app.request('/auth/sign-in/email', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ email: user.email, password: user.password }),
@@ -60,7 +60,7 @@ describe('sign-in origins', () => {
 	 * configuration - it would be a test that cannot fail. Verified over real
 	 * HTTP instead:
 	 *
-	 *   curl -X POST localhost:8787/api/auth/sign-in/email \
+	 *   curl -X POST localhost:8787/auth/sign-in/email \
 	 *     -H 'Origin: https://evil.example.com' ...
 	 *   => 403 {"message":"Invalid origin","code":"INVALID_ORIGIN"}
 	 *

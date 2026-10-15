@@ -49,7 +49,7 @@ export function createAuth() {
 		appName: 'TheFrugalist',
 		baseURL: config.APP_URL,
 		secret: config.SESSION_SECRET,
-		basePath: '/api/auth',
+		basePath: '/auth',
 
 		database: drizzleAdapter(db(), {
 			provider: 'pg',
@@ -94,7 +94,7 @@ export function createAuth() {
 			 * Without this Better Auth refuses reset requests outright, and the compat
 			 * route answered "link sent" regardless - so nobody could recover an
 			 * account. The link goes straight to the web app's reset page, which posts
-			 * the token back through /api/reset-password.
+			 * the token back through /reset-password.
 			 */
 			async sendResetPassword({ user, token }) {
 				const url = `${config.WEB_URL}/reset-password/${encodeURIComponent(token)}?email=${encodeURIComponent(user.email)}`;

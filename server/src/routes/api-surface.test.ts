@@ -52,7 +52,7 @@ beforeAll(async () => {
 
 describe('profile', () => {
 	it('returns only the six whitelisted fields', async () => {
-		const res = await asUser('/api/profile');
+		const res = await asUser('/profile');
 
 		expect(res.status).toBe(200);
 		const body = (await res.json()) as Record<string, unknown>;
@@ -69,7 +69,7 @@ describe('profile', () => {
 	});
 
 	it('requires an email on update', async () => {
-		const res = await asUser('/api/profile', {
+		const res = await asUser('/profile', {
 			method: 'PUT',
 			body: JSON.stringify({ first_name: 'No email' }),
 		});
@@ -85,7 +85,7 @@ describe('profile', () => {
 			.from(users)
 			.where(eq(users.id, otherUserId));
 
-		const res = await asUser('/api/profile', {
+		const res = await asUser('/profile', {
 			method: 'PUT',
 			body: JSON.stringify({ email: other!.email }),
 		});
@@ -96,7 +96,7 @@ describe('profile', () => {
 	});
 
 	it('requires the current password to change the email', async () => {
-		const res = await asUser('/api/profile', {
+		const res = await asUser('/profile', {
 			method: 'PUT',
 			body: JSON.stringify({ email: `takeover-${Math.random().toString(36).slice(2, 10)}@example.com` }),
 		});
@@ -107,7 +107,7 @@ describe('profile', () => {
 	});
 
 	it('rejects an email change with the wrong password', async () => {
-		const res = await asUser('/api/profile', {
+		const res = await asUser('/profile', {
 			method: 'PUT',
 			body: JSON.stringify({
 				email: `takeover-${Math.random().toString(36).slice(2, 10)}@example.com`,
@@ -123,7 +123,7 @@ describe('profile', () => {
 	it('does not ask for a password when the email is unchanged', async () => {
 		const [me] = await db().select({ email: users.email }).from(users).where(eq(users.id, userId));
 
-		const res = await asUser('/api/profile', {
+		const res = await asUser('/profile', {
 			method: 'PUT',
 			body: JSON.stringify({ email: me!.email, first_name: 'Renamed' }),
 		});
@@ -139,7 +139,7 @@ describe('profile', () => {
 			.set({ emailVerifiedAt: new Date(), emailVerified: true })
 			.where(eq(users.id, userId));
 
-		const res = await asUser('/api/profile', {
+		const res = await asUser('/profile', {
 			method: 'PUT',
 			body: JSON.stringify({ email: fresh, current_password: userPassword }),
 		});
@@ -165,7 +165,7 @@ describe('profile', () => {
 			.set({ emailVerifiedAt: new Date(), emailVerified: true })
 			.where(eq(users.id, userId));
 
-		await asUser('/api/profile', {
+		await asUser('/profile', {
 			method: 'PUT',
 			body: JSON.stringify({ email: before!.email, first_name: 'Same email' }),
 		});
@@ -207,7 +207,7 @@ describe('notifications', () => {
 	});
 
 	it('lists only the current user notifications', async () => {
-		const res = await asUser('/api/notifications');
+		const res = await asUser('/notifications');
 		const rows = (await res.json()) as { id: number }[];
 
 		expect(rows.map((r) => r.id)).toContain(mine);
@@ -215,11 +215,11 @@ describe('notifications', () => {
 	});
 
 	it('does not leak another user notification', async () => {
-		expect((await asUser(`/api/notifications/${theirs}`)).status).toBe(403);
+		expect((await asUser(`/notifications/${theirs}`)).status).toBe(403);
 	});
 
 	it('marks one as read', async () => {
-		const res = await asUser(`/api/notifications/${mine}/read`, { method: 'POST' });
+		const res = await asUser(`/notifications/${mine}/read`, { method: 'POST' });
 
 		expect(res.status).toBe(200);
 		expect(((await res.json()) as { read_at: string | null }).read_at).not.toBeNull();
@@ -227,7 +227,7 @@ describe('notifications', () => {
 
 	it('resolves read-all as a literal path, not an id', async () => {
 		// Registration order matters: /read-all must be matched before /:id.
-		const res = await asUser('/api/notifications/read-all', { method: 'POST' });
+		const res = await asUser('/notifications/read-all', { method: 'POST' });
 
 		expect(res.status).toBe(200);
 		expect((await res.json()) as { message: string }).toEqual({
@@ -240,7 +240,7 @@ describe('devices', () => {
 	const pushToken = `ExponentPushToken[${Math.random().toString(36).slice(2, 12)}]`;
 
 	it('registers a device and wraps it in { device }', async () => {
-		const res = await asUser('/api/devices', {
+		const res = await asUser('/devices', {
 			method: 'POST',
 			body: JSON.stringify({ push_token: pushToken, device_type: 'ios', device_name: 'Phone' }),
 		});
@@ -253,7 +253,7 @@ describe('devices', () => {
 	});
 
 	it('updates rather than duplicating a token the caller already owns', async () => {
-		const res = await asUser('/api/devices', {
+		const res = await asUser('/devices', {
 			method: 'POST',
 			body: JSON.stringify({ push_token: pushToken, device_type: 'android' }),
 		});
@@ -267,7 +267,7 @@ describe('devices', () => {
 	});
 
 	it('rejects an invalid device type', async () => {
-		const res = await asUser('/api/devices', {
+		const res = await asUser('/devices', {
 			method: 'POST',
 			body: JSON.stringify({ push_token: 'ExponentPushToken[x]', device_type: 'blackberry' }),
 		});
@@ -276,7 +276,7 @@ describe('devices', () => {
 	});
 
 	it('lists devices wrapped in { devices }', async () => {
-		const res = await asUser('/api/devices');
+		const res = await asUser('/devices');
 		const body = (await res.json()) as { devices: unknown[] };
 
 		expect(Array.isArray(body.devices)).toBe(true);
@@ -290,21 +290,21 @@ describe('public endpoints', () => {
 			.insert(announcements)
 			.values({ title: 'Public', message: 'Hello', createdAt: now, updatedAt: now } as never);
 
-		const res = await app.request('/api/announcements');
+		const res = await app.request('/announcements');
 
 		expect(res.status).toBe(200);
 		expect(Array.isArray(await res.json())).toBe(true);
 	});
 
 	it('serves retailers wrapped in { retailers } without authentication', async () => {
-		const res = await app.request('/api/retailers');
+		const res = await app.request('/retailers');
 
 		expect(res.status).toBe(200);
 		expect(Array.isArray(((await res.json()) as { retailers: unknown[] }).retailers)).toBe(true);
 	});
 
 	it('accepts an anonymous bug report', async () => {
-		const res = await app.request('/api/bug-reports', {
+		const res = await app.request('/bug-reports', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -320,7 +320,7 @@ describe('public endpoints', () => {
 	});
 
 	it('attributes a bug report to the signed-in user', async () => {
-		const res = await asUser('/api/bug-reports', {
+		const res = await asUser('/bug-reports', {
 			method: 'POST',
 			body: JSON.stringify({ subject: 'Signed in', description: 'x', page_url: '/watch' }),
 		});
@@ -330,7 +330,7 @@ describe('public endpoints', () => {
 	});
 
 	it('rejects a bug report missing required fields', async () => {
-		const res = await app.request('/api/bug-reports', {
+		const res = await app.request('/bug-reports', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ subject: 'Only a subject' }),
@@ -344,7 +344,7 @@ describe('public endpoints', () => {
 
 describe('dashboard', () => {
 	it('returns counts and recent records in the expected shape', async () => {
-		const res = await asUser('/api/dashboard/stats');
+		const res = await asUser('/dashboard/stats');
 
 		expect(res.status).toBe(200);
 		const body = (await res.json()) as Record<string, unknown>;
@@ -364,13 +364,13 @@ describe('dashboard', () => {
 
 	it('caps the recent lists at three', async () => {
 		for (let i = 0; i < 5; i++) {
-			await asUser('/api/vehicle-finance-sheets', {
+			await asUser('/vehicle-finance-sheets', {
 				method: 'POST',
 				body: JSON.stringify({ sheet_name: `Sheet ${i}` }),
 			});
 		}
 
-		const body = (await (await asUser('/api/dashboard/stats')).json()) as {
+		const body = (await (await asUser('/dashboard/stats')).json()) as {
 			finance_sheets_count: number;
 			recent_finance_sheets: unknown[];
 		};
@@ -381,35 +381,35 @@ describe('dashboard', () => {
 });
 
 describe('routing', () => {
-	it('answers 404 for an unknown /api path, not 401', async () => {
-		// Regression: mounting a router at /api with a wildcard requireAuth made
-		// every unmatched /api/* request answer 401 before the 404 handler ran.
+	it('answers 404 for an unknown path, not 401', async () => {
+		// Regression: mounting a router at the root with a wildcard requireAuth made
+		// every unmatched /* request answer 401 before the 404 handler ran.
 		// Wrong, and confusing to debug from a client.
-		const res = await app.request('/api/does-not-exist');
+		const res = await app.request('/does-not-exist');
 
 		expect(res.status).toBe(404);
 		expect((await res.json()) as { message: string }).toHaveProperty('message');
 	});
 
 	it('still answers 401 for a real authenticated route', async () => {
-		expect((await app.request('/api/dashboard/stats')).status).toBe(401);
+		expect((await app.request('/dashboard/stats')).status).toBe(401);
 	});
 });
 
 describe('admin gate', () => {
 	it('refuses a non-admin user', async () => {
-		for (const path of ['/api/admin/retailers', '/api/admin/users', '/api/admin/bug-reports']) {
+		for (const path of ['/admin/retailers', '/admin/users', '/admin/bug-reports']) {
 			const res = await asUser(path);
 			expect(res.status, path).toBe(403);
 		}
 	});
 
 	it('refuses an anonymous request', async () => {
-		expect((await app.request('/api/admin/retailers')).status).toBe(401);
+		expect((await app.request('/admin/retailers')).status).toBe(401);
 	});
 
 	it('allows an admin', async () => {
-		const res = await asAdmin('/api/admin/retailers');
+		const res = await asAdmin('/admin/retailers');
 
 		expect(res.status).toBe(200);
 		expect(Array.isArray(((await res.json()) as { retailers: unknown[] }).retailers)).toBe(true);
@@ -432,13 +432,13 @@ describe('admin retailers', () => {
 				updatedAt: now,
 			} as never);
 
-		const adminBody = (await (await asAdmin('/api/admin/retailers')).json()) as {
+		const adminBody = (await (await asAdmin('/admin/retailers')).json()) as {
 			retailers: Record<string, unknown>[];
 		};
 		const adminRow = adminBody.retailers.find((r) => r.slug === `secret-${suffix}`);
 		expect(adminRow?.api_key).toBe('super-secret-key');
 
-		const publicBody = (await (await app.request('/api/retailers')).json()) as {
+		const publicBody = (await (await app.request('/retailers')).json()) as {
 			retailers: Record<string, unknown>[];
 		};
 		const publicRow = publicBody.retailers.find((r) => r.slug === `secret-${suffix}`);
@@ -454,7 +454,7 @@ describe('admin retailers', () => {
 	it('does not leak retailer credentials through the watch list', async () => {
 		// The watch index and the dashboard both embed a retailer, and both are
 		// reachable by any signed-in user.
-		const body = (await (await asUser('/api/watch')).json()) as {
+		const body = (await (await asUser('/watch')).json()) as {
 			retailers: Record<string, unknown>[];
 		};
 
@@ -465,7 +465,7 @@ describe('admin retailers', () => {
 	});
 
 	it('rejects a slug with no registered client', async () => {
-		const res = await asAdmin('/api/admin/retailers', {
+		const res = await asAdmin('/admin/retailers', {
 			method: 'POST',
 			body: JSON.stringify({
 				name: `Nope ${Math.random()}`,
@@ -480,7 +480,7 @@ describe('admin retailers', () => {
 	});
 
 	it('lists registered and available slugs', async () => {
-		const res = await asAdmin('/api/admin/retailers/available-slugs');
+		const res = await asAdmin('/admin/retailers/available-slugs');
 		const body = (await res.json()) as { registered: string[]; available: string[] };
 
 		expect(body.registered).toContain('bestbuy');
@@ -490,7 +490,7 @@ describe('admin retailers', () => {
 
 describe('admin users', () => {
 	it('paginates in the Laravel envelope and never returns a password hash', async () => {
-		const res = await asAdmin('/api/admin/users');
+		const res = await asAdmin('/admin/users');
 
 		expect(res.status).toBe(200);
 		const body = (await res.json()) as { users: Record<string, unknown> };
@@ -506,12 +506,12 @@ describe('admin users', () => {
 	});
 
 	it('refuses to let an admin remove their own admin access', async () => {
-		const me = (await (await asAdmin('/api/admin/users')).json()) as {
+		const me = (await (await asAdmin('/admin/users')).json()) as {
 			users: { data: { id: number; is_admin: boolean }[] };
 		};
 		const self = me.users.data.find((u) => u.is_admin);
 
-		const res = await asAdmin(`/api/admin/users/${self!.id}`, {
+		const res = await asAdmin(`/admin/users/${self!.id}`, {
 			method: 'PATCH',
 			body: JSON.stringify({ is_admin: false }),
 		});
@@ -522,7 +522,7 @@ describe('admin users', () => {
 	});
 
 	it('can promote another user', async () => {
-		const res = await asAdmin(`/api/admin/users/${otherUserId}`, {
+		const res = await asAdmin(`/admin/users/${otherUserId}`, {
 			method: 'PATCH',
 			body: JSON.stringify({ is_admin: true }),
 		});

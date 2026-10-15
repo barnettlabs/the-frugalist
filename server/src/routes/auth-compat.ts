@@ -16,11 +16,11 @@ import { validate, validated } from '../http/validate.js';
  *
  * This is not tidiness - it is what makes cutover possible at all.
  *
- * Both clients call the Laravel routes: POST /api/login, /api/register,
- * /api/logout, /api/forgot-password, /api/reset-password,
- * /api/email/verification-notification, and GET /api/user. They expect
+ * Both clients call the Laravel routes: POST /login, /register,
+ * /logout, /forgot-password, /reset-password,
+ * /email/verification-notification, and GET /user. They expect
  * `{ user, token }` back and store the token for bearer auth. Better Auth
- * instead exposes /api/auth/sign-in/email and friends with a different envelope.
+ * instead exposes /auth/sign-in/email and friends with a different envelope.
  *
  * The web client could be updated and redeployed on demand. **The mobile client
  * cannot** - the App Store build has its API base URL compiled in and its auth
@@ -29,7 +29,7 @@ import { validate, validated } from '../http/validate.js';
  * is not an acceptable coupling.
  *
  * So these routes translate. They are a compatibility layer with a defined end:
- * once both clients have shipped against /api/auth/* and the old mobile builds
+ * once both clients have shipped against /auth/* and the old mobile builds
  * have aged out, this file is deleted. Until then it is the reason the cutover
  * is reversible and does not need a coordinated client release.
  */
@@ -76,7 +76,7 @@ const loginSchema = z.object({
 authCompatRoutes.post('/login', validate('json', loginSchema), async (c) => {
 	const data = validated<z.infer<typeof loginSchema>>(c, 'json');
 
-	const response = await forward(c, '/api/auth/sign-in/email', {
+	const response = await forward(c, '/auth/sign-in/email', {
 		email: data.email,
 		password: data.password,
 	});
@@ -136,7 +136,7 @@ authCompatRoutes.post('/register', validate('json', registerSchema), async (c) =
 
 	if (existing) throw HttpError.field('email', 'The email has already been taken.');
 
-	const response = await forward(c, '/api/auth/sign-up/email', {
+	const response = await forward(c, '/auth/sign-up/email', {
 		email: data.email.toLowerCase(),
 		password: data.password,
 		name: `${data.first_name} ${data.last_name}`.trim(),
@@ -166,7 +166,7 @@ authCompatRoutes.post('/logout', async (c) => {
 	if (!headers.get('Origin')) headers.set('Origin', NATIVE_ORIGIN);
 
 	await auth().handler(
-		new Request('http://localhost/api/auth/sign-out', { method: 'POST', headers }),
+		new Request('http://localhost/auth/sign-out', { method: 'POST', headers }),
 	);
 
 	return c.json({ message: 'Logged out successfully.' });
@@ -192,7 +192,7 @@ authCompatRoutes.post('/forgot-password', validate('json', forgotSchema), async 
 	// The link itself is built in lib/auth.ts and points at the web app, so no
 	// redirectTo is needed. The old one was this request's own origin - the API
 	// host - which has no reset page.
-	const response = await forward(c, '/api/auth/request-password-reset', {
+	const response = await forward(c, '/auth/request-password-reset', {
 		email: data.email.toLowerCase(),
 	});
 
@@ -226,7 +226,7 @@ authCompatRoutes.post('/reset-password', validate('json', resetSchema), async (c
 		throw HttpError.field('password', 'The password field confirmation does not match.');
 	}
 
-	const response = await forward(c, '/api/auth/reset-password', {
+	const response = await forward(c, '/auth/reset-password', {
 		token: data.token,
 		newPassword: data.password,
 	});
@@ -252,7 +252,7 @@ authCompatRoutes.post('/email/verification-notification', async (c) => {
 		return c.json({ message: 'Email already verified.' });
 	}
 
-	await forward(c, '/api/auth/send-verification-email', {
+	await forward(c, '/auth/send-verification-email', {
 		email: user.email,
 		// A relative path resolved against the API host, which has no such page.
 		callbackURL: verifiedCallbackUrl(),
@@ -281,7 +281,7 @@ authCompatRoutes.put('/password', validate('json', passwordUpdateSchema), async 
 		throw HttpError.field('password', 'The password field confirmation does not match.');
 	}
 
-	const response = await forward(c, '/api/auth/change-password', {
+	const response = await forward(c, '/auth/change-password', {
 		currentPassword: data.current_password,
 		newPassword: data.password,
 		revokeOtherSessions: false,

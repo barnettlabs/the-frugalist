@@ -40,14 +40,14 @@ const HONO = 'http://127.0.0.1:8787';
 // rather than pretending to be an originless request.
 const ORIGIN = 'thefrugalist://';
 
-const signIn = await fetch(`${HONO}/api/auth/sign-in/email`, {
+const signIn = await fetch(`${HONO}/auth/sign-in/email`, {
 	method: 'POST', headers: { 'Content-Type': 'application/json', Origin: ORIGIN },
 	body: JSON.stringify({ email: process.env.PROBE_EMAIL, password: process.env.PROBE_PASSWORD }),
 });
 const token = signIn.headers.get('set-auth-token');
 if (!token) { console.error('sign-in failed:', signIn.status, await signIn.text()); process.exit(1); }
 
-const created = await fetch(`${HONO}/api/vehicle-finance-sheets`, {
+const created = await fetch(`${HONO}/vehicle-finance-sheets`, {
 	method: 'POST',
 	headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, Origin: ORIGIN },
 	body: JSON.stringify({ sheet_name: 'Shape Probe', vehicle_type: 'TRUCK', msrp: 52000, finance_term: 72, interest_rate: 6.25, start_date: '2026-03-15' }),

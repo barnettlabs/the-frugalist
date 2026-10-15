@@ -18,8 +18,8 @@ import { trackEvent } from '../observability/analytics.js';
  * client can ship against the new service.
  *
  * Mounted on two paths because the clients disagree - the Vue app sends
- * `DELETE /api/profile` with a password in the body, the Expo app sends
- * `DELETE /api/user`. Both are honoured rather than picking one and breaking a
+ * `DELETE /profile` with a password in the body, the Expo app sends
+ * `DELETE /user`. Both are honoured rather than picking one and breaking a
  * client.
  *
  * Deletion is a hard delete, and it cascades. Every table holding the user's own
@@ -36,9 +36,9 @@ export const accountRoutes = new Hono<AppEnv>();
 /*
  * requireAuth is applied per route, not as a wildcard on the router.
  *
- * This router mounts at /api rather than a prefix of its own, because the two
- * client paths (/api/profile and /api/user) sit under different owners. A
- * wildcard middleware here would therefore run for *every* unmatched /api/*
+ * This router mounts at the root rather than a prefix of its own, because the two
+ * client paths (/profile and /user) sit under different owners. A
+ * wildcard middleware here would therefore run for *every* unmatched /*
  * request and answer 401 instead of letting the 404 handler respond - which is
  * both wrong and confusing to debug from a client.
  */

@@ -34,13 +34,13 @@ const json = (path: string, body: unknown, headers: Record<string, string> = {})
 
 describe('sign-in with a Laravel bcrypt password', () => {
 	it('accepts the existing password', async () => {
-		const res = await json('/api/auth/sign-in/email', creds);
+		const res = await json('/auth/sign-in/email', creds);
 
 		expect(res.status, await res.text().catch(() => '')).toBe(200);
 	});
 
 	it('rejects a wrong password', async () => {
-		const res = await json('/api/auth/sign-in/email', {
+		const res = await json('/auth/sign-in/email', {
 			email: creds.email,
 			password: 'not-the-password',
 		});
@@ -49,7 +49,7 @@ describe('sign-in with a Laravel bcrypt password', () => {
 	});
 
 	it('returns a bearer token the Expo client can store', async () => {
-		const res = await json('/api/auth/sign-in/email', creds);
+		const res = await json('/auth/sign-in/email', creds);
 
 		// The bearer plugin surfaces the session token in this header, which is
 		// what the React Native client reads and puts in expo-secure-store.
@@ -61,12 +61,12 @@ describe('session resolution', () => {
 	let token: string;
 
 	beforeAll(async () => {
-		const res = await json('/api/auth/sign-in/email', creds);
+		const res = await json('/auth/sign-in/email', creds);
 		token = res.headers.get('set-auth-token') ?? '';
 	});
 
 	it('resolves a user from a bearer token', async () => {
-		const res = await app.request('/api/auth/get-session', {
+		const res = await app.request('/auth/get-session', {
 			headers: { Authorization: `Bearer ${token}` },
 		});
 
@@ -76,7 +76,7 @@ describe('session resolution', () => {
 	});
 
 	it('carries the Laravel columns through as additional fields', async () => {
-		const res = await app.request('/api/auth/get-session', {
+		const res = await app.request('/auth/get-session', {
 			headers: { Authorization: `Bearer ${token}` },
 		});
 		const body = (await res.json()) as { user?: Record<string, unknown> } | null;
@@ -89,7 +89,7 @@ describe('session resolution', () => {
 	});
 
 	it('serialises the bigint user id as a string, which the middleware coerces', async () => {
-		const res = await app.request('/api/auth/get-session', {
+		const res = await app.request('/auth/get-session', {
 			headers: { Authorization: `Bearer ${token}` },
 		});
 		const body = (await res.json()) as { user?: { id?: unknown } } | null;
@@ -99,7 +99,7 @@ describe('session resolution', () => {
 	});
 
 	it('treats a garbage token as anonymous rather than erroring', async () => {
-		const res = await app.request('/api/auth/get-session', {
+		const res = await app.request('/auth/get-session', {
 			headers: { Authorization: 'Bearer not-a-real-token' },
 		});
 

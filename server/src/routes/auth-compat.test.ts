@@ -21,11 +21,11 @@ const post = (path: string, body: unknown, headers: Record<string, string> = {})
 		body: JSON.stringify(body),
 	});
 
-describe('POST /api/login', () => {
+describe('POST /login', () => {
 	it('returns { user, token } as the clients expect', async () => {
 		const user = await createLegacyUser();
 
-		const res = await post('/api/login', { email: user.email, password: user.password });
+		const res = await post('/login', { email: user.email, password: user.password });
 
 		expect(res.status, await res.clone().text()).toBe(200);
 		const body = (await res.json()) as { user: Record<string, unknown>; token: string };
@@ -39,7 +39,7 @@ describe('POST /api/login', () => {
 
 	it('never returns the password hash', async () => {
 		const user = await createLegacyUser();
-		const res = await post('/api/login', { email: user.email, password: user.password });
+		const res = await post('/login', { email: user.email, password: user.password });
 		const body = (await res.json()) as { user: Record<string, unknown> };
 
 		expect(body.user).not.toHaveProperty('password');
@@ -50,7 +50,7 @@ describe('POST /api/login', () => {
 		// The whole point: existing credentials keep working.
 		const user = await createLegacyUser({ password: 'legacy-bcrypt-password' });
 
-		const res = await post('/api/login', {
+		const res = await post('/login', {
 			email: user.email,
 			password: 'legacy-bcrypt-password',
 		});
@@ -61,7 +61,7 @@ describe('POST /api/login', () => {
 	it('reports bad credentials on the email field, as Laravel did', async () => {
 		const user = await createLegacyUser();
 
-		const res = await post('/api/login', { email: user.email, password: 'wrong' });
+		const res = await post('/login', { email: user.email, password: 'wrong' });
 
 		expect(res.status).toBe(422);
 		const body = (await res.json()) as { errors: Record<string, string[]> };
@@ -69,7 +69,7 @@ describe('POST /api/login', () => {
 	});
 
 	it('validates required fields', async () => {
-		const res = await post('/api/login', {});
+		const res = await post('/login', {});
 
 		expect(res.status).toBe(422);
 		const body = (await res.json()) as { errors: Record<string, string[]> };
@@ -78,21 +78,21 @@ describe('POST /api/login', () => {
 
 	it('issues a token that authenticates subsequent requests', async () => {
 		const user = await createLegacyUser();
-		const login = await post('/api/login', { email: user.email, password: user.password });
+		const login = await post('/login', { email: user.email, password: user.password });
 		const { token } = (await login.json()) as { token: string };
 
-		const me = await app.request('/api/user', { headers: { Authorization: `Bearer ${token}` } });
+		const me = await app.request('/user', { headers: { Authorization: `Bearer ${token}` } });
 
 		expect(me.status).toBe(200);
 		expect(((await me.json()) as { email: string }).email).toBe(user.email);
 	});
 });
 
-describe('POST /api/register', () => {
+describe('POST /register', () => {
 	it('creates a user and returns { user, token } with 201', async () => {
 		const email = `new-${Math.random().toString(36).slice(2, 10)}@example.com`;
 
-		const res = await post('/api/register', {
+		const res = await post('/register', {
 			first_name: 'New',
 			last_name: 'User',
 			email,
@@ -109,7 +109,7 @@ describe('POST /api/register', () => {
 	});
 
 	it('rejects a mismatched confirmation on the password field', async () => {
-		const res = await post('/api/register', {
+		const res = await post('/register', {
 			first_name: 'A',
 			last_name: 'B',
 			email: `x-${Math.random().toString(36).slice(2, 8)}@example.com`,
@@ -125,7 +125,7 @@ describe('POST /api/register', () => {
 	it('rejects a duplicate email', async () => {
 		const existing = await createLegacyUser();
 
-		const res = await post('/api/register', {
+		const res = await post('/register', {
 			first_name: 'A',
 			last_name: 'B',
 			email: existing.email,
@@ -138,7 +138,7 @@ describe('POST /api/register', () => {
 	});
 
 	it('enforces the 8-character minimum', async () => {
-		const res = await post('/api/register', {
+		const res = await post('/register', {
 			first_name: 'A',
 			last_name: 'B',
 			email: `short-${Math.random().toString(36).slice(2, 8)}@example.com`,
@@ -149,13 +149,13 @@ describe('POST /api/register', () => {
 	});
 });
 
-describe('POST /api/logout', () => {
+describe('POST /logout', () => {
 	it('responds with the message the clients expect', async () => {
 		const user = await createLegacyUser();
-		const login = await post('/api/login', { email: user.email, password: user.password });
+		const login = await post('/login', { email: user.email, password: user.password });
 		const { token } = (await login.json()) as { token: string };
 
-		const res = await post('/api/logout', {}, { Authorization: `Bearer ${token}` });
+		const res = await post('/logout', {}, { Authorization: `Bearer ${token}` });
 
 		expect(res.status).toBe(200);
 		expect((await res.json()) as { message: string }).toEqual({
@@ -164,13 +164,13 @@ describe('POST /api/logout', () => {
 	});
 });
 
-describe('POST /api/forgot-password', () => {
+describe('POST /forgot-password', () => {
 	it('gives the same answer whether or not the address exists', async () => {
 		// Anything else is an account enumeration oracle.
 		const known = await createLegacyUser();
 
-		const a = await post('/api/forgot-password', { email: known.email });
-		const b = await post('/api/forgot-password', { email: 'nobody-here@example.com' });
+		const a = await post('/forgot-password', { email: known.email });
+		const b = await post('/forgot-password', { email: 'nobody-here@example.com' });
 
 		expect(a.status).toBe(200);
 		expect(b.status).toBe(200);
@@ -178,27 +178,27 @@ describe('POST /api/forgot-password', () => {
 	});
 
 	it('validates the email format', async () => {
-		const res = await post('/api/forgot-password', { email: 'not-an-email' });
+		const res = await post('/forgot-password', { email: 'not-an-email' });
 		expect(res.status).toBe(422);
 	});
 });
 
-describe('GET /api/user', () => {
+describe('GET /user', () => {
 	it('rejects an anonymous request with Unauthenticated', async () => {
-		const res = await app.request('/api/user');
+		const res = await app.request('/user');
 
 		expect(res.status).toBe(401);
 		expect((await res.json()) as { message: string }).toEqual({ message: 'Unauthenticated.' });
 	});
 });
 
-describe('PUT /api/password', () => {
+describe('PUT /password', () => {
 	it('changes the password and lets the new one sign in', async () => {
 		const user = await createLegacyUser();
-		const login = await post('/api/login', { email: user.email, password: user.password });
+		const login = await post('/login', { email: user.email, password: user.password });
 		const { token } = (await login.json()) as { token: string };
 
-		const res = await app.request('/api/password', {
+		const res = await app.request('/password', {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 			body: JSON.stringify({
@@ -210,7 +210,7 @@ describe('PUT /api/password', () => {
 
 		expect(res.status, await res.clone().text()).toBe(200);
 
-		const relogin = await post('/api/login', {
+		const relogin = await post('/login', {
 			email: user.email,
 			password: 'a-brand-new-password',
 		});
@@ -219,10 +219,10 @@ describe('PUT /api/password', () => {
 
 	it('reports a wrong current password on that field', async () => {
 		const user = await createLegacyUser();
-		const login = await post('/api/login', { email: user.email, password: user.password });
+		const login = await post('/login', { email: user.email, password: user.password });
 		const { token } = (await login.json()) as { token: string };
 
-		const res = await app.request('/api/password', {
+		const res = await app.request('/password', {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
 			body: JSON.stringify({ current_password: 'wrong', password: 'a-brand-new-password' }),

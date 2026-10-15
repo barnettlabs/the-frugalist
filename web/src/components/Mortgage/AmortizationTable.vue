@@ -160,6 +160,7 @@ const yearOptions = computed(() => {
 								<th class="px-3 py-3 text-right eyebrow">Payment</th>
 								<th v-if="showWithExtra" class="px-3 py-3 text-right eyebrow">Extra</th>
 								<th class="px-3 py-3 text-right eyebrow">Escrow</th>
+								<!-- Scheduled principal only; the extra has its own column, so Payment = Principal + Interest -->
 								<th class="px-3 py-3 text-right eyebrow">Principal</th>
 								<th class="px-3 py-3 text-right eyebrow">Interest</th>
 								<th class="px-3 py-3 text-right eyebrow">Balance</th>
@@ -176,7 +177,7 @@ const yearOptions = computed(() => {
 									${{ formatCurrency(row.escrowPayment) }}
 								</td>
 								<td class="px-3 py-2.5 text-sm numeral text-accent-dark text-right">
-									${{ formatCurrency(row.principalPayment) }}
+									${{ formatCurrency(row.principalPayment - row.extraPayment) }}
 								</td>
 								<td class="px-3 py-2.5 text-sm numeral text-warning text-right">
 									${{ formatCurrency(row.interestPayment) }}
@@ -198,6 +199,7 @@ const yearOptions = computed(() => {
 								<th class="px-3 py-3 text-right eyebrow">Payment</th>
 								<th v-if="showWithExtra" class="px-3 py-3 text-right eyebrow">Extra</th>
 								<th class="px-3 py-3 text-right eyebrow">Escrow</th>
+								<!-- Scheduled principal only; the extra has its own column, so Payment = Principal + Interest -->
 								<th class="px-3 py-3 text-right eyebrow">Principal</th>
 								<th class="px-3 py-3 text-right eyebrow">Interest</th>
 								<th class="px-3 py-3 text-right eyebrow">Balance</th>
@@ -214,7 +216,7 @@ const yearOptions = computed(() => {
 									${{ formatCurrency(row.escrowPayment) }}
 								</td>
 								<td class="px-3 py-2.5 text-sm numeral text-accent-dark text-right">
-									${{ formatCurrency(row.principalPayment) }}
+									${{ formatCurrency(row.principalPayment - row.extraPayment) }}
 								</td>
 								<td class="px-3 py-2.5 text-sm numeral text-warning text-right">
 									${{ formatCurrency(row.interestPayment) }}

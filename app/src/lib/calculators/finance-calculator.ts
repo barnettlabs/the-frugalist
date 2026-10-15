@@ -119,7 +119,8 @@ export class FinanceCalculator {
 		const financeTerm = parseOrZero(this.data.finance_term);
 		const monthlyPayment = this.calculateMonthlyPayment();
 
-		if (loanAmount <= 0 || interestRate <= 0 || financeTerm <= 0) {
+		// A 0% loan still has a schedule (promotional financing) - see packages/contracts finance.ts.
+		if (loanAmount <= 0 || financeTerm <= 0) {
 			return null;
 		}
 
@@ -132,29 +133,31 @@ export class FinanceCalculator {
 		const extraPayments = this.parseExtraPayments();
 
 		for (let month = 1; month <= financeTerm && remainingBalance > 0; month++) {
-			const interestPayment = this.calculateMonthlyInterestAmount(remainingBalance);
-			let principalPayment = this.calculateMonthlyPrincipalAmount(interestPayment, monthlyPayment);
+			const interestPayment = interestRate > 0 ? this.calculateMonthlyInterestAmount(remainingBalance) : 0;
 
-			// Add extra payment if applicable
-			let extraPayment = 0;
-			if (withExtraPayments && extraPayments.length > 0) {
-				extraPayment = this.getExtraPaymentForMonth(month, extraPayments);
-			}
+			// Scheduled principal first, then any extra up to what is still owed, so
+			// the final month charges only interest plus the remaining balance.
+			const principalPayment = Math.min(
+				this.calculateMonthlyPrincipalAmount(interestPayment, monthlyPayment),
+				remainingBalance
+			);
+			const extraPayment =
+				withExtraPayments && extraPayments.length > 0
+					? Math.max(
+							0,
+							Math.min(this.getExtraPaymentForMonth(month, extraPayments), remainingBalance - principalPayment)
+						)
+					: 0;
 
-			// Ensure we don't pay more than remaining balance
-			if (principalPayment + extraPayment > remainingBalance) {
-				principalPayment = remainingBalance;
-				extraPayment = 0;
-			}
-
-			const totalPayment = monthlyPayment + extraPayment;
+			const payment = interestPayment + principalPayment;
+			const totalPayment = payment + extraPayment;
 			remainingBalance -= principalPayment + extraPayment;
 			totalInterest += interestPayment;
 			totalPrincipal += principalPayment + extraPayment;
 
 			schedule.push({
 				month,
-				payment: monthlyPayment,
+				payment,
 				extraPayment,
 				totalPayment,
 				principalPayment: principalPayment + extraPayment,

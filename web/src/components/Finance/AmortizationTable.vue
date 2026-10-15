@@ -62,6 +62,7 @@
 							<th class="px-3 py-3 text-left eyebrow">Month</th>
 							<th class="px-3 py-3 text-right eyebrow">Payment</th>
 							<th v-if="showWithExtra" class="px-3 py-3 text-right eyebrow">Extra</th>
+							<!-- Scheduled principal only; the extra has its own column, so Payment = Principal + Interest -->
 							<th class="px-3 py-3 text-right eyebrow">Principal</th>
 							<th class="px-3 py-3 text-right eyebrow">Interest</th>
 							<th class="px-3 py-3 text-right eyebrow">Balance</th>
@@ -77,7 +78,7 @@
 								${{ formatCurrency(payment.extraPayment) }}
 							</td>
 							<td class="px-3 py-2.5 text-sm numeral text-accent-dark text-right">
-								${{ formatCurrency(payment.principalPayment) }}
+								${{ formatCurrency(payment.principalPayment - payment.extraPayment) }}
 							</td>
 							<td class="px-3 py-2.5 text-sm numeral text-warning text-right">
 								${{ formatCurrency(payment.interestPayment) }}

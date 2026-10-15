@@ -4,12 +4,10 @@ import { createApp } from '../http/app.js';
 import { createLegacyUser } from '../test/factories.js';
 
 /**
- * The Sanctum-shaped compatibility endpoints.
+ * The auth endpoints both clients call (routes/auth.ts).
  *
- * These exist so the already-shipped mobile build keeps working after cutover.
- * Its auth paths and response expectations are compiled in, so if these drift
- * the app breaks for every installed copy and the fix requires an App Store
- * review. Worth real coverage.
+ * Sign-in, sign-up and recovery are the paths a user cannot work around when
+ * they break, and both clients depend on their exact shape. Worth real coverage.
  */
 
 const app = createApp();

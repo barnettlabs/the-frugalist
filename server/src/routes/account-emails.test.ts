@@ -10,7 +10,7 @@ import { createLegacyUser } from '../test/factories.js';
  * Password reset and email verification, end to end.
  *
  * Both used to be silently dead: no sender was configured, so Better Auth
- * refused the request and the compat route answered "link sent" anyway. These
+ * refused the request and /forgot-password answered "link sent" anyway. These
  * capture the email that goes out and follow its link, the way a user would.
  */
 

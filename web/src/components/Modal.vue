@@ -90,7 +90,7 @@ const maxWidthClass = computed(() => {
 				leave-from-class="opacity-100"
 				leave-to-class="opacity-0"
 			>
-				<div v-show="show" class="fixed inset-0 transform transition-all" @click="close">
+				<div v-show="show" class="fixed inset-0 transition-all" @click="close">
 					<div class="absolute inset-0 bg-primary/50" />
 				</div>
 			</Transition>
@@ -103,9 +103,14 @@ const maxWidthClass = computed(() => {
 				leave-from-class="opacity-100 translate-y-0 sm:scale-100"
 				leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
 			>
+				<!--
+					`relative` keeps the panel above the backdrop. Tailwind 4's `transform`
+					class sets no transform on its own, so once the enter classes come off
+					the panel would be unpositioned and the fixed backdrop would paint over it.
+				-->
 				<div
 					v-show="show"
-					class="mb-6 transform overflow-hidden rounded-lg bg-surface shadow-xl transition-all sm:mx-auto sm:w-full"
+					class="relative mb-6 overflow-hidden rounded-lg bg-surface shadow-xl transition-all sm:mx-auto sm:w-full"
 					:class="maxWidthClass"
 				>
 					<slot v-if="showSlot" />

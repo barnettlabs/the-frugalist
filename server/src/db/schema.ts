@@ -53,6 +53,23 @@ export const vehicleLeaseSheets = pgTable("vehicle_lease_sheets", {
 	notes: text(),
 	createdAt: timestamp("created_at", { mode: 'date' }),
 	updatedAt: timestamp("updated_at", { mode: 'date' }),
+	agreedValue: doublePrecision("agreed_value"),
+	residualAmount: doublePrecision("residual_amount"),
+	capitalizedTaxes: doublePrecision("capitalized_taxes"),
+	titleRegistrationFees: doublePrecision("title_registration_fees"),
+	priorBalance: doublePrecision("prior_balance"),
+	addOnsJson: text("add_ons_json"),
+	acquisitionFeeUpfront: boolean("acquisition_fee_upfront").default(false).notNull(),
+	docFeeUpfront: boolean("doc_fee_upfront").default(false).notNull(),
+	titleRegistrationFeesUpfront: boolean("title_registration_fees_upfront").default(false).notNull(),
+	miscFeesUpfront: boolean("misc_fees_upfront").default(false).notNull(),
+	tradeInPayoff: doublePrecision("trade_in_payoff"),
+	taxMethod: varchar("tax_method", { length: 16 }).default('monthly').notNull(),
+	securityDeposit: doublePrecision("security_deposit"),
+	purchaseOptionFee: doublePrecision("purchase_option_fee"),
+	dispositionFee: doublePrecision("disposition_fee"),
+	milesPerYear: integer("miles_per_year"),
+	excessMileRate: doublePrecision("excess_mile_rate"),
 }, (table) => [
 	foreignKey({
 			columns: [table.userId],
@@ -60,6 +77,7 @@ export const vehicleLeaseSheets = pgTable("vehicle_lease_sheets", {
 			name: "vehicle_lease_sheets_user_id_foreign"
 		}).onDelete("cascade"),
 	check("vehicle_lease_sheets_vehicle_type_check", sql`(vehicle_type)::text = ANY ((ARRAY['CAR'::character varying, 'TRUCK'::character varying, 'SUV'::character varying])::text[])`),
+	check("vehicle_lease_sheets_tax_method_check", sql`(tax_method)::text = ANY ((ARRAY['monthly'::character varying, 'upfront'::character varying])::text[])`),
 ]);
 
 export const announcements = pgTable("announcements", {

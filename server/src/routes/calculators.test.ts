@@ -170,6 +170,35 @@ describe('POST /calculators/lease/compute', () => {
 		expect(body.computed).toHaveProperty('lease_payment');
 		expect(body.computed.interest_rate).toBeCloseTo(5.4, 10);
 	});
+
+	it('accepts the contract fields and computes from them', async () => {
+		const res = await post('/calculators/lease/compute', {
+			agreed_value: 47509.14,
+			residual_amount: 33828.3,
+			money_factor: 0.002,
+			lease_term: 36,
+			capitalized_taxes: 1325.61,
+			acquisition_fee: 595,
+			doc_fee: 250,
+			doc_fee_upfront: true,
+			lease_cash: 500,
+			tax_method: 'upfront',
+			with_schedule: false,
+		});
+
+		expect(res.status, await res.clone().text()).toBe(200);
+		const body = (await res.json()) as { computed: Record<string, number> };
+		expect(body.computed.gross_cap_cost).toBeCloseTo(49429.75, 2);
+		expect(body.computed.lease_payment).toBeCloseTo(585, 2);
+	});
+
+	it('rejects an unknown tax method', async () => {
+		const res = await post('/calculators/lease/compute', { tax_method: 'yearly' });
+
+		expect(res.status).toBe(422);
+		const body = (await res.json()) as { errors: Record<string, string[]> };
+		expect(body.errors.tax_method).toEqual(['The selected tax method is invalid.']);
+	});
 });
 
 describe('POST /calculators/mortgage/compute', () => {

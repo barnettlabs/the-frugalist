@@ -1,3 +1,4 @@
+import { LEASE_TAX_METHODS } from '@frugalist/contracts';
 import { z } from 'zod';
 
 import { mortgageSheets, vehicleFinanceSheets, vehicleLeaseSheets } from '../db/schema.js';
@@ -77,6 +78,25 @@ export const leaseSheetRoutes = createSheetResource({
 		sales_tax_percent: r.nullableNumeric('sales tax percent', { min: 0, max: 100 }),
 		residual_percent: r.nullableNumeric('residual percent', { min: 0, max: 100 }),
 		lease_term: r.nullableInteger('lease term', { min: 1, max: 120 }),
+
+		// Added with the lease contract fields; no Laravel counterpart.
+		agreed_value: r.nullableNumeric('agreed value', { min: 0 }),
+		residual_amount: r.nullableNumeric('residual amount', { min: 0 }),
+		capitalized_taxes: r.nullableNumeric('capitalized taxes', { min: 0 }),
+		title_registration_fees: r.nullableNumeric('title registration fees', { min: 0 }),
+		prior_balance: r.nullableNumeric('prior balance', { min: 0 }),
+		add_ons_json: r.nullableString('add ons json'),
+		acquisition_fee_upfront: r.nullableBoolean('acquisition fee upfront'),
+		doc_fee_upfront: r.nullableBoolean('doc fee upfront'),
+		title_registration_fees_upfront: r.nullableBoolean('title registration fees upfront'),
+		misc_fees_upfront: r.nullableBoolean('misc fees upfront'),
+		trade_in_payoff: r.nullableNumeric('trade in payoff', { min: 0 }),
+		tax_method: r.nullableEnum('tax method', LEASE_TAX_METHODS),
+		security_deposit: r.nullableNumeric('security deposit', { min: 0 }),
+		purchase_option_fee: r.nullableNumeric('purchase option fee', { min: 0 }),
+		disposition_fee: r.nullableNumeric('disposition fee', { min: 0 }),
+		miles_per_year: r.nullableInteger('miles per year', { min: 0, max: 100000 }),
+		excess_mile_rate: r.nullableNumeric('excess mile rate', { min: 0 }),
 	},
 });
 

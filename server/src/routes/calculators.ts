@@ -3,6 +3,7 @@ import {
 	computeLease,
 	computeMortgage,
 	humanizeField,
+	LEASE_TAX_METHODS,
 } from '@frugalist/contracts';
 import { Hono } from 'hono';
 import { z } from 'zod';
@@ -140,6 +141,28 @@ const leaseSchema = z.object({
 	sales_tax_percent: numericLike('sales_tax_percent'),
 	residual_percent: numericLike('residual_percent'),
 	lease_term: termLike('lease_term', 120),
+	agreed_value: numericLike('agreed_value'),
+	residual_amount: numericLike('residual_amount'),
+	capitalized_taxes: numericLike('capitalized_taxes'),
+	title_registration_fees: numericLike('title_registration_fees'),
+	prior_balance: numericLike('prior_balance'),
+	add_ons_json: z.unknown().optional(),
+	acquisition_fee_upfront: booleanLike('acquisition_fee_upfront'),
+	doc_fee_upfront: booleanLike('doc_fee_upfront'),
+	title_registration_fees_upfront: booleanLike('title_registration_fees_upfront'),
+	misc_fees_upfront: booleanLike('misc_fees_upfront'),
+	trade_in_payoff: numericLike('trade_in_payoff'),
+	tax_method: z
+		.union([z.string(), z.null()])
+		.optional()
+		.refine((v) => v === null || v === undefined || (LEASE_TAX_METHODS as readonly string[]).includes(v), {
+			message: 'The selected tax method is invalid.',
+		}),
+	security_deposit: numericLike('security_deposit'),
+	purchase_option_fee: numericLike('purchase_option_fee'),
+	disposition_fee: numericLike('disposition_fee'),
+	miles_per_year: numericLike('miles_per_year'),
+	excess_mile_rate: numericLike('excess_mile_rate'),
 	with_schedule: booleanLike('with_schedule'),
 });
 

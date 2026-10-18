@@ -327,6 +327,54 @@ describe('lease sheets', () => {
 		]);
 	});
 
+	it('stores the contract fields, with fee flags as real booleans', async () => {
+		const res = await authed('/vehicle-lease-sheets', {
+			method: 'POST',
+			body: JSON.stringify({
+				agreed_value: 47509.14,
+				residual_amount: 33828.3,
+				capitalized_taxes: 1325.61,
+				doc_fee: 250,
+				doc_fee_upfront: true,
+				acquisition_fee_upfront: '0',
+				trade_in_payoff: 0,
+				tax_method: 'upfront',
+				add_ons_json: JSON.stringify([{ name: 'GAP', amount: 650 }]),
+				miles_per_year: 12000,
+				excess_mile_rate: 0.2,
+			}),
+		});
+
+		expect(res.status, await res.clone().text()).toBe(201);
+		const body = (await res.json()) as Record<string, unknown>;
+
+		expect(Number(body.agreed_value)).toBeCloseTo(47509.14, 2);
+		expect(Number(body.residual_amount)).toBeCloseTo(33828.3, 2);
+		expect(body.doc_fee_upfront).toBe(true);
+		expect(body.acquisition_fee_upfront).toBe(false);
+		expect(body.misc_fees_upfront).toBe(false);
+		expect(body.tax_method).toBe('upfront');
+		expect(body.miles_per_year).toBe(12000);
+	});
+
+	it('defaults the tax method to monthly', async () => {
+		const res = await authed('/vehicle-lease-sheets', { method: 'POST', body: JSON.stringify({}) });
+
+		expect(((await res.json()) as Record<string, unknown>).tax_method).toBe('monthly');
+	});
+
+	it('rejects an unknown tax method and a non-boolean fee flag', async () => {
+		const res = await authed('/vehicle-lease-sheets', {
+			method: 'POST',
+			body: JSON.stringify({ tax_method: 'yearly', doc_fee_upfront: 'maybe' }),
+		});
+
+		expect(res.status).toBe(422);
+		const body = (await res.json()) as { errors: Record<string, string[]> };
+		expect(body.errors.tax_method).toEqual(['The selected tax method is invalid.']);
+		expect(body.errors.doc_fee_upfront).toEqual(['The doc fee upfront field must be true or false.']);
+	});
+
 	it('does not leak another user lease sheet', async () => {
 		const res = await authed(`/vehicle-lease-sheets/${foreignLeaseSheetId}`);
 

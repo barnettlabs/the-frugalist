@@ -270,6 +270,19 @@ describe('validation', () => {
 		expect(res.status).toBe(422);
 	});
 
+	it('treats blank fields as empty, as Laravel did, so a part-filled form saves', async () => {
+		const res = await authed('/vehicle-finance-sheets', {
+			method: 'POST',
+			body: JSON.stringify({ sheet_name: 'Part filled', msrp: '', finance_term: '', start_date: '' }),
+		});
+
+		expect(res.status, await res.clone().text()).toBe(201);
+		const body = (await res.json()) as Record<string, unknown>;
+		expect(body.msrp).toBeNull();
+		expect(body.finance_term).toBeNull();
+		expect(body.start_date).toBeNull();
+	});
+
 	it('accepts an empty payload, as the Laravel rules were all nullable', async () => {
 		const res = await authed('/vehicle-finance-sheets', {
 			method: 'POST',

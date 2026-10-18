@@ -35,7 +35,7 @@ async function readTarget(c: Context, target: keyof ValidationTargets): Promise<
 			// An empty or malformed body should read as "no fields provided" so the
 			// schema reports the missing fields, rather than surfacing a parse error.
 			try {
-				return await c.req.json();
+				return emptyStringsToNull(await c.req.json());
 			} catch {
 				return {};
 			}
@@ -51,6 +51,23 @@ async function readTarget(c: Context, target: keyof ValidationTargets): Promise<
 		default:
 			return {};
 	}
+}
+
+/**
+ * Laravel's ConvertEmptyStringsToNull middleware, which ran on every request.
+ *
+ * A cleared form field arrives as "", and every rule here is `nullable`, so
+ * Laravel saw it as null and accepted it. Without this the same field failed
+ * "must be a number" or "must be a valid date": a new estimate with any field
+ * left blank could not be saved.
+ */
+export function emptyStringsToNull(value: unknown): unknown {
+	if (value === '') return null;
+	if (Array.isArray(value)) return value.map(emptyStringsToNull);
+	if (value !== null && typeof value === 'object') {
+		return Object.fromEntries(Object.entries(value).map(([key, v]) => [key, emptyStringsToNull(v)]));
+	}
+	return value;
 }
 
 export function validated<T>(c: Context, target: keyof ValidationTargets): T {

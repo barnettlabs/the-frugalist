@@ -16,7 +16,7 @@ const props = defineProps({
 const chartType = ref('pie');
 
 const summary = computed(() => {
-	const calculator = new LeaseCalculator(props.data);
+	const calculator = new LeaseCalculator({ ...props.data });
 	return calculator.summary();
 });
 
@@ -155,7 +155,7 @@ const salesTaxPercentage = computed(() => {
 							<div class="flex items-center justify-between">
 								<div class="flex items-center gap-2">
 									<span class="w-3 h-3 rounded-full bg-danger"></span>
-									<span class="eyebrow text-[0.625rem]!">Interest</span>
+									<span class="eyebrow text-[0.625rem]!">Rent charge</span>
 								</div>
 								<div class="text-sm numeral text-primary">
 									${{ formatCurrency(paymentBreakdown.interest) }}
@@ -184,7 +184,7 @@ const salesTaxPercentage = computed(() => {
 					<p class="figure text-xl text-accent-dark leading-none">${{ formatCurrency(paymentBreakdown.principal) }}</p>
 				</div>
 				<div class="bg-surface p-4">
-					<p class="eyebrow text-[0.625rem]! mb-1.5">Total interest</p>
+					<p class="eyebrow text-[0.625rem]! mb-1.5">Total rent charge</p>
 					<p class="figure text-xl text-warning leading-none">${{ formatCurrency(paymentBreakdown.interest) }}</p>
 				</div>
 				<div class="bg-surface p-4">

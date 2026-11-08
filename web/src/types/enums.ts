@@ -97,6 +97,15 @@ export const vehicleTypeOptions = [
 	{ value: VehicleType.SUV, label: 'SUV' },
 ] as const;
 
+// How a lease's sales tax is charged. Most states tax each payment; some (Ohio,
+// Texas, among others) tax upfront and roll it into the cap cost.
+export type LeaseTaxMethod = 'monthly' | 'upfront';
+
+export const leaseTaxMethodOptions = [
+	{ value: 'monthly', label: 'On each monthly payment' },
+	{ value: 'upfront', label: 'Upfront, rolled into the lease' },
+] as const;
+
 // Property Type Enum (mortgage)
 export enum PropertyType {
 	HOUSE = 'HOUSE',

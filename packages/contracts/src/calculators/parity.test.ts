@@ -36,8 +36,10 @@ import { computeMortgage } from './mortgage.js';
  *
  *   - Lease: the residual rent charge was added twice (in the payment and the
  *     tax base), a zero money factor gave a $0 payment, and the total counted
- *     the first payment twice. Pinned against hand-derived values in
- *     lease.test.ts.
+ *     the first payment twice. Re-baselined again on 2026-10-18 when the
+ *     payment moved to the money-factor method lease contracts disclose, with
+ *     cap cost items, fees paid at signing and end-of-lease terms. Pinned
+ *     against a real contract and hand-derived values in lease.test.ts.
  *   - Finance and mortgage: the final month charged the full payment however
  *     little was owed (and finance dropped that month's extra payment), 0%
  *     loans had no schedule, and mortgage totals computed without a schedule

@@ -42,17 +42,34 @@ const form = ref<LeaseFormData>({
 	vehicle_model: '',
 	vehicle_trim: '',
 	msrp: '',
+	agreed_value: '',
+	residual_amount: '',
 	residual_percent: '',
 	money_factor: '',
 	lease_term: '',
 	down_payment: '',
 	acquisition_fee: '',
+	acquisition_fee_upfront: false,
 	dealer_contribution: '',
 	trade_in: '',
+	trade_in_payoff: '',
 	doc_fee: '',
+	doc_fee_upfront: false,
+	title_registration_fees: '',
+	title_registration_fees_upfront: false,
 	misc_fees: '',
+	misc_fees_upfront: false,
+	capitalized_taxes: '',
+	prior_balance: '',
+	add_ons_json: null,
 	lease_cash: '',
 	sales_tax_percent: '',
+	tax_method: 'monthly',
+	security_deposit: '',
+	purchase_option_fee: '',
+	disposition_fee: '',
+	miles_per_year: '',
+	excess_mile_rate: '',
 	start_date: '',
 	contact_email: '',
 	contact_phone: '',
@@ -186,7 +203,7 @@ onMounted(() => {
 					<!-- Main column -->
 					<div class="order-2 lg:order-1 grid grid-cols-1 gap-4 lg:col-span-2">
 						<LeaseForm
-							:form="form"
+							v-model:form="form"
 							:errors="errors"
 							:loading="loading"
 							:title="headerTitle"

@@ -15,6 +15,13 @@
       "when": 1791512670969,
       "tag": "0001_nullable_target_price",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792330620171,
+      "tag": "0002_lease_contract_fields",
+      "breakpoints": true
     }
   ]
 }

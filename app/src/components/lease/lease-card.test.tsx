@@ -39,6 +39,6 @@ describe('LeaseCard', () => {
 	it('shows the monthly payment from the shared calculator', () => {
 		render(<LeaseCard sheet={sheet} />);
 
-		expect(screen.getByText('$592.34', { exact: false })).toBeOnTheScreen();
+		expect(screen.getByText('$581.72', { exact: false })).toBeOnTheScreen();
 	});
 });

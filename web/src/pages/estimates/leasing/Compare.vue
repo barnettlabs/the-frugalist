@@ -100,7 +100,7 @@ onMounted(() => {
 							<tr>
 								<td class="px-6 py-4 text-sm text-gray-600">Residual %</td>
 								<td v-for="sheet in sheets" :key="sheet.id" class="px-6 py-4 text-sm font-medium text-gray-900">
-									{{ sheet.residual_percent || 0 }}%
+									{{ new LeaseCalculator({ ...sheet }).residualPercent().toFixed(2) }}%
 								</td>
 							</tr>
 							<tr class="bg-gray-50">

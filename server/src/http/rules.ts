@@ -118,6 +118,26 @@ export function nullableEnum<const T extends readonly string[]>(attribute: strin
 		});
 }
 
+/**
+ * `nullable|boolean`: Laravel accepts true, false, 1, 0, "1" and "0". Passed to
+ * the database as a real boolean, so "0" cannot be stored as true.
+ */
+export function nullableBoolean(attribute: string) {
+	return z
+		.union([z.boolean(), z.number(), z.string(), z.null()])
+		.optional()
+		.superRefine((v, ctx) => {
+			if (v === null || v === undefined || typeof v === 'boolean') return;
+			if (v === 0 || v === 1 || v === '0' || v === '1') return;
+
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: `The ${attribute} field must be true or false.`,
+			});
+		})
+		.transform((v) => (v === null || v === undefined ? v : v === true || v === 1 || v === '1'));
+}
+
 /** `nullable|email|max:N` */
 export function nullableEmail(attribute: string, max?: number) {
 	return z
@@ -177,6 +197,7 @@ export const laravelRules = {
 	nullableNumeric,
 	nullableInteger,
 	nullableEnum,
+	nullableBoolean,
 	nullableEmail,
 	nullableDate,
 };

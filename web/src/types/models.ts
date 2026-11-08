@@ -1,4 +1,4 @@
-import { PropertyType, VehicleType } from './enums';
+import { LeaseTaxMethod, PropertyType, VehicleType } from './enums';
 
 // Vehicle Finance Sheet Model
 export interface VehicleFinanceSheet {
@@ -74,11 +74,35 @@ export interface VehicleLeaseSheet {
 	down_payment: number;
 	sales_tax_percent: number;
 
+	// Capitalized cost, as a lease contract itemises it. A fee flagged *_upfront
+	// is paid at signing rather than rolled into the lease.
+	agreed_value: number;
+	capitalized_taxes: number;
+	acquisition_fee_upfront: boolean;
+	doc_fee_upfront: boolean;
+	title_registration_fees: number;
+	title_registration_fees_upfront: boolean;
+	misc_fees_upfront: boolean;
+	prior_balance: number;
+	/** JSON: [{ name, amount }] - service contracts, GAP and the like. */
+	add_ons_json: string | null;
+	trade_in_payoff: number;
+	tax_method: LeaseTaxMethod;
+	security_deposit: number;
+
 	// Lease Terms
 	money_factor: number;
+	/** In dollars. When empty, the residual is residual_percent of MSRP. */
+	residual_amount: number;
 	residual_percent: number;
 	lease_term: number;
 	start_date: string;
+
+	// End of lease
+	purchase_option_fee: number;
+	disposition_fee: number;
+	miles_per_year: number;
+	excess_mile_rate: number;
 
 	// Contact Information
 	contact_email: string;

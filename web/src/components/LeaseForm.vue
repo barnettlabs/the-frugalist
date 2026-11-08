@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { CalculatorIcon } from '@heroicons/vue/24/outline';
 import { computed, ref, watch } from 'vue';
-import { RouterLink } from 'vue-router';
 
 import AddOnsEditor from '@/components/Lease/AddOnsEditor.vue';
 import FeeField from '@/components/Lease/FeeField.vue';
@@ -10,21 +8,10 @@ import { FormErrors, LeaseFormData, leaseTaxMethodOptions, vehicleTypeOptions } 
 import { formatCurrency, parseOrZero } from '@/utils/formatters';
 
 import FormField from './FormField.vue';
-import Spinner from './Spinner.vue';
 
-interface Props {
+defineProps<{
 	errors: FormErrors;
-	loading: boolean;
-	title: string;
-	backUrl: string;
-	isEdit?: boolean;
-	submitLabel?: string;
-}
-
-withDefaults(defineProps<Props>(), {
-	isEdit: false,
-	submitLabel: 'Create lease estimate',
-});
+}>();
 
 // The parent owns the sheet; fields bind straight to it through v-model:form.
 const form = defineModel<LeaseFormData>('form', { required: true });
@@ -59,7 +46,9 @@ const residualAsPercent = computed(() =>
 );
 
 const syncResidualPercent = () => {
-	if (residualMode.value === 'dollar' && msrp.value > 0 && isSet(form.value.residual_amount)) {
+	if (residualMode.value !== 'dollar' || msrp.value <= 0 || !isSet(form.value.residual_amount)) return;
+	// Only when it has moved, so opening a saved sheet does not count as an edit.
+	if (Math.abs(parseOrZero(form.value.residual_percent) - residualAsPercent.value) > 0.00005) {
 		form.value.residual_percent = residualAsPercent.value.toFixed(4);
 	}
 };
@@ -516,27 +505,5 @@ const hasTradeIn = computed(() => isSet(form.value.trade_in) || isSet(form.value
 				<FormField v-model="form.notes" name="notes" label="Notes" type="textarea" :error="errors.notes" />
 			</div>
 		</section>
-
-		<!-- Submit -->
-		<div class="flex items-center justify-end gap-3 pt-2">
-			<RouterLink
-				:to="backUrl"
-				class="px-5 py-2.5 rounded-md text-sm font-medium text-text-muted hover:text-primary hover:bg-tan/50 transition-colors"
-			>
-				Cancel
-			</RouterLink>
-			<button
-				type="submit"
-				:disabled="loading"
-				:class="[
-					'inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-medium transition-colors',
-					loading ? 'bg-tan text-text-muted cursor-not-allowed' : 'bg-primary hover:bg-primary-light text-surface',
-				]"
-			>
-				<Spinner v-if="loading" size="sm" color="white" />
-				<CalculatorIcon v-else class="h-4 w-4" />
-				{{ loading ? (isEdit ? 'Saving…' : 'Creating…') : isEdit ? 'Update lease estimate' : submitLabel }}
-			</button>
-		</div>
 	</form>
 </template>

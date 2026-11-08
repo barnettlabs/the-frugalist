@@ -45,7 +45,15 @@ watch(
 	{ immediate: true }
 );
 
-watch(rows, list => (model.value = serialise(list)), { deep: true });
+watch(
+	rows,
+	list => {
+		const next = serialise(list);
+		// Write only real changes, not a re-serialisation of the same items.
+		if (next !== serialise(parse(model.value))) model.value = next;
+	},
+	{ deep: true }
+);
 
 const add = () => rows.value.push({ name: '', amount: '' });
 const remove = (index: number) => rows.value.splice(index, 1);

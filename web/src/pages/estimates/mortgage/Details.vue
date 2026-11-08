@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ArrowLeftIcon, CalculatorIcon, HomeModernIcon } from '@heroicons/vue/24/outline';
-import { computed, onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ArrowLeftIcon, HomeModernIcon } from '@heroicons/vue/24/outline';
+import { computed, ref } from 'vue';
 
 import { mortgageApi } from '@/api/mortgage';
 import AdvancedCalculations from '@/components/Mortgage/AdvancedCalculations.vue';
@@ -13,25 +12,16 @@ import RecurringExpenses from '@/components/Mortgage/RecurringExpenses.vue';
 import MortgageForm from '@/components/MortgageForm.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
+import StickySaveBar from '@/components/StickySaveBar.vue';
 import { useEstimateAccess } from '@/composables/useEstimateAccess';
-import type { FormErrors, MortgageFormData } from '@/types';
+import { useSheetEditor } from '@/composables/useSheetEditor';
+import type { MortgageFormData } from '@/types';
 import { PropertyType } from '@/types';
-
-const route = useRoute();
-const router = useRouter();
 
 const { isAuthenticated, backUrl, backLabel, ensureAccount } = useEstimateAccess({
 	savedListPath: '/estimates/mortgage',
 	savedListLabel: 'All mortgage estimates',
 });
-
-// Guests get the calculator but not the save action.
-const submitLabel = computed(() =>
-	isAuthenticated.value ? 'Create mortgage estimate' : 'Sign in to save this estimate'
-);
-
-const isEdit = computed(() => !!route.params.id);
-const sheetId = computed(() => route.params.id as string);
 
 const form = ref<MortgageFormData>({
 	sheet_name: '',
@@ -52,9 +42,13 @@ const form = ref<MortgageFormData>({
 	notes: '',
 });
 
-const loading = ref(false);
-const loadingSheet = ref(false);
-const errors = ref<FormErrors>({});
+const { isEdit, saving, loadingSheet, errors, networkError, savedAt, dirty, save } = useSheetEditor({
+	form,
+	api: mortgageApi,
+	listPath: '/estimates/mortgage',
+	editRouteName: 'estimates.mortgage.edit',
+	ensureAccount,
+});
 
 const propertyTitle = computed(() => {
 	return form.value.property_address || form.value.sheet_name || 'Mortgage estimate';
@@ -64,55 +58,13 @@ const headerTitle = computed(() => (isEdit.value ? propertyTitle.value : 'New mo
 const headerEyebrow = computed(() => (isEdit.value ? 'Compute · Mortgage · Edit' : 'Compute · Mortgage · New'));
 const headerDescription = computed(() =>
 	isEdit.value
-		? 'Refine the numbers behind this loan. Changes save when you click update.'
+		? 'Refine the numbers behind this loan. Save from the bar at the bottom of the screen.'
 		: 'Run any mortgage through the math. Principal, escrow, extra payments, the term reduction. All in one sheet.'
 );
-
-const loadSheet = async () => {
-	if (!isEdit.value) return;
-	loadingSheet.value = true;
-	try {
-		const sheet = await mortgageApi.get(sheetId.value);
-		Object.assign(form.value, sheet);
-	} catch (error) {
-		console.error('Error loading sheet:', error);
-		router.push('/estimates/mortgage');
-	} finally {
-		loadingSheet.value = false;
-	}
-};
-
-const submitForm = async () => {
-	if (!ensureAccount()) return;
-
-	loading.value = true;
-	errors.value = {};
-
-	try {
-		if (isEdit.value) {
-			await mortgageApi.update(sheetId.value, form.value);
-		} else {
-			await mortgageApi.create(form.value);
-		}
-		router.push('/estimates/mortgage');
-	} catch (error: any) {
-		if (error.response?.data?.errors) {
-			errors.value = error.response.data.errors;
-		} else {
-			console.error(`Error ${isEdit.value ? 'updating' : 'creating'} mortgage sheet:`, error);
-		}
-	} finally {
-		loading.value = false;
-	}
-};
-
-onMounted(() => {
-	loadSheet();
-});
 </script>
 
 <template>
-	<div class="pb-16">
+	<div>
 		<div v-if="loadingSheet" class="flex items-center justify-center py-32">
 			<Spinner size="lg" color="accent" />
 		</div>
@@ -128,28 +80,19 @@ onMounted(() => {
 				</RouterLink>
 			</div>
 
+			<div v-if="networkError" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-4">
+				<div class="rounded-md bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+					{{ networkError }}
+				</div>
+			</div>
+
 			<SectionHeader
 				:eyebrow="headerEyebrow"
 				:title="headerTitle"
 				:description="headerDescription"
 				:icon="HomeModernIcon"
 				variant="compact"
-			>
-				<template v-if="isEdit" #actions>
-					<button
-						:disabled="loading"
-						:class="[
-							'inline-flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-medium transition-colors',
-							loading ? 'bg-tan text-text-muted cursor-not-allowed' : 'bg-primary hover:bg-primary-light text-surface',
-						]"
-						@click="submitForm"
-					>
-						<Spinner v-if="loading" size="sm" color="white" />
-						<CalculatorIcon v-else class="h-4 w-4" />
-						{{ loading ? 'Saving…' : 'Save changes' }}
-					</button>
-				</template>
-			</SectionHeader>
+			/>
 
 			<main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-2">
 				<div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
@@ -161,31 +104,6 @@ onMounted(() => {
 						<ExtraPayments v-model="form.extra_payments_json" :data="form" />
 						<AmortizationTable :data="form" />
 						<PaymentCharts :data="form" />
-
-						<!-- Submit/cancel at the very bottom -->
-						<div v-if="!isEdit" class="flex items-center justify-end gap-3 pt-2">
-							<RouterLink
-								:to="backUrl"
-								class="px-5 py-2.5 rounded-md text-sm font-medium text-text-muted hover:text-primary hover:bg-tan/50 transition-colors"
-							>
-								Cancel
-							</RouterLink>
-							<button
-								type="button"
-								:disabled="loading"
-								:class="[
-									'inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-medium transition-colors',
-									loading
-										? 'bg-tan text-text-muted cursor-not-allowed'
-										: 'bg-primary hover:bg-primary-light text-surface',
-								]"
-								@click="submitForm"
-							>
-								<Spinner v-if="loading" size="sm" color="white" />
-								<CalculatorIcon v-else class="h-4 w-4" />
-								{{ loading ? 'Creating…' : submitLabel }}
-							</button>
-						</div>
 					</div>
 
 					<aside class="order-1 lg:order-2 lg:sticky lg:top-20 space-y-4">
@@ -194,5 +112,17 @@ onMounted(() => {
 				</div>
 			</main>
 		</template>
+		<StickySaveBar
+			v-if="!loadingSheet"
+			:dirty="dirty"
+			:saving="saving"
+			:is-edit="isEdit"
+			:can-save="isAuthenticated"
+			:saved-at="savedAt"
+			:has-errors="Object.keys(errors).length > 0"
+			:back-url="backUrl"
+			:back-label="backLabel"
+			@save="save"
+		/>
 	</div>
 </template>

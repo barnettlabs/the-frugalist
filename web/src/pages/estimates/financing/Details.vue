@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ArrowLeftIcon, BanknotesIcon, CalculatorIcon } from '@heroicons/vue/24/outline';
-import { computed, onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ArrowLeftIcon, BanknotesIcon } from '@heroicons/vue/24/outline';
+import { computed, ref } from 'vue';
 
 import { financeApi } from '@/api/finance';
 import DealGradeCard from '@/components/DealGradeCard.vue';
@@ -12,13 +11,13 @@ import PaymentCharts from '@/components/Finance/PaymentCharts.vue';
 import FinanceForm from '@/components/FinanceForm.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import Spinner from '@/components/Spinner.vue';
+import StickySaveBar from '@/components/StickySaveBar.vue';
 import { useEstimateAccess } from '@/composables/useEstimateAccess';
+import { useSheetEditor } from '@/composables/useSheetEditor';
 import { useAuthStore } from '@/stores/auth';
-import type { FinanceFormData, FormErrors } from '@/types';
+import type { FinanceFormData } from '@/types';
 import { VehicleType } from '@/types';
 
-const route = useRoute();
-const router = useRouter();
 const authStore = useAuthStore();
 const isAdmin = computed(() => authStore.isAdmin);
 
@@ -26,14 +25,6 @@ const { isAuthenticated, backUrl, backLabel, ensureAccount } = useEstimateAccess
 	savedListPath: '/estimates/financing',
 	savedListLabel: 'All finance estimates',
 });
-
-// Guests get the calculator but not the save action.
-const submitLabel = computed(() =>
-	isAuthenticated.value ? 'Create finance estimate' : 'Sign in to save this estimate'
-);
-
-const isEdit = computed(() => !!route.params.id);
-const sheetId = computed(() => route.params.id as string);
 
 const form = ref<FinanceFormData>({
 	sheet_name: '',
@@ -59,10 +50,13 @@ const form = ref<FinanceFormData>({
 	notes: '',
 });
 
-const loading = ref(false);
-const loadingSheet = ref(false);
-const errors = ref<FormErrors>({});
-const networkError = ref('');
+const { isEdit, saving, loadingSheet, errors, networkError, savedAt, dirty, save } = useSheetEditor({
+	form,
+	api: financeApi,
+	listPath: '/estimates/financing',
+	editRouteName: 'estimates.financing.edit',
+	ensureAccount,
+});
 
 const vehicleTitle = computed(() => {
 	const parts = [
@@ -84,57 +78,13 @@ const headerEyebrow = computed(() => {
 
 const headerDescription = computed(() => {
 	return isEdit.value
-		? 'Refine the numbers behind this offer. Changes save when you click update.'
+		? 'Refine the numbers behind this offer. Save from the bar at the bottom of the screen.'
 		: 'Run any financing offer through the math. APR, amortization, total interest, all in one sheet.';
-});
-
-const loadSheet = async () => {
-	if (!isEdit.value) return;
-
-	loadingSheet.value = true;
-	try {
-		const sheet = await financeApi.get(sheetId.value);
-		Object.assign(form.value, sheet);
-	} catch (error) {
-		console.error('Error loading sheet:', error);
-		router.push('/estimates/financing');
-	} finally {
-		loadingSheet.value = false;
-	}
-};
-
-const submitForm = async () => {
-	if (!ensureAccount()) return;
-
-	loading.value = true;
-	errors.value = {};
-	networkError.value = '';
-
-	try {
-		if (isEdit.value) {
-			await financeApi.update(sheetId.value, form.value);
-		} else {
-			await financeApi.create(form.value);
-		}
-		router.push('/estimates/financing');
-	} catch (error: any) {
-		if (error.response?.data?.errors) {
-			errors.value = error.response.data.errors;
-		} else {
-			networkError.value = 'Something went wrong. Please check your connection and try again.';
-		}
-	} finally {
-		loading.value = false;
-	}
-};
-
-onMounted(() => {
-	loadSheet();
 });
 </script>
 
 <template>
-	<div class="pb-16">
+	<div>
 		<!-- Loading state for edit-mode initial fetch -->
 		<div v-if="loadingSheet" class="flex items-center justify-center py-32">
 			<Spinner size="lg" color="accent" />
@@ -164,37 +114,13 @@ onMounted(() => {
 				:description="headerDescription"
 				:icon="BanknotesIcon"
 				variant="compact"
-			>
-				<template v-if="isEdit" #actions>
-					<button
-						:disabled="loading"
-						:class="[
-							'inline-flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-medium transition-colors',
-							loading ? 'bg-tan text-text-muted cursor-not-allowed' : 'bg-primary hover:bg-primary-light text-surface',
-						]"
-						@click="submitForm"
-					>
-						<Spinner v-if="loading" size="sm" color="white" />
-						<CalculatorIcon v-else class="h-4 w-4" />
-						{{ loading ? 'Saving…' : 'Save changes' }}
-					</button>
-				</template>
-			</SectionHeader>
+			/>
 
 			<main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-2">
 				<div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
 					<!-- Main column -->
 					<div class="order-2 lg:order-1 grid grid-cols-1 gap-4 lg:col-span-2">
-						<FinanceForm
-							:form="form"
-							:errors="errors"
-							:loading="loading"
-							:title="headerTitle"
-							:back-url="backUrl"
-							:is-edit="isEdit"
-							:submit-label="submitLabel"
-							@submit="submitForm"
-						/>
+						<FinanceForm :form="form" :errors="errors" @submit="save" />
 
 						<ExtraPayments v-model="form.extra_payments_json" :data="form" />
 						<AmortizationTable :data="form" />
@@ -209,5 +135,17 @@ onMounted(() => {
 				</div>
 			</main>
 		</template>
+		<StickySaveBar
+			v-if="!loadingSheet"
+			:dirty="dirty"
+			:saving="saving"
+			:is-edit="isEdit"
+			:can-save="isAuthenticated"
+			:saved-at="savedAt"
+			:has-errors="Object.keys(errors).length > 0"
+			:back-url="backUrl"
+			:back-label="backLabel"
+			@save="save"
+		/>
 	</div>
 </template>

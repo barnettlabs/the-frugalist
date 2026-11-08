@@ -1,26 +1,12 @@
 <script setup lang="ts">
-import { CalculatorIcon } from '@heroicons/vue/24/outline';
-import { RouterLink } from 'vue-router';
-
 import { FinanceFormData, FormErrors, vehicleTypeOptions } from '@/types';
 
 import FormField from './FormField.vue';
-import Spinner from './Spinner.vue';
 
-interface Props {
+defineProps<{
 	form: FinanceFormData;
 	errors: FormErrors;
-	loading: boolean;
-	title: string;
-	backUrl: string;
-	isEdit?: boolean;
-	submitLabel?: string;
-}
-
-withDefaults(defineProps<Props>(), {
-	isEdit: false,
-	submitLabel: 'Create finance estimate',
-});
+}>();
 
 defineEmits<{
 	submit: [];
@@ -198,27 +184,5 @@ defineEmits<{
 				<FormField v-model="form.notes" name="notes" label="Notes" type="textarea" :error="errors.notes" />
 			</div>
 		</section>
-
-		<!-- Submit (only on Create — Edit page has its own submit in the header) -->
-		<div v-if="!isEdit" class="flex items-center justify-end gap-3 pt-2">
-			<RouterLink
-				:to="backUrl"
-				class="px-5 py-2.5 rounded-md text-sm font-medium text-text-muted hover:text-primary hover:bg-tan/50 transition-colors"
-			>
-				Cancel
-			</RouterLink>
-			<button
-				type="submit"
-				:disabled="loading"
-				:class="[
-					'inline-flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-medium transition-colors',
-					loading ? 'bg-tan text-text-muted cursor-not-allowed' : 'bg-primary hover:bg-primary-light text-surface',
-				]"
-			>
-				<Spinner v-if="loading" size="sm" color="white" />
-				<CalculatorIcon v-else class="h-4 w-4" />
-				{{ loading ? 'Creating…' : submitLabel }}
-			</button>
-		</div>
 	</form>
 </template>

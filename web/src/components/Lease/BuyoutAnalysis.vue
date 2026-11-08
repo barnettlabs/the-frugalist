@@ -16,14 +16,14 @@ const props = defineProps({
 const expanded = ref(false);
 
 const summary = computed(() => {
-	const calculator = new LeaseCalculator(props.data);
+	const calculator = new LeaseCalculator({ ...props.data });
 	return calculator.summary();
 });
 
 // Calculate buyout price at lease end
 const endOfLeaseBuyout = computed(() => {
 	if (!summary.value) return 0;
-	return summary.value.residual_amount;
+	return summary.value.purchase_option_price;
 });
 
 interface BuyoutScenario {
@@ -57,7 +57,7 @@ const earlyBuyoutScenarios = computed((): BuyoutScenario[] => {
 		const earlyBuyoutPrice = residualAmount + remainingPaymentValue * 0.5; // 50% of remaining payments
 
 		// Calculate depreciation rate for market value estimation
-		const depreciationRate = (100 - parseOrZero(props.data.residual_percent)) / 100;
+		const depreciationRate = (100 - summary.value.residual_percent) / 100;
 		const additionalDepreciation = (monthsElapsed / leaseTerm) * depreciationRate * 0.1; // Additional 10% depreciation
 		const estimatedMarketValue = msrp * (1 - depreciationRate * (monthsElapsed / leaseTerm) - additionalDepreciation);
 
@@ -102,11 +102,13 @@ const earlyBuyoutScenarios = computed((): BuyoutScenario[] => {
 				<div class="bg-surface p-4">
 					<p class="eyebrow text-[0.625rem]! mb-1.5">End-of-lease buyout</p>
 					<p class="figure text-2xl text-primary leading-none">${{ formatCurrency(endOfLeaseBuyout) }}</p>
-					<p class="numeral text-[0.6875rem] text-text-muted mt-1.5">{{ props.data.residual_percent }}% of MSRP</p>
+					<p class="numeral text-[0.6875rem] text-text-muted mt-1.5">
+						{{ summary.residual_percent.toFixed(2) }}% of MSRP
+					</p>
 				</div>
 				<div class="bg-surface p-4">
 					<p class="eyebrow text-[0.625rem]! mb-1.5">Residual percentage</p>
-					<p class="figure text-2xl text-primary leading-none">{{ props.data.residual_percent || 0 }}%</p>
+					<p class="figure text-2xl text-primary leading-none">{{ summary.residual_percent.toFixed(2) }}%</p>
 					<p class="numeral text-[0.6875rem] text-text-muted mt-1.5">of original MSRP</p>
 				</div>
 			</div>

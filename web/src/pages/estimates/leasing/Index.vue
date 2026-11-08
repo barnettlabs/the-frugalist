@@ -105,10 +105,10 @@ const getCapCost = (sheet: VehicleLeaseSheet) => {
 	return calculator.netCapCost();
 };
 
-const getResidualValue = (sheet: VehicleLeaseSheet) => {
-	if (!sheet.msrp || !sheet.residual_percent) return 0;
-	return sheet.msrp * (sheet.residual_percent / 100);
-};
+// A residual can be saved in dollars or as a percent of MSRP; the calculator
+// resolves whichever the sheet has.
+const getResidualValue = (sheet: VehicleLeaseSheet) => new LeaseCalculator({ ...sheet }).residualAmount();
+const getResidualPercent = (sheet: VehicleLeaseSheet) => new LeaseCalculator({ ...sheet }).residualPercent();
 
 const startComparison = () => {
 	if (selectedSheets.value.size >= 2) {
@@ -250,7 +250,7 @@ onMounted(() => {
 							</div>
 							<div class="text-right">
 								<p class="numeral text-xs text-text-muted">{{ sheet.lease_term || 0 }} mo</p>
-								<p class="numeral text-xs text-text-muted">{{ sheet.residual_percent || 0 }}% res</p>
+								<p class="numeral text-xs text-text-muted">{{ getResidualPercent(sheet).toFixed(1) }}% res</p>
 							</div>
 						</div>
 
